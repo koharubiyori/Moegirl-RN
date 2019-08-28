@@ -1,0 +1,349 @@
+@import './common.less';
+@import './trim.less';
+
+a{
+  text-decoration: none;
+  color: #0b0080;
+
+  &[target="_blank"]{
+    padding-right: 16px;
+    background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiI+IDxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzM2YyIgZD0iTTEuNSA0LjUxOGg1Ljk4MlYxMC41SDEuNXoiLz4gPHBhdGggZmlsbD0iIzM2YyIgZD0iTTUuNzY1IDFIMTF2NS4zOUw5LjQyNyA3LjkzN2wtMS4zMS0xLjMxTDUuMzkzIDkuMzVsLTIuNjktMi42ODggMi44MS0yLjgwOEw0LjIgMi41NDR6Ii8+IDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik05Ljk5NSAyLjAwNGwuMDIyIDQuODg1TDguMiA1LjA3IDUuMzIgNy45NSA0LjA5IDYuNzIzbDIuODgyLTIuODgtMS44NS0xLjg1MnoiLz4gPC9zdmc+);
+    background-repeat: no-repeat;
+    background-size: 15px;
+    background-position: right 70%; 
+  } 
+
+  &.new{
+    color: #ba0000;
+
+    &:visited{
+      color: #a55858;
+    }
+  }
+}
+
+dd{
+  margin-left: 1em;
+}
+ul{
+  padding-left: 1em;
+
+  li{
+    list-style-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjEzIj4gPGNpcmNsZSBjeD0iMi41IiBjeT0iOS41IiByPSIyLjUiIGZpbGw9IiMwMDUyOGMiLz4gPC9zdmc+);
+  }
+}
+
+ol{
+  padding-left: 20px;
+}
+
+pre{
+  color: #000;
+  background-color: #f8f9fa;
+  border: 1px solid #eaecf0;
+  padding: 1em;
+  line-height: 1.2;
+  white-space: initial;
+  word-break: break-all;
+}
+
+table{
+  margin: 0 auto !important;
+  float: none !important;
+}
+table.infobox{
+  width: 100% !important;
+  .base-shadeBox;
+  margin-bottom: 10px !important;
+}
+.infotemplatebox{
+  .base-shadeBox;
+}
+.section-heading{
+  border-left: 5px @theme solid;
+  font-size: 140%;
+  span{
+    margin-left: 5px;
+  }
+}
+
+.thumb{
+  margin: 5px 0;
+}
+.thumbinner{
+  .base-shadeBox;
+  margin: 0 auto;
+}
+.thumbcaption{
+  text-align: center;
+  line-height: 2;
+  font-size: 12px;
+  
+  &:before{
+    display: block;
+    content: ' ';
+    width: auto;
+    margin: 0 5px;
+    height: 2px;
+    background: #ccc;
+  }
+}
+
+// 来自萌娘百科的样式
+.wikitable {
+  background-color: #f8f9fa;
+  color: #222;
+  margin: 1em 0;
+  border: 1px solid #a2a9b1;
+  border-collapse: collapse;
+}
+table.wikitable>tr>th, table.wikitable>*>tr>th {
+  background-color: #eaecf0;
+  text-align: center;
+}
+table.wikitable>tr>th, table.wikitable>tr>td, table.wikitable>*>tr>th, table.wikitable>*>tr>td {
+  border: 1px solid #a2a9b1;
+  padding: .2em .4em;
+}
+// end
+
+.wikitable{
+  width: max-content;
+}
+
+ul.gallery{
+  overflow: hidden;
+  padding: 0;
+  text-align: center;
+  font-size: 0;
+
+  li{
+    list-style: none;
+    display: inline-block;
+    vertical-align: top;
+    width: 90px;
+    margin: 5px;
+    font-size: 14px;
+
+    img{
+      width: 100%;
+      box-shadow: 0 0 3px #666;
+    }
+
+    p{
+      margin: 0;
+      text-align: center;
+    }
+  }
+}
+
+.mw-collapsible{
+  margin: 5px 0 !important;
+
+  &:not(.mw-uncollapsed) > tbody > tr:not(:first-child){
+    opacity: 0;
+    display: none;
+  }
+
+  .collapseBtn{
+    float:right; 
+    cursor:pointer; 
+    color:#0b0080;
+  }
+}
+
+.navbox{
+  border: 1px solid #aaa;
+  padding: 1px;
+  text-align: center;
+  width: 100%;
+  font-size: 90%;
+
+  // image模板适应
+  li{
+    list-style: none;
+  }
+
+  .mw-collapsible{
+    margin: 0 !important;
+  }
+
+  .navbar, .navbox-list{
+    display: none;
+  }
+
+  tr.group-spread{
+    width: calc(100% - 15px);  // 减去15边框
+    display: table;
+    border-left-width: 15px;
+    border-left-style: solid;
+    box-sizing: border-box;
+
+    > .navbox-list{
+      display: table-row;
+    }
+  }
+
+  .navbox-group > div{
+    display: inline-block;
+  }
+
+  .navbox-group:first-child{
+    text-align: center;
+    white-space: nowrap;
+    
+    .navbox-collapse-btn{
+      float: none;
+    }
+  }
+
+  // 取消查论编块的占位
+  div[style="float:left; width:6em;text-align:left;"]{
+    display: none;
+  }
+
+  // 嵌套大家族模板显示
+  > tbody > tr > td > table > tbody > tr:not([style="display: inline-table; margin: 5px;"]) > td{
+    display: block;
+  }
+
+  div[style="text-align:center; line-height:10pt"]{
+    line-height: inherit !important;
+  }
+
+  .mw-collapsible.mw-collapsed tr{
+    opacity: 1;
+  }
+
+  .contentBlock{
+    margin: 5px;
+    display: inline-table;
+    border-left: none;
+    box-sizing: initial;
+
+    > .navbox-list{
+      display: none;
+    }
+  }
+
+  .group-spread .navbox-collapse-btn{
+    float: right !important;
+  }
+
+  // 历年动画导航navbox头部的年份切换按钮位置修正
+  div[style="word-spacing: 100px;"]{
+    word-spacing: initial !important;
+
+    > small{
+      a:nth-child(2){
+        margin: 0 20px;
+      }
+    }
+  }
+
+  .navbox-title::before{
+    content: '';
+    display: 'inline-block';
+    width: 3em;
+  }
+}
+
+.navbox-title, table.navbox th {
+  background-color: #a5e4a5;
+  line-height: 1.5;
+}
+
+.navbox-abovebelow, .navbox-group, .navbox-subgroup .navbox-title {
+  background-color: #c0ecc0;
+}
+
+.navbox-even {
+  background-color: #f5fcf5;
+}
+
+// 隐藏编辑按钮两边的中括号
+.mw-editsection-bracket{
+  display: none;
+}
+
+.page-editBtn{
+  width: 1.2em;
+  vertical-align: text-bottom;
+}
+
+h2{
+  border-left: 5px @theme solid;
+  padding-left: 5px;
+}
+
+// Special命名空间无跳转链接样式
+a[href^="/Special:"]{
+  color: black;
+}
+
+.heimu{
+  background-color: black;
+  color: black;
+  transition: all 0.3s;
+
+  a{
+    color: black;
+    transition: inherit;
+  }
+}
+
+.infoBox{
+  width: 100% !important;
+  box-sizing: border-box;
+  box-shadow: 0 0 5px #ccc;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 10px 0;
+  overflow: hidden;
+
+  .infoBoxIcon{
+    float: left;
+
+    img{
+      width: 70px !important;
+      height: auto !important;
+    }
+  }
+}
+
+.navbox-collapse-btn{
+  float:right;
+  font-size:16px;
+  padding:0 5px; 
+  font-weight:bold;
+  transform: scale(1.3, 1.3);
+}
+
+.bilibili-video-container{
+  border: none !important;
+
+  .bilibili-title{
+    display: none;
+  }
+  .bilibili-video-title{
+    padding: 5px;
+    font-size: 18px;
+    text-align: center;
+    color: white;
+    background-color: #F45A8D !important;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    user-select: none;
+  }
+  .bilibili-player{
+    display: none;
+  }
+}
+
+.acg-works-information{
+  width: 100%;
+}
+
+.mw-parser-output .music163{
+  max-width: unset;
+}
