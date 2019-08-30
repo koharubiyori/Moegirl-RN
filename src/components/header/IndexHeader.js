@@ -31,7 +31,7 @@ export default class IndexHeader extends React.Component{
             <Icon name="menu" {...this.iconStyle} />
           </Button>
           
-          <Text style={styles.title}>萌娘百科</Text>
+          <Text style={styles.title}>{this.props.children}</Text>
         </View>
 
         <View>

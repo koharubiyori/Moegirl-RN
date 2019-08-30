@@ -8,7 +8,9 @@ import Header from '@/components/header/ArticleHeader'
 import ArticleView from '@/components/webView/ArticleView'
 import StatusBar from '@/components/StatusBar'
 
-const Navigation = React.createContext()
+const NavigationContext = React.createContext()
+
+export { NavigationContext }
 
 export default class Article extends React.Component{
   static propTypes = {
@@ -38,7 +40,7 @@ export default class Article extends React.Component{
           if(postMessageFlag){ return }
           postMessageFlag = true
           ReactNativeWebView.postMessage(JSON.stringify({ type: 'changeHeaderVisible', data: status }))
-          setTimeout(() => postMessageFlag = false, 100)
+          setTimeout(() => postMessageFlag = false, 50)
         }
 
         if(window.scrollY < 100){
@@ -59,7 +61,7 @@ export default class Article extends React.Component{
 
   render (){
     return (
-      <Navigation value={this.props.navigation}>
+      <NavigationContext.Provider value={this.props.navigation}>
         <View style={{ flex: 1 }}>
           <StatusBar />
           <Header style={styles.header} navigation={this.props.navigation} title={this.state.pageName} ref="header" />
@@ -72,7 +74,7 @@ export default class Article extends React.Component{
             onMessages={{ changeHeaderVisible: this.onChangeHeaderVisible }}
           />
         </View>
-      </Navigation>
+      </NavigationContext.Provider>
     )
   }
 }

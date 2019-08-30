@@ -1,6 +1,6 @@
 import React from 'react'
-import { View } from 'react-native'
 import PropTypes from 'prop-types'
+import { View } from 'react-native'
 import Home from './Home'
 import Finds from './finds/Index'
 import History from './History'
@@ -8,17 +8,40 @@ import BottomNavigation from './BottomNavigation'
 
 const NavigationContext = React.createContext()
 
-Index.propTypes = {
-  navigation: PropTypes.object
-}
+export { NavigationContext }
 
-export default function Index(props){
-  return (
-    <NavigationContext.Provider value={props.navigation}>
-      <View style={{ flex: 1 }}>
-        <Home style={{ flex: 1 }} />
-        <BottomNavigation />
-      </View>
-    </NavigationContext.Provider>
-  )
+export default class Index extends React.Component{
+  static propTypes = {
+    navigation: PropTypes.object
+  }
+  
+  constructor (props){
+    super(props)
+
+    this.state = {
+      active: 'home',
+    }
+  }
+
+  activeViewStyle (key){
+    return {
+      flex: this.state.active === key ? 1 : 0,
+      height: this.state.active === key ? null : 0,
+      overflow: this.state.active === key ? null : 'hidden'
+    }
+  }
+
+  render (){
+
+    return (
+      <NavigationContext.Provider value={this.props.navigation}>
+        <View style={{ flex: 1 }}>
+          <Home style={this.activeViewStyle('home')} />
+          <Finds style={this.activeViewStyle('finds')} />
+          <History style={this.activeViewStyle('history')} />
+          <BottomNavigation active={this.state.active} onPress={key => this.setState({ active: key })} />
+        </View>
+      </NavigationContext.Provider>
+    )
+  }
 }
