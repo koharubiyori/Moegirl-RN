@@ -8,10 +8,12 @@ import { Button } from 'react-native-material-ui'
 import Spinner from '@/components/Spinner'
 import { getArticle } from '@/api/article'
 import mainFuncForInjectScript from './mainFuncForInjectScript'
+// import store from '@/redux/webView'
 
 export default class ArticleView extends React.Component{
   static propTypes = {
     style: PropTypes.object,
+    navigation: PropTypes.object,
     
     link: PropTypes.string.isRequired,
     injectStyle: PropTypes.arrayOf(PropTypes.string),
@@ -40,6 +42,21 @@ export default class ArticleView extends React.Component{
 
   loadContent = () =>{
     this.setState({ status: 2 })
+    
+    // store.dispatch((dispatch, getState) =>{
+    //   return new Promise((resolve, reject) => {
+    //     const state = getState(),
+    //     {link} = this.props
+
+    //     var cache = state.pagesCache[link]
+    //     if(cache){ return resolve(cache) }
+
+    //     getArticle(link).then(data =>{
+    //       dispatch({ type: 'add', name: link, data })
+    //       resolve(data)
+    //     }).catch(reject)
+    //   })
+    // })
     getArticle(this.props.link).then(data =>{
       var html = data.parse.text['*']
       

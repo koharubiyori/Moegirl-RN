@@ -4,10 +4,11 @@ import {
   View, Text,
   StyleSheet
 } from 'react-native'
+import StatusBar from '@/components/StatusBar'
 
-export default class History extends React.Component{
+export default class Finds extends React.Component{
   static propTypes = {
-    
+    style: PropTypes.object
   }
 
   constructor (props){
@@ -20,8 +21,11 @@ export default class History extends React.Component{
 
   render (){
     return (
-      <View>
-        <Text>history</Text>
+      <View style={{ ...this.props.style }}>
+        <StatusBar />
+        <View style={{ height: 30, backgroundColor: 'red' }}>
+          <Text>History</Text>
+        </View>
       </View>
     )
   }

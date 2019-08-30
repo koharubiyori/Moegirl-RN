@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {
   View, Text,
   StyleSheet
@@ -6,11 +7,13 @@ import {
 import { BottomNavigation } from 'react-native-material-ui'
 
 export default class MyBottomNavigation extends React.Component{
+  static propTypes = {
+    active: PropTypes.string,
+    onPress: PropTypes.func
+  }
+
   constructor (props){
     super(props)
-    this.state = {
-      active: 'index'
-    }
 
     this.itemStyle = {
       container: {},
@@ -18,28 +21,32 @@ export default class MyBottomNavigation extends React.Component{
       disabled: {}
     }
   }
+
+  selectTab = key =>{
+    this.props.onPress(key)
+    this.setState({ active: key })
+  }
   
   render (){
     return (
-      <BottomNavigation active={this.state.active}>
+      <BottomNavigation active={this.props.active}>
         <BottomNavigation.Action
-          key="index"
+          key="home"
           icon="book"
           label="首页"
-          onPress={() => this.setState({ active: 'index' })}
-          style={this.itemStyle}
+          onPress={() => this.selectTab('home')}
         />        
         <BottomNavigation.Action
           key="finds"
           icon="stars"
           label="发现"
-          onPress={() => this.setState({ active: 'finds' })}
+          onPress={() => this.selectTab('finds')}
         />        
         <BottomNavigation.Action
           key="history"
           icon="history"
           label="历史"
-          onPress={() => this.setState({ active: 'history' })}
+          onPress={() => this.selectTab('history')}
         />        
       </BottomNavigation>
     )
