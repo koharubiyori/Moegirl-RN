@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '@/components/Button'
-import iconBtnStyle from './styles/iconBtnStyle'
+import iconBtnStyle from '@/styles/header/iconBtnStyle'
 
 export default class IndexHeader extends React.Component{
   constructor (props){
