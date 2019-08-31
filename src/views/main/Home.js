@@ -4,10 +4,10 @@ import {
   StyleSheet
 } from 'react-native'
 import PropTypes from 'prop-types'
-import Header from '@/components/header/IndexHeader'
 import ArticleView from '@/components/webView/ArticleView'
 import StatusBar from '@/components/StatusBar'
 import { NavigationContext } from '@/views/main/Index'
+import Header from './components/Header'
 
 Home.propTypes = {
   style: PropTypes.object

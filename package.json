@@ -21,7 +21,7 @@
     "react-navigation": "^2.18.3",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
-    "redux-chunk": "^1.0.11"
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

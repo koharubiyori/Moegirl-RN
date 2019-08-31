@@ -6,7 +6,9 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '@/components/Button'
-import iconBtnStyle from './styles/iconBtnStyle'
+import iconBtnStyle from '@/styles/header/iconBtnStyle'
+
+export const height = 55
 
 export default class ArticleHeader extends React.Component{
   static propTypes = {
@@ -35,7 +37,7 @@ export default class ArticleHeader extends React.Component{
     this.setState({ visible: false })
 
     Animated.timing(this.state.transitionTop, {
-      toValue: NativeModules.StatusBarManager.HEIGHT - 55,
+      toValue: NativeModules.StatusBarManager.HEIGHT - height,
       duration: 200
     }).start()
   }
@@ -83,12 +85,13 @@ const styles = StyleSheet.create({
   body: {
     ...$theme.mainBg,
     paddingHorizontal: 15,
-    height: 55,
+    height,
     elevation: 3,
 
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    zIndex: 1
   },
   
   title: {

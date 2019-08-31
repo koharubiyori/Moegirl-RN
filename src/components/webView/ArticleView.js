@@ -6,21 +6,25 @@ import PropTypes from 'prop-types'
 import { WebView } from 'react-native-webview'
 import { Button } from 'react-native-material-ui'
 import Spinner from '@/components/Spinner'
-import { getArticle } from '@/api/article'
 import mainFuncForInjectScript from './mainFuncForInjectScript'
-// import store from '@/redux/webView'
+import store from '@/redux/webView'
 
 export default class ArticleView extends React.Component{
   static propTypes = {
     style: PropTypes.object,
     navigation: PropTypes.object,
     
-    link: PropTypes.string.isRequired,
+    link: PropTypes.string,
     injectStyle: PropTypes.arrayOf(PropTypes.string),
     injectCss: PropTypes.string,
     injectScript: PropTypes.arrayOf(PropTypes.string),
     injectJs: PropTypes.string,
-    onMessages: PropTypes.objectOf(PropTypes.func)
+    onMessages: PropTypes.objectOf(PropTypes.func),
+    onLoaded: PropTypes.func
+  }
+
+  static defaultProps = {
+    onLoaded: new Function
   }
 
   constructor (props){
@@ -43,21 +47,8 @@ export default class ArticleView extends React.Component{
   loadContent = () =>{
     this.setState({ status: 2 })
     
-    // store.dispatch((dispatch, getState) =>{
-    //   return new Promise((resolve, reject) => {
-    //     const state = getState(),
-    //     {link} = this.props
-
-    //     var cache = state.pagesCache[link]
-    //     if(cache){ return resolve(cache) }
-
-    //     getArticle(link).then(data =>{
-    //       dispatch({ type: 'add', name: link, data })
-    //       resolve(data)
-    //     }).catch(reject)
-    //   })
-    // })
-    getArticle(this.props.link).then(data =>{
+    store._async.getContent(this.props.link).then(data =>{
+      this.props.onLoaded(data)
       var html = data.parse.text['*']
       
       // 载入资源（位于 /android/main/assets ）
