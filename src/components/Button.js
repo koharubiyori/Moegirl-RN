@@ -8,18 +8,26 @@ import {
 Button.propTypes = {
   style: PropTypes.object,
   children: PropTypes.element,
+  rippleColor: PropTypes.string,
+  noLimit: PropTypes.bool,
 
   onPress: PropTypes.func
 }
 
-export default function Button(props){
+export default function Button({
+  style,
+  onPress,
+  rippleColor = 'white',
+  noLimit = true,
+  children
+}){
   return (
-    <View style={props.style}>
+    <View style={style}>
       <TouchableNativeFeedback 
-        onPress={props.onPress}
-        background={TouchableNativeFeedback.Ripple('white', true)}
+        onPress={onPress}
+        background={TouchableNativeFeedback.Ripple(rippleColor, noLimit)}
       >
-        <View style={{ padding: 5 }}>{props.children}</View>
+        <View style={{ padding: 5 }}>{children}</View>
       </TouchableNativeFeedback>
     </View>
   )

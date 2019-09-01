@@ -19,7 +19,8 @@ export default class ArticleView extends React.Component{
     injectCss: PropTypes.string,
     injectScript: PropTypes.arrayOf(PropTypes.string),
     injectJs: PropTypes.string,
-    onMessages: PropTypes.objectOf(PropTypes.func),
+
+    onMessages: PropTypes.objectOf(PropTypes.func),   // 接收webView的postMessage
     onLoaded: PropTypes.func
   }
 
@@ -84,7 +85,11 @@ export default class ArticleView extends React.Component{
     })
   }
 
-  onMessage = e =>{
+  injectScript = script =>{
+    this.refs.webView.injectJavaScript(script)
+  }
+
+  receiveMessage = e =>{
     const {type, data} = JSON.parse(e.nativeEvent.data)
     
     if(type === 'error'){
@@ -124,8 +129,8 @@ export default class ArticleView extends React.Component{
             source={{ html: this.state.html, baseUrl: this.baseUrl }}
             originWhitelist={['*']}
             style={{ width: Dimensions.get('window').width }}
-            onMessage={this.onMessage}
-            onLoadEnd={() => this.refs.webView.injectJavaScript(mainFuncForInjectScript(this.props.injectScript))}
+            onMessage={this.receiveMessage}
+            onLoadEnd={() => this.injectScript(mainFuncForInjectScript(this.props.injectScript))}
             ref="webView"
            />
         }[this.state.status]()}
