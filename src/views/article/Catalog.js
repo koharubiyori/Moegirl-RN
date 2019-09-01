@@ -4,7 +4,7 @@ import {
   View, Text, Modal, Animated, ScrollView, TouchableWithoutFeedback,
   StyleSheet, 
 } from 'react-native'
-import Button from '@/components/Button'
+import Button from '~/components/Button'
 import { height } from './Header'
 
 export const width = 200

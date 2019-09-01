@@ -5,9 +5,9 @@ import {
 import PropTypes from 'prop-types'
 import { WebView } from 'react-native-webview'
 import { Button } from 'react-native-material-ui'
-import Spinner from '@/components/Spinner'
+import Spinner from '~/components/Spinner'
 import mainFuncForInjectScript from './mainFuncForInjectScript'
-import store from '@/redux/webView'
+import store from '~/redux/webView'
 
 export default class ArticleView extends React.Component{
   static propTypes = {

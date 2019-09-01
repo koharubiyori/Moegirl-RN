@@ -4,8 +4,8 @@ import {
   StyleSheet, NativeModules, PanResponder, Dimensions
 } from 'react-native'
 import PropTypes from 'prop-types'
-import ArticleView from '@/components/webView/ArticleView'
-import StatusBar from '@/components/StatusBar'
+import ArticleView from '~/components/webView/ArticleView'
+import StatusBar from '~/components/StatusBar'
 import Header from './Header'
 import { default as Catalog, width as catalogWidth } from './Catalog'
 

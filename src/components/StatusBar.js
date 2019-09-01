@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { StatusBar, View, NativeModules } from 'react-native'
 
 
-MyStatusBar.PropTypes = {
+MyStatusBar.propTypes = {
   color: PropTypes.string
 }
 

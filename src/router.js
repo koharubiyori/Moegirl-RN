@@ -3,9 +3,10 @@ import { createStackNavigator } from "react-navigation"
 import main from './views/main/Index'
 import article from './views/article/Index'
 import search from './views/search/Index'
+import searchResult from './views/searchResult/Index'
 
 const AppNavigator = createStackNavigator(
-  { main, article, search },
+  { main, article, search, searchResult },
 
   { 
     initialRouteName: 'main',

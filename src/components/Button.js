@@ -16,10 +16,11 @@ Button.propTypes = {
 
 export default function Button({
   style,
+  contentContainerStyle = { padding: 5 },
   onPress,
   rippleColor = 'white',
   noLimit = true,
-  children
+  children,
 }){
   return (
     <View style={style}>
@@ -27,7 +28,7 @@ export default function Button({
         onPress={onPress}
         background={TouchableNativeFeedback.Ripple(rippleColor, noLimit)}
       >
-        <View style={{ padding: 5 }}>{children}</View>
+        <View style={contentContainerStyle}>{children}</View>
       </TouchableNativeFeedback>
     </View>
   )

@@ -4,8 +4,8 @@ import {
   StyleSheet
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import Button from '@/components/Button'
-import iconBtnStyle from '@/styles/header/iconBtnStyle'
+import Button from '~/components/Button'
+import iconBtnStyle from '~/styles/header/iconBtnStyle'
 import { NavigationContext } from '../Index'
 
 export default class IndexHeader extends React.Component{
