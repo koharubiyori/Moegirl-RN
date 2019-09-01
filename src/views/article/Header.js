@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, Animated,
-  StyleSheet, NativeModules
+  StyleSheet, NativeModules, Dimensions
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '@/components/Button'
@@ -20,7 +20,7 @@ export default class ArticleHeader extends React.Component{
     super(props)
     this.state = {
       visible: true,
-      transitionTop: new Animated.Value(NativeModules.StatusBarManager.HEIGHT)
+      transitionTop: new Animated.Value(0)
     }
     
     this.iconStyle = iconBtnStyle
@@ -37,7 +37,7 @@ export default class ArticleHeader extends React.Component{
     this.setState({ visible: false })
 
     Animated.timing(this.state.transitionTop, {
-      toValue: NativeModules.StatusBarManager.HEIGHT - height,
+      toValue: -height,
       duration: 200
     }).start()
   }
@@ -47,7 +47,7 @@ export default class ArticleHeader extends React.Component{
     this.setState({ visible: true })
 
     Animated.timing(this.state.transitionTop, {
-      toValue: NativeModules.StatusBarManager.HEIGHT,
+      toValue: 0,
       duration: 200
     }).start()
   }
@@ -60,7 +60,9 @@ export default class ArticleHeader extends React.Component{
             <Icon name="keyboard-backspace" {...this.iconStyle} />
           </Button>
           
-          <Text style={styles.title}>{this.props.title.replace(/^([\s\S]{8})[\s\S]*$/, '$1...')}</Text>
+          <Text style={styles.title} ellipsizeMode="tail" numberOfLines={1}>
+            {this.props.title.replace(/_/g, ' ')}
+          </Text>
         </View>
 
         <View style={styles.rightBtnContainer}>
@@ -98,7 +100,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     marginLeft: 10,
-    marginTop: 5
+    marginTop: 5,
+    flexShrink: 1,
+    maxWidth: Dimensions.get('window').width / 2
   },
 
   rightBtnContainer: {

@@ -6,6 +6,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '@/components/Button'
 import iconBtnStyle from '@/styles/header/iconBtnStyle'
+import { NavigationContext } from '../Index'
 
 export default class IndexHeader extends React.Component{
   constructor (props){
@@ -21,25 +22,25 @@ export default class IndexHeader extends React.Component{
     console.log(true)
   }
 
-  toSearchView = () =>{}
-
   render (){
     return (
-      <View style={styles.body}>
-        <View style={{ flexDirection: 'row' }}>
-          <Button onPress={this.openDrawer}>
-            <Icon name="menu" {...this.iconStyle} />
-          </Button>
-          
-          <Text style={styles.title}>{this.props.children}</Text>
-        </View>
+      <NavigationContext.Consumer>{navigation =>
+        <View style={styles.body}>
+          <View style={{ flexDirection: 'row' }}>
+            <Button onPress={this.openDrawer}>
+              <Icon name="menu" {...this.iconStyle} />
+            </Button>
+            
+            <Text style={styles.title}>{this.props.children}</Text>
+          </View>
 
-        <View>
-          <Button onPress={this.toSearchView}>
-            <Icon name="search" {...this.iconStyle} />
-          </Button>
+          <View>
+            <Button onPress={() => navigation.push('search')}>
+              <Icon name="search" {...this.iconStyle} />
+            </Button>
+          </View>
         </View>
-      </View>
+      }</NavigationContext.Consumer>
     )
   }
 }

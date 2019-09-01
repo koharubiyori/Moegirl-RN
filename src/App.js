@@ -8,7 +8,7 @@ const theme = {
   },
 }
 
-export default function App(props){
+export default function App(){
   return (
     <ThemeContext.Provider value={getTheme(theme)}>
       <AppNavigator />

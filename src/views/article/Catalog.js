@@ -4,6 +4,7 @@ import {
   View, Text, Modal, Animated, ScrollView, TouchableWithoutFeedback,
   StyleSheet, 
 } from 'react-native'
+import Button from '@/components/Button'
 import { height } from './Header'
 
 export const width = 200
@@ -14,7 +15,8 @@ export default class Catalog extends React.Component{
     transitionMaskOpacity: PropTypes.instanceOf(Animated.Value).isRequired,
     visible: PropTypes.bool.isRequired,
     items: PropTypes.array.isRequired,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
+    onTapTitle: PropTypes.func
   }
 
   constructor (props){
@@ -22,30 +24,40 @@ export default class Catalog extends React.Component{
     this.state = {
 
     }
-
-    console.log(props.transitionRight)
   }
 
-  onTapMaskCloseSelf = e =>{
-    console.log(new e)
-    // console.log(e.currentTarget())
-  }
-
-  maskBgColor (){
-    return `rgba(0, 0, 0, ${0.3 * this.props.transitionMaskOpacity._value / 100})`
+  tapMaskToCloseSelf = e =>{
+    this.refs.mask._component._nativeTag === e.target && this.props.onClose()
   }
 
   render (){
     return (
       <Modal transparent visible={this.props.visible} onRequestClose={this.props.onClose}>
-        <TouchableWithoutFeedback onPress={this.onTapMaskCloseSelf}>
-          <Animated.View style={{ ...styles.container, backgroundColor: this.maskBgColor() }} ref="mask">
+        <TouchableWithoutFeedback onPress={this.tapMaskToCloseSelf}>
+          <Animated.View style={{ ...styles.container, opacity: this.props.transitionMaskOpacity }} ref="mask">
             <Animated.View style={{ ...styles.body, right: this.props.transitionRight }}>
               <View style={styles.header}>
                 <Text style={styles.headerText}>目录</Text>
               </View>
 
-              <ScrollView contentContainerStyle={styles.list}>{this.props.items}</ScrollView>
+              <ScrollView contentContainerStyle={styles.titles}>{
+                this.props.items.filter(item => parseInt(item.level) < 5 && item.level !== '1').map(item => 
+                  <Button onPress={() => this.props.onTapTitle(item.anchor)} 
+                    rippleColor="#ccc"
+                    noLimit={false}
+                    key={item.index}
+                  >
+                    <Text 
+                      ellipsizeMode="tail" 
+                      numberOfLines={1}
+                      style={{ 
+                        ...(parseInt(item.level) < 3 ? styles.title : styles.subTitle),
+                        paddingLeft: (parseInt(item.level) - 2) * 5
+                      }}
+                    >{(parseInt(item.level) > 2 ? '- ' : '') + item.line}</Text>
+                  </Button>
+                )
+              }</ScrollView>
             </Animated.View>
           </Animated.View>
         </TouchableWithoutFeedback>
@@ -82,7 +94,17 @@ const styles = StyleSheet.create({
     color: 'white'
   },
 
-  list: {
+  titles: {
     padding: 10
+  },
+
+  title: {
+    fontSize: 16,
+    color: $colors.main
+  },
+
+  subTitle: {
+    fontSize: 14,
+    color: '#bbb'
   }
 })
