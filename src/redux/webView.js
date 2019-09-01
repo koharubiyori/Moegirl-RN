@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
-import { getArticle } from '@/api/article'
+import { getArticle } from '~/api/article'
 
 function reducer(state = {
   pagesCache: {}

@@ -4,7 +4,7 @@ import {
   View, Text,
   StyleSheet
 } from 'react-native'
-import StatusBar from '@/components/StatusBar'
+import StatusBar from '~/components/StatusBar'
 
 export default class Finds extends React.Component{
   static propTypes = {

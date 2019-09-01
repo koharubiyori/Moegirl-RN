@@ -10,12 +10,14 @@
     "android": "react-native run-android"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.6.1",
     "axios": "^0.19.0",
     "qs": "^6.8.0",
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-material-ui": "^1.30.1",
     "react-native-progress": "^3.6.0",
+    "react-native-tiny-toast": "^1.0.3",
     "react-native-vector-icons": "^6.6.0",
     "react-native-webview": "^6.9.0",
     "react-navigation": "^2.18.3",

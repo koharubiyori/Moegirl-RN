@@ -5,30 +5,34 @@ import {
   StyleSheet
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import Button from '@/components/Button'
+import Button from '~/components/Button'
 import { NavigationContext } from './Index'
 
 SearchHeader.propTypes = {
   value: PropTypes.string.isRequired,
-  onChangeText: PropTypes.func
+  onChangeText: PropTypes.func,
+  onSubmit: PropTypes.func
 }
 
 export default function SearchHeader({
   value,
-  onChangeText
+  onChangeText,
+  onSubmit
 }){
   return (
     <NavigationContext.Consumer>{navigation =>
       <View style={styles.body}>
-        <Button onPress={navigation.goBack} >
+        <Button onPress={() => navigation.goBack()} rippleColor="#ccc">
           <Icon name="keyboard-backspace" size={25} color="#666" />
         </Button>
 
         <TextInput autoFocus value={value}
           autoCapitalize="none"
+          returnKeyType="search"
           autoCorrect={false}
           placeholder="搜索萌娘百科..."
           onChangeText={onChangeText}
+          onSubmitEditing={onSubmit}
           style={styles.input}
         ></TextInput>
       </View>
@@ -47,8 +51,8 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    marginLeft: 5,
+    marginLeft: 10,
     fontSize: 16,
-
+    flex: 1
   }
 })

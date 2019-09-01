@@ -40,6 +40,8 @@ target 'moegirl_RN' do
 
 
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   target 'moegirl_RNTests' do
     inherit! :search_paths
     # Pods for testing
