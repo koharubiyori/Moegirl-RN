@@ -1,24 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { 
-  View, Text,
+  View, Text, ScrollView,
   StyleSheet
 } from 'react-native'
 import Button from '~/components/Button'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 RecentSearch.propTypes = {
+  onTapTitle: PropTypes.func,
   onTapDelete: PropTypes.func,
   titles: PropTypes.arrayOf(PropTypes.string)  
 }
 
 export default function RecentSearch({
+  onTapTitle,
   onTapDelete,
   titles
 }){
   return (
     <View style={{ flex: 1 }}>
-      {titles ? 
+      {titles && titles.length ? 
         <>
           <View style={styles.header}>
             <Text style={{ color: '#666' }}>最近搜索</Text>
@@ -28,9 +30,14 @@ export default function RecentSearch({
           </View>
 
           <ScrollView>{titles.map(title => 
-            <View style={styles.titleContainer}>
-              <Text>{title}</Text>
-            </View>  
+            <Button contentContainerStyle={{}} rippleColor="#ccc" noLimit={false} 
+              onPress={() => onTapTitle(title)}
+              key={title}
+            >
+              <View style={styles.title}>
+                <Text style={{ color: '#666' }}>{title}</Text>
+              </View>
+            </Button>
           )}</ScrollView>
         </>
       :
@@ -60,5 +67,13 @@ const styles = StyleSheet.create({
   noDataHint: {
     color: '#ccc',
     fontSize: 16
+  },
+
+  title: {
+    height: 45,
+    justifyContent: 'center',
+    paddingLeft: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   }
 })

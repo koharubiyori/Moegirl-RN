@@ -8,7 +8,7 @@ import Button from '~/components/Button'
 
 SearchResultItem.propTypes = {
   data: PropTypes.object,
-  searchWord: PropTypes.searchWord,
+  searchWord: PropTypes.string,
   onPress: PropTypes.func
 }
 
@@ -41,14 +41,17 @@ export default function SearchResultItem({
   }
 
   return (
-    <Button contentContainerStyle={styles.container} noLimit={false} rippleColor="#ccc"
+    <Button contentContainerStyle={styles.container} noLimit={false} rippleColor={$colors.light}
       onPress={() =>{
         console.log(data.title)
         onPress(data.title)
       }}
     >
       <View style={styles.title}>
-        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{data.title}</Text>
+        <Text style={{ fontWeight: 'bold', fontSize: 16, flexShrink: 1 }}
+          ellipsizeMode="tail"
+          numberOfLines={1}
+        >{data.title}</Text>
         {subInfo()}
       </View>
 
