@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, FlatList,
+  View, Text, FlatList, ActivityIndicator,
   StyleSheet
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -55,7 +55,7 @@ export default class SearchResult extends React.Component{
         })
       }).catch(() =>{
         this.setState({ status: 0 })
-        toast.show('加载失败，请重试')
+        toast.show('加载失败，正在重试')
       })
   }
 
@@ -64,25 +64,35 @@ export default class SearchResult extends React.Component{
       <View style={{ flex: 1 }}>
         <StatusBar blackText color="white" />
         <View style={styles.body}>
-          <Button onPress={() => this.props.navigation.goBack()} rippleColor="#ccc">
+          <Button onPress={() => this.props.navigation.goBack()} rippleColor={$colors.light}>
             <Icon name="keyboard-backspace" size={25} color="#666" />
           </Button>
 
           <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>搜索：{this.searchWord}</Text>
         </View>
 
-        {this.state.total ?
+        {/* {this.state.total ?
           <View style={styles.totalHint}>
             <Text style={{ color: '#666' }}>共搜索到{this.state.total}结果</Text>
           </View>
-        : null}
+        : null} */}
 
         <FlatList data={this.state.list} 
           onEndReachedThreshold={0.5}
           onEndReached={this.loadList}
           style={styles.list}
-          renderItem={item => <Item data={item.item} />
-        } />
+          renderItem={item => <Item 
+            data={item.item}
+            searchWord={this.searchWord} 
+            onPress={link => this.props.navigation.push('article', { link })}
+          />}
+          ListFooterComponent={({
+            2: () => <ActivityIndicator color={$colors.main} size="large" style={{ marginVertical: 10 }} />
+          }[this.state.status] || new Function)()}
+          textBreakStrategy="balanced"
+        >
+          
+        </FlatList>
         {/* 添加加载提示思路：加载时在数据数组末尾添加一个加载组件的数据，通过在renderItem中判断，进行渲染
         加载完成后移除。 */}
       </View>
@@ -111,7 +121,6 @@ const styles = StyleSheet.create({
   },
 
   list: {
-    flex: 1,
-    paddingHorizontal: 10
+    flex: 1
   }
 })
