@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, ScrollView,
+  View, Text, 
   StyleSheet
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
@@ -26,7 +26,7 @@ export default class Search extends React.Component{
     this.state = {
       searchWord: '',
       searchHint: null,
-      recentSearch: null,
+      searchHistory: []
     }
 
     this.setTimeoutKey = 0
@@ -44,14 +44,22 @@ export default class Search extends React.Component{
     })), 1000)
   }
 
-  toSearchResultView = () =>{
-    const text = this.state.searchWord.trim()
+  toSearchResultView = (text = this.state.searchWord.trim()) =>{
     if(!text){
       toast.show('搜索关键词不能为空', 'center')
       return
     }
 
+    var searchHistory = this.state.searchHistory.filter(item => item !== text)
+    searchHistory.unshift(text)
+    this.setState({ searchHistory })
+    storage.set('searchHistory', searchHistory)
+
     this.props.navigation.push('searchResult', { searchWord: text })
+  }
+
+  clearSearchHistory = () =>{
+    // dialog  清除全部历史记录
   }
 
   render (){
@@ -64,9 +72,13 @@ export default class Search extends React.Component{
             onSubmit={this.toSearchResultView}
           />
           {this.state.searchWord ? 
-            <SearchHint titles={this.state.searchHint} />
+            <SearchHint titles={this.state.searchHint} onTapTitle={title => this.toSearchResultView(title)} />
           : 
-            <RecentSearch />
+            <RecentSearch 
+              titles={this.state.searchHistory}
+              onTapDelete={this.clearSearchHistory}
+              onTapTitle={title => this.toSearchResultView(title)}
+            />
           }
         </View>
       </NavigationContext.Provider>

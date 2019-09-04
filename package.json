@@ -7,6 +7,7 @@
     "test": "jest",
     "lint": "eslint .",
     "adbrestart": "adb kill-server && adb start-server",
+    "tcp8081": "adb reverse tcp:8081 tcp:8081",
     "android": "react-native run-android"
   },
   "dependencies": {

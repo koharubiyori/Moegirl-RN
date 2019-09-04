@@ -7,7 +7,6 @@ import {
 
 Button.propTypes = {
   style: PropTypes.object,
-  children: PropTypes.element,
   rippleColor: PropTypes.string,
   noLimit: PropTypes.bool,
 

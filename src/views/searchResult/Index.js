@@ -25,7 +25,6 @@ export default class SearchResult extends React.Component{
     }
 
     this.searchWord = this.props.navigation.getParam('searchWord')
-    console.log(this.searchWord)
   }
 
   componentDidMount (){
@@ -33,7 +32,7 @@ export default class SearchResult extends React.Component{
   }
   
   loadList = () =>{
-    console.log('load')
+    if(this.state.status === 4){ return }
     this.setState({ status: 2 })
     search(this.searchWord, this.state.list.length)
       .then(({query}) =>{
@@ -82,12 +81,14 @@ export default class SearchResult extends React.Component{
           onEndReached={this.loadList}
           style={styles.list}
           renderItem={item => <Item 
+            key={item.item.pageid}
             data={item.item}
             searchWord={this.searchWord} 
             onPress={link => this.props.navigation.push('article', { link })}
           />}
           ListFooterComponent={({
-            2: () => <ActivityIndicator color={$colors.main} size="large" style={{ marginVertical: 10 }} />
+            2: () => <ActivityIndicator color={$colors.main} size="large" style={{ marginVertical: 10 }} />,
+            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20 }}>已经没有啦</Text>
           }[this.state.status] || new Function)()}
           textBreakStrategy="balanced"
         >
