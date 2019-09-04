@@ -161,7 +161,7 @@ export default class Article extends React.Component{
     return (
       <NavigationContext.Provider value={this.props.navigation}>
         <View style={{ flex: 1 }} {...this.moveEventForCatalog.panHandlers}>
-          <StatusBar hidden />
+          <StatusBar color={$colors.dark} />
           <Header style={styles.header} navigation={this.props.navigation} title={this.state.pageName} ref="header" />
           <ArticleView style={{ flex: 1 }} navigation={this.props.navigation}
             link={this.state.link} 

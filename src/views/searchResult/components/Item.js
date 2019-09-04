@@ -4,50 +4,90 @@ import {
   View, Text,
   StyleSheet
 } from 'react-native'
+import Button from '~/components/Button'
 
 SearchResultItem.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.object,
+  searchWord: PropTypes.searchWord,
+  onPress: PropTypes.func
 }
 
 export default function SearchResultItem({
-  data
+  data, searchWord, onPress
 }){
   function contentBuilder(content){
-    return content.split('<span class="searchmatch">').map(section =>{
+    return content.split('<span class="searchmatch">').map((section, index) =>{
+      if(index === 0) return <Text>{section}</Text>
+      
       var [strong, plain] = section.split('</span>')
       return <Text>
         <Text style={{ backgroundColor: $colors.light }}>{strong}</Text>
-        {plain}
+        {plain ? <Text>{plain}</Text> : null}
       </Text>
     })
   }
 
-  console.log(data)
+  function subInfo(){
+    var text = ''
+    if(data.redirecttitle){
+      text = `「${data.redirecttitle}」指向该页面`
+    }else if(data.sectiontitle){
+      text = `该页面有包含“${searchWord}”的章节`
+    }else if(data.categoriesnippet){
+      text = `匹配自页面分类：${data.categoriesnippet}`
+    }
+
+    return <Text style={{ fontStyle: 'italic', color: $colors.light }}>{text}</Text>
+  }
+
   return (
-    <View style={{ padding: 5, margin: 5 }}>
-      <View>
-        <Text>{data.title}</Text>
+    <Button contentContainerStyle={styles.container} noLimit={false} rippleColor="#ccc"
+      onPress={() =>{
+        console.log(data.title)
+        onPress(data.title)
+      }}
+    >
+      <View style={styles.title}>
+        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{data.title}</Text>
+        {subInfo()}
       </View>
 
-      <View style={styles.content}>{contentBuilder(data.snippet)}</View>
+      <View style={styles.content}>
+        <Text>{contentBuilder(data.snippet)}</Text>
+      </View>
 
       <View style={styles.footer}>
-        <Text>最后更新于：{data.timestamp.split('T')[0]}</Text>
+        <Text style={{ textAlign: 'right', color: '#666' }}>最后更新于：{data.timestamp.split('T')[0]}</Text>
       </View>
-    </View>
+    </Button>
   )
 }
 
 const styles = StyleSheet.create({
-  title: {
+  container: {
+    padding: 5,
+    marginTop: 10,
+    marginHorizontal: 10,
+    backgroundColor: 'white',
+    elevation: 2,
+  },
 
+  title: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: 10
   },
 
   content: {
-
+    paddingVertical: 5,
+    marginTop: 5,
+    borderTopColor: $colors.main,
+    borderBottomColor: $colors.main,
+    borderTopWidth: 2,
+    borderBottomWidth: 2
   },
 
   footer: {
-
+    
   }
 })
