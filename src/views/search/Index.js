@@ -69,7 +69,7 @@ export default class Search extends React.Component{
           <StatusBar blackText color="white" />
           <Header value={this.state.searchWord} 
             onChangeText={this.changeText} 
-            onSubmit={this.toSearchResultView}
+            onSubmit={() => this.toSearchResultView()}
           />
           {this.state.searchWord ? 
             <SearchHint titles={this.state.searchHint} onTapTitle={title => this.toSearchResultView(title)} />
