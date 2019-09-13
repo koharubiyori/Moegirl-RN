@@ -87,7 +87,7 @@ export default class SearchResult extends React.Component{
             onPress={link => this.props.navigation.push('article', { link })}
           />}
           ListFooterComponent={({
-            2: () => <ActivityIndicator color={$colors.main} size="large" style={{ marginVertical: 10 }} />,
+            2: () => <ActivityIndicator color={$colors.main} size={50} style={{ marginVertical: 10 }} />,
             4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20 }}>已经没有啦</Text>
           }[this.state.status] || new Function)()}
           textBreakStrategy="balanced"
