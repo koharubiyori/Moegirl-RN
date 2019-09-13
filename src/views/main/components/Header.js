@@ -4,11 +4,14 @@ import {
   StyleSheet
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { Toolbar } from 'react-native-material-ui'
 import Button from '~/components/Button'
 import iconBtnStyle from '~/styles/header/iconBtnStyle'
 import { NavigationContext } from '../Index'
 
 export default class IndexHeader extends React.Component{
+  static contextType = { navigation: NavigationContext }
+
   constructor (props){
     super(props)
     this.state = {
@@ -18,28 +21,45 @@ export default class IndexHeader extends React.Component{
     this.iconStyle = iconBtnStyle
   }
   
-  openDrawer = () =>{
-    console.log(true)
+  eventHandlers = (event, navigation) =>{
+    if(event.action === 'search'){
+      navigation.push('search')
+    }
   }
 
   render (){
     return (
       <NavigationContext.Consumer>{navigation =>
-        <View style={styles.body}>
-          <View style={{ flexDirection: 'row' }}>
-            <Button onPress={this.openDrawer}>
-              <Icon name="menu" {...this.iconStyle} />
-            </Button>
+        // <View style={styles.body}>
+        //   <View style={{ flexDirection: 'row' }}>
+        //     <Button onPress={this.openDrawer}>
+        //       <Icon name="menu" {...this.iconStyle} />
+        //     </Button>
             
-            <Text style={styles.title}>{this.props.children}</Text>
-          </View>
+        //     <Text style={styles.title}>{this.props.children}</Text>
+        //   </View>
 
-          <View>
-            <Button onPress={() => navigation.push('search')}>
-              <Icon name="search" {...this.iconStyle} />
-            </Button>
-          </View>
-        </View>
+        //   <View>
+        //     <Button onPress={() => navigation.push('search')}>
+        //       <Icon name="search" {...this.iconStyle} />
+        //     </Button>
+        //   </View>
+        // </View>
+        <Toolbar
+          leftElement="menu"
+          centerElement="萌娘百科"
+          rightElement={{
+            actions: [
+              'search'
+            ],
+
+            menu: {
+                icon: "more-vert",
+                labels: ["item 1", "item 2"]
+            }
+          }}
+          onRightElementPress={event =>{ this.eventHandlers(event, navigation) }}
+        />
       }</NavigationContext.Consumer>
     )
   }
