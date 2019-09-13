@@ -59,7 +59,15 @@ export default class Search extends React.Component{
   }
 
   clearSearchHistory = () =>{
-    // dialog  清除全部历史记录
+    $dialog.confirm.show({
+      content: '确定要删除所有搜索记录吗？',
+      onTapCheck: () =>{
+        storage.remove('searchHistory')
+        this.setState({ searchHistory: [] })
+        toast.show('操作成功')
+        $dialog.confirm.hide()
+      }
+    })
   }
 
   render (){

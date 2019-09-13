@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  View, StyleSheet, Text, Dimensions, Alert, Linking
+  View, StyleSheet, Text, Dimensions, Linking
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { WebView } from 'react-native-webview'
@@ -108,7 +108,7 @@ export default class ArticleView extends React.Component{
         },
 
         notExists (){
-          Alert.alert('提示', '该条目还未创建', [{ text: '确定' }])
+          $dialog.alert.show({ content: '该条目还未创建' })
         }
       })[data.type]()
     }
