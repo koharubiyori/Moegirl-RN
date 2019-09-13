@@ -5,7 +5,6 @@ import {
   StyleSheet
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
-import storage from '~/utils/storage'
 
 export default class Finds extends React.Component{
   static propTypes = {
