@@ -8,6 +8,8 @@ import ArticleView from '~/components/webView/ArticleView'
 import StatusBar from '~/components/StatusBar'
 import Header from './Header'
 import { default as Catalog, width as catalogWidth } from './Catalog'
+import storage from '~/utils/storage'
+import saveHistory from '~/utils/saveHistory'
 
 const NavigationContext = React.createContext()
 
@@ -143,7 +145,25 @@ export default class Article extends React.Component{
   }
 
   contentLoaded = data =>{
+    var title = this.state.pageName
+    var trueTitle = data.parse.title
+
+    // 写入缓存
+    storage.merge('articleCache', { [trueTitle]: data })
+
+    if(title !== trueTitle){
+      $dialog.dropToast.show(`“${this.state.pageName}”被重定向至此页`)
+
+      // 记录至文章重定向表
+      storage.merge('articleRedirectMap', { [title]: trueTitle })
+    }
+
+    saveHistory(trueTitle)
+
     this.setState({
+      // 名字不一样要提示
+      pageName: trueTitle,
+
       catalog: {
         ...this.state.catalog,
         items: data.parse.sections

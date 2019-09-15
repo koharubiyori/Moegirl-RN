@@ -3,6 +3,10 @@ import { ThemeContext, getTheme } from 'react-native-material-ui'
 import AppNavigator from './router'
 import Alert from '~/components/dialog/Alert'
 import Confirm from '~/components/dialog/Confirm'
+import DropToast from '~/components/dialog/DropToast'
+// import AsyncStorage from '@react-native-community/async-storage'
+
+// AsyncStorage.clear()
 
 const theme = {
   palette: {
@@ -13,8 +17,7 @@ const theme = {
 export default class App extends React.Component {
 
   componentDidMount (){
-    const {alert, confirm} = this.refs
-    global.$dialog = { alert, confirm }
+    global.$dialog = { ...this.refs }
   }
 
   render (){
@@ -23,6 +26,7 @@ export default class App extends React.Component {
         <AppNavigator />
         <Alert ref="alert" />
         <Confirm ref="confirm" />
+        <DropToast ref="dropToast" />
       </ThemeContext.Provider>
     )
   }
