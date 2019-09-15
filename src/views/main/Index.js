@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { View } from 'react-native'
 import Home from './Home'
 import Finds from './Finds/Index'
-import History from './History'
+import History from './History/Index'
 import BottomNavigation from './BottomNavigation'
 
 const NavigationContext = React.createContext()

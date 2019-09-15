@@ -94,8 +94,6 @@ export default class SearchResult extends React.Component{
         >
           
         </FlatList>
-        {/* 添加加载提示思路：加载时在数据数组末尾添加一个加载组件的数据，通过在renderItem中判断，进行渲染
-        加载完成后移除。 */}
       </View>
     )
   }
