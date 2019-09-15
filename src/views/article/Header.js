@@ -4,11 +4,7 @@ import {
   View, Text, Animated,
   StyleSheet, NativeModules, Dimensions
 } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import Button from '~/components/Button'
-import iconBtnStyle from '~/styles/header/iconBtnStyle'
-
-export const height = 55
+import { Toolbar } from 'react-native-material-ui'
 
 export default class ArticleHeader extends React.Component{
   static propTypes = {
@@ -23,7 +19,6 @@ export default class ArticleHeader extends React.Component{
       transitionTop: new Animated.Value(0)
     }
     
-    this.iconStyle = iconBtnStyle
   }
   
   openDrawer = () =>{
@@ -37,7 +32,7 @@ export default class ArticleHeader extends React.Component{
     this.setState({ visible: false })
 
     Animated.timing(this.state.transitionTop, {
-      toValue: -height,
+      toValue: -56,
       duration: 200
     }).start()
   }
@@ -52,32 +47,32 @@ export default class ArticleHeader extends React.Component{
     }).start()
   }
 
+  eventHandlers = (event, navigation) =>{
+    if(event.action === 'search'){
+      navigation.push('search')
+    }
+  }
+
   render (){
     return (
       <Animated.View style={{ ...styles.body, ...this.props.style, top: this.state.transitionTop }}>
-        <View style={{ flexDirection: 'row' }}>
-          <Button onPress={() => this.props.navigation.goBack()} >
-            <Icon name="keyboard-backspace" {...this.iconStyle} />
-          </Button>
-          
-          <Text style={styles.title} ellipsizeMode="tail" numberOfLines={1}>
-            {this.props.title.replace(/_/g, ' ')}
-          </Text>
-        </View>
+        <Toolbar
+          leftElement="keyboard-backspace"
+          centerElement={this.props.title}
+          rightElement={{
+            actions: [
+              'search'
+            ],
 
-        <View style={styles.rightBtnContainer}>
-          <Button onPress={this.toSearchView} style={styles.rightBtn}>
-            <Icon name="search" {...this.iconStyle} />
-          </Button>
-          
-          <Button onPress={this.toSearchView} style={styles.rightBtn}>
-            <Icon name="star-border" {...this.iconStyle} />
-          </Button>
-          
-          <Button onPress={this.toSearchView} style={styles.rightBtn}>
-            <Icon name="edit" {...this.iconStyle} />
-          </Button>
-        </View>
+            menu: {
+                icon: 'more-vert',
+                labels: ['item 1', 'item 2']
+            }
+          }}
+
+          onLeftElementPress={() => this.props.navigation.goBack()}
+          onRightElementPress={event =>{ this.eventHandlers(event, this.props.navigation) }}
+        />
       </Animated.View>
     )
   }
@@ -85,14 +80,14 @@ export default class ArticleHeader extends React.Component{
 
 const styles = StyleSheet.create({
   body: {
-    ...$theme.mainBg,
-    paddingHorizontal: 15,
-    height,
-    elevation: 3,
+    // ...$theme.mainBg,
+    // paddingHorizontal: 15,
+    // height,
+    // elevation: 3,
 
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // alignItems: 'center',
     zIndex: 1
   },
   

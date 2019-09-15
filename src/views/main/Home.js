@@ -20,7 +20,7 @@ export default function Home(props){
     <NavigationContext.Consumer>{navigation =>
       <View style={props.style}>
         <StatusBar />
-        <Header>萌娘百科</Header>
+        <Header title="萌娘百科" />
         <ArticleView style={{ flex: 1 }} link="Mainpage" injectStyle={['index', 'page']}
           injectScript={['link']} navigation={navigation}
         />

@@ -10,6 +10,10 @@
 .tochide {
   display: none;
 }
+html,
+body {
+  overflow-x: hidden;
+}
 a {
   text-decoration: none;
   color: #0b0080;

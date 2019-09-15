@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    height,
+    height: 56,
     paddingLeft: 10,
     justifyContent: 'center',
     backgroundColor: $colors.main

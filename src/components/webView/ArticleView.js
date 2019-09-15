@@ -1,11 +1,12 @@
 import React from 'react'
 import {
-  View, StyleSheet, Text, Dimensions, Linking
+  View, StyleSheet, Text, Dimensions, Linking, ActivityIndicator
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { WebView } from 'react-native-webview'
 import { Button } from 'react-native-material-ui'
-import Spinner from '~/components/Spinner'
+import toast from '~/utils/toast'
+import storage from '~/utils/storage'
 import mainFuncForInjectScript from './mainFuncForInjectScript'
 import store from '~/redux/webView'
 
@@ -45,43 +46,66 @@ export default class ArticleView extends React.Component{
     this.loadContent()
   }
 
+  writeContent (html){
+    // 载入资源（位于 /android/main/assets ）
+    const styleTags = this.props.injectStyle ? this.props.injectStyle.reduce((prev, next) => 
+      prev + `<link type="text/css" rel="stylesheet" href="css/${next}.css" />`, ''
+    ) : ''
+
+    const scriptTags = this.libScript.reduce((prev, next) => prev + `<script src="js/lib/${next}.js"></script>`, '')
+
+    html = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        ${styleTags}
+        <style>${this.props.injectCss || ''}</style>
+      </head>
+      <body>
+        <div id="webViewContainer">${html}</div>
+        ${scriptTags}
+        <script>${this.props.injectJs || ''}</script>
+      </body>
+      </html>        
+    `
+
+    this.setState({ html })
+  }
+
   loadContent = () =>{
     this.setState({ status: 2 })
     
     store._async.getContent(this.props.link).then(data =>{
       this.props.onLoaded(data)
       var html = data.parse.text['*']
-      
-      // 载入资源（位于 /android/main/assets ）
-      const styleTags = this.props.injectStyle ? this.props.injectStyle.reduce((prev, next) => 
-        prev + `<link type="text/css" rel="stylesheet" href="css/${next}.css" />`, ''
-      ) : ''
-
-      const scriptTags = this.libScript.reduce((prev, next) => prev + `<script src="js/lib/${next}.js"></script>`, '')
-
-      html = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <meta http-equiv="X-UA-Compatible" content="ie=edge">
-          <title>Document</title>
-          ${styleTags}
-          <style>${this.props.injectCss || ''}</style>
-        </head>
-        <body>
-          <div id="webViewContainer">${html}</div>
-          ${scriptTags}
-          <script>${this.props.injectJs || ''}</script>
-        </body>
-        </html>        
-      `
-
-      this.setState({ html, status: 3 })
-    }).catch(e =>{
+      this.writeContent(html)
+      this.setState({ status: 3 })
+    }).catch(async e =>{
       console.log(e)
-      this.setState({ status: 0 })
+      try{
+        const redirectMap = await storage.get('articleRedirectMap') || {}
+        var link = redirectMap[this.props.link] || this.props.link
+        const articleCache = await storage.get('articleCache') || {}
+        const data = articleCache[link]
+        console.log(redirectMap, articleCache)
+        if(data){
+          this.props.onLoaded(data)
+          var html = data.parse.text['*']
+          this.writeContent(html)          
+          $dialog.dropToast.show('因读取失败，载入条目缓存')
+          this.setState({ status: 3 })    // 将状态标记为：读取失败，载入缓存
+        }else{
+          throw new Error
+        }
+      }catch(e){
+        console.log(e)
+        toast.show('网络超时，读取失败')
+        this.setState({ status: 0 })
+      }
     })
   }
 
@@ -124,7 +148,7 @@ export default class ArticleView extends React.Component{
         {{
           0: () => <Button primary text="重新加载" onPress={this.loadContent}></Button>,
           1: () => null,
-          2: () => <Spinner />,
+          2: () => <ActivityIndicator color={$colors.main} size={50} />,
           3: () => <WebView allowFileAccess
             source={{ html: this.state.html, baseUrl: this.baseUrl }}
             originWhitelist={['*']}

@@ -10,3 +10,17 @@ export function getArticle(name = 'Mainpage'){
     }
   })
 }
+
+export function getMainImage(name){
+  return request({
+    params: {
+      action: 'query',
+      prop: 'pageimages',
+      titles: name,
+      pithumbsize: 500
+    }
+  }).then(data =>{
+    var {pages} = data.query
+    return Object.values(pages)[0].thumbnail
+  })
+}

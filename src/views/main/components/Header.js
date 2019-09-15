@@ -3,14 +3,14 @@ import {
   View, Text,
   StyleSheet
 } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import PropTypes from 'prop-types'
 import { Toolbar } from 'react-native-material-ui'
-import Button from '~/components/Button'
-import iconBtnStyle from '~/styles/header/iconBtnStyle'
 import { NavigationContext } from '../Index'
 
 export default class IndexHeader extends React.Component{
-  static contextType = { navigation: NavigationContext }
+  static propTypes = {
+    title: PropTypes.string.isRequired 
+  }
 
   constructor (props){
     super(props)
@@ -18,7 +18,6 @@ export default class IndexHeader extends React.Component{
       showToast: false
     }
 
-    this.iconStyle = iconBtnStyle
   }
   
   eventHandlers = (event, navigation) =>{
@@ -30,33 +29,11 @@ export default class IndexHeader extends React.Component{
   render (){
     return (
       <NavigationContext.Consumer>{navigation =>
-        // <View style={styles.body}>
-        //   <View style={{ flexDirection: 'row' }}>
-        //     <Button onPress={this.openDrawer}>
-        //       <Icon name="menu" {...this.iconStyle} />
-        //     </Button>
-            
-        //     <Text style={styles.title}>{this.props.children}</Text>
-        //   </View>
-
-        //   <View>
-        //     <Button onPress={() => navigation.push('search')}>
-        //       <Icon name="search" {...this.iconStyle} />
-        //     </Button>
-        //   </View>
-        // </View>
         <Toolbar
           leftElement="menu"
-          centerElement="萌娘百科"
+          centerElement={this.props.title}
           rightElement={{
-            actions: [
-              'search'
-            ],
-
-            menu: {
-                icon: "more-vert",
-                labels: ["item 1", "item 2"]
-            }
+            actions: ['search'],
           }}
           onRightElementPress={event =>{ this.eventHandlers(event, navigation) }}
         />
@@ -66,21 +43,21 @@ export default class IndexHeader extends React.Component{
 }
 
 const styles = StyleSheet.create({
-  body: {
-    ...$theme.mainBg,
-    paddingHorizontal: 15,
-    height: 55,
-    elevation: 3,
+  // body: {
+  //   ...$theme.mainBg,
+  //   paddingHorizontal: 15,
+  //   height: 55,
+  //   elevation: 3,
 
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center'
+  // },
   
-  title: {
-    color: 'white',
-    fontSize: 18,
-    marginLeft: 10,
-    marginTop: 5
-  }
+  // title: {
+  //   color: 'white',
+  //   fontSize: 18,
+  //   marginLeft: 10,
+  //   marginTop: 5
+  // }
 })
