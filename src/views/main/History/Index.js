@@ -80,8 +80,6 @@ export default class Finds extends React.Component{
       }
     })
 
-   
-    console.log(lists)
     this.setState({ lists })
   }
   

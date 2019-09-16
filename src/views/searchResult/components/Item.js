@@ -42,10 +42,7 @@ export default function SearchResultItem({
 
   return (
     <Button contentContainerStyle={styles.container} noLimit={false} rippleColor={$colors.light}
-      onPress={() =>{
-        console.log(data.title)
-        onPress(data.title)
-      }}
+      onPress={() => onPress(data.title)}
     >
       <View style={styles.title}>
         <Text style={{ fontWeight: 'bold', fontSize: 16, flexShrink: 1 }}
