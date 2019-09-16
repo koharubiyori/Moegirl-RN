@@ -4,6 +4,7 @@ import AppNavigator from './router'
 import Alert from '~/components/dialog/Alert'
 import Confirm from '~/components/dialog/Confirm'
 import DropToast from '~/components/dialog/DropToast'
+import { getToken } from '~/api/login'
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()
@@ -18,6 +19,8 @@ export default class App extends React.Component {
 
   componentDidMount (){
     global.$dialog = { ...this.refs }
+
+    getToken().then(data => console.log(data))
   }
 
   render (){
