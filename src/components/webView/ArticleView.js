@@ -10,6 +10,8 @@ import storage from '~/utils/storage'
 import mainFuncForInjectScript from './mainFuncForInjectScript'
 import store from '~/redux/webView'
 
+import  * as webViewControls  from './controls/index' 
+
 export default class ArticleView extends React.Component{
   static propTypes = {
     style: PropTypes.object,
@@ -111,6 +113,10 @@ export default class ArticleView extends React.Component{
 
   injectScript = script =>{
     this.refs.webView.injectJavaScript(script)
+  }
+
+  initialInjectScripts (){
+    Object.values(webViewControls).split()
   }
 
   receiveMessage = e =>{
