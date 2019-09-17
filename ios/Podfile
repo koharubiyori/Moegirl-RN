@@ -44,6 +44,8 @@ target 'moegirl_RN' do
 
   pod 'react-native-cookies', :path => '../node_modules/react-native-cookies'
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'moegirl_RNTests' do
     inherit! :search_paths
     # Pods for testing
