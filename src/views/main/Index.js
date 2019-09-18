@@ -34,9 +34,6 @@ export default class Index extends React.Component{
   }
 
   render (){
-    // console.log(this.props.dispatch())
-    this.props.navigation.dispatch(DrawerActions.openDrawer())
-
     return (
       <NavigationContext.Provider value={this.props.navigation}>
         <View style={{ flex: 1 }}>

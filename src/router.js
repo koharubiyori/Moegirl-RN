@@ -1,5 +1,6 @@
 import React from 'react'
-import { createAppContainer, createStackNavigator, createDrawerNavigator, NavigationContainer } from "react-navigation"
+import { Dimensions } from 'react-native'
+import { createAppContainer, createStackNavigator, createDrawerNavigator } from "react-navigation"
 
 import drawer from './views/drawer/Index'
 
@@ -9,7 +10,7 @@ import search from './views/search/Index'
 import searchResult from './views/searchResult/Index'
 
 const StackNavigator = createStackNavigator(
-  { main, article, search, searchResult, drawer },
+  { main, article, search, searchResult },
 
   { 
     initialRouteName: 'main',
@@ -18,19 +19,22 @@ const StackNavigator = createStackNavigator(
 )
 
 const DrawerNavigator = createDrawerNavigator(
-  { drawer },
+  { StackNavigator },
 
   {
-    initialRouteName: 'drawer',
-    drawerWidth: 250,
-    drawerBackgroundColor: $colors.main,
-    contentOptions: {
-      activeTintColor: '#fff',
-      activeBackgroundColor: '#6b52ae',
-    },
+    // initialRouteName: 'drawer',
+    drawerWidth: Dimensions.get('window').width * 0.65,
+    drawerBackgroundColor: 'white',
+    overlayColor: 'rgba(0, 0, 0, 0.3)',
+    contentComponent: drawer,
+    gestureHandlerProps: e => console.log(e)
+    // contentOptions: {
+    //   activeTintColor: '#fff',
+    //   activeBackgroundColor: '#6b52ae',
+    // },
   }
 )
 
-const AppNavigator = createAppContainer(StackNavigator, DrawerNavigator)
+const AppNavigator = createAppContainer(DrawerNavigator)
 
 export default AppNavigator
