@@ -21,6 +21,7 @@ export default class IndexHeader extends React.Component{
   }
   
   eventHandlers = (event, navigation) =>{
+    console.log(event)
     if(event.action === 'search'){
       navigation.push('search')
     }
@@ -35,6 +36,8 @@ export default class IndexHeader extends React.Component{
           rightElement={{
             actions: ['search'],
           }}
+
+          onLeftElementPress={() => navigation.push('drawer')}
           onRightElementPress={event =>{ this.eventHandlers(event, navigation) }}
         />
       }</NavigationContext.Consumer>

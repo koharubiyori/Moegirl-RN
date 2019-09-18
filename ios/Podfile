@@ -42,6 +42,10 @@ target 'moegirl_RN' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
+  pod 'react-native-cookies', :path => '../node_modules/react-native-cookies'
+
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'moegirl_RNTests' do
     inherit! :search_paths
     # Pods for testing

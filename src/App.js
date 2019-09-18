@@ -5,6 +5,7 @@ import Alert from '~/components/dialog/Alert'
 import Confirm from '~/components/dialog/Confirm'
 import DropToast from '~/components/dialog/DropToast'
 import { getToken } from '~/api/login'
+import CookieManager from 'react-native-cookies';
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()
@@ -20,7 +21,10 @@ export default class App extends React.Component {
   componentDidMount (){
     global.$dialog = { ...this.refs }
 
-    getToken().then(data => console.log(data))
+    getToken().then(data =>{
+      CookieManager.get('https://zh.moegirl.org').then(data => console.log(data))
+      
+    })
   }
 
   render (){
