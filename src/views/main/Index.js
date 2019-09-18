@@ -6,6 +6,8 @@ import Finds from './Finds/Index'
 import History from './History/Index'
 import BottomNavigation from './BottomNavigation'
 
+import { DrawerActions } from 'react-navigation'
+
 const NavigationContext = React.createContext()
 
 export { NavigationContext }
@@ -32,6 +34,8 @@ export default class Index extends React.Component{
   }
 
   render (){
+    // console.log(this.props.dispatch())
+    this.props.navigation.dispatch(DrawerActions.openDrawer())
 
     return (
       <NavigationContext.Provider value={this.props.navigation}>
