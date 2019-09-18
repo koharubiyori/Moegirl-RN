@@ -186,7 +186,6 @@ export default class Article extends React.Component{
           <ArticleView style={{ flex: 1 }} navigation={this.props.navigation}
             link={this.state.link} 
             injectStyle={['page']}
-            injectScript={['link']}
             injectCss={this.articleViewInjectCss}
             injectJs={this.articleViewInjectJs}
             onMessages={{ changeHeaderVisible: this.changeHeaderVisible }}

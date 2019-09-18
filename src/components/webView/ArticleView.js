@@ -7,10 +7,10 @@ import { WebView } from 'react-native-webview'
 import { Button } from 'react-native-material-ui'
 import toast from '~/utils/toast'
 import storage from '~/utils/storage'
-import mainFuncForInjectScript from './mainFuncForInjectScript'
+// import mainFuncForInjectScript from './mainFuncForInjectScript'
 import store from '~/redux/webView'
 
-import  * as webViewControls  from './controls/index' 
+import { controlsCodeString } from './controls/index' 
 
 export default class ArticleView extends React.Component{
   static propTypes = {
@@ -20,7 +20,7 @@ export default class ArticleView extends React.Component{
     link: PropTypes.string,
     injectStyle: PropTypes.arrayOf(PropTypes.string),
     injectCss: PropTypes.string,
-    injectScript: PropTypes.arrayOf(PropTypes.string),
+    // injectScript: PropTypes.arrayOf(PropTypes.string),
     injectJs: PropTypes.string,
 
     onMessages: PropTypes.objectOf(PropTypes.func),   // 接收webView的postMessage
@@ -160,7 +160,7 @@ export default class ArticleView extends React.Component{
             originWhitelist={['*']}
             style={{ width: Dimensions.get('window').width }}
             onMessage={this.receiveMessage}
-            onLoadEnd={() => this.injectScript(mainFuncForInjectScript(this.props.injectScript))}
+            onLoadEnd={() => this.injectScript(controlsCodeString)}
             ref="webView"
            />
         }[this.state.status]()}

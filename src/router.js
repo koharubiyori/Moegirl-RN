@@ -1,5 +1,5 @@
 import React from 'react'
-import { createAppContainer, createStackNavigator, createDrawerNavigator } from "react-navigation"
+import { createAppContainer, createStackNavigator, createDrawerNavigator, NavigationContainer } from "react-navigation"
 
 import drawer from './views/drawer/Index'
 
@@ -21,6 +21,8 @@ const DrawerNavigator = createDrawerNavigator(
   { drawer },
 
   {
+    initialRouteName: 'drawer',
+    drawerWidth: 250,
     drawerBackgroundColor: $colors.main,
     contentOptions: {
       activeTintColor: '#fff',
@@ -31,9 +33,4 @@ const DrawerNavigator = createDrawerNavigator(
 
 const AppNavigator = createAppContainer(StackNavigator, DrawerNavigator)
 
-
-export default class Router extends React.Component{
-  render (){
-    return <AppNavigator />
-  }
-}
+export default AppNavigator
