@@ -67,7 +67,7 @@ export default class DropToast extends React.Component{
 const styles = StyleSheet.create({
   main: {
     height: 56,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',

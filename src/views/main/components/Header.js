@@ -37,7 +37,7 @@ export default class IndexHeader extends React.Component{
             actions: ['search'],
           }}
 
-          onLeftElementPress={() => navigation.push('drawer')}
+          onLeftElementPress={() => navigation.openDrawer()}
           onRightElementPress={event =>{ this.eventHandlers(event, navigation) }}
         />
       }</NavigationContext.Consumer>
