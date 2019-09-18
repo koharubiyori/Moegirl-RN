@@ -9,6 +9,7 @@ const config = {
     'Content-Type': 'application/x-www-form-urlencoded'
   },
 
+  withCredentials: true,
   transformRequest: qs.stringify
 }
 
@@ -22,6 +23,8 @@ axiosInstance.interceptors.response.use(responseDataHandler)
 
 // 请求拦截器
 function requestDataHandler(req){
+  console.log(req)
+
   if(req.method === 'post'){
     req.data = req.params
     delete req.params
