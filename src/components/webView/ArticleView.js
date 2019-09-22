@@ -68,7 +68,7 @@ export default class ArticleView extends React.Component{
         <style>${this.props.injectCss || ''}</style>
       </head>
       <body>
-        <div id="webViewContainer">${html}</div>
+        <div id="webViewContainer" style="padding:0 5px; box-sizing:border-box;">${html}</div>
         ${scriptTags}
         <script>${this.props.injectJs || ''}</script>
       </body>
@@ -87,13 +87,11 @@ export default class ArticleView extends React.Component{
       this.writeContent(html)
       this.setState({ status: 3 })
     }).catch(async e =>{
-      console.log(e)
       try{
         const redirectMap = await storage.get('articleRedirectMap') || {}
         var link = redirectMap[this.props.link] || this.props.link
         const articleCache = await storage.get('articleCache') || {}
         const data = articleCache[link]
-        console.log(redirectMap, articleCache)
         if(data){
           this.props.onLoaded(data)
           var html = data.parse.text['*']
@@ -131,10 +129,10 @@ export default class ArticleView extends React.Component{
         inner: () => this.props.navigation.push('article', { link: data.link }),
 
         outer (){
-          Alert.alert('提示', '这是一个外链，是否要打开外部浏览器进行访问？', [
-            { text: '确定', onPress: () => Linking.openURL('http://baidu.com') },
-            { text: '取消' }
-          ])
+          $dialog.confirm.show({
+            content: '这是一个外链，是否要打开外部浏览器进行访问？',
+            onTapCheck: () => Linking.openURL(data.link)
+          })
         },
 
         notExists (){

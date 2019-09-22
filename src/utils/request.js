@@ -23,7 +23,6 @@ axiosInstance.interceptors.response.use(responseDataHandler)
 
 // 请求拦截器
 function requestDataHandler(req){
-  console.log(req)
 
   if(req.method === 'post'){
     req.data = req.params

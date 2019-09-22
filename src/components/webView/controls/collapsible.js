@@ -1,6 +1,8 @@
 // collapsible实现
-export default function(content){
-  content.find('.mw-collapsible').each(function () {
+export default function(){
+  var viewBox = $('#webViewContainer')
+
+  viewBox.find('.mw-collapsible').each(function () {
     var btnText = this.classList.contains('mw-uncollapsed') ? '[折叠]' : '[展开]'
     var collapseBtn = $(`<div class="collapseBtn">${btnText}</div>`).click(function (e) {
       var body = $(e.target).closest('.mw-collapsible')

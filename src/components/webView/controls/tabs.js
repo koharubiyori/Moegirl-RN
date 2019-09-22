@@ -1,6 +1,8 @@
 // tabs实现
 export default function(content){
-  content.find('.Tabs').each(function () {
+  var viewBox = $('#webViewContainer')
+
+  viewBox.find('.Tabs').each(function () {
     var titles = []
     var theme = {
       before: {

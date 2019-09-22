@@ -65,7 +65,6 @@ export default class Search extends React.Component{
         storage.remove('searchHistory')
         this.setState({ searchHistory: [] })
         toast.show('操作成功')
-        $dialog.confirm.hide()
       }
     })
   }

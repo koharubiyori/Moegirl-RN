@@ -1,5 +1,7 @@
-export default function(content){
-  content.find('.sm2-loading-stub + div[data-bind]').each(function(){
+export default function(){
+  var viewBox = $('#webViewContainer')
+
+  viewBox.find('.sm2-loading-stub + div[data-bind]').each(function(){
     var data = JSON.parse(this.dataset.bind)
     var playlist = data.component.params.playlist
     var url = playlist[0].audioFileUrl

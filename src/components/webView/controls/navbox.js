@@ -1,6 +1,8 @@
   // navbox适应
-export default function(content){
-  content.find('.navbox').each(parse)
+export default function(){
+  var viewBox = $('#webViewContainer')
+
+  viewBox.find('.navbox').each(parse)
   function parse () {
     $(this).find('tr[style="height:2px"], tr[style="height:2px;"]').remove()
     $(this).find('.navbox-group').each(function () {

@@ -1,5 +1,7 @@
-export default function(content){
-  content.find('.music163').each(function(e){
+export default function(){
+  var viewBox = $('#webViewContainer')
+
+  viewBox.find('.music163').each(function(e){
     function createLink(params){
       return 'https://music.163.com/outchain/player?auto=0&' + $.param(params)
     }

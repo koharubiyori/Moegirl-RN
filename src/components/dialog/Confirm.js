@@ -29,10 +29,14 @@ export default class Alert extends React.Component{
     content = '',
     checkText = '确定',
     closeText = '取消',
-    onTapCheck = this.hide,
-    onTapClose = this.hide
+    onTapCheck = new Function,
+    onTapClose = new Function
   }){
-    this.setState({ visible: true, title, content, checkText, onTapCheck, closeText, onTapClose })
+    this.setState({ visible: true, title, content, checkText, 
+      onTapCheck: () =>{ onTapCheck(); this.hide() }, 
+      closeText, 
+      onTapClose: () =>{ onTapClose(); this.hide() }
+    })
   }
 
   hide = () =>{
