@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text,
+  View, Text, Image,
   StyleSheet, NativeModules
 } from 'react-native'
 
@@ -20,10 +20,10 @@ export default class MyDrawer extends React.Component{
 
   render (){
     return (
-      <View style={{ backgroundColor: 'red' }}>
+      <View>
         <View style={{ height: NativeModules.StatusBarManager.HEIGHT }} />
-        <View>
-          
+        <View style={styles.header}>
+          <Image source={require('~/assets/images/akari.jpg')} style={{ width: 70, height: 70 }} />
         </View>
       </View>
     )
