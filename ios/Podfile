@@ -46,6 +46,10 @@ target 'moegirl_RN' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'RNScreens', :path => '../node_modules/react-native-screens'
+
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
   target 'moegirl_RNTests' do
     inherit! :search_paths
     # Pods for testing

@@ -20,11 +20,6 @@ export default class App extends React.Component {
 
   componentDidMount (){
     global.$dialog = { ...this.refs }
-
-    getToken().then(data =>{
-      CookieManager.get('https://zh.moegirl.org').then(data => console.log(data))
-      
-    })
   }
 
   render (){
