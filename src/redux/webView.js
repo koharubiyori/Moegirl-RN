@@ -25,8 +25,8 @@ const finalCreateStore = applyMiddleware(thunk)(createStore)
 const store = finalCreateStore(reducer)
 
 store._async = {
-  getContent: link => store.dispatch((dispatch, getState) =>{
-    return new Promise((resolve, reject) => {
+  getContent: link => store.dispatch((dispatch, getState) =>
+    new Promise((resolve, reject) => {
       const state = getState()
 
       var cache = state.pagesCache[link]
@@ -37,7 +37,7 @@ store._async = {
         resolve(data)
       }).catch(reject)
     })
-  })
+  )
 }
 
 export default store

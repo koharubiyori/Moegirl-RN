@@ -1,4 +1,4 @@
-import request from '~/utils/moeRequest'
+import request from '~/utils/request'
 
 export function getToken(){
   return request({
@@ -28,8 +28,10 @@ function _login(token, username, password){
 
 export async function login(userName, password){
   try{
-    const {query:{tokens:{logintoken: token}}} = await getToken()
+    const tokenData = await getToken()
+    const token = tokenData.query.tokens.logintoken
+    return _login(token, userName, password)
   }catch(e){
-    console.log(e)
+    return Promise.reject(e)
   }
 }
