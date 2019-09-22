@@ -1,3 +1,4 @@
+import CookieManager from 'react-native-cookies'
 import request from './request'
 
 export default function(config){
@@ -7,7 +8,7 @@ export default function(config){
   const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 12000))
 
   return new Promise((resolve, reject) =>{
-    Promise.race([ request(config), timeout ])
+    Promise.race([request(config), timeout])
     .then(data =>{
       if(data === 'timeout'){
         console.log('timeout', config)

@@ -1,7 +1,9 @@
 import axios from 'axios'
 import qs from 'qs'
+import CookieManager from 'react-native-cookies'
 
-const api = 'https://zh.moegirl.org/api.php'
+const domain = 'https://zh.moegirl.org'
+const api = `${domain}/api.php`
 
 const config = {
   timeout: 7000,
@@ -22,12 +24,19 @@ axiosInstance.interceptors.request.use(requestDataHandler)
 axiosInstance.interceptors.response.use(responseDataHandler)
 
 // 请求拦截器
-function requestDataHandler(req){
+async function requestDataHandler(req){
+  if(!req.params) req.params = {}
+  req.params.format = 'json'
 
   if(req.method === 'post'){
     req.data = req.params
     delete req.params
   }
+
+  // 发送cookie
+  var cookies = await CookieManager.get(domain)
+  cookies = Object.keys(cookies).map(item => `${item}=${cookies[item]}`).join(';')
+  req.headers.cookie = cookies
 
   return req
 }
