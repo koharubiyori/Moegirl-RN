@@ -5,9 +5,9 @@ import {
   StyleSheet
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
-import userStore from '~/redux/user'
+import { createHOC, StoreProvider } from '~/redux/user'
 
-export default class Login extends React.Component{
+export default createHOC(class Login extends React.Component{
   static propTypes = {
     
   }
@@ -20,13 +20,11 @@ export default class Login extends React.Component{
   }
 
   componentWillMount (){
-    userStore.subscribe(() =>{
-      
-    })
+    
   }
 
   componentDidMount (){
-    userStore._async.login('東東君', 'zhang18640311631').then(data => console.log(data)).catch(e => console.log(e))
+    // userStore._async.login('東東君', 'zhang18640311631').then(data => console.log(data)).catch(e => console.log(e))
   }
   
   render (){
@@ -37,7 +35,7 @@ export default class Login extends React.Component{
       </View>
     )
   }
-}
+})
 
 const styles = StyleSheet.create({
   

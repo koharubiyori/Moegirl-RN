@@ -1,5 +1,8 @@
+import React from 'react'
 import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
+import { connect, Provider } from 'react-redux'
+import storage from '~/utils/storage'
 import { login } from '~/api/login'
 
 function reducer(state = {
@@ -7,6 +10,7 @@ function reducer(state = {
 }, action){
   switch(action.type){
     case 'writeName': {
+      storage.set('userName', action.data)
       return {
         name: action.data
       }
@@ -21,6 +25,9 @@ function reducer(state = {
 const finalCreateStore = applyMiddleware(thunk)(createStore)
 const store = finalCreateStore(reducer)
 
+// 载入缓存中保存的用户名
+store.dispatch(async dispatch => dispatch({ type: 'writeName', data: await storage.get('userName') }))
+
 store._async = {
   login: (userName, password) => store.dispatch(dispatch => 
     new Promise((resolve, reject) =>{
@@ -34,6 +41,20 @@ store._async = {
   )
 }
 
-export default store
+export { store }
 
 
+function mapStateToProps(state){
+  return {
+    userName: state.name
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    userLogin: store._async.login
+  }
+}
+
+export const createHOC = connect(mapStateToProps, mapDispatchToProps)
+export const StoreProvider = props => <Provider store={store}>{props.children}</Provider>

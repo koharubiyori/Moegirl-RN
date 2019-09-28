@@ -8,7 +8,7 @@ import { Button } from 'react-native-material-ui'
 import toast from '~/utils/toast'
 import storage from '~/utils/storage'
 // import mainFuncForInjectScript from './mainFuncForInjectScript'
-import store from '~/redux/webView'
+import { store } from '~/redux/webView'
 
 import { controlsCodeString } from './controls/index' 
 
