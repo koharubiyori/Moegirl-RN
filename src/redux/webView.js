@@ -40,5 +40,5 @@ store._async = {
   )
 }
 
-export default store
+export { store }
 
