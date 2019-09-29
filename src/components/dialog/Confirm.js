@@ -51,8 +51,8 @@ export default class Alert extends React.Component{
         <Dialog.Container visible={visible}>
           <Dialog.Title>{title}</Dialog.Title>
           <Dialog.Description>{content}</Dialog.Description>
-          <Dialog.Button label={checkText} onPress={onTapCheck} style={{ marginRight: 10 }} />
-          <Dialog.Button label={closeText} onPress={onTapClose} />
+          <Dialog.Button label={closeText} onPress={onTapClose} style={{ marginRight: 10 }} />
+          <Dialog.Button label={checkText} onPress={onTapCheck} />
         </Dialog.Container>
       </View>
     )

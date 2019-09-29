@@ -4,6 +4,7 @@ const colors = {
   main: '#3CAD3D',
   dark: '#318D32',
   light: '#87CD88',
+  sub: '#0DBC79'
 }
 
 const theme = StyleSheet.create({
