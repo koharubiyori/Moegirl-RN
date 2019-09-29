@@ -33,7 +33,7 @@ export default function DrawerItem({
             <Image source={icon} style={{ width: iconSize, height: iconSize }} /> 
           }
           
-          <Text style={{ fontSize: 20, marginLeft: 10, color: '#666' }}>{title}</Text>
+          <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', position: 'relative', top: 1.5 }}>{title}</Text>
         </View>
 
         {isOuterLink ? <Icon name="launch" size={iconSize} color={$colors.light} /> : null}
