@@ -32,7 +32,7 @@ export default createHOC(class MyDrawer extends React.Component{
           {this.props.userName ? 
             <>
               <Image source={{ uri: this.avatarUrl + this.props.userName }} style={styles.avatar} />
-              <Text style={{ color: 'white', marginLeft: 20, marginTop: 20, fontSize: 16 }}>欢迎你，{this.props.userName}</Text>
+              <Text style={styles.hintText}>欢迎你，{this.props.userName}</Text>
             </>
           : 
             <>
@@ -41,7 +41,7 @@ export default createHOC(class MyDrawer extends React.Component{
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => this.props.navigation.navigate('login')}>
-                <Text style={{ color: 'white', marginLeft: 20, marginTop: 20, fontSize: 16 }}>登录/加入萌娘百科</Text>
+                <Text style={styles.hintText}>登录/加入萌娘百科</Text>
               </TouchableOpacity>
             </>
           }
@@ -57,17 +57,24 @@ export default createHOC(class MyDrawer extends React.Component{
 
 const styles = StyleSheet.create({
   header: {
-    height: 170,
+    height: 160,
     justifyContent: 'center',
     backgroundColor: $colors.light
   },
 
   avatar: {
-    width: 70,
-    height: 70,
+    width: 75,
+    height: 75,
     marginLeft: 20,
-    borderRadius: 35,
+    borderRadius: 75 / 2,
     borderColor: 'white',
-    borderWidth: 6,
+    borderWidth: 3,
+  },
+
+  hintText: {
+    color: 'white', 
+    marginLeft: 20, 
+    marginTop: 15, 
+    fontSize: 16
   }
 })

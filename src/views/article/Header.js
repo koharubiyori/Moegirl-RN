@@ -1,15 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, Animated,
-  StyleSheet, NativeModules, Dimensions
+  View, Text, Animated, 
+  StyleSheet, NativeModules, Dimensions, Clipboard
 } from 'react-native'
 import { Toolbar } from 'react-native-material-ui'
+import { store as userStore } from '~/redux/user'
+import toast from '~/utils/toast'
 
 export default class ArticleHeader extends React.Component{
   static propTypes = {
+    title: PropTypes.string,
     style: PropTypes.object,
     navigation: PropTypes.object,
+
+    onRefreshBtn: PropTypes.func,
   }
 
   constructor (props){
@@ -51,6 +56,26 @@ export default class ArticleHeader extends React.Component{
     if(event.action === 'search'){
       navigation.push('search')
     }
+
+    if(event.action === 'menu'){
+      if(event.index === 0){
+        this.onRefreshBtn()
+      }
+
+      if(event.index === 1){
+        if(userStore.getState().name){
+          this.props.navigation.push('editArticle', { title: this.props.title, section: 0 })
+        }else{
+          this.props.navigation.push('login')
+        }
+      }
+
+      if(event.index === 2){
+        const shareUrl = `萌娘百科 - ${this.props.title} https://mzh.moegirl.org/${this.props.title}`
+        Clipboard.setString(shareUrl)
+        toast.show('已将分享链接复制至剪切板', 'center')
+      }
+    }
   }
 
   render (){
@@ -66,7 +91,11 @@ export default class ArticleHeader extends React.Component{
 
             menu: {
                 icon: 'more-vert',
-                labels: ['item 1', 'item 2']
+                labels: [
+                  '刷新',
+                  ...[userStore.getState().name ? '编辑此页' : '登录'],
+                  '分享'
+                ]
             }
           }}
 

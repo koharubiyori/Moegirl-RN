@@ -5,7 +5,6 @@ import Alert from '~/components/dialog/Alert'
 import Confirm from '~/components/dialog/Confirm'
 import DropToast from '~/components/dialog/DropToast'
 import { StoreProvider as UserProvider } from './redux/user'
-import CookieManager from 'react-native-cookies';
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()

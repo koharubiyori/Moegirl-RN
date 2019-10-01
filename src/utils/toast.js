@@ -10,8 +10,20 @@ export default {
       }[position],
       
       containerStyle: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        backgroundColor: 'rgba(0, 0, 0, 0.7)'
       }
     })
+  },
+
+  hide (){
+    Toast.hide()
+  },
+
+  showLoading (text){
+    Toast.showLoading(text)
+  },
+
+  showSuccess (text){
+    Toast.showSuccess(text)
   }
 }

@@ -4,6 +4,13 @@ export default function(){
   // 拦截点击链接
   viewBox.on('click', 'a', function(e){
     e.preventDefault()
+
+    // 配合黑幕的第一次点击不跳转
+    if($(this).parent('.heimu').data('unTapped')) {
+      $(this).parent('.heimu').data('unTapped', false)
+      return
+    }
+
     var link = $(e.target).attr('href') || $(e.target).parent('a').attr('href')
     var type = 'inner'
     if(/^\//.test(link)){
@@ -16,6 +23,6 @@ export default function(){
       type = 'notExists'
     }
 
-    ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapLink', data:{ link, type } }))
+    ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapLink', data: { link, type } }))
   })
 }

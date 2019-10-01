@@ -5,11 +5,11 @@ import {
   StyleSheet, 
 } from 'react-native'
 import Button from '~/components/Button'
-import { height } from './Header'
 
 export const width = 200
 
-export default class Catalog extends React.Component{
+// 虽然这个组件主要只负责显示视图，但因为需要根据组件id判断是否点击了mask，所以不能写成函数组件( 用React.createRef()还是能写成函数组件的，懒得改了_(:з」∠)_
+export class Catalog extends React.Component{
   static propTypes = {
     transitionRight: PropTypes.instanceOf(Animated.Value).isRequired,
     transitionMaskOpacity: PropTypes.instanceOf(Animated.Value).isRequired,
@@ -26,6 +26,7 @@ export default class Catalog extends React.Component{
     }
   }
 
+  // 使用组件id判断是否点击的是mask
   tapMaskToCloseSelf = e =>{
     this.refs.mask._component._nativeTag === e.target && this.props.onClose()
   }
@@ -48,7 +49,6 @@ export default class Catalog extends React.Component{
                     key={item.index}
                   >
                     <Text 
-                      ellipsizeMode="tail" 
                       numberOfLines={1}
                       style={{ 
                         ...(parseInt(item.level) < 3 ? styles.title : styles.subTitle),
