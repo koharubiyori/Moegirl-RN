@@ -70,7 +70,10 @@ export default class ArticleView extends React.Component{
       <body>
         <div id="webViewContainer" style="padding:0 5px; box-sizing:border-box;">${html}</div>
         ${scriptTags}
-        <script>${this.props.injectJs || ''}</script>
+        <script>
+          console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
+          ${this.props.injectJs || ''}
+        </script>
       </body>
       </html>        
     `
@@ -120,6 +123,10 @@ export default class ArticleView extends React.Component{
   receiveMessage = e =>{
     const {type, data} = JSON.parse(e.nativeEvent.data)
     
+    if(type === 'print'){
+      console.log('=== print ===', data)
+    }
+
     if(type === 'error'){
       console.log('--- WebViewError ---', data)
     }

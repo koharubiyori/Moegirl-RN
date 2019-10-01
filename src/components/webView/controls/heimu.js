@@ -3,12 +3,12 @@ export default function(){
 
   viewBox.find('.heimu').each(function () {
     // if('isHeimuOn' in config && config.isHeimuOn){
-    //   $(this).data('unopened', true)
+    //   $(this).data('unTapped', true)
     //   $(this).one('click', e => {
     //     $(this).css('color', 'white').find('a').css('color', '#5BCEFF')
     //     if (e.target.tagName.toUpperCase() === 'A') {
-    //       if ($(this).data('unopened')) {
-    //         $(this).data('unopened', false)
+    //       if ($(this).data('unTapped')) {
+    //         $(this).data('unTapped', false)
     //       }
     //     }
     //   })
@@ -16,13 +16,13 @@ export default function(){
     //   $(this).css('color', 'white').find('a').css('color', '#5BCEFF')
     // }
 
-    $(this).data('unopened', true)
+    $(this).data('unTapped', true)
     $(this).one('click', e => {
       $(this).css('color', 'white').find('a').css('color', '#5BCEFF')
-      if (e.target.tagName.toUpperCase() === 'A') {
-        if ($(this).data('unopened')) {
-          $(this).data('unopened', false)
-        }
+      if ($(this).data('unTapped')) {
+        $(this).data('unTapped', false)
+        e.preventDefault()
+        e.stopPropagation()
       }
     })
   })

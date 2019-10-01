@@ -4,6 +4,7 @@ import thunk from 'redux-thunk'
 import { connect, Provider } from 'react-redux'
 import storage from '~/utils/storage'
 import { login } from '~/api/login'
+import CookieManager from 'react-native-cookies'
 
 function reducer(state = {
   name: null
@@ -13,6 +14,14 @@ function reducer(state = {
       storage.set('userName', action.data)
       return {
         name: action.data
+      }
+    }
+
+    case 'logout': {
+      storage.remove('userName')
+      CookieManager.clearAll()
+      return {
+        name: null
       }
     }
 
@@ -52,7 +61,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    userLogin: store._async.login
+    userLogin: store._async.login,
+    userLogout: () => dispatch({ type: 'logout' })
   }
 }
 

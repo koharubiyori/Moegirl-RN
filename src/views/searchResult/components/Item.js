@@ -21,7 +21,7 @@ export default function SearchResultItem({
       
       var [strong, plain] = section.split('</span>')
       return <Text>
-        <Text style={{ backgroundColor: $colors.light }}>{strong}</Text>
+        <Text style={{ backgroundColor: '#93E478' }}>{strong}</Text>
         {plain ? <Text>{plain}</Text> : null}
       </Text>
     })
