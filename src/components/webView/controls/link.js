@@ -1,6 +1,13 @@
 export default function(){
   var viewBox = $('#webViewContainer')
 
+  viewBox.find('a').each(function (e) {
+    // 编辑按钮替换图片 && 登录后显示
+    if ($(this).text() === '编辑') {
+      $(this).addClass('page-editBtn').html('<div class="edit-btn page-editBtn">')
+    }
+  })
+
   // 拦截点击链接
   viewBox.on('click', 'a', function(e){
     e.preventDefault()
@@ -11,6 +18,19 @@ export default function(){
       return
     }
 
+    // 编辑按钮导向
+    if (this.classList.contains('page-editBtn')) {
+      var page = decodeURIComponent(this.href.match(/title=(.+?)(&|$)/)[1])
+      var section = this.dataset.section
+      if(!section){
+        section = parseInt(this.href.match(/&section=(.+?)(&|$)/)[1])
+      }
+
+      return ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapEdit', data: { page, section } }))
+    }
+
+
+    // 一般链接导向
     var link = $(e.target).attr('href') || $(e.target).parent('a').attr('href')
     var type = 'inner'
     if(/^\//.test(link)){
