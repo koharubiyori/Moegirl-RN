@@ -11,9 +11,10 @@ import article from './views/article/Index'
 import search from './views/search/Index'
 import searchResult from './views/searchResult/Index'
 import login from './views/login/Index'
+import edit from './views/edit/Index'
 
 const StackNavigator = createStackNavigator(
-  { main, article, search, searchResult, login },
+  { main, article, search, searchResult, login, edit },
 
   { 
     initialRouteName: 'main',

@@ -148,6 +148,10 @@ export default class ArticleView extends React.Component{
       })[data.type]()
     }
 
+    if(type === 'onTapEdit'){
+      this.props.navigation.push('edit', { title: data.page, section: data.section })
+    }
+
     if(this.props.onMessages){
       ;(this.props.onMessages[type] || new Function)(data)
     }
