@@ -1,6 +1,6 @@
 import request from '~/utils/request'
 
-export function getToken(){
+function getToken(){
   return request({
     method: 'post',
     params: {

@@ -26,9 +26,9 @@ export default class Alert extends React.Component{
     title = '提示',
     content = '',
     checkText = '确定',
-    onTapCheck = this.hide
+    onTapCheck = new Function
   }){
-    this.setState({ visible: true, title, content, checkText, onTapCheck })
+    this.setState({ visible: true, title, content, checkText, onTapCheck: () =>{ onTapCheck(); this.hide() } })
   }
 
   hide = () =>{
@@ -43,7 +43,7 @@ export default class Alert extends React.Component{
         <Dialog.Container visible={visible}>
           <Dialog.Title>{title}</Dialog.Title>
           <Dialog.Description>{content}</Dialog.Description>
-          <Dialog.Button label={checkText} onPress={onTapCheck} />
+          <Dialog.Button label={checkText} onPress={onTapCheck} style={{ color: $colors.main }} />
         </Dialog.Container>
       </View>
     )

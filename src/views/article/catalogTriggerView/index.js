@@ -82,8 +82,6 @@ export default class CatalogTriggerView extends React.Component {
   }
 
   render (){
-    console.log(this.props)
-
     return (
       <>
         <View {...this.moveEvents.panHandlers} {...this.props} />
