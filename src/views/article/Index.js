@@ -8,6 +8,7 @@ import ArticleView from '~/components/webView/ArticleView'
 import StatusBar from '~/components/StatusBar'
 import Header from './Header'
 import CatalogTriggerView from './catalogTriggerView/index'
+import CommentBtn from './commentBtn/Index'
 import storage from '~/utils/storage'
 import saveHistory from '~/utils/saveHistory'
 
@@ -63,7 +64,9 @@ export default class Article extends React.Component{
   // 接收需要隐藏或显示header的指令
   changeHeaderVisible = isVisible =>{
     const {show, hide} = this.refs.header
+    const {show: showBtn, hide: hideBtn} = this.refs.commentBtn
     isVisible ? show() : hide()
+    isVisible ? showBtn() : hideBtn()
   }
 
   contentLoaded = data =>{
@@ -115,7 +118,9 @@ export default class Article extends React.Component{
             onMessages={{ changeHeaderVisible: this.changeHeaderVisible }}
             onLoaded={this.contentLoaded}
             ref="articleView"
-          />          
+          />       
+          
+          <CommentBtn ref="commentBtn" />   
         </CatalogTriggerView>
       </NavigationContext.Provider>
     )
