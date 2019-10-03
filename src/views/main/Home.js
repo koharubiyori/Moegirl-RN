@@ -14,8 +14,6 @@ Home.propTypes = {
 }
 
 export default function Home(props){
-  console.log('home')
-
   return (
     <NavigationContext.Consumer>{navigation =>
       <View style={props.style}>

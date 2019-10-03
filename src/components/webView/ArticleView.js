@@ -9,6 +9,7 @@ import toast from '~/utils/toast'
 import storage from '~/utils/storage'
 // import mainFuncForInjectScript from './mainFuncForInjectScript'
 import { store } from '~/redux/webView'
+import { store as userStore } from '~/redux/user'
 
 import { controlsCodeString } from './controls/index' 
 
@@ -158,7 +159,14 @@ export default class ArticleView extends React.Component{
     }
 
     if(type === 'onTapEdit'){
-      this.props.navigation.push('edit', { title: data.page, section: data.section })
+      if(userStore.getState().name){
+        this.props.navigation.push('edit', { title: data.page, section: data.section })
+      }else{
+        $dialog.confirm.show({
+          content: '登录后才可以进行编辑，要前往登录界面吗？',
+          onTapCheck: () => this.props.navigation.push('login')
+        })
+      }
     }
 
     if(this.props.onMessages){
