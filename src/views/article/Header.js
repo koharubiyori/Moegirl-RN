@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, Animated, 
-  StyleSheet, NativeModules, Dimensions, Clipboard
+  StyleSheet, NativeModules, Dimensions, Clipboard, DeviceEventEmitter
 } from 'react-native'
 import { Toolbar } from 'react-native-material-ui'
 import { store as userStore } from '~/redux/user'
@@ -14,7 +14,7 @@ export default class ArticleHeader extends React.Component{
     style: PropTypes.object,
     navigation: PropTypes.object,
 
-    onRefreshBtn: PropTypes.func,
+    onTapRefreshBtn: PropTypes.func,
   }
 
   constructor (props){
@@ -24,14 +24,14 @@ export default class ArticleHeader extends React.Component{
       transitionTop: new Animated.Value(0)
     }
     
+    // 防止在返回时不滑动看不到标题
+    this.articleChangeListener = DeviceEventEmitter.addListener('navigationStateChange', () => this.show())
+  }
+
+  componentWillUnmount (){
+    this.articleChangeListener.remove()
   }
   
-  openDrawer = () =>{
-    console.log(true)
-  }
-
-  toSearchView = () =>{}
-
   hide = () =>{
     if(!this.state.visible){ return }
     this.setState({ visible: false })
@@ -59,12 +59,14 @@ export default class ArticleHeader extends React.Component{
 
     if(event.action === 'menu'){
       if(event.index === 0){
-        this.onRefreshBtn()
+        this.props.onTapRefreshBtn()
       }
+
+      console.log(event, userStore.getState())
 
       if(event.index === 1){
         if(userStore.getState().name){
-          this.props.navigation.push('editArticle', { title: this.props.title, section: 0 })
+          this.props.navigation.push('edit', { title: this.props.title })
         }else{
           this.props.navigation.push('login')
         }
@@ -81,7 +83,7 @@ export default class ArticleHeader extends React.Component{
   render (){
     return (
       <Animated.View style={{ ...styles.body, ...this.props.style, top: this.state.transitionTop }}>
-        <Toolbar
+        <Toolbar size={26}
           leftElement="keyboard-backspace"
           centerElement={this.props.title}
           rightElement={{

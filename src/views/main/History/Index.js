@@ -46,9 +46,7 @@ export default class Finds extends React.Component{
 
       status: 1
     }
-  }
 
-  componentWillMount (){
     this.refresh()
     DeviceEventEmitter.addListener('refreshHistory', () => this.refresh())
   }

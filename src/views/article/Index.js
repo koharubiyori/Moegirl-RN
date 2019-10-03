@@ -30,11 +30,6 @@ export default class Article extends React.Component{
       catalogItems: []
     }
 
-    this._refs = {
-      articleView: React.createRef(),
-      header: React.createRef()
-    }
-
     this.articleViewInjectCss = `
       body {
         padding-top: 55px;
@@ -67,7 +62,7 @@ export default class Article extends React.Component{
 
   // 接收需要隐藏或显示header的指令
   changeHeaderVisible = isVisible =>{
-    const {show, hide} = this._refs.header.current
+    const {show, hide} = this.refs.header
     isVisible ? show() : hide()
   }
 
@@ -95,7 +90,7 @@ export default class Article extends React.Component{
   }
 
   articleViewIntoAnchor = anchor =>{
-    this._refs.articleView.current.injectScript(`
+    this.refs.articleView.injectScript(`
       document.getElementById('${anchor}').scrollIntoView({ behavior: 'smooth' })
     `)
   }
@@ -106,7 +101,12 @@ export default class Article extends React.Component{
         <StatusBar />
         {/* 这只是一个普通的view，但被绑定了滑动显示catalog的事件 */}
         <CatalogTriggerView style={{ flex: 1 }} items={this.state.catalogItems} onTapTitle={this.articleViewIntoAnchor}>
-         <Header style={styles.header} navigation={this.props.navigation} title={this.state.pageName} ref={this._refs.header} />
+         <Header style={styles.header} 
+          navigation={this.props.navigation} 
+          title={this.state.pageName} 
+          onTapRefreshBtn={() => this.refs.articleView.loadContent(true)}
+          ref="header" 
+        />
          <ArticleView style={{ flex: 1 }} navigation={this.props.navigation}
             link={this.state.link} 
             injectStyle={['page']}
@@ -114,7 +114,7 @@ export default class Article extends React.Component{
             injectJs={this.articleViewInjectJs}
             onMessages={{ changeHeaderVisible: this.changeHeaderVisible }}
             onLoaded={this.contentLoaded}
-            ref={this._refs.articleView}
+            ref="articleView"
           />          
         </CatalogTriggerView>
       </NavigationContext.Provider>

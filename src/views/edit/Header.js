@@ -8,23 +8,35 @@ import { Toolbar } from 'react-native-material-ui'
 
 EditHeader.propTypes = {
   title: PropTypes.string,
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  onTapDoneBtn: PropTypes.func
 }
 
 export default function EditHeader({
   title,
-  navigation
+  navigation,
+  onTapDoneBtn
 }){
+  function eventHandlers(event){
+    if(event.action === 'done'){
+      onTapDoneBtn()
+    }
+  }
+
   return (
-    <Toolbar 
+    <Toolbar size={26}
       style={{
         container: { elevation: 0, borderBottomColor: 'white', borderBottomWidth: 1 },
-        // titleText: { color: '#666' },
-        // leftElement: { color: '#666' }
       }}
+
+      rightElement={{
+        actions: ['done'],
+      }}
+
       leftElement="keyboard-backspace"
       centerElement={`编辑：${title}`}
       onLeftElementPress={() => navigation.goBack()}
+      onRightElementPress={eventHandlers}
     />
   )
 }

@@ -18,7 +18,9 @@ export default class ArticleView extends React.Component{
     navigation: PropTypes.object,
     
     link: PropTypes.string,
-    injectStyle: PropTypes.arrayOf(PropTypes.string),
+    html: PropTypes.string,
+    disabledLink: PropTypes.bool,
+    injectStyle: PropTypes.arrayOf(PropTypes.string),   // 载入位于 /android/main/assets 的样式表
     injectCss: PropTypes.string,
     // injectScript: PropTypes.arrayOf(PropTypes.string),
     injectJs: PropTypes.string,
@@ -45,7 +47,12 @@ export default class ArticleView extends React.Component{
   }
   
   componentDidMount (){
-    this.loadContent()
+    if(this.props.link){
+      this.loadContent()
+    }else{
+      this.writeContent(this.props.html)
+      this.setState({ status: 3 })
+    }
   }
 
   writeContent (html){
@@ -81,10 +88,10 @@ export default class ArticleView extends React.Component{
     this.setState({ html })
   }
 
-  loadContent = () =>{
+  loadContent = (forceLoad = false) =>{
     this.setState({ status: 2 })
     
-    store._async.getContent(this.props.link).then(data =>{
+    store._async.getContent(this.props.link, forceLoad).then(data =>{
       this.props.onLoaded(data)
       var html = data.parse.text['*']
       this.writeContent(html)
@@ -131,6 +138,8 @@ export default class ArticleView extends React.Component{
       console.log('--- WebViewError ---', data)
     }
 
+    if(this.props.disabledLink){ return }
+
     if(type === 'onTapLink'){
       ;({
         inner: () => this.props.navigation.push('article', { link: data.link }),
@@ -164,7 +173,9 @@ export default class ArticleView extends React.Component{
           0: () => <Button primary text="重新加载" onPress={this.loadContent}></Button>,
           1: () => null,
           2: () => <ActivityIndicator color={$colors.main} size={50} />,
-          3: () => <WebView allowFileAccess
+          3: () => <WebView allowFileAccess allowsFullscreenVideo
+            cacheMode="LOAD_CACHE_ELSE_NETWORK"
+            scalesPageToFit={false}
             source={{ html: this.state.html, baseUrl: this.baseUrl }}
             originWhitelist={['*']}
             style={{ width: Dimensions.get('window').width }}

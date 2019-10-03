@@ -30,7 +30,7 @@ export default class IndexHeader extends React.Component{
   render (){
     return (
       <NavigationContext.Consumer>{navigation =>
-        <Toolbar
+        <Toolbar size={26}
           leftElement="menu"
           centerElement={this.props.title}
           rightElement={{

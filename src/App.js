@@ -1,5 +1,5 @@
 import React from 'react'
-import { BackHandler } from 'react-native'
+import { BackHandler, DeviceEventEmitter } from 'react-native'
 import { ThemeContext, getTheme } from 'react-native-material-ui'
 import AppNavigator from './router'
 import Alert from '~/components/dialog/Alert'
@@ -38,11 +38,15 @@ export default class App extends React.Component {
     global.$dialog = { ...this.refs }
   }
 
+  navigationStateChange (state){
+    DeviceEventEmitter.emit('navigationStateChange', state)
+  }
+
   render (){
     return (
       <ThemeContext.Provider value={getTheme(theme)}>
         <UserProvider>
-          <AppNavigator />
+          <AppNavigator onNavigationStateChange={this.navigationStateChange} />
         </UserProvider>
 
         <Alert ref="alert" />

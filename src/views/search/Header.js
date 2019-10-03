@@ -23,7 +23,7 @@ export default function SearchHeader({
     <NavigationContext.Consumer>{navigation =>
       <View style={styles.body}>
         <Button onPress={() => navigation.goBack()} rippleColor="#ccc">
-          <Icon name="keyboard-backspace" size={25} color="#666" />
+          <Icon name="keyboard-backspace" size={26} color="#666" />
         </Button>
 
         <TextInput autoFocus value={value}

@@ -25,12 +25,12 @@ const finalCreateStore = applyMiddleware(thunk)(createStore)
 const store = finalCreateStore(reducer)
 
 store._async = {
-  getContent: link => store.dispatch((dispatch, getState) =>
+  getContent: (link, forceLoad = false) => store.dispatch((dispatch, getState) =>
     new Promise((resolve, reject) => {
       const state = getState()
 
       var cache = state.pagesCache[link]
-      if(cache){ return resolve(cache) }
+      if(cache && !forceLoad){ return resolve(cache) }
 
       getArticle(link).then(data =>{
         dispatch({ type: 'add', name: link, data })
