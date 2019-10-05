@@ -42,11 +42,11 @@ export class Catalog extends React.Component{
               </View>
 
               <ScrollView contentContainerStyle={styles.titles}>{
-                this.props.items.filter(item => parseInt(item.level) < 5 && item.level !== '1').map(item => 
-                  <Button onPress={() => this.props.onTapTitle(item.anchor)} 
+                this.props.items.filter(item => parseInt(item.level) < 5 && item.level !== '1').map((item, index) => 
+                  <Button onPress={() => this.props.onTapTitle(item.anchor)}
                     rippleColor="#ccc"
                     noLimit={false}
-                    key={item.index}
+                    key={index}
                   >
                     <Text 
                       numberOfLines={1}

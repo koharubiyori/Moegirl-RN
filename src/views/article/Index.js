@@ -8,7 +8,7 @@ import ArticleView from '~/components/webView/ArticleView'
 import StatusBar from '~/components/StatusBar'
 import Header from './Header'
 import CatalogTriggerView from './catalogTriggerView/index'
-import CommentBtn from './commentBtn/Index'
+import CommentBtn from './comment/FloatButton'
 import storage from '~/utils/storage'
 import saveHistory from '~/utils/saveHistory'
 
@@ -102,14 +102,15 @@ export default class Article extends React.Component{
     return (
       <NavigationContext.Provider value={this.props.navigation}>
         <StatusBar />
-        {/* 这只是一个普通的view，但被绑定了滑动显示catalog的事件 */}
-        <CatalogTriggerView style={{ flex: 1 }} items={this.state.catalogItems} onTapTitle={this.articleViewIntoAnchor}>
-         <Header style={styles.header} 
+        <Header style={styles.header} 
           navigation={this.props.navigation} 
           title={this.state.pageName} 
           onTapRefreshBtn={() => this.refs.articleView.loadContent(true)}
           ref="header" 
         />
+
+        {/* 这只是一个普通的view，但被绑定了滑动显示catalog的事件 */}
+        <CatalogTriggerView style={{ flex: 1 }} items={this.state.catalogItems} onTapTitle={this.articleViewIntoAnchor}>
          <ArticleView style={{ flex: 1 }} navigation={this.props.navigation}
             link={this.state.link} 
             injectStyle={['page']}
@@ -119,9 +120,9 @@ export default class Article extends React.Component{
             onLoaded={this.contentLoaded}
             ref="articleView"
           />       
-          
-          <CommentBtn ref="commentBtn" />   
         </CatalogTriggerView>
+        
+        <CommentBtn ref="commentBtn" />   
       </NavigationContext.Provider>
     )
   }
@@ -130,7 +131,7 @@ export default class Article extends React.Component{
 const styles = StyleSheet.create({
   header: {
     position: 'absolute',
-    top: NativeModules.StatusBarManager.HEIGHT,
+    top:NativeModules.StatusBarManager.HEIGHT,
     left: 0,
     right: 0,
   }
