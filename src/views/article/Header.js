@@ -21,7 +21,7 @@ export default class ArticleHeader extends React.Component{
     super(props)
     this.state = {
       visible: true,
-      transitionTop: new Animated.Value(0)
+      transitionTranslateY: new Animated.Value(0)
     }
     
     // 防止在返回时不滑动看不到标题
@@ -36,9 +36,10 @@ export default class ArticleHeader extends React.Component{
     if(!this.state.visible){ return }
     this.setState({ visible: false })
 
-    Animated.timing(this.state.transitionTop, {
+    Animated.timing(this.state.transitionTranslateY, {
       toValue: -56,
-      duration: 200
+      duration: 200,
+      // useNativeDriver: true
     }).start()
   }
 
@@ -46,9 +47,10 @@ export default class ArticleHeader extends React.Component{
     if(this.state.visible){ return }
     this.setState({ visible: true })
 
-    Animated.timing(this.state.transitionTop, {
+    Animated.timing(this.state.transitionTranslateY, {
       toValue: 0,
-      duration: 200
+      duration: 200,
+      // useNativeDriver: true
     }).start()
   }
 
@@ -82,7 +84,7 @@ export default class ArticleHeader extends React.Component{
 
   render (){
     return (
-      <Animated.View style={{ ...styles.body, ...this.props.style, top: this.state.transitionTop }}>
+      <Animated.View style={{ ...styles.body, ...this.props.style, transform: [{ translateY: this.state.transitionTranslateY }] }}>
         <Toolbar size={26}
           leftElement="keyboard-backspace"
           centerElement={this.props.title}

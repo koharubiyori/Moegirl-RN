@@ -6,7 +6,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
-const size = 55
+const size = 60
 
 export default class CommentBtn extends React.Component{
   static propTypes = {
@@ -17,34 +17,41 @@ export default class CommentBtn extends React.Component{
     super(props)
     this.state = {
       transitionScale: new Animated.Value(1),
-      hidden: false   
+      visible: false
     }
   }
 
   show = () =>{
+    if(this.state.visible){ return }
+    this.setState({ visible: true })
     Animated.timing(this.state.transitionScale, {
       toValue: 1,
-      duration: 150
+      duration: 100,
+      // useNativeDriver: true
     }).start()
   }
   
   hide = () =>{
+    if(!this.state.visible){ return }
     Animated.timing(this.state.transitionScale, {
       toValue: 0,
-      duration: 150
-    }).start()
+      duration: 100,
+      // useNativeDriver: true
+    }).start(() => this.setState({ visible: false }))
   }
 
   render (){
     return (
-      <TouchableOpacity onPress={new Function}>
-        <Animated.View style={{ transform: [{ scale: this.state.transitionScale }], ...styles.main }}>
+      <TouchableOpacity onPress={() => console.log(true)} style={{ ...styles.container,  transform: [{ scale: this.state.transitionScale }] }}>
+        <Animated.View style={{ ...styles.main }}>
           <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
             <Icon name="comment" size={30} color="white" style={{ position: 'relative', top: -4 }} />
-            <Text style={{ position: 'absolute', bottom: 3, color: 'white' }}>2</Text>
+            <Text style={{ position: 'absolute', bottom: 6, color: 'white' }}>2</Text>
           </View>
         </Animated.View>
       </TouchableOpacity>
+
+      
       // <ActionButton icon="comment" hidden
       //   style={{
       //     container: { backgroundColor: $colors.main, elevation: 2 },
@@ -57,15 +64,18 @@ export default class CommentBtn extends React.Component{
 }
 
 const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    bottom: 50,
+    right: 30, 
+  },
+
   main: {
     backgroundColor: $colors.main,
     elevation: 2,
-    position: 'absolute',
-    bottom: 50,
-    right: 30,
     width: size,
     height: size,
     borderRadius: size / 2,
-    overflow: 'hidden',
+    opacity: 0.5
   }
 })
