@@ -9,7 +9,8 @@
     "adbrestart": "adb kill-server && adb start-server",
     "tcp8081": "adb reverse tcp:8081 tcp:8081",
     "android": "react-native run-android",
-    "postinstall": "jetifier -r"
+    "postinstall": "jetifier -r",
+    "menu": "adb shell input keyevent 82"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
