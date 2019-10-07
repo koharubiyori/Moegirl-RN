@@ -6,11 +6,11 @@ import {
 } from 'react-native'
 import { TextField } from 'react-native-material-textfield'
 import StatusBar from '~/components/StatusBar'
-import { createHOC } from '~/redux/user'
+import userHOC from '~/redux/user/HOC'
 import Button from '~/components/Button'
 import toast from '~/utils/toast'
 
-export default createHOC(class Login extends React.Component{
+class Login extends React.Component{
   static propTypes = {
     
   }
@@ -64,7 +64,9 @@ export default createHOC(class Login extends React.Component{
       </KeyboardAvoidingView>
     )
   }
-})
+}
+
+export default userHOC(Login)
 
 const styles = StyleSheet.create({
   submitBtn: {

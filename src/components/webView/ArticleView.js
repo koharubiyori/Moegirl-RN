@@ -8,12 +8,15 @@ import { Button } from 'react-native-material-ui'
 import toast from '~/utils/toast'
 import storage from '~/utils/storage'
 // import mainFuncForInjectScript from './mainFuncForInjectScript'
-import { store } from '~/redux/webView'
-import { store as userStore } from '~/redux/user'
+// import { store } from '~/redux/webView'
+// import { store as userStore } from '~/redux/user'
+
+import webViewHOC from '~/redux/webView/HOC'
+import userHOC from '~/redux/user/HOC'
 
 import { controlsCodeString } from './controls/index' 
 
-export default class ArticleView extends React.Component{
+class ArticleView extends React.Component{
   static propTypes = {
     style: PropTypes.object,
     navigation: PropTypes.object,
@@ -91,8 +94,7 @@ export default class ArticleView extends React.Component{
 
   loadContent = (forceLoad = false) =>{
     this.setState({ status: 2 })
-    
-    store._async.getContent(this.props.link, forceLoad).then(data =>{
+    this.props.webView.getContent(this.props.link, forceLoad).then(data =>{
       this.props.onLoaded(data)
       var html = data.parse.text['*']
       this.writeContent(html)
@@ -123,11 +125,7 @@ export default class ArticleView extends React.Component{
   injectScript = script =>{
     this.refs.webView.injectJavaScript(script)
   }
-
-  initialInjectScripts (){
-    Object.values(webViewControls).split()
-  }
-
+  
   receiveMessage = e =>{
     const {type, data} = JSON.parse(e.nativeEvent.data)
     
@@ -159,7 +157,7 @@ export default class ArticleView extends React.Component{
     }
 
     if(type === 'onTapEdit'){
-      if(userStore.getState().name){
+      if(this.props.state.user.name){
         this.props.navigation.push('edit', { title: data.page, section: data.section })
       }else{
         $dialog.confirm.show({
@@ -196,6 +194,8 @@ export default class ArticleView extends React.Component{
     )
   }
 }
+
+export default webViewHOC(userHOC(ArticleView))
 
 const styles = StyleSheet.create({
   container: {

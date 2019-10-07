@@ -5,7 +5,7 @@ import {
   StyleSheet, NativeModules, Dimensions, Clipboard, DeviceEventEmitter
 } from 'react-native'
 import { Toolbar } from 'react-native-material-ui'
-import { store as userStore } from '~/redux/user'
+import store from '~/redux'
 import toast from '~/utils/toast'
 
 export default class ArticleHeader extends React.Component{
@@ -64,10 +64,8 @@ export default class ArticleHeader extends React.Component{
         this.props.onTapRefreshBtn()
       }
 
-      console.log(event, userStore.getState())
-
       if(event.index === 1){
-        if(userStore.getState().name){
+        if(store.getState().user.name){
           this.props.navigation.push('edit', { title: this.props.title })
         }else{
           this.props.navigation.push('login')
@@ -97,7 +95,7 @@ export default class ArticleHeader extends React.Component{
                 icon: 'more-vert',
                 labels: [
                   '刷新',
-                  ...[userStore.getState().name ? '编辑此页' : '登录'],
+                  ...[store.getState().user.name ? '编辑此页' : '登录'],
                   '分享'
                 ]
             }

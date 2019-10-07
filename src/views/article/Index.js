@@ -64,9 +64,9 @@ export default class Article extends React.Component{
   // 接收需要隐藏或显示header的指令
   changeHeaderVisible = isVisible =>{
     const {show, hide} = this.refs.header
-    const {show: showBtn, hide: hideBtn} = this.refs.commentBtn
+    // const {show: showBtn, hide: hideBtn} = this.refs.commentBtn
     isVisible ? show() : hide()
-    isVisible ? showBtn() : hideBtn()
+    // isVisible ? showBtn() : hideBtn()
   }
 
   contentLoaded = data =>{
@@ -122,7 +122,7 @@ export default class Article extends React.Component{
           />       
         </CatalogTriggerView>
         
-        <CommentBtn ref="commentBtn" />   
+        {/* <CommentBtn ref="commentBtn" />    */}
       </NavigationContext.Provider>
     )
   }

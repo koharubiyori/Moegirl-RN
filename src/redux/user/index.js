@@ -1,3 +1,5 @@
+import CookieManager from 'react-native-cookies'
+import storage from '~/utils/storage'
 import { SET_INFO, CLEAR_INFO } from './actionTypes'
 
 export default function reducer(state = {
@@ -5,12 +7,17 @@ export default function reducer(state = {
 }, action){
   switch(action.type){
     case SET_INFO: {
+      storage.set('userName', action.name)
+
       return {
-        name: action.data.name
+        name: action.name
       }
     }
 
     case CLEAR_INFO: {
+      storage.remove('userName')
+      CookieManager.clearAll()
+
       return {
         name: null
       }
