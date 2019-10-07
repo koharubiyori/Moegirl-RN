@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { View } from 'react-native'
 import Home from './Home'
-import Finds from './Finds/Index'
+import Finds from './finds/Index'
 import History from './History/Index'
 import BottomNavigation from './BottomNavigation'
 
