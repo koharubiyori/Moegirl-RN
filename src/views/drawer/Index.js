@@ -4,9 +4,10 @@ import {
   View, Text, Image, TouchableOpacity,
   StyleSheet, NativeModules
 } from 'react-native'
-import { createHOC } from '~/redux/user'
+import userHOC from '~/redux/user/HOC'
 import Item from './components/Item'
-export default createHOC(class MyDrawer extends React.Component{
+
+class MyDrawer extends React.Component{
   static propTypes = {
     
   }
@@ -29,10 +30,10 @@ export default createHOC(class MyDrawer extends React.Component{
       <View>
         <View style={{ height: NativeModules.StatusBarManager.HEIGHT }} />
         <View style={styles.header}>
-          {this.props.userName ? 
+          {this.props.user.name ? 
             <>
-              <Image source={{ uri: this.avatarUrl + this.props.userName }} style={styles.avatar} />
-              <Text style={styles.hintText}>欢迎你，{this.props.userName}</Text>
+              <Image source={{ uri: this.avatarUrl + this.props.user.name }} style={styles.avatar} />
+              <Text style={styles.hintText}>欢迎你，{this.props.user.name}</Text>
             </>
           : 
             <>
@@ -53,7 +54,9 @@ export default createHOC(class MyDrawer extends React.Component{
       </View>
     )
   }
-})
+}
+
+export default userHOC(MyDrawer)
 
 const styles = StyleSheet.create({
   header: {

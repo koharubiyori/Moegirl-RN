@@ -5,7 +5,8 @@ import AppNavigator from './router'
 import Alert from '~/components/dialog/Alert'
 import Confirm from '~/components/dialog/Confirm'
 import DropToast from '~/components/dialog/DropToast'
-import { StoreProvider as UserProvider } from './redux/user'
+import store from './redux'
+import { Provider } from 'react-redux'
 import toast from './utils/toast'
 // import AsyncStorage from '@react-native-community/async-storage'
 
@@ -45,9 +46,9 @@ export default class App extends React.Component {
   render (){
     return (
       <ThemeContext.Provider value={getTheme(theme)}>
-        <UserProvider>
+        <Provider store={store}>
           <AppNavigator onNavigationStateChange={this.navigationStateChange} />
-        </UserProvider>
+        </Provider>
 
         <Alert ref="alert" />
         <Confirm ref="confirm" />
