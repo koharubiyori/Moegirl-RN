@@ -26,14 +26,16 @@ class MyDrawer extends React.Component{
   }
 
   render (){
+    console.log(this.props.state.user)
+
     return (
       <View>
         <View style={{ height: NativeModules.StatusBarManager.HEIGHT }} />
         <View style={styles.header}>
-          {this.props.user.name ? 
+          {this.props.state.user.name ? 
             <>
-              <Image source={{ uri: this.avatarUrl + this.props.user.name }} style={styles.avatar} />
-              <Text style={styles.hintText}>欢迎你，{this.props.user.name}</Text>
+              <Image source={{ uri: this.avatarUrl + this.props.state.user.name }} style={styles.avatar} />
+              <Text style={styles.hintText}>欢迎你，{this.props.state.user.name}</Text>
             </>
           : 
             <>

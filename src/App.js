@@ -8,6 +8,7 @@ import DropToast from '~/components/dialog/DropToast'
 import store from './redux'
 import { Provider } from 'react-redux'
 import toast from './utils/toast'
+import './init'
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()

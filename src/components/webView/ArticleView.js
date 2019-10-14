@@ -30,7 +30,8 @@ class ArticleView extends React.Component{
     injectJs: PropTypes.string,
 
     onMessages: PropTypes.objectOf(PropTypes.func),   // 接收webView的postMessage
-    onLoaded: PropTypes.func
+    onLoaded: PropTypes.func,
+    getRef: PropTypes.func
   }
 
   static defaultProps = {
@@ -39,6 +40,7 @@ class ArticleView extends React.Component{
 
   constructor (props){
     super(props)
+    props.getRef && props.getRef(this)
 
     this.state = {
       html: '',

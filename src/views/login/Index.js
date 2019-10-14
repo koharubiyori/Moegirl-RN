@@ -37,7 +37,7 @@ class Login extends React.Component{
     if(!password) return toast.show('密码不能为空')
 
     toast.showLoading('登录中')
-    this.props.userLogin(userName, password)
+    this.props.user.login(userName, password)
     .finally(toast.hide)
     .then(() =>{
       toast.showSuccess('登录成功')
