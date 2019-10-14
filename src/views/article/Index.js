@@ -31,6 +31,10 @@ export default class Article extends React.Component{
       catalogItems: []
     }
 
+    this._refs = {
+      articleView: null
+    }
+
     this.articleViewInjectCss = `
       body {
         padding-top: 55px;
@@ -93,7 +97,7 @@ export default class Article extends React.Component{
   }
 
   articleViewIntoAnchor = anchor =>{
-    this.refs.articleView.injectScript(`
+    this._refs.articleView.injectScript(`
       document.getElementById('${anchor}').scrollIntoView({ behavior: 'smooth' })
     `)
   }
@@ -118,7 +122,7 @@ export default class Article extends React.Component{
             injectJs={this.articleViewInjectJs}
             onMessages={{ changeHeaderVisible: this.changeHeaderVisible }}
             onLoaded={this.contentLoaded}
-            ref="articleView"
+            getRef={self => this._refs.articleView = self}
           />       
         </CatalogTriggerView>
         

@@ -2,7 +2,7 @@ import CookieManager from 'react-native-cookies'
 import storage from '~/utils/storage'
 import { SET_INFO, CLEAR_INFO } from './actionTypes'
 
-export default function reducer(state = {
+export default async function reducer(state = {
   name: null
 }, action){
   switch(action.type){
@@ -24,7 +24,7 @@ export default function reducer(state = {
     }
 
     default: {
-     return state 
+      return state 
     }
   }
 }
