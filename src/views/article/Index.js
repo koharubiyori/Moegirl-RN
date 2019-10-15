@@ -9,6 +9,7 @@ import StatusBar from '~/components/StatusBar'
 import Header from './Header'
 import CatalogTriggerView from './catalogTriggerView/index'
 import CommentBtn from './comment/FloatButton'
+import Comment from './comment/index'
 import storage from '~/utils/storage'
 import saveHistory from '~/utils/saveHistory'
 
@@ -27,8 +28,10 @@ export default class Article extends React.Component{
     this.state = {
       link: props.navigation.getParam('link'),
       pageName: props.navigation.getParam('link'),
+      id: 0,
 
-      catalogItems: []
+      catalogItems: [],
+      visibleCommentModal: false
     }
 
     this._refs = {
@@ -68,9 +71,9 @@ export default class Article extends React.Component{
   // 接收需要隐藏或显示header的指令
   changeHeaderVisible = isVisible =>{
     const {show, hide} = this.refs.header
-    // const {show: showBtn, hide: hideBtn} = this.refs.commentBtn
+    const {show: showBtn, hide: hideBtn} = this.refs.commentBtn
     isVisible ? show() : hide()
-    // isVisible ? showBtn() : hideBtn()
+    isVisible ? showBtn() : hideBtn()
   }
 
   contentLoaded = data =>{
@@ -92,7 +95,8 @@ export default class Article extends React.Component{
     this.setState({
       // 名字不一样要提示
       pageName: trueTitle,
-      catalogItems: data.parse.sections
+      catalogItems: data.parse.sections,
+      id: data.parse.pageid
     })
   }
 
@@ -125,8 +129,9 @@ export default class Article extends React.Component{
             getRef={self => this._refs.articleView = self}
           />       
         </CatalogTriggerView>
-        
-        {/* <CommentBtn ref="commentBtn" />    */}
+
+        {this.state.id ? <CommentBtn ref="commentBtn" id={this.state.id} onTap={() => this.setState({ visibleCommentModal: true })} /> : null } 
+        <Comment visible={this.state.visibleCommentModal} />
       </NavigationContext.Provider>
     )
   }

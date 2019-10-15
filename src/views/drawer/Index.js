@@ -26,8 +26,6 @@ class MyDrawer extends React.Component{
   }
 
   render (){
-    console.log(this.props.state.user)
-
     return (
       <View>
         <View style={{ height: NativeModules.StatusBarManager.HEIGHT }} />
