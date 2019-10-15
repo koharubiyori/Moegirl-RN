@@ -26,6 +26,7 @@ export default class ArticleHeader extends React.Component{
     
     // 防止在返回时不滑动看不到标题
     this.articleChangeListener = DeviceEventEmitter.addListener('navigationStateChange', () => this.show())
+    this.animateLock = false
   }
 
   componentWillUnmount (){
@@ -33,25 +34,29 @@ export default class ArticleHeader extends React.Component{
   }
   
   hide = () =>{
-    if(!this.state.visible){ return }
-    this.setState({ visible: false })
+    if(this.animateLock || !this.state.visible){ return }
+    this.animateLock = true
 
     Animated.timing(this.state.transitionTranslateY, {
       toValue: -56,
       duration: 200,
-      // useNativeDriver: true
-    }).start()
+      useNativeDriver: true
+    }).start(() =>{
+      this.setState({ visible: false })
+      this.animateLock = false
+    })
   }
 
   show = () =>{
-    if(this.state.visible){ return }
+    if(this.animateLock || this.state.visible){ return }
     this.setState({ visible: true })
+    this.animateLock = true
 
     Animated.timing(this.state.transitionTranslateY, {
       toValue: 0,
       duration: 200,
-      // useNativeDriver: true
-    }).start()
+      useNativeDriver: true
+    }).start(() => this.animateLock = false)
   }
 
   eventHandlers = (event, navigation) =>{
