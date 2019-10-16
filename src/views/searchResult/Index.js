@@ -91,9 +91,7 @@ export default class SearchResult extends React.Component{
             4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20 }}>已经没有啦</Text>
           }[this.state.status] || new Function)()}
           textBreakStrategy="balanced"
-        >
-          
-        </FlatList>
+        />
       </View>
     )
   }

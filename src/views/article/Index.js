@@ -8,8 +8,7 @@ import ArticleView from '~/components/webView/ArticleView'
 import StatusBar from '~/components/StatusBar'
 import Header from './Header'
 import CatalogTriggerView from './catalogTriggerView/index'
-import CommentBtn from './comment/FloatButton'
-import Comment from './comment/index'
+import CommentBtn from './FloatButton'
 import storage from '~/utils/storage'
 import saveHistory from '~/utils/saveHistory'
 
@@ -31,7 +30,7 @@ export default class Article extends React.Component{
       id: 0,
 
       catalogItems: [],
-      visibleCommentModal: false
+      firstData: null
     }
 
     this._refs = {
@@ -130,8 +129,10 @@ export default class Article extends React.Component{
           />       
         </CatalogTriggerView>
 
-        {this.state.id ? <CommentBtn ref="commentBtn" id={this.state.id} onTap={() => this.setState({ visibleCommentModal: true })} /> : null } 
-        <Comment visible={this.state.visibleCommentModal} />
+        {this.state.id ? <CommentBtn ref="commentBtn" id={this.state.id}
+          onTap={() => this.props.navigation.push('comment', { id: this.state.id, title: this.state.pageName, firstData: this.state.firstData })}
+          onLoaded={data => this.setState({ firstData: data })}
+        /> : null } 
       </NavigationContext.Provider>
     )
   }
