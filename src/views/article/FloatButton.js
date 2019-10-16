@@ -12,13 +12,15 @@ const size = 60
 export default class CommentBtn extends React.Component{
   static propTypes = {
     id: PropTypes.number,
-    onTap: PropTypes.func
+    onTap: PropTypes.func,
+    onLoaded: PropTypes.func
   }
 
   constructor (props){
     super(props)
     this.state = {
       transitionScale: new Animated.Value(1),
+      transitionCheck: new Animated.Value(1),     // 按钮check动画的映射变量
       visible: false,
       
       total: 0,
@@ -63,13 +65,14 @@ export default class CommentBtn extends React.Component{
     }).start(() =>{
       this.setState({ visible: false })
       this.animateLock = false
-    }), 1000)
+    }), 1500)
   }
 
   getComments (){
     this.setState({ status: 2 })
     getComments(this.props.id).then(data =>{
       this.setState({ status: 3, total: data.count, firstData: data })
+      this.props.onLoaded(data)
     }).catch(e =>{
       this.setState({ status: 0 })
     })
@@ -82,7 +85,7 @@ export default class CommentBtn extends React.Component{
         <Animated.View style={{ ...styles.main }}>
           <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
             <Icon name="comment" size={30} color="white" style={{ position: 'relative', top: -4 }} />
-            <Text style={{ position: 'absolute', bottom: 6, color: 'white' }}>{this.state.total}</Text>
+            <Text style={{ position: 'absolute', bottom: 6, color: 'white' }}>{{ 0: '×', 1: '...', 2: '...', 3: this.state.total }[this.state.status]}</Text>
           </View>
         </Animated.View>
       </TouchableOpacity>
