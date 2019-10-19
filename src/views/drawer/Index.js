@@ -17,8 +17,6 @@ class MyDrawer extends React.Component{
     this.state = {
       
     }
-
-    this.avatarUrl = 'https://commons.moegirl.org/extensions/Avatar/avatar.php?user='
   }
 
   componentDidMount (){
@@ -32,7 +30,7 @@ class MyDrawer extends React.Component{
         <View style={styles.header}>
           {this.props.state.user.name ? 
             <>
-              <Image source={{ uri: this.avatarUrl + this.props.state.user.name }} style={styles.avatar} />
+              <Image source={{ uri: $avatarUrl + this.props.state.user.name }} style={styles.avatar} />
               <Text style={styles.hintText}>欢迎你，{this.props.state.user.name}</Text>
             </>
           : 
