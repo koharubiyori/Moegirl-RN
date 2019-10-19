@@ -6,13 +6,23 @@ import {
 } from 'react-native'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
-import { toggleLike } from '~/api/comment'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { toggleLike, report, delComment } from '~/api/comment'
 import toast from '~/utils/toast'
 import Tree from '~/utils/tree'
+import store from '~/redux'
 
 export default class CommentItem extends React.Component{
   static propTypes = {
-    data: PropTypes.object
+    data: PropTypes.object,
+    visibleReply: PropTypes.bool,
+    visibleReplyBtn: PropTypes.bool,
+    onDel: PropTypes.func,
+  }
+
+  static defaultProps = {
+    visibleReply: true,
+    visibleReplyBtn: true
   }
 
   constructor (props){
@@ -21,11 +31,8 @@ export default class CommentItem extends React.Component{
     this.state = {
       isLiked: props.data.myatt,
       likeNum: props.data.like,
+      isReported: false
     }
-  }
-
-  componentDidMount (){
-    this.childrenFormat(this.props.data.children)
   }
 
   dateFormat (timestamp){
@@ -98,6 +105,40 @@ export default class CommentItem extends React.Component{
       })
   }
 
+  report = () =>{
+    if(this.state.isReported){ return toast.show('不能重复举报') }
+    
+    $dialog.confirm.show({ 
+      content: '确定要举报这条评论吗？',
+      onTapCheck: () =>{
+        toast.showLoading()
+        report(this.props.data.id)
+          .finally(toast.hide)
+          .then(() =>{
+            this.setState({ isReported: true })  
+            $dialog.alert.show({ content: '已举报' })
+          })
+          .catch(() => toast.show('网络错误，请重试'))
+      }
+   })
+  }
+
+  del = () =>{
+    $dialog.confirm.show({
+      content: '确定要删除自己的这条评论吗？',
+      onTapCheck: () =>{
+        toast.showLoading()
+        delComment(this.props.data.id)
+          .finally(toast.hide)
+          .then(() =>{
+            this.props.onDel(this.props.data.id)
+            $dialog.alert.show({ content: '评论已删除' })
+          })
+          .catch(() => toast.show('网络错误，请重试'))
+      }
+    })    
+  }
+
   render (){
     const iconSize = 20
     const {data} = this.props
@@ -115,9 +156,11 @@ export default class CommentItem extends React.Component{
               </View>
             </View>
 
-            <TouchableOpacity>
-              <Text>删除</Text>
-            </TouchableOpacity>
+            {this.props.data.username === store.getState().user.name ? 
+              <TouchableOpacity onPress={this.del}>
+                <MaterialIcon name="clear" color="#ccc" size={iconSize} />
+              </TouchableOpacity>
+            : null}
           </View>
         </View>
 
@@ -125,7 +168,7 @@ export default class CommentItem extends React.Component{
           <Text>{this.contentFormat(data.text)}</Text>
         </View>
 
-        {this.props.data.children.length === 0 ? null :
+        {this.props.visibleReply && this.props.data.children.length !== 0 ? 
           <View style={styles.reply}>{this.childrenFormat(this.props.data.children).filter((_, ind) => ind < 3).map(item =>
             <View style={{ marginVertical: 2 }}>
               <Text>
@@ -137,7 +180,7 @@ export default class CommentItem extends React.Component{
               </Text>
             </View>
           )}</View>
-        }
+        : null}
 
         <View style={styles.footer}>
           <TouchableOpacity style={{ ...styles.footerItem, position: 'relative', top: 1 }} 
@@ -149,18 +192,20 @@ export default class CommentItem extends React.Component{
             {likeNum > 0 ? <Text style={{ color: $colors.sub, marginLeft: 5 }}>{likeNum}</Text> : null}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.footerItem} contentContainerStyle={styles.footerItem}>
-            {data.children.length === 0 ? 
-              <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />
-            :
-              <>
-                <FontAwesomeIcon name="comment" color={$colors.sub} size={iconSize} />
-                <Text style={{ color: $colors.sub, marginLeft: 5 }}>{data.children.length}</Text>
-              </>
-            }
-          </TouchableOpacity>
+          {this.props.visibleReplyBtn ? 
+            <TouchableOpacity style={styles.footerItem} contentContainerStyle={styles.footerItem}>
+              {data.children.length === 0 ? 
+                <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />
+              :
+                <>
+                  <FontAwesomeIcon name="comment" color={$colors.sub} size={iconSize} />
+                  <Text style={{ color: $colors.sub, marginLeft: 5 }}>{data.children.length}</Text>
+                </>
+              }
+            </TouchableOpacity>
+          : null}
 
-          <TouchableOpacity style={styles.footerItem}>
+          <TouchableOpacity style={styles.footerItem} onPress={this.report}>
             <AntDesignIcon name="flag" color="#ccc" size={iconSize} /> 
           </TouchableOpacity>
         </View>

@@ -40,8 +40,8 @@ export default class App extends React.Component {
     global.$dialog = { ...this.refs }
   }
 
-  navigationStateChange (state){
-    DeviceEventEmitter.emit('navigationStateChange', state)
+  navigationStateChange (prevState, state){
+    DeviceEventEmitter.emit('navigationStateChange', prevState, state)
   }
 
   render (){

@@ -15,29 +15,43 @@ import edit from './views/edit/Index'
 import comment from './views/comment/Index'
 
 const StackNavigator = createStackNavigator(
-  { main, article, search, searchResult, login, edit, comment },
+  { 
+    main, article, search, searchResult, login,
+
+    edit: {
+      screen: edit,
+      params: {
+        transitionType: 'forHorizontal'
+      }
+    }, 
+    
+    comment: {
+      screen: comment,
+      params: {
+        transitionType: 'forHorizontal'
+      }
+    }
+  },
 
   { 
     initialRouteName: 'main',
     headerMode: 'none',
     transitionConfig: sceneProps => ({
-      screenInterpolator: transitionConfig(sceneProps)
+      screenInterpolator: screenInterpolator(sceneProps)
     })
   }
 )
 
-function transitionConfig(sceneProps) {
-  const {scene} = sceneProps
-  const {route} = scene
-  const params = route.params || {}
+function screenInterpolator(sceneProps) {
+  const params = sceneProps.scene.route.params || {}
   const {transitionType} = params
+
   if (transitionType) {
     return StackViewStyleInterpolator[transitionType]
   } else {
     return StackViewStyleInterpolator.forFadeFromBottomAndroid
   }
 }
-
 
 const DrawerNavigator = createDrawerNavigator(
   { StackNavigator },

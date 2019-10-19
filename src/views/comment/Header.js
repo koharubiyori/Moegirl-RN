@@ -18,7 +18,7 @@ export default function CommentHeader({
   onTapAddComment
 }){
   function eventHandlers(event){
-    if(event.action === 'add_comment'){
+    if(event.action === 'insert-comment'){
       onTapAddComment()
     }
   }
