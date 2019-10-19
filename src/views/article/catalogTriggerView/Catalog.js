@@ -8,7 +8,7 @@ import Button from '~/components/Button'
 
 export const width = 200
 
-// 虽然这个组件主要只负责显示视图，但因为需要根据组件id判断是否点击了mask，所以不能写成函数组件( 用React.createRef()还是能写成函数组件的，懒得改了_(:з」∠)_
+// 虽然这个组件主要只负责显示视图，但因为需要根据组件id判断是否点击了mask，所以不能写成函数组件( 用React.createRef()应该还是能写成函数组件的，懒得改了_(:з」∠)_
 export class Catalog extends React.Component{
   static propTypes = {
     transitionRight: PropTypes.instanceOf(Animated.Value).isRequired,

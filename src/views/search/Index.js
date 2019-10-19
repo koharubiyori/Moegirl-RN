@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, 
+  View, Text,
   StyleSheet
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
@@ -74,19 +74,19 @@ export default class Search extends React.Component{
       <NavigationContext.Provider value={this.props.navigation}>
         <View style={{ flex: 1, backgroundColor: 'white' }}>
           <StatusBar blackText color="white" />
-          <Header value={this.state.searchWord} 
-            onChangeText={this.changeText} 
-            onSubmit={() => this.toSearchResultView()}
-          />
-          {this.state.searchWord ? 
-            <SearchHint titles={this.state.searchHint} onTapTitle={title => this.toSearchResultView(title)} />
-          : 
-            <RecentSearch 
-              titles={this.state.searchHistory}
-              onTapDelete={this.clearSearchHistory}
-              onTapTitle={title => this.toSearchResultView(title)}
+            <Header value={this.state.searchWord} 
+              onChangeText={this.changeText} 
+              onSubmit={() => this.toSearchResultView()}
             />
-          }
+            {this.state.searchWord ? 
+              <SearchHint titles={this.state.searchHint} onTapTitle={title => this.toSearchResultView(title)} />
+            : 
+              <RecentSearch 
+                titles={this.state.searchHistory}
+                onTapDelete={this.clearSearchHistory}
+                onTapTitle={title => this.toSearchResultView(title)}
+              />
+            }
         </View>
       </NavigationContext.Provider>
     )

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, 
+  View, Text,
   StyleSheet, 
 } from 'react-native'
 import { AndroidBackHandler } from 'react-navigation-backhandler'
@@ -24,6 +24,11 @@ export default class Edit extends React.Component{
     }
 
     this.essentialUpdate = false
+
+    // props.navigation.addListener('willBlur', e =>{
+    //   console.log('blur')
+    //   $lastTransition = 'forHorizontal'
+    // })
   }
 
   // 监听tab导航容器的状态变化
