@@ -32,7 +32,7 @@ export default class SearchResult extends React.Component{
   }
   
   loadList = () =>{
-    if(this.state.status === 4){ return }
+    if(this.state.status === 4 || this.state.status === 2){ return }
     this.setState({ status: 2 })
     search(this.searchWord, this.state.list.length)
       .then(({query}) =>{
@@ -86,6 +86,7 @@ export default class SearchResult extends React.Component{
             searchWord={this.searchWord} 
             onPress={link => this.props.navigation.push('article', { link })}
           />}
+
           ListFooterComponent={({
             2: () => <ActivityIndicator color={$colors.main} size={50} style={{ marginVertical: 10 }} />,
             4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20 }}>已经没有啦</Text>

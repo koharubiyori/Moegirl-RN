@@ -19,3 +19,4 @@ const theme = StyleSheet.create({
 
 global.$colors = colors
 global.$theme = theme
+global.$avatarUrl = 'https://commons.moegirl.org/extensions/Avatar/avatar.php?user='
