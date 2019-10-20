@@ -55,15 +55,15 @@ export function delComment(postid){
   })
 }
 
-export function postComment(id, isReply, content){
+export function postComment(pageid, content, postid){
   return new Promise((resolve, reject) =>{
     request({
       method: 'post',
       params: {
         action: 'flowthread',
         type: 'post',
-        [isReply ? 'postid' : 'pageid'] : id,
-        content
+        pageid, content,
+        ...(postid ? { postid } : {})
       }
     }).then(data =>{
       'error' in data ? reject() : resolve()

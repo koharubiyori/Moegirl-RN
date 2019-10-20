@@ -30,7 +30,7 @@ export default function CommentHeader({
       }}
 
       leftElement="keyboard-backspace"
-      centerElement={`评论：${title}`}
+      centerElement={title}
       onLeftElementPress={() => navigation.goBack()}
       onRightElementPress={eventHandlers}
     />
