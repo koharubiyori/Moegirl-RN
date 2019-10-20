@@ -13,6 +13,7 @@ import searchResult from './views/searchResult/Index'
 import login from './views/login/Index'
 import edit from './views/edit/Index'
 import comment from './views/comment/Index'
+import reply from './views/comment/Reply'
 
 const StackNavigator = createStackNavigator(
   { 
@@ -30,7 +31,14 @@ const StackNavigator = createStackNavigator(
       params: {
         transitionType: 'forHorizontal'
       }
-    }
+    },
+
+    reply: {
+      screen: reply,
+      params: {
+        transitionType: 'forHorizontal'
+      }
+    },
   },
 
   { 

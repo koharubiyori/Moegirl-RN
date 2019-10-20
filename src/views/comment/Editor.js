@@ -4,13 +4,14 @@ import {
   View, Text, Modal, Animated, TextInput, TouchableWithoutFeedback, TouchableOpacity,
   StyleSheet
 } from 'react-native'
+import {  } from 'react-navigation'
 import { postComment } from '~/api/comment'
 import toast from '~/utils/toast'
 
 export default class CommentEditor extends React.Component{
   static propTypes = {
-    targetId: PropTypes.number,
-    isReply: PropTypes.bool,
+    targetId: PropTypes.string,
+    pageId: PropTypes.number,
     onPosted: PropTypes.func,
   }
 
@@ -19,7 +20,7 @@ export default class CommentEditor extends React.Component{
     this.state = {
       transitionOpacity: new Animated.Value(0),
       transitionTranslateY: new Animated.Value(120),
-      visible: true,
+      visible: false,
       inputText: ''
     }
   }
@@ -38,13 +39,17 @@ export default class CommentEditor extends React.Component{
   }
 
   close = () =>{
-    if(this.state.inputText){
-      $dialog.confirm.show({
-        content: '关闭后当前编辑的评论内容将不会保存，是否关闭？',
-        onTapCheck: () => this.hide()
-      })
+    if(this.state.visible){
+      if(this.state.inputText){
+        $dialog.confirm.show({
+          content: '关闭后当前编辑的评论内容将不会保存，是否关闭？',
+          onTapCheck: () => this.hide()
+        })
+      }else{
+        this.hide()
+      }
     }else{
-      this.hide()
+      this.props.navigation.goBack()
     }
   }
 
@@ -52,7 +57,7 @@ export default class CommentEditor extends React.Component{
     if(this.state.inputText === '0'){ return toast.show('因萌百评论系统的bug，不能以“0”作为评论内容') }
 
     toast.showLoading('提交中')
-    postComment(this.props.targetId, this.props.isReply, this.state.inputText)
+    postComment(this.props.pageId, this.state.inputText, this.props.targetId)
       .finally(toast.hide)
       .then(() =>{
         toast.showSuccess('发表成功')

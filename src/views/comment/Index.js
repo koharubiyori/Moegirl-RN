@@ -19,20 +19,17 @@ export default class Comment extends React.Component{
 
   constructor (props){
     super(props)
+
+    var data = props.navigation.getParam('firstData')
+    var tree = new Tree(props.navigation.getParam('firstData').posts)
     this.state = {
-      data: props.navigation.getParam('firstData'),
-      tree: new Tree(props.navigation.getParam('firstData').posts),
+      data, tree,
       id: props.navigation.getParam('id'),
       title: props.navigation.getParam('title'),
-      status: 1,
-
-      editorPostId: '',
-      editorIsReply: false 
+      status: tree.tree.length >= data.count ? 4 : 1
     }
-  }
 
-  componentDidMount (){
-    console.log(this.state.data)
+    if(data.count === 0) this.state.status = 5
   }
 
   loadList = () =>{
@@ -62,6 +59,17 @@ export default class Comment extends React.Component{
       })
   }
 
+  setReplyRouteParams = params =>{
+    var parentRoute = this.props.navigation.dangerouslyGetParent()
+    var {routes} = parentRoute.state
+
+    var lastRoute = routes[routes.length - 1]
+    if(lastRoute.routeName === 'reply'){
+      var replyRouteKey = lastRoute.key
+      parentRoute._childrenNavigation[replyRouteKey].setParams(params)
+    }
+  }
+
   incrementLoad = () =>{
     getComments(this.state.id).then(({posts, count}) =>{
       var currentPostIds = this.state.data.posts.map(item => item.id)
@@ -83,16 +91,16 @@ export default class Comment extends React.Component{
     })
   }
 
+  toReply = (data, children) =>{
+    this.props.navigation.push('reply', { data, children, pageId: this.state.id, indexInstance: this })
+  }
+
   render (){
     return (
       <View style={{ flex: 1, backgroundColor: '#eee' }}>
         <StatusBar />
-        <Header title={this.state.title} onTapAddComment={() => this.refs.editor.show()} navigation={this.props.navigation} />
-        <Editor ref="editor" 
-          targetId={this.state.editorIsReply ? this.state.editorPostId : this.state.id} 
-          isReply={this.state.editorIsReply} 
-          onPosted={this.incrementLoad}
-         />
+        <Header title={'评论：' + this.state.title} onTapAddComment={() => this.refs.editor.show()} navigation={this.props.navigation} />
+        <Editor ref="editor" pageId={this.state.id} onPosted={this.incrementLoad} navigation={this.props.navigation} />
       
         <FlatList data={this.state.tree.tree} 
           onEndReachedThreshold={0.5}
@@ -102,6 +110,7 @@ export default class Comment extends React.Component{
             key={item.item.id}
             data={item.item}
             onDel={this.delCommentData}
+            onTapReply={this.toReply}
           />}
 
           ListHeaderComponent={this.state.data.popular.length !== 0 ? 
@@ -116,7 +125,8 @@ export default class Comment extends React.Component{
 
           ListFooterComponent={({
             2: () => <ActivityIndicator color={$colors.main} size={50} style={{ marginVertical: 10 }} />,
-            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>
+            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
+            5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>还没有评论哦</Text>
           }[this.state.status] || new Function)()}
           textBreakStrategy="balanced"
         />

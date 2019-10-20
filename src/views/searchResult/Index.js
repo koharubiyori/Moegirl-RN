@@ -81,7 +81,7 @@ export default class SearchResult extends React.Component{
           onEndReached={this.loadList}
           style={styles.list}
           renderItem={item => <Item 
-            key={item.item.pageid}
+            key={item.item.id}
             data={item.item}
             searchWord={this.searchWord} 
             onPress={link => this.props.navigation.push('article', { link })}

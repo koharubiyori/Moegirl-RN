@@ -15,14 +15,20 @@ import store from '~/redux'
 export default class CommentItem extends React.Component{
   static propTypes = {
     data: PropTypes.object,
+    contentName: PropTypes.string,
     visibleReply: PropTypes.bool,
     visibleReplyBtn: PropTypes.bool,
+    visibleReplyNum: PropTypes.bool,
     onDel: PropTypes.func,
+    onPress: PropTypes.func,
+    onTapReply: PropTypes.func
   }
 
   static defaultProps = {
     visibleReply: true,
-    visibleReplyBtn: true
+    visibleReplyBtn: true,
+    visibleReplyNum: true,
+    contentName: '评论'
   }
 
   constructor (props){
@@ -77,6 +83,8 @@ export default class CommentItem extends React.Component{
   }
 
   childrenFormat (children){
+    if(children.length === 0){ return [] }
+
     var result = Tree.toFlat(children)
     return result.map(item =>{
       if(item.parentid !== this.props.data.id){
@@ -84,7 +92,7 @@ export default class CommentItem extends React.Component{
       }
 
       return item
-    })
+    }).reverse()
   }
 
   toggleLike = () =>{
@@ -109,7 +117,7 @@ export default class CommentItem extends React.Component{
     if(this.state.isReported){ return toast.show('不能重复举报') }
     
     $dialog.confirm.show({ 
-      content: '确定要举报这条评论吗？',
+      content: `确定要举报这条${this.props.contentName}吗？`,
       onTapCheck: () =>{
         toast.showLoading()
         report(this.props.data.id)
@@ -125,7 +133,7 @@ export default class CommentItem extends React.Component{
 
   del = () =>{
     $dialog.confirm.show({
-      content: '确定要删除自己的这条评论吗？',
+      content: `确定要删除自己的这条${this.props.contentName}吗？`,
       onTapCheck: () =>{
         toast.showLoading()
         delComment(this.props.data.id)
@@ -134,7 +142,10 @@ export default class CommentItem extends React.Component{
             this.props.onDel(this.props.data.id)
             $dialog.alert.show({ content: '评论已删除' })
           })
-          .catch(() => toast.show('网络错误，请重试'))
+          .catch(e =>{
+            console.log(e)
+            toast.show('网络错误，请重试')
+          })
       }
     })    
   }
@@ -143,6 +154,8 @@ export default class CommentItem extends React.Component{
     const iconSize = 20
     const {data} = this.props
     const {likeNum, isLiked} = this.state
+
+    const formattedChildren = this.childrenFormat(this.props.data.children || [])
 
     return (
       <View style={styles.container}>
@@ -165,11 +178,20 @@ export default class CommentItem extends React.Component{
         </View>
 
         <View style={styles.main}>
-          <Text>{this.contentFormat(data.text)}</Text>
+          <Text>
+            {this.props.data.targetName ?
+              <Text style={{ color: '#ABABAB' }}>
+                <Text>回复 </Text>
+                <Text style={{ color: '#007ACC' }}>{this.props.data.targetName}：  </Text>
+              </Text> 
+            : null}
+            
+            <Text>{this.contentFormat(data.text)}</Text>
+          </Text>
         </View>
 
-        {this.props.visibleReply && this.props.data.children.length !== 0 ? 
-          <View style={styles.reply}>{this.childrenFormat(this.props.data.children).filter((_, ind) => ind < 3).map(item =>
+        {this.props.visibleReply && this.props.data.children && this.props.data.children.length !== 0 ? 
+          <View style={styles.reply}>{formattedChildren.filter((_, ind) => ind < 3).map(item =>
             <View style={{ marginVertical: 2 }}>
               <Text>
                 <Text style={{ color: '#007ACC' }}>{item.username}</Text>
@@ -193,8 +215,10 @@ export default class CommentItem extends React.Component{
           </TouchableOpacity>
 
           {this.props.visibleReplyBtn ? 
-            <TouchableOpacity style={styles.footerItem} contentContainerStyle={styles.footerItem}>
-              {data.children.length === 0 ? 
+            <TouchableOpacity style={styles.footerItem} contentContainerStyle={styles.footerItem}
+              onPress={() => this.props.onTapReply(this.props.data, formattedChildren)}
+            >
+              {!this.props.visibleReplyNum || data.children.length === 0 ? 
                 <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />
               :
                 <>
