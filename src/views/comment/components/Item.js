@@ -9,8 +9,8 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { toggleLike, report, delComment } from '~/api/comment'
 import toast from '~/utils/toast'
-import Tree from '~/utils/tree'
 import store from '~/redux'
+import format from '../utils/format'
 
 export default class CommentItem extends React.Component{
   static propTypes = {
@@ -19,6 +19,7 @@ export default class CommentItem extends React.Component{
     visibleReply: PropTypes.bool,
     visibleReplyBtn: PropTypes.bool,
     visibleReplyNum: PropTypes.bool,
+    visibleDelBtn: PropTypes.bool,
     onDel: PropTypes.func,
     onPress: PropTypes.func,
     onTapReply: PropTypes.func
@@ -28,6 +29,7 @@ export default class CommentItem extends React.Component{
     visibleReply: true,
     visibleReplyBtn: true,
     visibleReplyNum: true,
+    visibleDelBtn: true,
     contentName: '评论'
   }
 
@@ -39,60 +41,6 @@ export default class CommentItem extends React.Component{
       likeNum: props.data.like,
       isReported: false
     }
-  }
-
-  dateFormat (timestamp){
-    var comDate = new Date(timestamp * 1000)
-    var nowDate = new Date()
-    var diff = nowDate - comDate
-    diff = Math.floor(Math.abs(diff) / 1000)
-    var date = ''
-    if(diff < 60){
-      date = diff + '秒前'
-    }else if(diff < 60 * 60){
-      date = Math.floor(diff / 60) + '分钟前'
-    }else if(diff < 60 * 60 * 24){
-      date = Math.floor(diff / 60 / 60) + '小时前'
-    }else if(diff < 60 * 60 * 24 / 30){
-      date = Math.floor(diff / 60 / 60 / 24) + '天前'
-      var needFullDate = true
-    }else{
-      date = `${comDate.getFullYear()}年${comDate.getMonth() + 1}月${comDate.getDate()}日`
-      var needFullDate = true
-    }
-
-    const bu_ling = number => number < 10 ? '0' + number : number
-    var time = `${bu_ling(comDate.getHours())}:${bu_ling(comDate.getMinutes())}`
-
-    if(needFullDate){
-      return `${date} ${time}`
-    }else{
-      return date
-    }
-  }
-
-  contentFormat (text){
-    text = text.replace(/(<.+?>|<\/.+?>)/g, '')
-    .replace(/&(.+?);/g, (s, s1) => ({
-      gt: '>' ,
-      lt: '<',
-      amp: '&'
-    })[s1] || s)
-  
-    return text.trim()
-  }
-
-  childrenFormat (children){
-    if(children.length === 0){ return [] }
-
-    var result = Tree.toFlat(children)
-    return result.map(item =>{
-      if(item.parentid !== this.props.data.id){
-        item.targetName = result.filter(item2 => item2.id === item.parentid)[0].username
-      }
-
-      return item
-    }).reverse()
   }
 
   toggleLike = () =>{
@@ -155,7 +103,7 @@ export default class CommentItem extends React.Component{
     const {data} = this.props
     const {likeNum, isLiked} = this.state
 
-    const formattedChildren = this.childrenFormat(this.props.data.children || [])
+    const formattedChildren = format.children(data.children || [], data.id)
 
     return (
       <View style={styles.container}>
@@ -165,11 +113,11 @@ export default class CommentItem extends React.Component{
               <Image source={{ uri: $avatarUrl + data.username }} style={styles.avatar}  />
               <View>
                 <Text>{data.username}</Text>
-                <Text style={{ color: '#ABABAB', marginTop: 3 }}>{this.dateFormat(data.timestamp)}</Text>
+                <Text style={{ color: '#ABABAB', marginTop: 3 }}>{format.date(data.timestamp)}</Text>
               </View>
             </View>
 
-            {this.props.data.username === store.getState().user.name ? 
+            {this.props.visibleDelBtn && this.props.data.username === store.getState().user.name ? 
               <TouchableOpacity onPress={this.del}>
                 <MaterialIcon name="clear" color="#ccc" size={iconSize} />
               </TouchableOpacity>
@@ -186,7 +134,7 @@ export default class CommentItem extends React.Component{
               </Text> 
             : null}
             
-            <Text>{this.contentFormat(data.text)}</Text>
+            <Text>{format.content(data.text)}</Text>
           </Text>
         </View>
 
@@ -198,7 +146,7 @@ export default class CommentItem extends React.Component{
                 {item.targetName ? <Text> 回复 </Text> : null}
                 {item.targetName ? <Text style={{ color: '#007ACC' }}>{item.targetName}</Text> : null}
                 <Text style={{ color: '#007ACC' }}>：</Text>
-                <Text>{this.contentFormat(item.text)}</Text>
+                <Text>{format.content(item.text)}</Text>
               </Text>
             </View>
           )}</View>
@@ -216,7 +164,7 @@ export default class CommentItem extends React.Component{
 
           {this.props.visibleReplyBtn ? 
             <TouchableOpacity style={styles.footerItem} contentContainerStyle={styles.footerItem}
-              onPress={() => this.props.onTapReply(this.props.data, formattedChildren)}
+              onPress={() => this.props.onTapReply(data.id)}
             >
               {!this.props.visibleReplyNum || data.children.length === 0 ? 
                 <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />
