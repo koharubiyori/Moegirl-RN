@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, ActivityIndicator, FlatList,
+  View, Text, ActivityIndicator, FlatList, TouchableOpacity,
   StyleSheet
 } from 'react-native'
 import Tree from '~/utils/tree'
@@ -44,20 +44,21 @@ class Comment extends React.Component{
     this.props.comment.load(this.pageId).catch(() => toast.show('加载失败，正在重试'))
   }
 
-  // setReplyRouteParams = params =>{
-  //   var parentRoute = this.props.navigation.dangerouslyGetParent()
-  //   var {routes} = parentRoute.state
+  addComment = () =>{
+    var state = store.getState()
+    if(!state.user.name){
+      return $dialog.confirm.show({
+        content: '需要先登录才能发表评论，是否前往登录界面？',
+        onTapCheck: () => this.props.navigation.push('login')
+      })
+    }
 
-  //   var lastRoute = routes[routes.length - 1]
-  //   if(lastRoute.routeName === 'reply'){
-  //     var replyRouteKey = lastRoute.key
-  //     parentRoute._childrenNavigation[replyRouteKey].setParams(params)
-  //   }
-  // }
+    this.refs.editor.show()
+  }
 
   toReply = id =>{
     store.dispatch({ type: commentActions.SET, data: { activeId: id } })
-    // this.props.navigation.push('reply')
+    this.props.navigation.push('reply')
   }
 
   render (){
@@ -68,7 +69,7 @@ class Comment extends React.Component{
     return (
       <View style={{ flex: 1, backgroundColor: '#eee' }}>
         <StatusBar />
-        <Header title={'评论：' + state.title} onTapAddComment={() => this.refs.editor.show()} navigation={this.props.navigation} />
+        <Header title={'评论：' + state.title} onTapAddComment={this.addComment} navigation={this.props.navigation} />
         <Editor ref="editor" pageId={state.pageId} onPosted={this.props.comment.incrementLoad} />
       
         <FlatList data={state.tree.tree} 
@@ -93,6 +94,13 @@ class Comment extends React.Component{
           : null}
 
           ListFooterComponent={({
+            0: () => 
+            <TouchableOpacity onPress={this.loadList}>
+              <View style={{ height: 50, justifyContent: 'center', alignContent: 'center', elevation: 2 }}>
+                <Text>加载失败，点击重试</Text>
+              </View>
+            </TouchableOpacity>,
+
             2: () => <ActivityIndicator color={$colors.main} size={50} style={{ marginVertical: 10 }} />,
             4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
             5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>还没有评论哦</Text>
