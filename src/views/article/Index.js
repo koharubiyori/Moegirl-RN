@@ -11,6 +11,7 @@ import CatalogTriggerView from './catalogTriggerView/index'
 import CommentBtn from './FloatButton'
 import storage from '~/utils/storage'
 import saveHistory from '~/utils/saveHistory'
+import toast from '~/utils/toast'
 
 const NavigationContext = React.createContext()
 
@@ -105,6 +106,11 @@ export default class Article extends React.Component{
     `)
   }
 
+  toComment = () =>{
+    if(!this.state.firstData){ return toast.show('加载评论中，请稍候') }
+    this.props.navigation.push('comment', { id: this.state.id, title: this.state.pageName, firstData: this.state.firstData })
+  }
+
   render (){
     return (
       <NavigationContext.Provider value={this.props.navigation}>
@@ -130,7 +136,7 @@ export default class Article extends React.Component{
         </CatalogTriggerView>
 
         {this.state.id ? <CommentBtn ref="commentBtn" id={this.state.id}
-          onTap={() => this.props.navigation.push('comment', { id: this.state.id, title: this.state.pageName, firstData: this.state.firstData })}
+          onTap={this.toComment}
           onLoaded={data => this.setState({ firstData: data })}
         /> : null } 
       </NavigationContext.Provider>

@@ -9,9 +9,9 @@ import store from './redux'
 import { Provider } from 'react-redux'
 import toast from './utils/toast'
 import './init'
-// import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-community/async-storage'
 
-// AsyncStorage.clear()
+AsyncStorage.clear()
 
 const theme = {
   palette: {

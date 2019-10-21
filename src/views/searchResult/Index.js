@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, FlatList, ActivityIndicator,
+  View, Text, FlatList, ActivityIndicator, TouchableOpacity,
   StyleSheet
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -88,6 +88,12 @@ export default class SearchResult extends React.Component{
           />}
 
           ListFooterComponent={({
+            0: () => 
+            <TouchableOpacity onPress={this.loadList}>
+              <View style={{ height: 50, justifyContent: 'center', alignContent: 'center', elevation: 2 }}>
+                <Text>加载失败，点击重试</Text>
+              </View>
+            </TouchableOpacity>,
             2: () => <ActivityIndicator color={$colors.main} size={50} style={{ marginVertical: 10 }} />,
             4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>
           }[this.state.status] || new Function)()}

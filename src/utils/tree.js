@@ -6,8 +6,9 @@ export default class Tree{
 
   static toFlat (root){
     function flat(children){
+      var children = JSON.parse(JSON.stringify(children))
       return children.reduce((prev, next) =>{
-        const children = (next.children || []).concat([])
+        const children = next.children || []
         delete next.children
         return prev.concat([next], flat(children))
       }, [])

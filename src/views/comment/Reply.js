@@ -10,6 +10,7 @@ import Item from './components/Item'
 import Header from './Header'
 import Editor from './Editor'
 import format from './utils/format'
+import store from '~/redux'
 
 class CommentReply extends React.Component{
   static propTypes = {
@@ -24,6 +25,16 @@ class CommentReply extends React.Component{
   }
 
   addReply = (replyId = '') =>{
+    var state = store.getState()
+    if(!state.user.name){
+      return $dialog.confirm.show({
+        content: '需要先登录才能回复，是否前往登录界面？',
+        onTapCheck: () => this.props.navigation.push('login')
+      })
+    }
+    
+    this.refs.editor.show()
+    
     this.setState({ replyId }, this.refs.editor.show)
   }
 

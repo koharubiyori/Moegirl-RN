@@ -103,7 +103,9 @@ export default class CommentItem extends React.Component{
     const {data} = this.props
     const {likeNum, isLiked} = this.state
 
+    console.log('data', data.children)
     const formattedChildren = format.children(data.children || [], data.id)
+    console.log('format', formattedChildren)
 
     return (
       <View style={styles.container}>
