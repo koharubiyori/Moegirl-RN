@@ -44,7 +44,9 @@ function mapDispatchToProps(dispatch){
 
   const del = id => dispatch({ type: DEL, id })
 
-  return { load, incrementLoad, del }
+  const setLikeStatus = (id, zan) => dispatch({ type: SET_LIKE_STATUS, id, zan })
+
+  return { load, incrementLoad, del, setLikeStatus }
 }
 
 export default function(Element){

@@ -52,8 +52,16 @@ export default function reducer(state = init(), action){
       }
     }
 
+    // id
     case SET_LIKE_STATUS: {
-      
+      var targetPost = state.data.posts.filter(item => item.id === action.id)
+      targetPost.myatt = action.zan ? 1 : 0
+      targetPost.like += action.zan ? 1 : -1
+
+      return {
+        ...state,
+        tree: new Tree(state.data.posts)
+      }
     }
 
     default: {
