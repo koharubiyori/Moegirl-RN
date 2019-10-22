@@ -16,12 +16,11 @@ export default function SearchHint({
   titles,
   onTapTitle  
 }){
-  console.log(titles)
   return (
     <NavigationContext.Consumer>{navigation =>
       <View style={{ flex: 1 }}>
         {titles ? 
-          <ScrollView>{titles.map(title =>
+          <ScrollView  keyboardShouldPersistTaps="always">{titles.map(title =>
             <Button contentContainerStyle={{}} rippleColor="#ccc" noLimit={false} 
               onPress={() => onTapTitle(title)}
               key={title}

@@ -1,4 +1,4 @@
-import { SET, INCREMENT_DATA, DEL, SET_LIKE_STATUS } from './actionTypes'
+import { SET, INIT, INCREMENT_DATA, DEL, SET_LIKE_STATUS } from './actionTypes'
 import Tree from '~/utils/tree'
 
 const init = (pageId = '') =>({
@@ -15,6 +15,10 @@ export default function reducer(state = init(), action){
     // data
     case SET: {
       return { ...state, ...action.data }
+    }
+    
+    case INIT: {
+      return init(action.pageId)
     }
 
     // id, posts, count
@@ -54,9 +58,12 @@ export default function reducer(state = init(), action){
 
     // id
     case SET_LIKE_STATUS: {
-      var targetPost = state.data.posts.filter(item => item.id === action.id)
-      targetPost.myatt = action.zan ? 1 : 0
-      targetPost.like += action.zan ? 1 : -1
+      state.data.posts.forEach(item =>{
+        if(item.id === action.id){
+          item.myatt = action.zan ? 1 : 0
+          item.like += action.zan ? 1 : -1
+        }
+      })
 
       return {
         ...state,

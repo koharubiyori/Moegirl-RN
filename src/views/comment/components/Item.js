@@ -8,11 +8,12 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { toggleLike, report, delComment } from '~/api/comment'
+import commentHOC from '~/redux/comment/HOC'
 import toast from '~/utils/toast'
 import store from '~/redux'
 import format from '../utils/format'
 
-export default class CommentItem extends React.Component{
+class CommentItem extends React.Component{
   static propTypes = {
     data: PropTypes.object,
     contentName: PropTypes.string,
@@ -37,24 +38,24 @@ export default class CommentItem extends React.Component{
     super(props)
 
     this.state = {
-      isLiked: props.data.myatt,
-      likeNum: props.data.like,
       isReported: false
     }
   }
 
   toggleLike = () =>{
-    var {isLiked} = this.state
+    var isLiked = this.props.data.myatt
     
+    console.log(isLiked)
     toast.showLoading()
     toggleLike(this.props.data.id, isLiked)
       .finally(toast.hide)
       .then(data =>{
         toast.show(isLiked ? '取消点赞' : '已点赞', 'center')
-        this.setState({ 
-          isLiked: !this.state.isLiked, 
-          likeNum: this.state.likeNum + (this.state.isLiked ? -1 : 1)
-        })
+        this.props.comment.setLikeStatus(this.props.data.id, !isLiked)
+        // this.setState({ 
+        //   isLiked: !this.state.isLiked, 
+        //   likeNum: this.state.likeNum + (this.state.isLiked ? -1 : 1)
+        // })
       }).catch(e =>{
         console.log(e)
         toast.show('网络错误')
@@ -101,11 +102,11 @@ export default class CommentItem extends React.Component{
   render (){
     const iconSize = 20
     const {data} = this.props
-    const {likeNum, isLiked} = this.state
+    const {myatt: isLiked, like: likeNum} = data
 
-    console.log('data', data.children)
     const formattedChildren = format.children(data.children || [], data.id)
-    console.log('format', formattedChildren)
+
+    console.log(this.props.data)
 
     return (
       <View style={styles.container}>
@@ -187,6 +188,8 @@ export default class CommentItem extends React.Component{
     )
   }
 }
+
+export default commentHOC(CommentItem)
 
 const styles = StyleSheet.create({
   container: {
