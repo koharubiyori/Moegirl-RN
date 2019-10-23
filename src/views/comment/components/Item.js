@@ -45,7 +45,6 @@ class CommentItem extends React.Component{
   toggleLike = () =>{
     var isLiked = this.props.data.myatt
     
-    console.log(isLiked)
     toast.showLoading()
     toggleLike(this.props.data.id, isLiked)
       .finally(toast.hide)
@@ -106,8 +105,6 @@ class CommentItem extends React.Component{
 
     const formattedChildren = format.children(data.children || [], data.id)
 
-    console.log(this.props.data)
-
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -142,17 +139,23 @@ class CommentItem extends React.Component{
         </View>
 
         {this.props.visibleReply && this.props.data.children && this.props.data.children.length !== 0 ? 
-          <View style={styles.reply}>{formattedChildren.filter((_, ind) => ind < 3).map(item =>
-            <View style={{ marginVertical: 2 }}>
-              <Text>
-                <Text style={{ color: '#007ACC' }}>{item.username}</Text>
-                {item.targetName ? <Text> 回复 </Text> : null}
-                {item.targetName ? <Text style={{ color: '#007ACC' }}>{item.targetName}</Text> : null}
-                <Text style={{ color: '#007ACC' }}>：</Text>
-                <Text>{format.content(item.text)}</Text>
-              </Text>
-            </View>
-          )}</View>
+          <View style={styles.reply}>
+            {formattedChildren.filter((_, ind) => ind < 3).map(item =>
+              <View style={{ marginVertical: 2 }}>
+                <Text>
+                  <Text style={{ color: '#007ACC' }}>{item.username}</Text>
+                  {item.targetName ? <Text> 回复 </Text> : null}
+                  {item.targetName ? <Text style={{ color: '#007ACC' }}>{item.targetName}</Text> : null}
+                  <Text style={{ color: '#007ACC' }}>：</Text>
+                  <Text>{format.content(item.text)}</Text>
+                </Text>
+              </View>
+            )}
+
+            <TouchableOpacity onPress={() => this.props.onTapReply(data.id)}>
+              <Text style={{ color: '#666', textAlign: 'center', marginTop: 10 }}>查看更多</Text>
+            </TouchableOpacity>
+          </View>
         : null}
 
         <View style={styles.footer}>

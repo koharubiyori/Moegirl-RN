@@ -1,4 +1,4 @@
-import request from '~/utils/request'
+import request from '~/utils/moeRequest'
 
 export function getComments(pageid, offset = 0){
   return request({

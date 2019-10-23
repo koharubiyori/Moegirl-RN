@@ -1,4 +1,4 @@
-import request from '~/utils/request'
+import request from '~/utils/moeRequest'
 
 export function getArticle(name = 'Mainpage'){
   return request({
