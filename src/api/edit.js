@@ -1,4 +1,4 @@
-import request from '~/utils/request'
+import request from '~/utils/moeRequest'
 
 export function getCode(page, section){
   return request({
