@@ -9,6 +9,7 @@ import Header from '../components/Header'
 import { NavigationContext } from '~/views/main/Index'
 
 import Trend from './modules/Trend'
+import Recommended from './modules/Recommended'
 
 export default class Finds extends React.Component{
   static propTypes = {
@@ -37,7 +38,8 @@ export default class Finds extends React.Component{
 
           <Text style={{ marginVertical: 20, marginLeft: 20, fontSize: 16 }}>{this.dateStr()}</Text>
 
-          <Trend />
+          <Trend navigation={navigation} style={{ marginTop: 0 }} />
+          <Recommended />
         </View>
       }</NavigationContext.Consumer>
     )

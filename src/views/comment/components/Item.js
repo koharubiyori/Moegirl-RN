@@ -152,9 +152,11 @@ class CommentItem extends React.Component{
               </View>
             )}
 
-            <TouchableOpacity onPress={() => this.props.onTapReply(data.id)}>
-              <Text style={{ color: '#666', textAlign: 'center', marginTop: 10 }}>查看更多</Text>
-            </TouchableOpacity>
+            {formattedChildren.length > 3 ?
+              <TouchableOpacity onPress={() => this.props.onTapReply(data.id)}>
+                <Text style={{ color: '#666', textAlign: 'center', marginTop: 10 }}>查看更多</Text>
+              </TouchableOpacity>
+            : null}
           </View>
         : null}
 

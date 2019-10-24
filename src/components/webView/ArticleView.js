@@ -1,10 +1,9 @@
 import React from 'react'
 import {
-  View, StyleSheet, Text, Dimensions, Linking, ActivityIndicator
+  View, StyleSheet, Text, Dimensions, Linking, ActivityIndicator, TouchableOpacity,
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { WebView } from 'react-native-webview'
-import { Button } from 'react-native-material-ui'
 import toast from '~/utils/toast'
 import storage from '~/utils/storage'
 // import mainFuncForInjectScript from './mainFuncForInjectScript'
@@ -178,7 +177,9 @@ class ArticleView extends React.Component{
     return (
       <View style={{ ...styles.container, ...this.props.style }}>
         {{
-          0: () => <Button primary text="重新加载" onPress={this.loadContent}></Button>,
+          0: () => <TouchableOpacity onPress={this.loadContent}>
+            <Text style={{ fontSize: 18, color: $colors.main }}>重新加载</Text>
+          </TouchableOpacity>,
           1: () => null,
           2: () => <ActivityIndicator color={$colors.main} size={50} />,
           3: () => <WebView allowFileAccess allowsFullscreenVideo
