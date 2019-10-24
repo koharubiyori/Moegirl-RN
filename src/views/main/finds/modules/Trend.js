@@ -1,73 +1,77 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text,
+  View, Text, 
   StyleSheet
 } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import ArticleGroup from './components/ArticleGroup'
 import { getRecentChanges } from '~/api/query'
+import { getMainImage } from '~/api/article'
 
 export default class FindsModuleTrend extends React.Component{
   static propTypes = {
-    
+    navigation: PropTypes.object,
+    style: PropTypes.object
   }
 
   constructor (props){
     super(props)
     this.state = {
-      data: null
+      data: [],
+      status: 1
     }
 
-    this.getRecentChanges()
+    this.setState({ status: 2 })
+    this.getRecentChanges().then(data =>{
+      Promise.all(
+        data.map(item => getMainImage(item.title))
+      ).then(images =>{
+        this.setState({ status: 3 })
+        data.forEach((item, index) => item.image = images[index] ? images[index].source : null)
+        console.log(data)
+        this.setState({ data })
+      }).catch(e =>{
+        console.log(e)
+        this.setState({ status: 0 })
+      })
+    })
   }
 
   getRecentChanges = () =>{
-    getRecentChanges().then(data =>{
-      console.log(data)
-      data = data.query.recentchanges
-
-      var total = {}   // 保存总数统计
-      data.map(item => item.title).forEach(title =>{
-        if(total[title]){
-          total[title]++
-        }else{
-          total[title] = 1
-        }
-      })
-
-      var result = Object.keys(total).map(title => ({ title, total: total[title] })).sort((x, y) => x.total < y.total ? 1 : -1)
-      this.setState({ data: result })
+    return new Promise((resolve, reject) =>{
+      getRecentChanges()
+        .then(data =>{
+          data = data.query.recentchanges
+    
+          var total = {}   // 保存总数统计
+          data.map(item => item.title).forEach(title =>{
+            if(total[title]){
+              total[title]++
+            }else{
+              total[title] = 1
+            }
+          })
+    
+          var result = Object.keys(total).map(title => ({ title, total: total[title] })).sort((x, y) => x.total < y.total ? 1 : -1)
+          resolve(result.filter((_, index) => index < 5))  
+        }).catch(reject)      
     })
   }
   
 
   render (){
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <MaterialCommunityIcon name="flash-circle" color={$colors.sub} size={26} />
-          <Text style={{ marginLeft: 10 }}>趋势</Text>
-        </View>
-      </View>
+      <ArticleGroup style={{ marginTop: 0 }}
+        title="趋势"
+        icon={<MaterialCommunityIcon name="flash-circle" color={$colors.sub} size={26} />}
+        articles={this.state.data}
+        navigation={this.props.navigation}
+      />
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    margin: 10,
-    elevation: 2,
-    backgroundColor: 'white',
-    borderRadius: 3
-  },
 
-  header: {
-    height: 50,
-    paddingHorizontal: 10,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 10
-  }
 })
