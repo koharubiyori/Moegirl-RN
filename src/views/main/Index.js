@@ -6,8 +6,6 @@ import Finds from './finds/Index'
 import History from './history/Index'
 import BottomNavigation from './BottomNavigation'
 
-import { DrawerActions } from 'react-navigation'
-
 const NavigationContext = React.createContext()
 
 export { NavigationContext }

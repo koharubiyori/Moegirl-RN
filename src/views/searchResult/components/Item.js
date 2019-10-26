@@ -15,7 +15,9 @@ SearchResultItem.propTypes = {
 export default function SearchResultItem({
   data, searchWord, onPress
 }){
-  function contentBuilder(content){
+  function contentFormat(content){
+    if(content.trim() === '') return null
+
     return content.split('<span class="searchmatch">').map((section, index) =>{
       if(index === 0) return <Text>{section}</Text>
       
@@ -40,6 +42,8 @@ export default function SearchResultItem({
     return <Text style={{ fontStyle: 'italic', color: $colors.light }}>{text}</Text>
   }
 
+  const content = contentFormat(data.snippet)
+
   return (
     <Button contentContainerStyle={styles.container} noLimit={false} rippleColor={$colors.light}
       onPress={() => onPress(data.title)}
@@ -53,7 +57,7 @@ export default function SearchResultItem({
       </View>
 
       <View style={styles.content}>
-        <Text>{contentBuilder(data.snippet)}</Text>
+        <Text style={{ color: content ? 'black' : '#ABABAB' }}>{content || '页面内貌似没有内容呢...'}</Text>
       </View>
 
       <View style={styles.footer}>

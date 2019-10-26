@@ -19,26 +19,19 @@ export default class FindsModuleTrend extends React.Component{
     super(props)
     this.state = {
       data: [],
-      status: 1
+      status: 2
     }
 
-    this.setState({ status: 2 })
-    this.getRecentChanges().then(data =>{
-      Promise.all(
-        data.map(item => getMainImage(item.title))
-      ).then(images =>{
-        this.setState({ status: 3 })
-        data.forEach((item, index) => item.image = images[index] ? images[index].source : null)
-        console.log(data)
-        this.setState({ data })
-      }).catch(e =>{
-        console.log(e)
-        this.setState({ status: 0 })
-      })
-    })
+   
+    this.getRecentChanges()
+  }
+
+  reload = () =>{
+    return this.getRecentChanges()
   }
 
   getRecentChanges = () =>{
+    this.setState({ status: 2 })
     return new Promise((resolve, reject) =>{
       getRecentChanges()
         .then(data =>{
@@ -54,19 +47,39 @@ export default class FindsModuleTrend extends React.Component{
           })
     
           var result = Object.keys(total).map(title => ({ title, total: total[title] })).sort((x, y) => x.total < y.total ? 1 : -1)
-          resolve(result.filter((_, index) => index < 5))  
-        }).catch(reject)      
+          return result.filter((_, index) => index < 5)  
+        })    
+        .then(data =>{
+          Promise.all(
+            data.map(item => getMainImage(item.title))
+          ).then(images =>{
+            this.setState({ status: 3 })
+            data.forEach((item, index) => item.image = images[index] ? images[index].source : null)
+            console.log(data)
+            this.setState({ data })
+            resolve()
+          }).catch(e => Promise.reject(e))
+        })
+        .catch(e =>{
+          console.log(e)
+          this.setState({ status: 0 })
+          reject()
+        })
     })
+
   }
   
 
   render (){
+
     return (
-      <ArticleGroup style={{ marginTop: 0 }}
+      <ArticleGroup
         title="趋势"
         icon={<MaterialCommunityIcon name="flash-circle" color={$colors.sub} size={26} />}
         articles={this.state.data}
         navigation={this.props.navigation}
+        status={this.state.status}
+        onTapReload={this.reload}
       />
     )
   }

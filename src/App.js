@@ -5,6 +5,7 @@ import AppNavigator from './router'
 import Alert from '~/components/dialog/Alert'
 import Confirm from '~/components/dialog/Confirm'
 import DropToast from '~/components/dialog/DropToast'
+import Drawer from '~/views/drawer'
 import store from './redux'
 import { Provider } from 'react-redux'
 import toast from './utils/toast'
@@ -23,8 +24,17 @@ export default class App extends React.Component {
   constructor (props){
     super(props)
 
+    this._refs = {
+      appNavigator: React.createRef()
+    }
+
     var onPressBackBtnMark = false
     BackHandler.addEventListener('hardwareBackPress', () =>{
+      if($drawer && $drawer._open){
+        $drawer.close()
+        return true
+      }
+
       if(!onPressBackBtnMark){
         toast.show('再按一次返回键退出应用')
         onPressBackBtnMark = true
@@ -48,7 +58,9 @@ export default class App extends React.Component {
     return (
       <ThemeContext.Provider value={getTheme(theme)}>
         <Provider store={store}>
-          <AppNavigator onNavigationStateChange={this.navigationStateChange} />
+          <Drawer navigation={this._refs.appNavigator._navigation} ref="drawer">
+            <AppNavigator onNavigationStateChange={this.navigationStateChange} ref={this._refs.appNavigator} />
+          </Drawer>
         </Provider>
 
         <Alert ref="alert" />

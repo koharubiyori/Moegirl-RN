@@ -15,7 +15,7 @@ export default function HistoryTitle({
 }){
   return (
     <View style={{ ...style, marginVertical: 5 }}>
-      <Text style={{ marginLeft: 5, color: $colors.main }}>{text}</Text>      
+      <Text style={{ marginLeft: 5, color: $colors.main, fontSize: 16 }}>{text}</Text>      
       <View style={{ marginTop: 3, marginRight: 10, height: 2, backgroundColor: $colors.main }} />
     </View>
   )

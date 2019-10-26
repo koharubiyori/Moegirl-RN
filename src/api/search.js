@@ -1,12 +1,12 @@
 import request from '~/utils/moeRequest'
 
-export function getHint(searchWord){
+export function getHint(searchWord, srlimit = 10){
   return request({
     params: {
       action: 'query',
       list: 'search',
       srsearch: searchWord,
-      titles: 10,
+      srlimit,
       srwhat: 'text'
     }
   })

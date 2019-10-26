@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text,
+  View, Text, ScrollView, RefreshControl,
   StyleSheet
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
@@ -19,8 +19,24 @@ export default class Finds extends React.Component{
   constructor (props){
     super(props)
     this.state = {
-      
+      visibleRefreshControl: false
     }
+
+    this._ref = {
+      trend: React.createRef(),
+      recommended: React.createRef()
+    }
+  }
+
+  reload = () =>{
+    this.setState({ visibleRefreshControl: true })
+
+    Promise.all(
+      Object.values(this._ref).map(mod => mod.current.reload())
+    ).finally(() =>{
+      console.log('loaded')
+      this.setState({ visibleRefreshControl: false })
+    })
   }
   
   dateStr = () =>{
@@ -36,10 +52,13 @@ export default class Finds extends React.Component{
           <StatusBar />
           <Header title="发现" />
 
-          <Text style={{ marginVertical: 20, marginLeft: 20, fontSize: 16 }}>{this.dateStr()}</Text>
-
-          <Trend navigation={navigation} style={{ marginTop: 0 }} />
-          <Recommended />
+          <ScrollView
+            refreshControl={<RefreshControl colors={[$colors.main]} onRefresh={this.reload} refreshing={this.state.visibleRefreshControl} />}
+          >
+            {/* <Text style={{ marginVertical: 20, marginLeft: 20, fontSize: 16 }}>{this.dateStr()}</Text> */}
+            <Trend navigation={navigation} ref={this._ref.trend} />
+            <Recommended navigation={navigation} ref={this._ref.recommended} />
+          </ScrollView>
         </View>
       }</NavigationContext.Consumer>
     )
