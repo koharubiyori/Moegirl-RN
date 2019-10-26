@@ -9,7 +9,7 @@ import Item from './components/Item'
 
 class DrawerScreen extends React.Component{
   static propTypes = {
-    navigation: PropTypes.object
+
   }
 
   constructor (props){
@@ -46,11 +46,14 @@ class DrawerScreen extends React.Component{
           }
         </View>
 
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          {/* <View style={styles.items}>
-            <Item icon="info" title="关于" onPress={this.showInfoDialog} />
-          </View> */}
-          <Text style={{ color: '#ABABAB', fontSize: 16 }}>功能敬请期待</Text>
+        <View style={{ flex: 1 }}>
+          <View style={styles.items}>
+            <Item icon="info" title="关于" onPress={() => $appNavigator.current._navigation.push('about')} />
+          </View>
+
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: '#ABABAB', fontSize: 16 }}>其他功能敬请期待</Text>
+          </View>
         </View>
       </View>
     )
