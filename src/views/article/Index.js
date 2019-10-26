@@ -118,7 +118,7 @@ export default class Article extends React.Component{
         <Header style={styles.header} 
           navigation={this.props.navigation} 
           title={this.state.pageName} 
-          onTapRefreshBtn={() => this.refs.articleView.loadContent(true)}
+          onTapRefreshBtn={() => this._refs.articleView.loadContent(true)}
           ref="header" 
         />
 

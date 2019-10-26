@@ -1,81 +1,50 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, Image, TouchableOpacity,
-  StyleSheet, NativeModules
+  View, Text, 
+  StyleSheet
 } from 'react-native'
-import userHOC from '~/redux/user/HOC'
-import Item from './components/Item'
+import Drawer from 'react-native-drawer'
+import DrawerScreen from './Screen'
 
-class MyDrawer extends React.Component{
+export default class MyDrawer extends React.Component{
   static propTypes = {
-    
+    navigation: PropTypes.object
   }
 
   constructor (props){
     super(props)
     this.state = {
-      
+      visible: false
     }
   }
-
+  
   componentDidMount (){
-
+    global.$drawer = this.refs.drawer
   }
 
   render (){
     return (
-      <View>
-        <View style={{ height: NativeModules.StatusBarManager.HEIGHT }} />
-        <View style={styles.header}>
-          {this.props.state.user.name ? 
-            <>
-              <Image source={{ uri: $avatarUrl + this.props.state.user.name }} style={styles.avatar} />
-              <Text style={styles.hintText}>欢迎你，{this.props.state.user.name}</Text>
-            </>
-          : 
-            <>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('login')}>
-                <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('login')}>
-                <Text style={styles.hintText}>登录/加入萌娘百科</Text>
-              </TouchableOpacity>
-            </>
-          }
-        </View>
-
-        <View style={styles.items}>
-          <Item icon="settings" title="设置" />
-        </View>
-      </View>
+      <Drawer tapToClose
+        open={this.state.visible} 
+        type="overlay"
+        content={<DrawerScreen navigation={this.props.navigation} />}
+        openDrawerOffset={0.4}
+        closedDrawerOffset={0}
+        panOpenMask={1}
+        panCloseMask={0}
+        styles={drawerStyles}
+        tweenHandler={ratio => ({
+          mainOverlay: { opacity: ratio }
+        })}
+        ref="drawer"
+      >{this.props.children}</Drawer>
     )
   }
 }
 
-export default userHOC(MyDrawer)
-
-const styles = StyleSheet.create({
-  header: {
-    height: 160,
-    justifyContent: 'center',
-    backgroundColor: $colors.light
-  },
-
-  avatar: {
-    width: 75,
-    height: 75,
-    marginLeft: 20,
-    borderRadius: 75 / 2,
-    borderColor: 'white',
-    borderWidth: 3,
-  },
-
-  hintText: {
-    color: 'white', 
-    marginLeft: 20, 
-    marginTop: 15, 
-    fontSize: 16
+const drawerStyles = {
+  mainOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)'
   }
-})
+}

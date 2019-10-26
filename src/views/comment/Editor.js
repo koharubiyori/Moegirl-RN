@@ -4,7 +4,6 @@ import {
   View, Text, Modal, Animated, TextInput, TouchableWithoutFeedback, TouchableOpacity,
   StyleSheet
 } from 'react-native'
-import {  } from 'react-navigation'
 import { postComment } from '~/api/comment'
 import toast from '~/utils/toast'
 

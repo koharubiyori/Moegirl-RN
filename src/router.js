@@ -1,10 +1,6 @@
 import React from 'react'
-import { Dimensions } from 'react-native'
 import { createAppContainer } from "react-navigation"
 import { createStackNavigator, StackViewStyleInterpolator } from 'react-navigation-stack'
-import { createDrawerNavigator } from 'react-navigation-drawer'
-
-import drawer from './views/drawer/Index'
 
 import main from './views/main/Index'
 import article from './views/article/Index'
@@ -61,17 +57,6 @@ function screenInterpolator(sceneProps) {
   }
 }
 
-const DrawerNavigator = createDrawerNavigator(
-  { StackNavigator },
-
-  {
-    drawerWidth: Dimensions.get('window').width * 0.65,
-    drawerBackgroundColor: 'white',
-    overlayColor: 'rgba(0, 0, 0, 0.3)',
-    contentComponent: drawer,
-  }
-)
-
-const AppNavigator = createAppContainer(DrawerNavigator)
+const AppNavigator = createAppContainer(StackNavigator)
 
 export default AppNavigator
