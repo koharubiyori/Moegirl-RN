@@ -10,10 +10,11 @@ import login from './views/login/Index'
 import edit from './views/edit/Index'
 import comment from './views/comment/Index'
 import reply from './views/comment/Reply'
+import about from './views/About'
 
 const StackNavigator = createStackNavigator(
   { 
-    main, article, search, searchResult, login,
+    main, article, search, searchResult, login, about,
 
     edit: {
       screen: edit,

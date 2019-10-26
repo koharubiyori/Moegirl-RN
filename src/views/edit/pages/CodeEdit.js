@@ -39,7 +39,10 @@ export default class CodeEdit extends React.Component{
     const {title, section} = this.props.navigation.getScreenProps()
     getCode(title, section).then(data =>{
       const content = data.parse.wikitext['*']
-      this.setState({ content, status: 3 })
+      this.setState({ content, status: 3 }, () =>{
+        console.log(this.refs.textInput)
+        this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } })
+      })
       this.props.navigation.setParams({ loadStatus: 3, content })
       this.initContentSample = content
     }).catch(e =>{

@@ -46,7 +46,7 @@ class ArticleView extends React.Component{
       status: 1
     }
 
-    this.libScript = ['fastclick.min', 'jquery.min', 'require.min']
+    this.libScript = ['fastclick.min', 'jquery.min']
 
     this.baseUrl = 'file:///android_asset/assets'
   }
@@ -166,6 +166,10 @@ class ArticleView extends React.Component{
           onTapCheck: () => this.props.navigation.push('login')
         })
       }
+    }
+
+    if(type === 'onTapImage'){
+      // 
     }
 
     if(this.props.onMessages){

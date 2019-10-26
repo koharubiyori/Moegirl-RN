@@ -24,9 +24,9 @@ export default class App extends React.Component {
   constructor (props){
     super(props)
 
-    this._refs = {
-      appNavigator: React.createRef()
-    }
+    
+    global.$appNavigator = React.createRef()
+    
 
     var onPressBackBtnMark = false
     BackHandler.addEventListener('hardwareBackPress', () =>{
@@ -58,8 +58,8 @@ export default class App extends React.Component {
     return (
       <ThemeContext.Provider value={getTheme(theme)}>
         <Provider store={store}>
-          <Drawer navigation={this._refs.appNavigator._navigation} ref="drawer">
-            <AppNavigator onNavigationStateChange={this.navigationStateChange} ref={this._refs.appNavigator} />
+          <Drawer ref="drawer">
+            <AppNavigator onNavigationStateChange={this.navigationStateChange} ref={$appNavigator} />
           </Drawer>
         </Provider>
 

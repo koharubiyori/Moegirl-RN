@@ -21,8 +21,13 @@ export default function DrawerItem({
   icon,
   title,
   isOuterLink = false,
-  onPress
+  onPress: _onPress
 }){
+  function onPress (){
+    $drawer.close()
+    _onPress()
+  }
+
   return (
     <Button onPress={onPress} contentContainerStyle={null} rippleColor="#ccc" noLimit={false}>
       <View style={{ height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
@@ -33,7 +38,7 @@ export default function DrawerItem({
             <Image source={icon} style={{ width: iconSize, height: iconSize }} /> 
           }
           
-          <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', position: 'relative', top: 1.5 }}>{title}</Text>
+          <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', position: 'relative', top: 2 }}>{title}</Text>
         </View>
 
         {isOuterLink ? <Icon name="launch" size={iconSize} color={$colors.light} /> : null}

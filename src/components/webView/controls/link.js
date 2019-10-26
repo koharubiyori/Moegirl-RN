@@ -33,13 +33,13 @@ export default function(){
     // 一般链接导向
     var link = $(e.target).attr('href') || $(e.target).parent('a').attr('href')
     var type = 'inner'
-    if(/^\//.test(link)){
+    if(/^\/File:/.test(link)){
+      return ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapImage', data: { name: link.replace(/^\/File:/, '') } }))
+    }else if(/^\//.test(link)){
       link = decodeURIComponent(link.substring(1))
-    }
-    if(/^https?:\/\//.test(link)){
+    }else if(/^https?:\/\//.test(link)){
       type = 'outer'
-    }
-    if(link.indexOf('redlink=1') >= 0){
+    }else if(link.indexOf('redlink=1') >= 0){
       type = 'notExists'
     }
 
