@@ -1,4 +1,4 @@
-package com.moegirl_rn;
+package com.moegirlviewer;
 
 import android.app.Application;
 import android.util.Log;

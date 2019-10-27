@@ -1,9 +1,12 @@
   // b站播放器
-export default function(content, vueObj, config){
-  content.find('.wikitable.bilibili-video-container').each(function () {
+export default function(){
+  var viewBox = $('#webViewContainer')
+
+  viewBox.find('.wikitable.bilibili-video-container').each(function () {
     var avId = $(this).data('aid').toString().replace('av', '')
-    var isReload = 'isbiliPlayerReload' in config && config.isbiliPlayerReload
-    var player = `<iframe src="https://player.bilibili.com/player.html?aid=${avId}&page=${$(this).data('page')}" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="width:100%" class="bilibili-player"></iframe>`
+    // var isReload = 'isbiliPlayerReload' in config && config.isbiliPlayerReload
+    var isReload = true
+    var player = `<iframe src="https://player.bilibili.com/player.html?aid=${avId}&page=${$(this).data('page')}" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="width:100%; background-color:#ccc" class="bilibili-player"></iframe>`
 
     var title = $('<div class="bilibili-video-title">标题获取中...</div>')
     var container = $(this).data('collapsed', true)
@@ -19,43 +22,47 @@ export default function(content, vueObj, config){
         container.data('collapsed', true)
       }
     })
+
+    console.log(typeof Hammer)
+
     var titlePhoneEvent = new Hammer(title[0])
     titlePhoneEvent.on('press', function(){
-      location.href = 'bilibili://video/' + avId
+      ReactNativeWebView.postMessage(JSON.stringify({ type: 'openApp', data: { url: 'bilibili://video/' + avId  } }))
     })
-    var titleText = $(this).data('title')
-    if(titleText){
-      title.text(titleText)
-    }else{
-      $.ajax({
-        url: '/relay.php',
-        type: 'post',
-        timeout: 7000,
-        data: {
-          url: 'https://api.bilibili.com/x/web-interface/view',
-          type: 'get',
-          data: {
-            aid: avId
-          },
-          timeout: 7
-        }
-      }).done(function(data){
-        if('data' in data){
-          title.text(data.data.title)
-        }else{
-          switch(data.code){
-            default: {
-              title.text('标题获取失败')
-            }
-            case '-404': {
-              title.text('视频又挂了_(:з」∠)_')
-            }
-          }
-        }
-      }).fail(function(){
-        title.text('标题获取失败')
-      })
-    }
+
+    // var titleText = $(this).data('title')
+    // if(titleText){
+    //   title.text(titleText)
+    // }else{
+    //   $.ajax({
+    //     url: '/relay.php',
+    //     type: 'post',
+    //     timeout: 7000,
+    //     data: {
+    //       url: 'https://api.bilibili.com/x/web-interface/view',
+    //       type: 'get',
+    //       data: {
+    //         aid: avId
+    //       },
+    //       timeout: 7
+    //     }
+    //   }).done(function(data){
+    //     if('data' in data){
+    //       title.text(data.data.title)
+    //     }else{
+    //       switch(data.code){
+    //         default: {
+    //           title.text('标题获取失败')
+    //         }
+    //         case '-404': {
+    //           title.text('视频又挂了_(:з」∠)_')
+    //         }
+    //       }
+    //     }
+    //   }).fail(function(){
+    //     title.text('标题获取失败')
+    //   })
+    // }
 
     $(this).css({
       display: 'block',

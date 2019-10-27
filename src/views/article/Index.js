@@ -31,10 +31,11 @@ export default class Article extends React.Component{
       id: 0,
 
       catalogItems: [],
-      firstData: null
+      firstData: null,
     }
 
     this._refs = {
+      header: null,
       articleView: null
     }
 
@@ -70,7 +71,7 @@ export default class Article extends React.Component{
 
   // 接收需要隐藏或显示header的指令
   changeHeaderVisible = isVisible =>{
-    const {show, hide} = this.refs.header
+    const {show, hide} = this._refs.header
     const {show: showBtn, hide: hideBtn} = this.refs.commentBtn
     isVisible ? show() : hide()
     isVisible ? showBtn() : hideBtn()
@@ -119,7 +120,7 @@ export default class Article extends React.Component{
           navigation={this.props.navigation} 
           title={this.state.pageName} 
           onTapRefreshBtn={() => this._refs.articleView.loadContent(true)}
-          ref="header" 
+          getRef={self => this._refs.header = self} 
         />
 
         {/* 这只是一个普通的view，但被绑定了滑动显示catalog的事件 */}

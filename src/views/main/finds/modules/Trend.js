@@ -55,7 +55,6 @@ export default class FindsModuleTrend extends React.Component{
           ).then(images =>{
             this.setState({ status: 3 })
             data.forEach((item, index) => item.image = images[index] ? images[index].source : null)
-            console.log(data)
             this.setState({ data })
             resolve()
           }).catch(e => Promise.reject(e))

@@ -1,5 +1,5 @@
 {
-  "name": "moegirl_RN",
+  "name": "MoegirlViewer",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -11,8 +11,7 @@
     "android": "react-native run-android",
     "postinstall": "jetifier -r",
     "menu": "adb shell input keyevent 82",
-    "install": "react-native run-android --variant=release",
-    "build": "cd android && ./gradlew assembleRelease && ../ && yarn install"
+    "build": "cd android && ./gradlew assembleRelease && cd ../"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
@@ -23,7 +22,9 @@
     "react-native-cookies": "^3.3.0",
     "react-native-dialog": "^5.6.0",
     "react-native-drawer": "^2.5.1",
+    "react-native-experimental-navigation": "^0.29.2",
     "react-native-gesture-handler": "^1.4.1",
+    "react-native-image-zoom-viewer": "^2.2.26",
     "react-native-material-textfield": "^0.12.0",
     "react-native-material-ui": "^1.30.1",
     "react-native-progress": "^3.6.0",
