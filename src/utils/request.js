@@ -44,7 +44,6 @@ async function requestDataHandler(req){
 // 响应拦截器
 function responseDataHandler(res){
 
-  // console.log(res)
   return res.data
 }
 

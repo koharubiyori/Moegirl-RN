@@ -5,24 +5,28 @@ import {
   StyleSheet, NativeModules, Dimensions, Clipboard, DeviceEventEmitter
 } from 'react-native'
 import { Toolbar } from 'react-native-material-ui'
-import store from '~/redux'
+import userHOC from '~/redux/user/HOC'
 import toast from '~/utils/toast'
 
-export default class ArticleHeader extends React.Component{
+class ArticleHeader extends React.Component{
   static propTypes = {
     title: PropTypes.string,
     style: PropTypes.object,
     navigation: PropTypes.object,
 
     onTapRefreshBtn: PropTypes.func,
+    getRef: PropTypes.func
   }
 
   constructor (props){
     super(props)
+    props.getRef && props.getRef(this)
+
     this.state = {
       visible: true,
       transitionTranslateY: new Animated.Value(0)
     }
+
     
     // 防止在返回时不滑动看不到标题
     this.articleChangeListener = DeviceEventEmitter.addListener('navigationStateChange', () => this.show())
@@ -70,7 +74,7 @@ export default class ArticleHeader extends React.Component{
       }
 
       if(event.index === 1){
-        if(store.getState().user.name){
+        if(this.props.state.user.name){
           this.props.navigation.push('edit', { title: this.props.title })
         }else{
           this.props.navigation.push('login')
@@ -100,7 +104,7 @@ export default class ArticleHeader extends React.Component{
                 icon: 'more-vert',
                 labels: [
                   '刷新',
-                  ...[store.getState().user.name ? '编辑此页' : '登录'],
+                  ...[this.props.state.user.name ? '编辑此页' : '登录'],
                   '分享'
                 ]
             }
@@ -113,6 +117,8 @@ export default class ArticleHeader extends React.Component{
     )
   }
 }
+
+export default userHOC(ArticleHeader)
 
 const styles = StyleSheet.create({
   body: {

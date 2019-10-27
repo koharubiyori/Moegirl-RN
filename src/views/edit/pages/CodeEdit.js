@@ -42,6 +42,7 @@ export default class CodeEdit extends React.Component{
       this.setState({ content, status: 3 }, () =>{
         console.log(this.refs.textInput)
         this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } })
+        setTimeout(() => this.refs.textInput.setNativeProps({ selection: null }))
       })
       this.props.navigation.setParams({ loadStatus: 3, content })
       this.initContentSample = content
