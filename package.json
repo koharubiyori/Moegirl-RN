@@ -11,7 +11,8 @@
     "android": "react-native run-android",
     "postinstall": "jetifier -r",
     "menu": "adb shell input keyevent 82",
-    "build": "android/gradlew assembleRelease"
+    "install": "react-native run-android --variant=release",
+    "build": "cd android && ./gradlew assembleRelease && ../ && yarn install"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
