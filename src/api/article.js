@@ -24,3 +24,18 @@ export function getMainImage(name){
     return Object.values(pages)[0].thumbnail
   })
 }
+
+export function getImageUrl(name){
+  return request({
+    baseURL: 'https://commons.moegirl.org/api.php',
+    method: 'post',
+    params: {
+      action: 'query',
+      prop: 'imageinfo',
+      titles: 'File:' + name,
+      iiprop: 'url'
+    }
+  }).then(data =>{
+    return Object.values(data.query.pages)[0].imageinfo[0].url
+  })
+}

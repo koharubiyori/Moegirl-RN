@@ -65,7 +65,7 @@ export default class CommentBtn extends React.Component{
     }).start(() =>{
       this.setState({ visible: false })
       this.animateLock = false
-    }), 1500)
+    }), 500)
   }
 
   getComments (){
@@ -78,10 +78,15 @@ export default class CommentBtn extends React.Component{
     })
   }
 
+  tap = () =>{
+    if(this.state.status === 0) this.getComments()
+    this.props.onTap()
+  }
+
   render (){
     return (
       !this.state.visible ? null :
-      <TouchableOpacity onPress={this.props.onTap} style={{ ...styles.container,  transform: [{ scale: this.state.transitionScale }] }}>
+      <TouchableOpacity onPress={this.tap} style={{ ...styles.container,  transform: [{ scale: this.state.transitionScale }] }}>
         <Animated.View style={{ ...styles.main }}>
           <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
             <Icon name="comment" size={30} color="white" style={{ position: 'relative', top: -4 }} />

@@ -6,14 +6,11 @@ import PropTypes from 'prop-types'
 import { WebView } from 'react-native-webview'
 import toast from '~/utils/toast'
 import storage from '~/utils/storage'
-// import mainFuncForInjectScript from './mainFuncForInjectScript'
-// import { store } from '~/redux/webView'
-// import { store as userStore } from '~/redux/user'
-
+import ImageViewer from './ImageViewer'
 import webViewHOC from '~/redux/webView/HOC'
 import userHOC from '~/redux/user/HOC'
-
 import { controlsCodeString } from './controls/index' 
+import { getImageUrl } from '~/api/article'
 
 class ArticleView extends React.Component{
   static propTypes = {
@@ -43,12 +40,38 @@ class ArticleView extends React.Component{
 
     this.state = {
       html: '',
-      status: 1
+      status: 1,
+
+      showingImg: ''
     }
 
-    this.libScript = ['fastclick.min', 'jquery.min']
+    this.libScript = ['fastclick.min', 'jquery.min', 'hammer.min']
 
     this.baseUrl = 'file:///android_asset/assets'
+
+    this.injectRequestUtil = (function injectRequestUtil(){
+      // 注入一个请求器，用于通信
+      window._request = function(config){
+        return new Promise((resolve, reject) =>{
+          if(!window._request_id) window._request_id = 0 
+
+          config = { 
+            url, 
+            method = 'get', 
+            params = {},
+            ...config
+          }
+
+          var requestResolveName = '_request_resolve_' + window._request_id
+          var requestRejectName = '_request_reject_' + window._request_id
+          window[requestResolveName] = resolve
+          window[requestRejectName] = reject
+  
+          ReactNativeWebView.postMessage(JSON.stringify({ type: 'request', data: { config, requestResolveName, requestRejectName } }))
+          window._request_id++
+        })
+      }
+    }).toString() + ';injectRequestUtil()'
   }
   
   componentDidMount (){
@@ -84,7 +107,15 @@ class ArticleView extends React.Component{
         ${scriptTags}
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
-          ${this.props.injectJs || ''}
+          window.onload = function(){ 
+            try{
+              ${this.injectRequestUtil};
+              ${controlsCodeString};
+              ${this.props.injectJs || ''} 
+            }catch(e){
+              ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
+            }
+          }
         </script>
       </body>
       </html>        
@@ -157,6 +188,10 @@ class ArticleView extends React.Component{
       })[data.type]()
     }
 
+    if(type === 'openApp'){
+      Linking.openURL(data.url)
+    }
+
     if(type === 'onTapEdit'){
       if(this.props.state.user.name){
         this.props.navigation.push('edit', { title: data.page, section: data.section })
@@ -169,7 +204,12 @@ class ArticleView extends React.Component{
     }
 
     if(type === 'onTapImage'){
-      // 
+      toast.showLoading('获取链接中')
+      getImageUrl(data.name)
+      .finally(toast.hide)
+      .then(url =>{
+        this.setState({ showingImg: url })
+      }).catch(() => toast.show('获取链接失败'))
     }
 
     if(this.props.onMessages){
@@ -186,16 +226,21 @@ class ArticleView extends React.Component{
           </TouchableOpacity>,
           1: () => null,
           2: () => <ActivityIndicator color={$colors.main} size={50} />,
-          3: () => <WebView allowFileAccess allowsFullscreenVideo
-            cacheMode="LOAD_CACHE_ELSE_NETWORK"
-            scalesPageToFit={false}
-            source={{ html: this.state.html, baseUrl: this.baseUrl }}
-            originWhitelist={['*']}
-            style={{ width: Dimensions.get('window').width }}
-            onMessage={this.receiveMessage}
-            onLoadEnd={() => this.injectScript(controlsCodeString)}
-            ref="webView"
-           />
+          3: () => <>
+            <WebView allowFileAccess allowsFullscreenVideo
+              cacheMode="LOAD_CACHE_ELSE_NETWORK"
+              scalesPageToFit={false}
+              source={{ html: this.state.html, baseUrl: this.baseUrl }}
+              originWhitelist={['*']}
+              style={{ width: Dimensions.get('window').width }}
+              onMessage={this.receiveMessage}
+              // onLoadEnd={() => this.injectScript(controlsCodeString)}
+              ref="webView"
+            />
+
+            <ImageViewer visible={!!this.state.showingImg} imgs={[{ url: this.state.showingImg }]} onClose={() => this.setState({ showingImg: '' })} />
+          </>
+          
         }[this.state.status]()}
       </View>
     )

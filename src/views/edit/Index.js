@@ -49,6 +49,7 @@ export default class Edit extends React.Component{
   }
 
   backHandler = () =>{
+    console.log(true)
     const {params} = this.refs.tabNavigator.state.nav.routes[0]
     if(params && params.isContentChanged){
       $dialog.confirm.show({

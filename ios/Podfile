@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'moegirl_RN' do
-  # Pods for moegirl_RN
+target 'MoegirlViewer' do
+  # Pods for MoegirlViewer
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
@@ -50,7 +50,7 @@ target 'moegirl_RN' do
 
   pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
 
-  target 'moegirl_RNTests' do
+  target 'MoegirlViewerTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -58,10 +58,10 @@ target 'moegirl_RN' do
   use_native_modules!
 end
 
-target 'moegirl_RN-tvOS' do
-  # Pods for moegirl_RN-tvOS
+target 'MoegirlViewer-tvOS' do
+  # Pods for MoegirlViewer-tvOS
 
-  target 'moegirl_RN-tvOSTests' do
+  target 'MoegirlViewer-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
