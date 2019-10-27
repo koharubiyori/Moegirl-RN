@@ -23,6 +23,13 @@ class DrawerScreen extends React.Component{
     
   }
 
+  tap = handler =>{
+    return () =>{
+      $drawer.close()
+      handler()
+    }
+  }
+
   render (){
     return (
       <View style={{ backgroundColor: 'white', height: Dimensions.get('window').height }}>
@@ -35,11 +42,11 @@ class DrawerScreen extends React.Component{
             </>
           : 
             <>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('login')}>
+              <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.push('login'))}>
                 <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('login')}>
+              <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.push('login'))}>
                 <Text style={styles.hintText}>登录/加入萌娘百科</Text>
               </TouchableOpacity>
             </>
