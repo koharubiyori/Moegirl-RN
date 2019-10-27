@@ -63,6 +63,7 @@ class DrawerScreen extends React.Component{
           </View>
         </View>
       </View>
+      
     )
   }
 }
