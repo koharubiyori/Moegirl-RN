@@ -30,7 +30,7 @@ export default function RecentSearch({
           </View>
 
           <ScrollView keyboardShouldPersistTaps="always">{titles.map(title => 
-            <Button rippleColor="#ccc" noLimit={false} 
+            <Button rippleColor="#ccc" noLimit={false} contentContainerStyle={{ paddingHorizontal: 5 }}
               onPress={() => onTapTitle(title)}
               key={title}
             >
