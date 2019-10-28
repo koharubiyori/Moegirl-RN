@@ -65,6 +65,17 @@ export default class CatalogTriggerView extends React.Component {
     })
   }
 
+  showCatalog = () =>{
+    this.setState({ visible: true }, () => Animated.timing(this.state.transitionRight, {
+      toValue: 0,
+      duration: 150
+    }).start())
+
+    Animated.timing(this.state.transitionMaskOpacity, {
+      toValue: 1,
+      duration: 150
+    }).start()
+  }
   
   hideCatalog = () =>{
     Animated.timing(this.state.transitionRight, {

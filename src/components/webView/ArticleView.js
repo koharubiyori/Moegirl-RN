@@ -11,6 +11,7 @@ import webViewHOC from '~/redux/webView/HOC'
 import userHOC from '~/redux/user/HOC'
 import { controlsCodeString } from './controls/index' 
 import { getImageUrl } from '~/api/article'
+import request from '~/utils/request'
 
 class ArticleView extends React.Component{
   static propTypes = {
@@ -51,25 +52,16 @@ class ArticleView extends React.Component{
 
     this.injectRequestUtil = (function injectRequestUtil(){
       // 注入一个请求器，用于通信
-      window._request = function(config){
-        return new Promise((resolve, reject) =>{
-          if(!window._request_id) window._request_id = 0 
+      window._request = function(config, callback){
+        if(!window._request_id) window._request_id = 0 
 
-          config = { 
-            url, 
-            method = 'get', 
-            params = {},
-            ...config
-          }
+        var callbackName = '_request_' + window._request_id
+        
+        window[callbackName] = callback
+        window._request_id++
 
-          var requestResolveName = '_request_resolve_' + window._request_id
-          var requestRejectName = '_request_reject_' + window._request_id
-          window[requestResolveName] = resolve
-          window[requestRejectName] = reject
-  
-          ReactNativeWebView.postMessage(JSON.stringify({ type: 'request', data: { config, requestResolveName, requestRejectName } }))
-          window._request_id++
-        })
+        // 必须返回，之后单独使用postMessage发送出去，不能对postMessage进行封装，否则webView无法接收到
+        return { config, callbackName }
       }
     }).toString() + ';injectRequestUtil()'
   }
@@ -186,6 +178,23 @@ class ArticleView extends React.Component{
           $dialog.alert.show({ content: '该条目还未创建' })
         }
       })[data.type]()
+    }
+
+    if(type === 'request'){
+      var { config, callbackName } = data
+      request({
+        baseURL: config.url,
+        method: config.method,
+        params: config.params
+      }).then(data =>{
+        console.log(data)
+        console.log(callbackName)
+        // 待调试，请求到的东西塞不到webView里去
+        this.injectScript(`window.${callbackName}('${JSON.stringify(data)}')`)
+      }).catch(e =>{
+        console.log(e)
+        this.injectScript(`window.${callbackName}('${JSON.stringify({ error: true })}')`)
+      })
     }
 
     if(type === 'openApp'){

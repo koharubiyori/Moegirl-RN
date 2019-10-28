@@ -23,46 +23,44 @@ export default function(){
       }
     })
 
-    console.log(typeof Hammer)
-
     var titlePhoneEvent = new Hammer(title[0])
     titlePhoneEvent.on('press', function(){
       ReactNativeWebView.postMessage(JSON.stringify({ type: 'openApp', data: { url: 'bilibili://video/' + avId  } }))
     })
 
-    // var titleText = $(this).data('title')
-    // if(titleText){
-    //   title.text(titleText)
-    // }else{
-    //   $.ajax({
-    //     url: '/relay.php',
-    //     type: 'post',
-    //     timeout: 7000,
-    //     data: {
-    //       url: 'https://api.bilibili.com/x/web-interface/view',
-    //       type: 'get',
-    //       data: {
-    //         aid: avId
-    //       },
-    //       timeout: 7
-    //     }
-    //   }).done(function(data){
-    //     if('data' in data){
-    //       title.text(data.data.title)
-    //     }else{
-    //       switch(data.code){
-    //         default: {
-    //           title.text('标题获取失败')
-    //         }
-    //         case '-404': {
-    //           title.text('视频又挂了_(:з」∠)_')
-    //         }
-    //       }
-    //     }
-    //   }).fail(function(){
-    //     title.text('标题获取失败')
-    //   })
-    // }
+    var titleText = $(this).data('title')
+    if(titleText){
+      title.text(titleText)
+    }else{
+      title.text('av' + avId)
+
+      // 待调试，拿不到应用层得到的请求数据
+      // var info = _request({
+      //   url: 'https://api.bilibili.com/x/web-interface/view',
+      //   method: 'get',
+      //   params: {
+      //     aid: avId
+      //   }
+      // }, function(data){
+      //   data = JSON.parse(data)
+      //   console.log(data)
+      //   if(data.error) return title.text('标题获取失败')
+      //   if('data' in data){
+      //     title.text(data.data.title)
+      //   }else{
+      //     switch(data.code){
+      //       default: {
+      //         return title.text('标题获取失败')
+      //       }
+      //       case '-404': {
+      //         return title.text('视频又挂了_(:з」∠)_')
+      //       }
+      //     }
+      //   }
+      // })
+
+      // ReactNativeWebView.postMessage(JSON.stringify({ type: 'request', data: info }))
+    }
 
     $(this).css({
       display: 'block',

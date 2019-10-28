@@ -90,7 +90,7 @@ export default class SearchResult extends React.Component{
           ListFooterComponent={({
             0: () => 
             <TouchableOpacity onPress={this.loadList}>
-              <View style={{ height: 50, justifyContent: 'center', alignContent: 'center', elevation: 2 }}>
+              <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
                 <Text>加载失败，点击重试</Text>
               </View>
             </TouchableOpacity>,
