@@ -39,9 +39,8 @@ export default class CommentBtn extends React.Component{
   show = () =>{
     if(this.animateLock || this.state.visible){ return }
 
-    this.setState({ visible: true })
     this.animateLock = true
-    Animated.timing(this.state.transitionScale, {
+    this.setState({ visible: true }, () => Animated.timing(this.state.transitionScale, {
       toValue: 1.1,
       duration: 100,
       useNativeDriver: true
@@ -51,7 +50,8 @@ export default class CommentBtn extends React.Component{
         duration: 50,
         useNativeDriver: true
       }).start(() => this.animateLock = false)
-    })
+    }))
+
   }
   
   hide = () =>{

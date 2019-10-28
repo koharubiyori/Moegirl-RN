@@ -59,7 +59,7 @@ class Login extends React.Component{
         </Button>
 
         <TouchableOpacity style={{ position: 'absolute', bottom: 10 }} onPress={() => Linking.openURL('https://mzh.moegirl.org/index.php?title=Special:创建账户')}>
-          <Text style={{ color: $colors.sub, textDecorationLine: 'underline', fontSize: 16 }}>还没有萌百帐号？点击前往网页端进行注册</Text>
+          <Text style={{ color: $colors.sub, textDecorationLine: 'underline', fontSize: 16 }}>还没有萌百帐号？点击前往官网进行注册</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
     )

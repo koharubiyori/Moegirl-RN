@@ -15,6 +15,7 @@ class ArticleHeader extends React.Component{
     navigation: PropTypes.object,
 
     onTapRefreshBtn: PropTypes.func,
+    onTapOpenCatalog: PropTypes.func,
     getRef: PropTypes.func
   }
 
@@ -53,14 +54,12 @@ class ArticleHeader extends React.Component{
 
   show = () =>{
     if(this.animateLock || this.state.visible){ return }
-    this.setState({ visible: true })
     this.animateLock = true
-
-    Animated.timing(this.state.transitionTranslateY, {
+    this.setState({ visible: true }, () => Animated.timing(this.state.transitionTranslateY, {
       toValue: 0,
       duration: 200,
       useNativeDriver: true
-    }).start(() => this.animateLock = false)
+    }).start(() => this.animateLock = false))
   }
 
   eventHandlers = (event, navigation) =>{
@@ -86,6 +85,10 @@ class ArticleHeader extends React.Component{
         Clipboard.setString(shareUrl)
         toast.show('已将分享链接复制至剪切板', 'center')
       }
+
+      if(event.index === 3){
+        this.props.onTapOpenCatalog()
+      }
     }
   }
 
@@ -105,7 +108,8 @@ class ArticleHeader extends React.Component{
                 labels: [
                   '刷新',
                   ...[this.props.state.user.name ? '编辑此页' : '登录'],
-                  '分享'
+                  '分享',
+                  '打开目录'
                 ]
             }
           }}

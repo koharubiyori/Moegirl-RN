@@ -120,11 +120,12 @@ export default class Article extends React.Component{
           navigation={this.props.navigation} 
           title={this.state.pageName} 
           onTapRefreshBtn={() => this._refs.articleView.loadContent(true)}
+          onTapOpenCatalog={() => this.refs.catalog.showCatalog()}
           getRef={self => this._refs.header = self} 
         />
 
         {/* 这只是一个普通的view，但被绑定了滑动显示catalog的事件 */}
-        <CatalogTriggerView style={{ flex: 1 }} items={this.state.catalogItems} onTapTitle={this.articleViewIntoAnchor}>
+        <CatalogTriggerView style={{ flex: 1 }} items={this.state.catalogItems} onTapTitle={this.articleViewIntoAnchor} ref="catalog">
          <ArticleView style={{ flex: 1 }} navigation={this.props.navigation}
             link={this.state.link} 
             injectStyle={['page']}
