@@ -35,12 +35,12 @@ export default function(){
     var type = 'inner'
     if(/^\/File:/.test(link)){
       return ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapImage', data: { name: link.replace(/^\/File:/, '') } }))
+    }else if(link.indexOf('redlink=1') >= 0){
+      type = 'notExists'
     }else if(/^\//.test(link)){
       link = decodeURIComponent(link.substring(1))
     }else if(/^https?:\/\//.test(link)){
       type = 'outer'
-    }else if(link.indexOf('redlink=1') >= 0){
-      type = 'notExists'
     }
 
     ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapLink', data: { link, type } }))

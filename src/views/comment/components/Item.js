@@ -21,6 +21,7 @@ class CommentItem extends React.Component{
     visibleReplyBtn: PropTypes.bool,
     visibleReplyNum: PropTypes.bool,
     visibleDelBtn: PropTypes.bool,
+    navigation: PropTypes.object,
     onDel: PropTypes.func,
     onPress: PropTypes.func,
     onTapReply: PropTypes.func
@@ -43,6 +44,13 @@ class CommentItem extends React.Component{
   }
 
   toggleLike = () =>{
+    if(!store.getState().user.name){
+      return $dialog.confirm.show({
+        content: '未登录无法进行点赞，是否要前往登录界面？',
+        onTapCheck: () => this.props.navigation.push('login')
+      })
+    }
+    
     var isLiked = this.props.data.myatt
     
     toast.showLoading()

@@ -23,7 +23,6 @@ class ArticleView extends React.Component{
     disabledLink: PropTypes.bool,
     injectStyle: PropTypes.arrayOf(PropTypes.string),   // 载入位于 /android/main/assets 的样式表
     injectCss: PropTypes.string,
-    // injectScript: PropTypes.arrayOf(PropTypes.string),
     injectJs: PropTypes.string,
 
     onMessages: PropTypes.objectOf(PropTypes.func),   // 接收webView的postMessage
@@ -83,6 +82,15 @@ class ArticleView extends React.Component{
 
     const scriptTags = this.libScript.reduce((prev, next) => prev + `<script src="js/lib/${next}.js"></script>`, '')
 
+
+    // try{
+    //   ${this.injectRequestUtil};
+    //   ${controlsCodeString};
+    //   ${this.props.injectJs || ''} 
+    // }catch(e){
+    //   ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
+    // }
+
     html = `
       <!DOCTYPE html>
       <html lang="en">
@@ -99,15 +107,10 @@ class ArticleView extends React.Component{
         ${scriptTags}
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
-          window.onload = function(){ 
-            try{
-              ${this.injectRequestUtil};
-              ${controlsCodeString};
-              ${this.props.injectJs || ''} 
-            }catch(e){
-              ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
-            }
-          }
+          $(function(){ 
+            ${controlsCodeString};
+            ${this.props.injectJs || ''} 
+          })
         </script>
       </body>
       </html>        
@@ -243,7 +246,6 @@ class ArticleView extends React.Component{
               originWhitelist={['*']}
               style={{ width: Dimensions.get('window').width }}
               onMessage={this.receiveMessage}
-              // onLoadEnd={() => this.injectScript(controlsCodeString)}
               ref="webView"
             />
 

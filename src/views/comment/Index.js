@@ -79,6 +79,7 @@ class Comment extends React.Component{
           renderItem={item => <Item 
             key={item.item.id}
             data={item.item}
+            navigation={this.props.navigation}
             onDel={this.props.comment.del}
             onTapReply={this.toReply}
           />}
@@ -87,7 +88,7 @@ class Comment extends React.Component{
             <View style={{ marginVertical: 10 }}>
               <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginBottom: 10 }}>热门评论</Text>
               {state.data.popular.map(item =>
-                <Item key={item.id} data={item} onDel={this.props.comment.del} visibleReply={false} visibleReplyBtn={false} />  
+                <Item key={item.id} data={item} navigation={this.props.navigation} onDel={this.props.comment.del} visibleReply={false} visibleReplyBtn={false} />  
               )}
               <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginTop: 10 }}>全部评论</Text>
             </View>
