@@ -61,13 +61,14 @@ class CommentReply extends React.Component{
       
         <ScrollView style={{ flex: 1 }}>
           <View>
-            <Item data={activeComment} onDel={this.delCommentData} visibleReply={false} visibleReplyBtn={false} visibleDelBtn={false} />
+            <Item data={activeComment} onDel={this.delCommentData} navigation={this.props.navigation} visibleReply={false} visibleReplyBtn={false} visibleDelBtn={false} />
             {children.length !== 0 ? <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginVertical: 10 }}>回复</Text> : null}
           </View>
           
           {children.map(item => <Item visibleReply={false} visibleReplyNum={false}
             key={item.id}
             data={item}
+            navigation={this.props.navigation}
             onDel={this.delCommentData}
             onTapReply={() => this.addReply(item.id)}
           />)}
