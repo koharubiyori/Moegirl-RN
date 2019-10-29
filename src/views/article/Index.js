@@ -46,7 +46,7 @@ export default class Article extends React.Component{
     `
 
     // 给webview注入的字符串js代码
-    this.articleViewInjectJs = (function injectedJs(){
+    var injectedJs = (function(){
       var lastPosition = 0,
       postMessageFlag = false   // 设置一个标记，防止和webview通信过频降低性能
 
@@ -66,7 +66,9 @@ export default class Article extends React.Component{
         changeHeaderVisible(!(window.scrollY > lastPosition))
         lastPosition = window.scrollY
       })
-    }).toString() + ';injectedJs()'
+    }).toString()
+
+    this.articleViewInjectJs = `(${injectedJs})();`
   }
 
   // 接收需要隐藏或显示header的指令
