@@ -48,6 +48,7 @@
     "@react-native-community/eslint-config": "^0.0.5",
     "babel-jest": "^24.9.0",
     "babel-plugin-root-import": "^6.4.1",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^6.2.1",
     "jest": "^24.9.0",
     "jetifier": "^1.6.4",

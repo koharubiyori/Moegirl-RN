@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, ActivityIndicator, FlatList, TouchableOpacity,
-  StyleSheet
+  StyleSheet, LayoutAnimation
 } from 'react-native'
 import Tree from '~/utils/tree'
 import toast from '~/utils/toast'
@@ -38,6 +38,12 @@ class Comment extends React.Component{
     })
 
     this.pageId = props.navigation.getParam('id')
+  }
+  
+  componentWillUpdate (){
+    LayoutAnimation.configureNext(
+      LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
+    )
   }
 
   loadList = () =>{
