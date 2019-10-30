@@ -58,12 +58,15 @@ export default function reducer(state = init(), action){
 
     // id
     case SET_LIKE_STATUS: {
-      state.data.posts.forEach(item =>{
+      var changeTargetComment = item =>{
         if(item.id === action.id){
           item.myatt = action.zan ? 1 : 0
           item.like += action.zan ? 1 : -1
         }
-      })
+      }
+
+      state.data.posts.forEach(changeTargetComment)
+      state.data.popular.forEach(changeTargetComment)
 
       return {
         ...state,
