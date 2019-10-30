@@ -13,7 +13,7 @@ import toast from '~/utils/toast'
 import store from '~/redux'
 import format from '../utils/format'
 
-class CommentItem extends React.Component{
+class CommentItem extends React.PureComponent{
   static propTypes = {
     data: PropTypes.object,
     contentName: PropTypes.string,
@@ -59,10 +59,6 @@ class CommentItem extends React.Component{
       .then(data =>{
         toast.show(isLiked ? '取消点赞' : '已点赞', 'center')
         this.props.comment.setLikeStatus(this.props.data.id, !isLiked)
-        // this.setState({ 
-        //   isLiked: !this.state.isLiked, 
-        //   likeNum: this.state.likeNum + (this.state.isLiked ? -1 : 1)
-        // })
       }).catch(e =>{
         console.log(e)
         toast.show('网络错误')

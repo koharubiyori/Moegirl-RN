@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, FlatList, ActivityIndicator, TouchableOpacity,
-  StyleSheet
+  StyleSheet, LayoutAnimation
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
@@ -29,6 +29,12 @@ export default class SearchResult extends React.Component{
 
   componentDidMount (){
     this.loadList()
+  }
+
+  componentWillUpdate (){
+    LayoutAnimation.configureNext(
+      LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
+    )
   }
   
   loadList = () =>{

@@ -5,5 +5,12 @@ module.exports = {
       "rootPathPrefix": "~",
       "rootPathSuffix": "src"
     }]
-  ]
+  ],
+
+  env: {
+    production: {
+      "plugins": ["transform-remove-console"]
+    }
+  }
+
 };
