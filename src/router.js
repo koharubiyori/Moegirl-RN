@@ -11,10 +11,12 @@ import edit from './views/edit/Index'
 import comment from './views/comment/Index'
 import reply from './views/comment/Reply'
 import about from './views/About'
+import settings from './views/settings/Index'
 
 const StackNavigator = createStackNavigator(
   { 
     main, article, search, searchResult, login, about,
+    settings,
 
     edit: {
       screen: edit,

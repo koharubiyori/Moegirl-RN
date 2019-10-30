@@ -55,12 +55,15 @@ class DrawerScreen extends React.Component{
 
         <View style={{ flex: 1 }}>
           <View style={styles.items}>
+            <Item icon="settings" title="设置" onPress={() => $appNavigator.current._navigation.push('settings')} />
+            <Item icon="help" title="提问求助区" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:提问求助区' })} />
+            <Item icon="forum" title="讨论版" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:讨论版' })} />
             <Item icon="info" title="关于" onPress={() => $appNavigator.current._navigation.push('about')} />
           </View>
 
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: '#ABABAB', fontSize: 16 }}>其他功能敬请期待</Text>
-          </View>
+          </View> */}
         </View>
       </View>
       
