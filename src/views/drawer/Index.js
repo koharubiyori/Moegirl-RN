@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, 
+  View, Text, DrawerLayoutAndroid, Dimensions,
   StyleSheet
 } from 'react-native'
-import Drawer from 'react-native-drawer'
+// import Drawer from 'react-native-drawer'
 import DrawerScreen from './Screen'
 
 export default class MyDrawer extends React.Component{
@@ -15,39 +15,33 @@ export default class MyDrawer extends React.Component{
   constructor (props){
     super(props)
     this.state = {
-      visible: false,
-      showMask: true
+
     }
+
+    this.visible = false
   }
   
   componentDidMount (){
-    global.$drawer = this.refs.drawer
-    setTimeout(() => this.setState({ showMask: false }), 1000)
+    global.$drawer = this
+  }
+
+  open (){
+    this.refs.drawer.openDrawer()
+  }
+
+  close (){
+    this.refs.drawer.closeDrawer()
   }
 
   render (){
     return (
-      <View style={{ flex: 1 }}>
-        <Drawer tapToClose
-          open={this.state.visible} 
-          type="overlay"
-          content={<DrawerScreen />}
-          openDrawerOffset={0.4}
-          closedDrawerOffset={0}
-          panOpenMask={1}
-          panCloseMask={0}
-          styles={drawerStyles}
-          tweenHandler={ratio => ({
-            mainOverlay: { opacity: ratio }
-          })}
-          ref="drawer"
-        >{this.props.children}</Drawer>
-
-        {/* 使用这个drawer插件时，发现第一次加载会出现半秒的黑色遮罩，这里只好多显示一秒的白屏 */}
-        {this.state.showMask ?
-          <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'white' }}></View> 
-        : null}
-      </View>
+      <DrawerLayoutAndroid 
+        renderNavigationView={() => <DrawerScreen />}
+        drawerWidth={Dimensions.get('window').width * 0.6}
+        onDrawerOpen={() => this.visible = true}
+        onDrawerClose={() => this.visible}
+        ref="drawer"
+      >{this.props.children}</DrawerLayoutAndroid>
     )
   }
 }
