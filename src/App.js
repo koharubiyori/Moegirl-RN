@@ -30,7 +30,7 @@ export default class App extends React.Component {
 
     var onPressBackBtnMark = false
     BackHandler.addEventListener('hardwareBackPress', () =>{
-      if($drawer && $drawer._open){
+      if($drawer && $drawer.visible){
         $drawer.close()
         return true
       }
