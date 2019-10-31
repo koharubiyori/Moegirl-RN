@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text,
+  View, Text, BackHandler,
   StyleSheet, 
 } from 'react-native'
-import { AndroidBackHandler } from 'react-navigation-backhandler'
 import StatusBar from '~/components/StatusBar'
 import Header from './Header'
 import TabNavigator from './TabNavigator'
@@ -49,16 +48,17 @@ export default class Edit extends React.Component{
   }
 
   backHandler = () =>{
-    console.log(true)
     const {params} = this.refs.tabNavigator.state.nav.routes[0]
-    if(params && params.isContentChanged){
-      $dialog.confirm.show({
-        content: '编辑还未保存，确定要放弃编辑的内容？',
-        onTapCheck: () => this.props.navigation.goBack()
-      })
-
-      return true
-    }
+    BackHandler.addEventListener('hardwareBackPress', () =>{
+      if(params && params.isContentChanged){
+        $dialog.confirm.show({
+          content: '编辑还未保存，确定要放弃编辑的内容？',
+          onTapCheck: () => this.props.navigation.goBack()
+        })
+  
+        return true
+      }
+    })
   }
 
   submit = () =>{
@@ -100,17 +100,15 @@ export default class Edit extends React.Component{
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <StatusBar />
         <Header title={this.props.navigation.getParam('title')} navigation={this.props.navigation} onTapDoneBtn={this.submit} />
-        <AndroidBackHandler onBackPress={this.backHandler} >
-          <TabNavigator 
-            screenProps={{ 
-              title: this.props.navigation.getParam('title'),
-              section: this.props.navigation.getParam('section'),
-              content: this.state.content
-            }}
-            onNavigationStateChange={this.navigationStateChange}
-            ref="tabNavigator"
-          />
-        </AndroidBackHandler>
+        <TabNavigator 
+          screenProps={{ 
+            title: this.props.navigation.getParam('title'),
+            section: this.props.navigation.getParam('section'),
+            content: this.state.content
+          }}
+          onNavigationStateChange={this.navigationStateChange}
+          ref="tabNavigator"
+        />
       </View>
     )
   }
