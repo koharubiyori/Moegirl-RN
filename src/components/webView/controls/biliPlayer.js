@@ -32,34 +32,32 @@ export default function(){
     if(titleText){
       title.text(titleText)
     }else{
-      title.text('av' + avId)
+      // title.text('av' + avId)
 
-      // 待调试，拿不到应用层得到的请求数据
-      // var info = _request({
-      //   url: 'https://api.bilibili.com/x/web-interface/view',
-      //   method: 'get',
-      //   params: {
-      //     aid: avId
-      //   }
-      // }, function(data){
-      //   data = JSON.parse(data)
-      //   console.log(data)
-      //   if(data.error) return title.text('标题获取失败')
-      //   if('data' in data){
-      //     title.text(data.data.title)
-      //   }else{
-      //     switch(data.code){
-      //       default: {
-      //         return title.text('标题获取失败')
-      //       }
-      //       case '-404': {
-      //         return title.text('视频又挂了_(:з」∠)_')
-      //       }
-      //     }
-      //   }
-      // })
+      var info = _request({
+        url: 'https://api.bilibili.com/x/web-interface/view',
+        method: 'get',
+        params: {
+          aid: avId
+        }
+      }, function(data){
+        data = JSON.parse(data)
+        if(data.error) return title.text('标题获取失败')
+        if('data' in data){
+          title.text(data.data.title)
+        }else{
+          switch(data.code){
+            default: {
+              return title.text('标题获取失败')
+            }
+            case '-404': {
+              return title.text('视频又挂了_(:з」∠)_')
+            }
+          }
+        }
+      })
 
-      // ReactNativeWebView.postMessage(JSON.stringify({ type: 'request', data: info }))
+      ReactNativeWebView.postMessage(JSON.stringify({ type: 'request', data: info }))
     }
 
     $(this).css({

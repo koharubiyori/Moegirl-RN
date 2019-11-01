@@ -68,7 +68,7 @@ export default class SearchResult extends React.Component{
     return (
       <View style={{ flex: 1 }}>
         <StatusBar blackText color="white" />
-        <View style={styles.body}>
+        <View style={styles.header}>
           <Button onPress={() => this.props.navigation.goBack()} rippleColor={$colors.light}>
             <Icon name="keyboard-backspace" size={25} color="#666" />
           </Button>
@@ -111,7 +111,7 @@ export default class SearchResult extends React.Component{
 }
 
 const styles = StyleSheet.create({
-  body: {
+  header: {
     height: 55,
     elevation: 3,
     paddingHorizontal: 15,
