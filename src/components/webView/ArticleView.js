@@ -49,7 +49,7 @@ class ArticleView extends React.Component{
 
     this.baseUrl = 'file:///android_asset/assets'
 
-    this.injectRequestUtil = (function injectRequestUtil(){
+    var injectRequestUtil = (function(){
       // 注入一个请求器，用于通信
       window._request = function(config, callback){
         if(!window._request_id) window._request_id = 0 
@@ -62,7 +62,9 @@ class ArticleView extends React.Component{
         // 必须返回，之后单独使用postMessage发送出去，不能对postMessage进行封装，否则webView无法接收到
         return { config, callbackName }
       }
-    }).toString() + ';injectRequestUtil()'
+    }).toString()
+
+    this.injectRequestUtil = `(${injectRequestUtil})();`
   }
   
   componentDidMount (){
@@ -82,15 +84,6 @@ class ArticleView extends React.Component{
 
     const scriptTags = this.libScript.reduce((prev, next) => prev + `<script src="js/lib/${next}.js"></script>`, '')
 
-
-    // try{
-    //   ${this.injectRequestUtil};
-    //   ${controlsCodeString};
-    //   ${this.props.injectJs || ''} 
-    // }catch(e){
-    //   ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
-    // }
-
     html = `
       <!DOCTYPE html>
       <html lang="en">
@@ -108,8 +101,13 @@ class ArticleView extends React.Component{
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           $(function(){ 
-            ${controlsCodeString};
-            ${this.props.injectJs || ''} 
+            try{
+              ${this.injectRequestUtil};
+              ${controlsCodeString};
+              ${this.props.injectJs || ''} 
+            }catch(e){
+              ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
+            }
           })
         </script>
       </body>
@@ -190,10 +188,8 @@ class ArticleView extends React.Component{
         method: config.method,
         params: config.params
       }).then(data =>{
-        console.log(data)
-        console.log(callbackName)
-        // 待调试，请求到的东西塞不到webView里去
-        this.injectScript(`window.${callbackName}('${JSON.stringify(data)}')`)
+        // 数据中的换行会导致解析json失败
+        this.injectScript(`window.${callbackName}(\`${JSON.stringify(data).replace(/\\n/g, '')}\`)`)
       }).catch(e =>{
         console.log(e)
         this.injectScript(`window.${callbackName}('${JSON.stringify({ error: true })}')`)
