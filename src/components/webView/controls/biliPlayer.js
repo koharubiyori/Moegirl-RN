@@ -4,8 +4,7 @@ export default function(){
 
   viewBox.find('.wikitable.bilibili-video-container').each(function () {
     var avId = $(this).data('aid').toString().replace('av', '')
-    // var isReload = 'isbiliPlayerReload' in config && config.isbiliPlayerReload
-    var isReload = true
+    var isReload = _appConfig.biliPlayerReload
     var player = `<iframe src="https://player.bilibili.com/player.html?aid=${avId}&page=${$(this).data('page')}" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="width:100%; background-color:#ccc" class="bilibili-player"></iframe>`
 
     var title = $('<div class="bilibili-video-title">标题获取中...</div>')

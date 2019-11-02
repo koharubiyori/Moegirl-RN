@@ -42,7 +42,8 @@ class ArticleView extends React.Component{
       html: '',
       status: 1,
 
-      showingImg: ''
+      showingImg: '',
+      config: null
     }
 
     this.libScript = ['fastclick.min', 'jquery.min', 'hammer.min']
@@ -65,18 +66,31 @@ class ArticleView extends React.Component{
     }).toString()
 
     this.injectRequestUtil = `(${injectRequestUtil})();`
+
+    this.props.navigation.addListener('willFocus', () =>{
+      // 获取配置，注入webView
+      storage.get('config').then(config =>{
+        if(config){
+          if(!this.state.config){ return this.setState({ config }, this.loadContent) }
+          if(JSON.stringify(config) !== JSON.stringify(this.state.config)){
+            this.setState({ config }, this.loadContent)
+          }
+        }
+      })
+    })
   }
   
   componentDidMount (){
     if(this.props.link){
       this.loadContent()
     }else{
+      this.setState({ html: this.props.html })
       this.writeContent(this.props.html)
       this.setState({ status: 3 })
     }
   }
 
-  writeContent (html){
+  writeContent = html =>{
     // 载入资源（位于 /android/main/assets ）
     const styleTags = this.props.injectStyle ? this.props.injectStyle.reduce((prev, next) => 
       prev + `<link type="text/css" rel="stylesheet" href="css/${next}.css" />`, ''
@@ -100,6 +114,7 @@ class ArticleView extends React.Component{
         ${scriptTags}
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
+          window._appConfig = ${JSON.stringify(this.state.config)};
           $(function(){ 
             try{
               ${this.injectRequestUtil};

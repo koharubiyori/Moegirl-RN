@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, Animated, 
-  StyleSheet, NativeModules, Dimensions, Clipboard, DeviceEventEmitter
+  StyleSheet, Dimensions, Clipboard, DeviceEventEmitter
 } from 'react-native'
 import { Toolbar } from 'react-native-material-ui'
 import userHOC from '~/redux/user/HOC'
@@ -126,14 +126,6 @@ export default userHOC(ArticleHeader)
 
 const styles = StyleSheet.create({
   body: {
-    // ...$theme.mainBg,
-    // paddingHorizontal: 15,
-    // height,
-    // elevation: 3,
-
-    // flexDirection: 'row',
-    // justifyContent: 'space-between',
-    // alignItems: 'center',
     zIndex: 1
   },
   

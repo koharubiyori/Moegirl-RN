@@ -165,7 +165,7 @@ ul.gallery li p {
   display: none;
 }
 .navbox tr.group-spread {
-  width: calc(90%);
+  width: calc(100% - 5px);
   display: table;
   border-left-width: 15px;
   border-left-style: solid;

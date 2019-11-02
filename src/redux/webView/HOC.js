@@ -1,28 +1,31 @@
 import { ADD } from './actionTypes'
 import { connect } from 'react-redux'
+import store from '~/redux'
 import { getArticle } from '~/api/article'
 
-function mapDispatchToProps(dispatch){
-  const getContent = (link, forceLoad = false) => dispatch((dispatch, getState) =>
-    new Promise((resolve, reject) =>{
-      const {webView} = getState()
+const { dispatch } = store
 
-      var cache = webView.pagesCache[link]
-      if(cache && !forceLoad){ return resolve(cache) }
+export const getContent = (link, forceLoad = false) => dispatch((dispatch, getState) =>
+  new Promise((resolve, reject) =>{
+    const {webView} = getState()
 
-      getArticle(link).then(data =>{
+    var cache = webView.pagesCache[link]
+    if(cache && !forceLoad){ return resolve(cache) }
+
+    getArticle(link)
+      .then(data =>{
         dispatch({ type: ADD, name: link, data })
         resolve(data)
-      }).catch(reject)
-    })
-  )
-
-  return { getContent }
-}
+      })
+      .catch(reject)
+  })
+)
 
 export default function(Element){
   return connect(
     state => ({ state }),
-    dispatch => ({ webView: mapDispatchToProps(dispatch) })
+    dispatch => ({ 
+      webView: { getContent } 
+    })
   )(Element)
 }
