@@ -4,12 +4,12 @@ import {
   StyleSheet
 } from 'react-native'
 import PropTypes from 'prop-types'
-import { Toolbar } from 'react-native-material-ui'
+import Toolbar from '~/components/Toolbar'
 import { NavigationContext } from '../Index'
 
 export default class IndexHeader extends React.Component{
   static propTypes = {
-    title: PropTypes.string.isRequired 
+    title: PropTypes.string.isRequired
   }
 
   constructor (props){
@@ -19,7 +19,7 @@ export default class IndexHeader extends React.Component{
     }
 
   }
-  
+
   eventHandlers = (event, navigation) =>{
     console.log(event)
     if(event.action === 'search'){

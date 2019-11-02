@@ -73,15 +73,15 @@ export default class Search extends React.Component{
     return (
       <NavigationContext.Provider value={this.props.navigation}>
         <View style={{ flex: 1, backgroundColor: 'white' }}>
-          <StatusBar blackText color="white" />
-            <Header value={this.state.searchWord} 
-              onChangeText={this.changeText} 
+          <StatusBar blackText />
+            <Header value={this.state.searchWord}
+              onChangeText={this.changeText}
               onSubmit={() => this.toSearchResultView()}
             />
-            {this.state.searchWord ? 
+            {this.state.searchWord ?
               <SearchHint titles={this.state.searchHint} onTapTitle={title => this.toSearchResultView(title)} />
-            : 
-              <RecentSearch 
+            :
+              <RecentSearch
                 titles={this.state.searchHistory}
                 onTapDelete={this.clearSearchHistory}
                 onTapTitle={title => this.toSearchResultView(title)}

@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, Animated, 
-  StyleSheet, Dimensions, Clipboard, DeviceEventEmitter
+  Animated, StyleSheet, Dimensions,
+  Clipboard, DeviceEventEmitter, NativeModules
 } from 'react-native'
-import { Toolbar } from 'react-native-material-ui'
+import Toolbar from '~/components/Toolbar'
 import userHOC from '~/redux/user/HOC'
 import toast from '~/utils/toast'
 
@@ -28,7 +28,7 @@ class ArticleHeader extends React.Component{
       transitionTranslateY: new Animated.Value(0)
     }
 
-    
+
     // 防止在返回时不滑动看不到标题
     this.articleChangeListener = DeviceEventEmitter.addListener('navigationStateChange', () => this.show())
     this.animateLock = false
@@ -37,13 +37,13 @@ class ArticleHeader extends React.Component{
   componentWillUnmount (){
     this.articleChangeListener.remove()
   }
-  
+
   hide = () =>{
     if(this.animateLock || !this.state.visible){ return }
     this.animateLock = true
 
     Animated.timing(this.state.transitionTranslateY, {
-      toValue: -56,
+      toValue: -56 - NativeModules.StatusBarManager.HEIGHT,
       duration: 200,
       useNativeDriver: true
     }).start(() =>{
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   body: {
     zIndex: 1
   },
-  
+
   title: {
     color: 'white',
     fontSize: 18,

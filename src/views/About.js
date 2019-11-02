@@ -20,24 +20,24 @@ function Item({
 
 export default class About extends React.Component{
   static propTypes = {
-    
+
   }
 
   constructor (props){
     super(props)
     this.state = {
-      
+
     }
 
     this.version = '0.9.1'
     this.date = '2019.11.02'
   }
-  
+
 
   render (){
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar blackText color="white" />    
+        <StatusBar blackText />
         <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={{ position: 'absolute', top: 40, right: 20 }}>
           <MaterialIcon name="close" size={36} color="#ABABAB" />
         </TouchableOpacity>
@@ -47,11 +47,11 @@ export default class About extends React.Component{
           <View style={{ borderBottomColor: '#ccc', borderBottomWidth: 1, marginTop: 30, paddingHorizontal: 20 }}>
             <Text style={{ fontSize: 18, color: $colors.main, marginBottom: 10 }}>万物皆可萌的百科全书</Text>
           </View>
-          
+
           <View style={{ marginTop: 20 }}>
             <Item title="版本" value={this.version}></Item>
             <Item title="更新日期" value={this.date}></Item>
-          
+
             <View style={styles.item}>
               <Text style={styles.itemText}>开发</Text>
               <TouchableOpacity onPress={() => this.props.navigation.push('article', { link: 'User:東東君' })}>
@@ -59,7 +59,7 @@ export default class About extends React.Component{
               </TouchableOpacity>
             </View>
           </View>
-        </View>    
+        </View>
       </View>
     )
   }
@@ -67,16 +67,16 @@ export default class About extends React.Component{
 
 const styles = StyleSheet.create({
   item: {
-    flexDirection: 'row', 
-    width: 210, 
-    justifyContent: 'space-between', 
+    flexDirection: 'row',
+    width: 210,
+    justifyContent: 'space-between',
     marginTop: 5
   },
 
   itemText: {
-    fontSize: 16, 
-    color: '#666', 
-    width: 80, 
+    fontSize: 16,
+    color: '#666',
+    width: 80,
     textAlign: 'center'
   }
 })

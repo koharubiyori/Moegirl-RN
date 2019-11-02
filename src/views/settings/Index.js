@@ -5,7 +5,7 @@ import {
   StyleSheet
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
-import { Toolbar } from 'react-native-material-ui'
+import Toolbar from '~/components/Toolbar'
 import storage from '~/utils/storage'
 import SwitchItem from './components/SwitchItem'
 import toast from '~/utils/toast'
@@ -21,12 +21,12 @@ function Title(props){
 
 class Settings extends React.Component{
   static propTypes = {
-    
+
   }
 
   constructor (props){
     super(props)
-    
+
     this.state = {
       config: {
         heimu: true,
@@ -43,7 +43,7 @@ class Settings extends React.Component{
   componentDidUpdate (){
     storage.set('config', this.state.config)
   }
-  
+
   clearArticleCache = () =>{
     $dialog.confirm.show({
       content: '确定要清空条目缓存吗？',
@@ -82,42 +82,42 @@ class Settings extends React.Component{
 
     return (
       <View>
-        <StatusBar />  
+        <StatusBar />
         <Toolbar size={26}
           centerElement="设置"
           leftElement="keyboard-backspace"
           onLeftElementPress={() => this.props.navigation.goBack()}
         />
-        
+
         <ScrollView>
           <Title>条目</Title>
 
-          <SwitchItem title="黑幕开关" 
-            subtext="关闭后黑幕将默认为刮开状态" 
+          <SwitchItem title="黑幕开关"
+            subtext="关闭后黑幕将默认为刮开状态"
             value={config.heimu}
             onChange={val => setConfig({ heimu: val })}
           />
 
-          <SwitchItem title="B站播放器重载" 
-            subtext="开启后，收起B站播放器后将彻底关闭关闭播放器，而不是后台继续播放，但再次展开将消耗额外的流量" 
+          <SwitchItem title="B站播放器重载"
+            subtext="开启后，收起B站播放器后将彻底关闭关闭播放器，而不是后台继续播放，但再次展开将消耗额外的流量"
             value={config.biliPlayerReload}
             onChange={val => setConfig({ biliPlayerReload: val })}
           />
 
-          <SwitchItem title="完全沉浸模式" 
-            subtext="浏览条目时将隐藏状态栏" 
+          <SwitchItem title="完全沉浸模式"
+            subtext="浏览条目时将隐藏状态栏"
             value={config.immersionMode}
             onChange={val => setConfig({ immersionMode: val })}
           />
 
           <Title>缓存</Title>
 
-          <SwitchItem hideSwitch 
+          <SwitchItem hideSwitch
             title="清除条目缓存"
             onPress={() => this.clearArticleCache()}
           />
 
-          <SwitchItem hideSwitch 
+          <SwitchItem hideSwitch
             title="清除浏览历史"
             onPress={() => this.clearHistory()}
           />
@@ -129,14 +129,14 @@ class Settings extends React.Component{
           />
 
           <Title>其他</Title>
-          
+
           <SwitchItem hideSwitch
             title="关于"
             onPress={() => this.props.navigation.push('about')}
           />
         </ScrollView>
 
-        
+
       </View>
     )
   }

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, FlatList, ActivityIndicator, TouchableOpacity,
-  StyleSheet, LayoutAnimation
+  StyleSheet, LayoutAnimation, NativeModules
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
@@ -36,7 +36,7 @@ export default class SearchResult extends React.Component{
       LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
     )
   }
-  
+
   loadList = () =>{
     if(this.state.status === 4 || this.state.status === 2){ return }
     this.setState({ status: 2 })
@@ -67,7 +67,7 @@ export default class SearchResult extends React.Component{
   render (){
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar blackText color="white" />
+        <StatusBar blackText />
         <View style={styles.header}>
           <Button onPress={() => this.props.navigation.goBack()} rippleColor={$colors.light}>
             <Icon name="keyboard-backspace" size={25} color="#666" />
@@ -82,19 +82,19 @@ export default class SearchResult extends React.Component{
           </View>
         : null} */}
 
-        <FlatList data={this.state.list} 
+        <FlatList data={this.state.list}
           onEndReachedThreshold={0.5}
           onEndReached={this.loadList}
           style={styles.list}
-          renderItem={item => <Item 
+          renderItem={item => <Item
             key={item.item.id}
             data={item.item}
-            searchWord={this.searchWord} 
+            searchWord={this.searchWord}
             onPress={link => this.props.navigation.push('article', { link })}
           />}
 
           ListFooterComponent={({
-            0: () => 
+            0: () =>
             <TouchableOpacity onPress={this.loadList}>
               <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
                 <Text>加载失败，点击重试</Text>
@@ -110,9 +110,11 @@ export default class SearchResult extends React.Component{
   }
 }
 
+const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
 const styles = StyleSheet.create({
   header: {
-    height: 55,
+    height: 55 + statusBarHeight,
+    paddingTop: statusBarHeight,
     elevation: 3,
     paddingHorizontal: 15,
     flexDirection: 'row',
@@ -127,7 +129,7 @@ const styles = StyleSheet.create({
   },
 
   totalHint: {
-    
+
   },
 
   list: {

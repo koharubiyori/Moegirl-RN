@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { 
+import {
   View, Text,
   StyleSheet
 } from 'react-native'
-import { Toolbar } from 'react-native-material-ui'
+import Toolbar from '~/components/Toolbar'
 
 EditHeader.propTypes = {
   title: PropTypes.string,
@@ -42,5 +42,5 @@ export default function EditHeader({
 }
 
 const styles = StyleSheet.create({
-  
+
 })

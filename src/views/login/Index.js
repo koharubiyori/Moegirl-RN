@@ -12,7 +12,7 @@ import toast from '~/utils/toast'
 
 class Login extends React.Component{
   static propTypes = {
-    
+
   }
 
   constructor (props){
@@ -45,12 +45,12 @@ class Login extends React.Component{
     })
     .catch(status => toast.show(status === 'FAIL' ? '用户名或密码错误' : '网络错误，请重试'))
   }
-  
+
   render (){
     return (
       <KeyboardAvoidingView style={{ flex: 1, alignItems: 'center' }}>
-        <StatusBar blackText color="white" />
-        <Image source={require('~/assets/images/moemoji.png')} style={{ width: 70, height: 80, marginTop: 20, marginLeft: -10 }} resizeMode="cover" />
+        <StatusBar blackText />
+        <Image source={require('~/assets/images/moemoji.png')} style={{ width: 70, height: 80, marginTop: 45, marginLeft: -10 }} resizeMode="cover" />
         <Text style={{ color: $colors.main, fontSize: 17, marginTop: 20 }}>萌娘百科，万物皆可萌的百科全书！</Text>
         <TextField label="用户名" {...this.textFieldStyle} value={this.state.userName} onChangeText={val => this.setState({ userName: val })} />
         <TextField label="密码" {...this.textFieldStyle} value={this.state.password} secureTextEntry onChangeText={val => this.setState({ password: val })} />
@@ -71,10 +71,10 @@ export default userHOC(Login)
 const styles = StyleSheet.create({
   submitBtn: {
     width: 250,
-    height: 40, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: $colors.sub, 
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: $colors.sub,
     borderRadius: 3,
     marginTop: 20,
     elevation: 1

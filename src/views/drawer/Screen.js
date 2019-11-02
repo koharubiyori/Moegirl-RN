@@ -15,12 +15,12 @@ class DrawerScreen extends React.Component{
   constructor (props){
     super(props)
     this.state = {
-    
+
     }
   }
 
   componentDidMount (){
-    
+
   }
 
   tap = handler =>{
@@ -33,14 +33,14 @@ class DrawerScreen extends React.Component{
   render (){
     return (
       <View style={{ backgroundColor: 'white', height: Dimensions.get('window').height }}>
-        <View style={{ height: this.props.immersionMode ? 0 : NativeModules.StatusBarManager.HEIGHT }} />
         <View style={styles.header}>
-          {this.props.state.user.name ? 
+          <View style={{ height: this.props.immersionMode ? 0 : NativeModules.StatusBarManager.HEIGHT }} />
+          {this.props.state.user.name ?
             <>
               <Image source={{ uri: $avatarUrl + this.props.state.user.name }} style={styles.avatar} />
               <Text style={styles.hintText}>欢迎你，{this.props.state.user.name}</Text>
             </>
-          : 
+          :
             <>
               <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.push('login'))}>
                 <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
@@ -66,7 +66,7 @@ class DrawerScreen extends React.Component{
           </View> */}
         </View>
       </View>
-      
+
     )
   }
 }
@@ -90,9 +90,9 @@ const styles = StyleSheet.create({
   },
 
   hintText: {
-    color: 'white', 
-    marginLeft: 20, 
-    marginTop: 15, 
+    color: 'white',
+    marginLeft: 20,
+    marginTop: 15,
     fontSize: 16
   }
 })

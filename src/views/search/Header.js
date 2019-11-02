@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { 
+import {
   View, TextInput,
-  StyleSheet
+  StyleSheet, NativeModules
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
@@ -40,9 +40,11 @@ export default function SearchHeader({
   )
 }
 
+const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
 const styles = StyleSheet.create({
   body: {
-    height: 55,
+    height: 55 + statusBarHeight,
+    paddingTop: statusBarHeight,
     elevation: 3,
     paddingHorizontal: 15,
     flexDirection: 'row',

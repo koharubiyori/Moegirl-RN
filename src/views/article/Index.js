@@ -1,5 +1,5 @@
 import React from 'react'
-import { 
+import {
   View, Text,
   StyleSheet, NativeModules,
 } from 'react-native'
@@ -40,12 +40,6 @@ export default class Article extends React.Component{
       header: null,
       articleView: null
     }
-
-    this.articleViewInjectCss = `
-      body {
-        padding-top: 55px;
-      }
-    `
 
     // 给webview注入的字符串js代码
     var injectedJs = (function(){
@@ -122,34 +116,39 @@ export default class Article extends React.Component{
   }
 
   render (){
+    const articleViewInjectCss = `
+      body {
+        padding-top: ${ this.state.immersionMode ? '55px' : '' + (55 + NativeModules.StatusBarManager.HEIGHT) + 'px'};
+      }
+    `
     return (
       <NavigationContext.Provider value={this.props.navigation}>
         <StatusBar hidden={this.state.immersionMode} />
-        <Header style={{ ...styles.header, top: this.state.immersionMode ? 0 : NativeModules.StatusBarManager.HEIGHT }} 
-          navigation={this.props.navigation} 
-          title={this.state.pageName} 
+        <Header style={{ ...styles.header, top: this.state.immersionMode ? -NativeModules.StatusBarManager.HEIGHT : 0 }}
+          navigation={this.props.navigation}
+          title={this.state.pageName}
           onTapRefreshBtn={() => this._refs.articleView.loadContent(true)}
           onTapOpenCatalog={() => this.refs.catalog.showCatalog()}
-          getRef={self => this._refs.header = self} 
+          getRef={self => this._refs.header = self}
         />
 
         {/* 这只是一个普通的view，但被绑定了滑动显示catalog的事件 */}
         <CatalogTriggerView style={{ flex: 1 }} items={this.state.catalogItems} onTapTitle={this.articleViewIntoAnchor} ref="catalog">
          <ArticleView style={{ flex: 1 }} navigation={this.props.navigation}
-            link={this.state.link} 
+            link={this.state.link}
             injectStyle={['page']}
-            injectCss={this.articleViewInjectCss}
+            injectCss={articleViewInjectCss}
             injectJs={this.articleViewInjectJs}
             onMessages={{ changeHeaderVisible: this.changeHeaderVisible }}
             onLoaded={this.contentLoaded}
             getRef={self => this._refs.articleView = self}
-          />       
+          />
         </CatalogTriggerView>
 
         {this.state.id ? <CommentBtn ref="commentBtn" id={this.state.id}
           onTap={this.toComment}
           onLoaded={data => this.setState({ firstData: data })}
-        /> : null } 
+        /> : null }
       </NavigationContext.Provider>
     )
   }
