@@ -20,13 +20,23 @@ export default function(viewBox){
   viewBox.find('ul.gallery *').each(function () {
     $(this).removeAttr('style')
   })
-  
+
   // 宽表格适应
   viewBox.find('table').each(function () {
     if ($(this).closest('.navbox').length) { return }
-    $(this).wrap('<div style="overflow-x:auto; overflow-y:hidden; width:100%"></div>')
+    if (isTemplateHide(this)) { return }
+    $(this).wrap('<div class="wide-table-wrapper"></div>')
       .on('touchend', function (e) { e.stopPropagation() })
   })
+  function isTemplateHide(element) {
+    var tr = $(element).children('tbody').children('tr')
+    if ($(element).hasClass('mw-collapsible') &&  tr.length === 2) {
+      if ($(tr[0]).children('th').length === 1 && $(tr[1]).children('td').length === 1) {
+        return true
+      }
+    }
+    return false
+  }
 
   // 解决li中图片出界问题
   viewBox.find('ul:not(.gallery) > li .thumb').each(function () {
