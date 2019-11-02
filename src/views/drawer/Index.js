@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, DrawerLayoutAndroid, Dimensions,
+  View, Text, DrawerLayoutAndroid, Dimensions, DeviceEventEmitter,
   StyleSheet
 } from 'react-native'
-// import Drawer from 'react-native-drawer'
+import storage from '~/utils/storage'
 import DrawerScreen from './Screen'
 
-export default class MyDrawer extends React.Component{
+export default class MyDrawer extends React.PureComponent{
   static propTypes = {
    
   }
@@ -15,14 +15,23 @@ export default class MyDrawer extends React.Component{
   constructor (props){
     super(props)
     this.state = {
-
+      immersionMode: false,
+      isWatchingArticle: false
     }
 
     this.visible = false
+
+    // 监听路由变化，判断用户是否在article页面上
+    DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) =>{
+      var lastRouteName = state.routes[state.routes.length - 1].routeName
+      this.setState({ isWatchingArticle: lastRouteName === 'article' })
+      storage.get('config').then(config => config && this.setState({ immersionMode: config.immersionMode }))
+    })
   }
   
   componentDidMount (){
     global.$drawer = this
+    
   }
 
   open (){
@@ -36,10 +45,10 @@ export default class MyDrawer extends React.Component{
   render (){
     return (
       <DrawerLayoutAndroid 
-        renderNavigationView={() => <DrawerScreen />}
+        renderNavigationView={() => <DrawerScreen immersionMode={this.state.immersionMode && this.state.isWatchingArticle} />}
         drawerWidth={Dimensions.get('window').width * 0.6}
         onDrawerOpen={() => this.visible = true}
-        onDrawerClose={() => this.visible}
+        onDrawerClose={() => this.visible = false}
         ref="drawer"
       >{this.props.children}</DrawerLayoutAndroid>
     )

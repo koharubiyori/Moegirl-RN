@@ -26,7 +26,7 @@ export function getPreview(codes, title){
   })
 }
 
-function getLastTimestamp(title){
+export function getLastTimestamp(title){
   return request({
     params: {
       action: 'query',
@@ -38,7 +38,7 @@ function getLastTimestamp(title){
   })
 }
 
-function getToken(){
+export function getToken(){
   return request({
     method: 'post',
     params: {

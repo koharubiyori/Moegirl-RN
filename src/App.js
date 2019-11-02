@@ -9,7 +9,6 @@ import Drawer from '~/views/drawer'
 import store from './redux'
 import { Provider } from 'react-redux'
 import toast from './utils/toast'
-import './init'
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()
@@ -23,10 +22,11 @@ const theme = {
 export default class App extends React.Component {
   constructor (props){
     super(props)
+    this.state = {
 
+    }
     
     global.$appNavigator = React.createRef()
-    
 
     var onPressBackBtnMark = false
     BackHandler.addEventListener('hardwareBackPress', () =>{
@@ -48,6 +48,7 @@ export default class App extends React.Component {
 
   componentDidMount (){
     global.$dialog = { ...this.refs }
+    require('./init')
   }
 
   navigationStateChange (prevState, state){

@@ -46,21 +46,5 @@ export default class IndexHeader extends React.Component{
 }
 
 const styles = StyleSheet.create({
-  // body: {
-  //   ...$theme.mainBg,
-  //   paddingHorizontal: 15,
-  //   height: 55,
-  //   elevation: 3,
 
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center'
-  // },
-  
-  // title: {
-  //   color: 'white',
-  //   fontSize: 18,
-  //   marginLeft: 10,
-  //   marginTop: 5
-  // }
 })

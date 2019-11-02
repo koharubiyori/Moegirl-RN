@@ -23,11 +23,6 @@ export default class Edit extends React.Component{
     }
 
     this.essentialUpdate = false
-
-    // props.navigation.addListener('willBlur', e =>{
-    //   console.log('blur')
-    //   $lastTransition = 'forHorizontal'
-    // })
   }
 
   // 监听tab导航容器的状态变化
