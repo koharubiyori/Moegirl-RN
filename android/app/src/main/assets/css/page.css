@@ -110,7 +110,12 @@ table.wikitable > * > tr > td {
   border: 1px solid #a2a9b1;
   padding: .2em .4em;
 }
-.wikitable {
+.wide-table-wrapper {
+  overflow-x:auto;
+  overflow-y:hidden;
+  width:100%
+}
+.wide-table-wrapper table {
   width: max-content;
 }
 ul.gallery {
