@@ -9,7 +9,7 @@ import Item from './components/Item'
 
 class DrawerScreen extends React.Component{
   static propTypes = {
-    immersionMode: PropTypes.bool
+    immersionMode: PropTypes.bool   // 暂时用不上了
   }
 
   constructor (props){
@@ -33,7 +33,6 @@ class DrawerScreen extends React.Component{
   render (){
     return (
       <View style={{ backgroundColor: 'white', height: Dimensions.get('window').height }}>
-        <View style={{ height: this.props.immersionMode ? 0 : NativeModules.StatusBarManager.HEIGHT }} />
         <View style={styles.header}>
           {this.props.state.user.name ? 
             <>

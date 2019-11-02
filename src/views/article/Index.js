@@ -125,7 +125,7 @@ export default class Article extends React.Component{
     return (
       <NavigationContext.Provider value={this.props.navigation}>
         <StatusBar hidden={this.state.immersionMode} />
-        <Header style={{ ...styles.header, top: this.state.immersionMode ? 0 : NativeModules.StatusBarManager.HEIGHT }} 
+        <Header style={{ ...styles.header }} 
           navigation={this.props.navigation} 
           title={this.state.pageName} 
           onTapRefreshBtn={() => this._refs.articleView.loadContent(true)}
@@ -158,6 +158,7 @@ export default class Article extends React.Component{
 const styles = StyleSheet.create({
   header: {
     position: 'absolute',
+    top: 0,
     left: 0,
     right: 0,
   }

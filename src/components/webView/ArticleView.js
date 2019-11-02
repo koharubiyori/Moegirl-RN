@@ -84,9 +84,7 @@ class ArticleView extends React.Component{
     if(this.props.link){
       this.loadContent()
     }else{
-      this.setState({ html: this.props.html })
-      this.writeContent(this.props.html)
-      this.setState({ status: 3 })
+      this.setState({ html: this.props.html, status: 3 }, () => this.writeContent(this.props.html))
     }
   }
 
@@ -238,7 +236,7 @@ class ArticleView extends React.Component{
       .finally(toast.hide)
       .then(url =>{
         this.setState({ showingImg: url })
-      }).catch(() => toast.show('获取链接失败'))
+      }).catch(() => setTimeout(() => toast.show('获取链接失败')))
     }
 
     if(this.props.onMessages){

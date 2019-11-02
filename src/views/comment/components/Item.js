@@ -57,11 +57,10 @@ class CommentItem extends React.PureComponent{
     toggleLike(this.props.data.id, isLiked)
       .finally(toast.hide)
       .then(data =>{
-        toast.show(isLiked ? '取消点赞' : '已点赞', 'center')
         this.props.comment.setLikeStatus(this.props.data.id, !isLiked)
       }).catch(e =>{
         console.log(e)
-        toast.show('网络错误')
+        setTimeout(() => toast.show('网络错误'))
       })
   }
 
@@ -73,10 +72,11 @@ class CommentItem extends React.PureComponent{
       onTapCheck: () =>{
         toast.showLoading()
         report(this.props.data.id)
-          .finally(toast.hide)
+          .finally(() => toast.hide())
           .then(() =>{
             this.setState({ isReported: true })  
-            $dialog.alert.show({ content: '已举报' })
+            // 这里如果不做延时会受到toast.hide()的影响，造成alert不显示，且界面被一个透明遮罩层挡上
+            setTimeout(() => $dialog.alert.show({ content: '已举报' }))
           })
           .catch(() => toast.show('网络错误，请重试'))
       }
@@ -89,10 +89,10 @@ class CommentItem extends React.PureComponent{
       onTapCheck: () =>{
         toast.showLoading()
         delComment(this.props.data.id)
-          .finally(toast.hide)
+          .finally(() => toast.hide())
           .then(() =>{
             this.props.onDel(this.props.data.id)
-            $dialog.alert.show({ content: '评论已删除' })
+            setTimeout(() => $dialog.alert.show({ content: `${this.props.contentName}已删除` }))
           })
           .catch(e =>{
             console.log(e)

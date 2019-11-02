@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, BackHandler,
+  View, Text, BackHandler, DeviceEventEmitter,
   StyleSheet, 
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
@@ -23,9 +23,18 @@ export default class Edit extends React.Component{
     }
 
     this.essentialUpdate = false
+    this.articleReloadFlag = false
+
+    DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) =>{
+      var lastRoute = state.routes[state.routes.length - 1]
+      if(this.articleReloadFlag && lastRoute.routeName === 'article'){
+        this.articleReloadFlag = false
+        console.log(lastRoute)
+      }
+    })
   }
 
-  // 监听tab导航容器的状态变化
+  // 监听tab导航容器的状态变化，在编辑器内容变更且用户查看预览时refresh预览视图
   navigationStateChange = (prevState, state) =>{
     if(!state.routes[0].params){ return }
     const {status, content} = state.routes[0].params
@@ -58,7 +67,6 @@ export default class Edit extends React.Component{
 
   submit = () =>{
     const {content, isContentChanged} = this.refs.tabNavigator.state.nav.routes[0].params
-    if(!content){ return }
     if(isContentChanged){
       
       $dialog.confirm.show({
@@ -69,7 +77,8 @@ export default class Edit extends React.Component{
           editArticle(this.props.navigation.getParam('title'), this.props.navigation.getParam('section'), content, text.trim())
           .finally(toast.hide)
           .then(() =>{
-            toast.showSuccess('编辑成功')
+            setTimeout(() => toast.showSuccess('编辑成功'))
+            this.articleReloadFlag = true
             this.props.navigation.goBack()
           })
           .catch(code =>{
