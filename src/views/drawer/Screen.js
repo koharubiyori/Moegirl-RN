@@ -9,13 +9,13 @@ import Item from './components/Item'
 
 class DrawerScreen extends React.Component{
   static propTypes = {
-
+    immersionMode: PropTypes.bool
   }
 
   constructor (props){
     super(props)
     this.state = {
-      
+    
     }
   }
 
@@ -33,7 +33,7 @@ class DrawerScreen extends React.Component{
   render (){
     return (
       <View style={{ backgroundColor: 'white', height: Dimensions.get('window').height }}>
-        <View style={{ height: NativeModules.StatusBarManager.HEIGHT }} />
+        <View style={{ height: this.props.immersionMode ? 0 : NativeModules.StatusBarManager.HEIGHT }} />
         <View style={styles.header}>
           {this.props.state.user.name ? 
             <>
@@ -58,7 +58,7 @@ class DrawerScreen extends React.Component{
             <Item icon="settings" title="设置" onPress={() => $appNavigator.current._navigation.push('settings')} />
             <Item icon="help" title="提问求助区" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:提问求助区' })} />
             <Item icon="forum" title="讨论版" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:讨论版' })} />
-            <Item icon="info" title="关于" onPress={() => $appNavigator.current._navigation.push('about')} />
+            {/* <Item icon="exposure-plus-1" title="支持萌娘百科" onPress={() => $appNavigator.current._navigation.push('article', { link: '萌娘百科:捐款' })} /> */}
           </View>
 
           {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

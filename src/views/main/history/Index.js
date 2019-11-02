@@ -36,7 +36,8 @@ export default class Finds extends React.Component{
 
   constructor (props){
     super(props)
-    this.state = {
+
+    var init = () => ({
       lists: {
         all: [],
         today: [],
@@ -45,10 +46,18 @@ export default class Finds extends React.Component{
       },
 
       status: 1
-    }
+    })
+
+    this.state = init()
 
     this.refresh()
     DeviceEventEmitter.addListener('refreshHistory', () => this.refresh())
+    DeviceEventEmitter.addListener('clearHistory', () => this.setState(init()))
+  }
+
+  componentWillUnmount (){
+    DeviceEventEmitter.removeListener('refreshHistory')
+    DeviceEventEmitter.removeListener('clearHistory')
   }
 
   async refresh (){
@@ -80,7 +89,6 @@ export default class Finds extends React.Component{
 
     this.setState({ lists })
   }
-  
 
   render (){
     return (

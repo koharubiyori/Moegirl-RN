@@ -1,6 +1,6 @@
 import request from '~/utils/moeRequest'
 
-function getToken(){
+export function getToken(){
   return request({
     method: 'post',
     params: {
@@ -34,4 +34,8 @@ export async function login(userName, password){
   }catch(e){
     return Promise.reject(e)
   }
+}
+
+export function logout(){
+  return request({ action: 'logout' })
 }

@@ -32,6 +32,8 @@ export default class Article extends React.Component{
 
       catalogItems: [],
       firstData: null,
+
+      immersionMode: false
     }
 
     this._refs = {
@@ -69,6 +71,11 @@ export default class Article extends React.Component{
     }).toString()
 
     this.articleViewInjectJs = `(${injectedJs})();`
+
+    this.props.navigation.addListener('willFocus', () =>{
+      // 读取配置
+      storage.get('config').then(config => config && this.setState({ immersionMode: config.immersionMode }))
+    })
   }
 
   // 接收需要隐藏或显示header的指令
@@ -117,8 +124,8 @@ export default class Article extends React.Component{
   render (){
     return (
       <NavigationContext.Provider value={this.props.navigation}>
-        <StatusBar />
-        <Header style={styles.header} 
+        <StatusBar hidden={this.state.immersionMode} />
+        <Header style={{ ...styles.header, top: this.state.immersionMode ? 0 : NativeModules.StatusBarManager.HEIGHT }} 
           navigation={this.props.navigation} 
           title={this.state.pageName} 
           onTapRefreshBtn={() => this._refs.articleView.loadContent(true)}
@@ -151,7 +158,6 @@ export default class Article extends React.Component{
 const styles = StyleSheet.create({
   header: {
     position: 'absolute',
-    top:NativeModules.StatusBarManager.HEIGHT,
     left: 0,
     right: 0,
   }
