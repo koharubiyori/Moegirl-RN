@@ -42,11 +42,11 @@ class DrawerScreen extends React.Component{
             </>
           : 
             <>
-              <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.push('login'))}>
+              <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.navigate('login'))}>
                 <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.push('login'))}>
+              <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.navigate('login'))}>
                 <Text style={styles.hintText}>登录/加入萌娘百科</Text>
               </TouchableOpacity>
             </>
@@ -55,7 +55,7 @@ class DrawerScreen extends React.Component{
 
         <View style={{ flex: 1 }}>
           <View style={styles.items}>
-            <Item icon="settings" title="设置" onPress={() => $appNavigator.current._navigation.push('settings')} />
+            <Item icon="settings" title="设置" onPress={() => $appNavigator.current._navigation.navigate('settings')} />
             <Item icon="help" title="提问求助区" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:提问求助区' })} />
             <Item icon="forum" title="讨论版" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:讨论版' })} />
             {/* <Item icon="exposure-plus-1" title="支持萌娘百科" onPress={() => $appNavigator.current._navigation.push('article', { link: '萌娘百科:捐款' })} /> */}
