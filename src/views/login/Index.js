@@ -40,7 +40,7 @@ class Login extends React.Component{
     this.props.user.login(userName, password)
     .finally(toast.hide)
     .then(() =>{
-      toast.showSuccess('登录成功')
+      setTimeout(() => toast.showSuccess('登录成功'))
       this.props.navigation.goBack()
     })
     .catch(status => toast.show(status === 'FAIL' ? '用户名或密码错误' : '网络错误，请重试'))

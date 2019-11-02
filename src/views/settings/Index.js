@@ -124,8 +124,8 @@ class Settings extends React.Component{
 
           <Title>账户</Title>
           <SwitchItem hideSwitch
-            title="登出"
-            onPress={() => this.logout()}
+            title={this.props.state.user.name ? '登出' : '登录'}
+            onPress={() => this.props.state.user.name ? this.logout() : this.props.navigation.push('login')}
           />
 
           <Title>其他</Title>

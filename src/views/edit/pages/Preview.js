@@ -40,7 +40,7 @@ export default class Preview extends React.Component{
           0: () => <Button primary text="重新加载" onPress={() => this.parseCodes()}></Button>,
           1: () => null,
           2: () => <ActivityIndicator color={$colors.main} size={50} />,
-          3: () => <ArticleView disabledLink style={{ flex: 1 }} html={this.state.html} injectStyle={['page']} />
+          3: () => <ArticleView disabledLink style={{ flex: 1 }} html={this.state.html} injectStyle={['page']} navigation={this.props.navigation} />
         }[this.state.status]()}
       </View>
     )

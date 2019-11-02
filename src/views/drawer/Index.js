@@ -21,12 +21,12 @@ export default class MyDrawer extends React.PureComponent{
 
     this.visible = false
 
-    // 监听路由变化，判断用户是否在article页面上
-    DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) =>{
-      var lastRouteName = state.routes[state.routes.length - 1].routeName
-      this.setState({ isWatchingArticle: lastRouteName === 'article' })
-      storage.get('config').then(config => config && this.setState({ immersionMode: config.immersionMode }))
-    })
+    // 监听路由变化，判断用户是否在article页面上（暂时用不上了）
+    // DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) =>{
+    //   var lastRouteName = state.routes[state.routes.length - 1].routeName
+    //   this.setState({ isWatchingArticle: lastRouteName === 'article' })
+    //   storage.get('config').then(config => config && this.setState({ immersionMode: config.immersionMode }))
+    // })
   }
   
   componentDidMount (){

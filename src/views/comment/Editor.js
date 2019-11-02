@@ -59,7 +59,7 @@ export default class CommentEditor extends React.Component{
     postComment(this.props.pageId, this.state.inputText, this.props.targetId)
       .finally(toast.hide)
       .then(() =>{
-        toast.showSuccess('发表成功')
+        setTimeout(() => toast.showSuccess('发表成功'))
         this.setState({ inputText: '' })
         this.hide()
         this.props.onPosted()
