@@ -98,6 +98,18 @@ class ArticleView extends React.Component{
 
     const scriptTags = this.libScript.reduce((prev, next) => prev + `<script src="js/lib/${next}.js"></script>`, '')
 
+    var injectJsCodes = `
+      ${global.__DEV__ ? 'try{' : ''}
+        ${this.injectRequestUtil};
+        ${controlsCodeString};
+        ${this.props.injectJs || ''}
+      ${global.__DEV__ ? `
+        }catch(e){
+          ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
+        }
+      ` : ''}
+    `
+
     html = `
       <!DOCTYPE html>
       <html lang="en">
@@ -114,15 +126,9 @@ class ArticleView extends React.Component{
         ${scriptTags}
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
-          window._appConfig = ${JSON.stringify(this.state.config)};
+          window._appConfig = ${JSON.stringify(this.state.config || {})};
           $(function(){ 
-            try{
-              ${this.injectRequestUtil};
-              ${controlsCodeString};
-              ${this.props.injectJs || ''} 
-            }catch(e){
-              ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
-            }
+            ${injectJsCodes};
           })
         </script>
       </body>

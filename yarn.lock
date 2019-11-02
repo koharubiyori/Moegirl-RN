@@ -866,7 +866,7 @@
 
 "@react-native-community/cli-tools@^2.8.3":
   version "2.8.3"
-  resolved "https://registry.npm.taobao.org/@react-native-community/cli-tools/download/@react-native-community/cli-tools-2.8.3.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40react-native-community%2Fcli-tools%2Fdownload%2F%40react-native-community%2Fcli-tools-2.8.3.tgz#0e2249f48cf4603fb8d740a9f0715c31ac131ceb"
+  resolved "https://registry.npm.taobao.org/@react-native-community/cli-tools/download/@react-native-community/cli-tools-2.8.3.tgz#0e2249f48cf4603fb8d740a9f0715c31ac131ceb"
   integrity sha1-DiJJ9Iz0YD+410Cp8HFcMawTHOs=
   dependencies:
     chalk "^2.4.2"
@@ -3461,9 +3461,9 @@ has@^1.0.1, has@^1.0.3:
     function-bind "^1.1.1"
 
 hermesvm@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.npm.taobao.org/hermesvm/download/hermesvm-0.1.0.tgz#4bfaf4ac682a2fd407b862ab641eb8deb232de83"
-  integrity sha1-S/r0rGgqL9QHuGKrZB643rIy3oM=
+  version "0.1.1"
+  resolved "https://registry.npm.taobao.org/hermesvm/download/hermesvm-0.1.1.tgz#bd1df92b4dc504e261c23df34864daf24b844d03"
+  integrity sha1-vR35K03FBOJhwj3zSGTa8kuETQM=
 
 hoist-non-react-statics@^2.3.1, hoist-non-react-statics@^2.5.5:
   version "2.5.5"
@@ -4652,7 +4652,7 @@ merge-stream@^2.0.0:
 
 metro-babel-register@0.54.1:
   version "0.54.1"
-  resolved "https://registry.npm.taobao.org/metro-babel-register/download/metro-babel-register-0.54.1.tgz#7d2bfe444b1ccef8de99aedc7d9330891d806076"
+  resolved "https://registry.npm.taobao.org/metro-babel-register/download/metro-babel-register-0.54.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-babel-register%2Fdownload%2Fmetro-babel-register-0.54.1.tgz#7d2bfe444b1ccef8de99aedc7d9330891d806076"
   integrity sha1-fSv+REsczvjema7cfZMwiR2AYHY=
   dependencies:
     "@babel/core" "^7.0.0"
@@ -4670,7 +4670,7 @@ metro-babel-register@0.54.1:
 
 metro-babel-transformer@0.54.1:
   version "0.54.1"
-  resolved "https://registry.npm.taobao.org/metro-babel-transformer/download/metro-babel-transformer-0.54.1.tgz#371ffa2d1118b22cc9e40b3c3ea6738c49dae9dc"
+  resolved "https://registry.npm.taobao.org/metro-babel-transformer/download/metro-babel-transformer-0.54.1.tgz?cache=0&sync_timestamp=1572545382511&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-babel-transformer%2Fdownload%2Fmetro-babel-transformer-0.54.1.tgz#371ffa2d1118b22cc9e40b3c3ea6738c49dae9dc"
   integrity sha1-Nx/6LREYsizJ5As8PqZzjEna6dw=
   dependencies:
     "@babel/core" "^7.0.0"
@@ -4684,7 +4684,7 @@ metro-babel7-plugin-react-transform@0.54.1:
 
 metro-cache@0.54.1:
   version "0.54.1"
-  resolved "https://registry.npm.taobao.org/metro-cache/download/metro-cache-0.54.1.tgz?cache=0&sync_timestamp=1565618742529&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-cache%2Fdownload%2Fmetro-cache-0.54.1.tgz#2e9017cbd11106837b8c385c9eb8c8175469a8c1"
+  resolved "https://registry.npm.taobao.org/metro-cache/download/metro-cache-0.54.1.tgz?cache=0&sync_timestamp=1572545382224&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-cache%2Fdownload%2Fmetro-cache-0.54.1.tgz#2e9017cbd11106837b8c385c9eb8c8175469a8c1"
   integrity sha1-LpAXy9ERBoN7jDhcnrjIF1RpqME=
   dependencies:
     jest-serializer "^24.4.0"
@@ -4694,7 +4694,7 @@ metro-cache@0.54.1:
 
 metro-config@0.54.1, metro-config@^0.54.1:
   version "0.54.1"
-  resolved "https://registry.npm.taobao.org/metro-config/download/metro-config-0.54.1.tgz?cache=0&sync_timestamp=1565618007689&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-config%2Fdownload%2Fmetro-config-0.54.1.tgz#808b4e17625d9f4e9afa34232778fdf8e63cc8dd"
+  resolved "https://registry.npm.taobao.org/metro-config/download/metro-config-0.54.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-config%2Fdownload%2Fmetro-config-0.54.1.tgz#808b4e17625d9f4e9afa34232778fdf8e63cc8dd"
   integrity sha1-gItOF2Jdn06a+jQjJ3j9+OY8yN0=
   dependencies:
     cosmiconfig "^5.0.5"
@@ -4706,7 +4706,7 @@ metro-config@0.54.1, metro-config@^0.54.1:
 
 metro-core@0.54.1, metro-core@^0.54.1:
   version "0.54.1"
-  resolved "https://registry.npm.taobao.org/metro-core/download/metro-core-0.54.1.tgz#17f6ecc167918da8819d4af5726349e55714954b"
+  resolved "https://registry.npm.taobao.org/metro-core/download/metro-core-0.54.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-core%2Fdownload%2Fmetro-core-0.54.1.tgz#17f6ecc167918da8819d4af5726349e55714954b"
   integrity sha1-F/bswWeRjaiBnUr1cmNJ5VcUlUs=
   dependencies:
     jest-haste-map "^24.7.1"
@@ -4716,7 +4716,7 @@ metro-core@0.54.1, metro-core@^0.54.1:
 
 metro-inspector-proxy@0.54.1:
   version "0.54.1"
-  resolved "https://registry.npm.taobao.org/metro-inspector-proxy/download/metro-inspector-proxy-0.54.1.tgz?cache=0&sync_timestamp=1565618868243&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-inspector-proxy%2Fdownload%2Fmetro-inspector-proxy-0.54.1.tgz#0ef48ee3feb11c6da47aa100151a9bf2a7c358ee"
+  resolved "https://registry.npm.taobao.org/metro-inspector-proxy/download/metro-inspector-proxy-0.54.1.tgz#0ef48ee3feb11c6da47aa100151a9bf2a7c358ee"
   integrity sha1-DvSO4/6xHG2keqEAFRqb8qfDWO4=
   dependencies:
     connect "^3.6.5"
@@ -4817,7 +4817,7 @@ metro-react-native-babel-preset@^0.56.0:
 
 metro-react-native-babel-transformer@0.54.1, metro-react-native-babel-transformer@^0.54.1:
   version "0.54.1"
-  resolved "https://registry.npm.taobao.org/metro-react-native-babel-transformer/download/metro-react-native-babel-transformer-0.54.1.tgz?cache=0&sync_timestamp=1565618006304&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-react-native-babel-transformer%2Fdownload%2Fmetro-react-native-babel-transformer-0.54.1.tgz#45b56db004421134e10e739f69e8de50775fef17"
+  resolved "https://registry.npm.taobao.org/metro-react-native-babel-transformer/download/metro-react-native-babel-transformer-0.54.1.tgz?cache=0&sync_timestamp=1572545383047&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-react-native-babel-transformer%2Fdownload%2Fmetro-react-native-babel-transformer-0.54.1.tgz#45b56db004421134e10e739f69e8de50775fef17"
   integrity sha1-RbVtsARCETThDnOfaejeUHdf7xc=
   dependencies:
     "@babel/core" "^7.0.0"
@@ -4834,7 +4834,7 @@ metro-resolver@0.54.1:
 
 metro-source-map@0.54.1:
   version "0.54.1"
-  resolved "https://registry.npm.taobao.org/metro-source-map/download/metro-source-map-0.54.1.tgz#e17bad53c11978197d3c05c9168d799c2e04dcc5"
+  resolved "https://registry.npm.taobao.org/metro-source-map/download/metro-source-map-0.54.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-source-map%2Fdownload%2Fmetro-source-map-0.54.1.tgz#e17bad53c11978197d3c05c9168d799c2e04dcc5"
   integrity sha1-4XutU8EZeBl9PAXJFo15nC4E3MU=
   dependencies:
     "@babel/traverse" "^7.0.0"
@@ -4843,7 +4843,7 @@ metro-source-map@0.54.1:
 
 metro-source-map@0.55.0, metro-source-map@^0.55.0:
   version "0.55.0"
-  resolved "https://registry.npm.taobao.org/metro-source-map/download/metro-source-map-0.55.0.tgz#1f6289905f08277c398f2b9b9c13e7e0e5a6f540"
+  resolved "https://registry.npm.taobao.org/metro-source-map/download/metro-source-map-0.55.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-source-map%2Fdownload%2Fmetro-source-map-0.55.0.tgz#1f6289905f08277c398f2b9b9c13e7e0e5a6f540"
   integrity sha1-H2KJkF8IJ3w5jyubnBPn4OWm9UA=
   dependencies:
     "@babel/traverse" "^7.0.0"
@@ -4856,7 +4856,7 @@ metro-source-map@0.55.0, metro-source-map@^0.55.0:
 
 metro-symbolicate@0.55.0:
   version "0.55.0"
-  resolved "https://registry.npm.taobao.org/metro-symbolicate/download/metro-symbolicate-0.55.0.tgz#4086a2adae54b5e44a4911ca572d8a7b03c71fa1"
+  resolved "https://registry.npm.taobao.org/metro-symbolicate/download/metro-symbolicate-0.55.0.tgz?cache=0&sync_timestamp=1572545382773&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro-symbolicate%2Fdownload%2Fmetro-symbolicate-0.55.0.tgz#4086a2adae54b5e44a4911ca572d8a7b03c71fa1"
   integrity sha1-QIaira5UteRKSRHKVy2KewPHH6E=
   dependencies:
     metro-source-map "0.55.0"
@@ -4866,7 +4866,7 @@ metro-symbolicate@0.55.0:
 
 metro@0.54.1, metro@^0.54.1:
   version "0.54.1"
-  resolved "https://registry.npm.taobao.org/metro/download/metro-0.54.1.tgz#a629be00abee5a450a25a8f71c24745f70cc9b44"
+  resolved "https://registry.npm.taobao.org/metro/download/metro-0.54.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmetro%2Fdownload%2Fmetro-0.54.1.tgz#a629be00abee5a450a25a8f71c24745f70cc9b44"
   integrity sha1-pim+AKvuWkUKJaj3HCR0X3DMm0Q=
   dependencies:
     "@babel/core" "^7.0.0"
@@ -5781,7 +5781,7 @@ react-deep-force-update@^1.0.0:
 
 react-devtools-core@^3.6.1:
   version "3.6.3"
-  resolved "https://registry.npm.taobao.org/react-devtools-core/download/react-devtools-core-3.6.3.tgz?cache=0&sync_timestamp=1566232699720&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-devtools-core%2Fdownload%2Freact-devtools-core-3.6.3.tgz#977d95b684c6ad28205f0c62e1e12c5f16675814"
+  resolved "https://registry.npm.taobao.org/react-devtools-core/download/react-devtools-core-3.6.3.tgz#977d95b684c6ad28205f0c62e1e12c5f16675814"
   integrity sha1-l32VtoTGrSggXwxi4eEsXxZnWBQ=
   dependencies:
     shell-quote "^1.6.1"
@@ -6441,7 +6441,7 @@ sax@^1.2.1, sax@^1.2.4:
 
 scheduler@0.14.0:
   version "0.14.0"
-  resolved "https://registry.npm.taobao.org/scheduler/download/scheduler-0.14.0.tgz?cache=0&sync_timestamp=1565317903688&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fscheduler%2Fdownload%2Fscheduler-0.14.0.tgz#b392c23c9c14bfa2933d4740ad5603cc0d59ea5b"
+  resolved "https://registry.npm.taobao.org/scheduler/download/scheduler-0.14.0.tgz#b392c23c9c14bfa2933d4740ad5603cc0d59ea5b"
   integrity sha1-s5LCPJwUv6KTPUdArVYDzA1Z6ls=
   dependencies:
     loose-envify "^1.1.0"
