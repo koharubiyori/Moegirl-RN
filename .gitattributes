@@ -1,2 +1,2 @@
 *.pbxproj -text
-*.js linguist-language=JavaScriptReact
+*.js linguist-language=react
