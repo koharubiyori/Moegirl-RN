@@ -8,8 +8,7 @@ import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
 import com.swmansion.reanimated.ReanimatedPackage;
-import com.swmansion.rnscreens.RNScreensPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.swmansion.rnscreens.RNScreensPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
