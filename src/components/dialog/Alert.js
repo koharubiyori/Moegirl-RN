@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, TouchableWithoutFeedback,
+  View, Text,
   StyleSheet
 } from 'react-native'
 import Dialog from 'react-native-dialog'

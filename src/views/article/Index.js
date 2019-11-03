@@ -119,6 +119,13 @@ export default class Article extends React.Component{
     this.props.navigation.push('comment', { title: this.state.pageName, id: this.state.id })
   }
 
+  missingGoBack = () =>{
+    $dialog.alert.show({
+      content: '该条目还未创建',
+      onTapCheck: () => this.props.navigation.goBack()
+    })
+  }
+
   render (){
     return (
       <>
@@ -140,6 +147,7 @@ export default class Article extends React.Component{
             injectJs={this.articleViewInjectJs}
             onMessages={{ changeHeaderVisible: this.changeHeaderVisible }}
             onLoaded={this.contentLoaded}
+            onMissing={this.missingGoBack}
             getRef={self => this._refs.articleView = self}
           />       
         </CatalogTriggerView>
