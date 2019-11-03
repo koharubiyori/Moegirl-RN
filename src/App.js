@@ -29,7 +29,7 @@ export default class App extends React.Component {
     global.$appNavigator = React.createRef()
 
     var onPressBackBtnMark = false
-    BackHandler.addEventListener('hardwareBackPress', () =>{
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () =>{
       if($drawer && $drawer.visible){
         $drawer.close()
         return true
@@ -49,6 +49,10 @@ export default class App extends React.Component {
   componentDidMount (){
     global.$dialog = { ...this.refs }
     require('./init')
+  }
+
+  componentWillUnmount (){
+    this.backHandler.remove()
   }
 
   navigationStateChange (prevState, state){

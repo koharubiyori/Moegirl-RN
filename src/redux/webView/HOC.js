@@ -14,6 +14,7 @@ export const getContent = (link, forceLoad = false) => dispatch((dispatch, getSt
 
     getArticle(link)
       .then(data =>{
+        if(data.error) return reject(data.error)
         dispatch({ type: ADD, name: link, data })
         resolve(data)
       })

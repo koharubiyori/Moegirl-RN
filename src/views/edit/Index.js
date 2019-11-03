@@ -25,13 +25,30 @@ export default class Edit extends React.Component{
     this.essentialUpdate = false
     this.articleReloadFlag = false
 
-    DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) =>{
+    this.navigationStateChangeListener = DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) =>{
       var lastRoute = state.routes[state.routes.length - 1]
       if(this.articleReloadFlag && lastRoute.routeName === 'article'){
         this.articleReloadFlag = false
         console.log(lastRoute)
       }
     })
+
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () =>{
+      const {params} = this.refs.tabNavigator.state.nav.routes[0]
+      if(params && params.isContentChanged){
+        $dialog.confirm.show({
+          content: '编辑还未保存，确定要放弃编辑的内容？',
+          onTapCheck: () => this.props.navigation.goBack()
+        })
+  
+        return true
+      }
+    })
+  }
+
+  componentWillUnmount (){
+    this.navigationStateChangeListener.remove()
+    this.backHandler.remove()
   }
 
   // 监听tab导航容器的状态变化，在编辑器内容变更且用户查看预览时refresh预览视图
@@ -49,20 +66,6 @@ export default class Edit extends React.Component{
       this.essentialUpdate = false
       refresh && refresh(content)
     }
-  }
-
-  backHandler = () =>{
-    const {params} = this.refs.tabNavigator.state.nav.routes[0]
-    BackHandler.addEventListener('hardwareBackPress', () =>{
-      if(params && params.isContentChanged){
-        $dialog.confirm.show({
-          content: '编辑还未保存，确定要放弃编辑的内容？',
-          onTapCheck: () => this.props.navigation.goBack()
-        })
-  
-        return true
-      }
-    })
   }
 
   submit = () =>{

@@ -27,11 +27,13 @@ class ArticleView extends React.Component{
 
     onMessages: PropTypes.objectOf(PropTypes.func),   // 接收webView的postMessage
     onLoaded: PropTypes.func,
+    onMissing: PropTypes.func,
     getRef: PropTypes.func
   }
 
   static defaultProps = {
-    onLoaded: new Function
+    onLoaded: new Function,
+    onMissing: new Function
   }
 
   constructor (props){
@@ -143,6 +145,8 @@ class ArticleView extends React.Component{
       this.writeContent(html)
       this.setState({ status: 3 })
     }).catch(async e =>{
+      if(e.code === 'missingtitle') return this.props.onMissing(this.props.link)
+
       try{
         const redirectMap = await storage.get('articleRedirectMap') || {}
         var link = redirectMap[this.props.link] || this.props.link
