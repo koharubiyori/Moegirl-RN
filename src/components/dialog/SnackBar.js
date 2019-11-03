@@ -16,6 +16,7 @@ export default class SnackBar extends React.Component{
     super(props)
     this.state = {
       transitionTop: new Animated.Value(-height),
+      visible: false,
       content: '',
       status: 0,
       queue: []
@@ -27,21 +28,22 @@ export default class SnackBar extends React.Component{
       return this.setState({ queue: this.state.queue.concat([content]) })
     }
 
-    this.setState({ content, status: 1 })
-    Animated.timing(this.state.transitionTop, {
-      toValue: 0,
-      duration: 200
-    }).start(() =>{
-      setTimeout(() =>{
-        // 等待hide结束，检查队列，若有等待的消息则500毫秒后显示
-        this.hide().then(() =>{
-          if(this.state.queue.length){
-            var content = this.state.queue.pop()
-            this.setState({ queue: this.state.queue })
-            setTimeout(() => this.show(content), 500)
-          }
-        })
-      }, 3000)
+    this.setState({ content, status: 1, visible: true }, () =>{
+      Animated.timing(this.state.transitionTop, {
+        toValue: 0,
+        duration: 200
+      }).start(() =>{
+        setTimeout(() =>{
+          // 等待hide结束，检查队列，若有等待的消息则500毫秒后显示
+          this.hide().then(() =>{
+            if(this.state.queue.length){
+              var content = this.state.queue.pop()
+              this.setState({ queue: this.state.queue })
+              setTimeout(() => this.show(content), 500)
+            }
+          })
+        }, 3000)
+      })
     })
   }
   
@@ -51,7 +53,7 @@ export default class SnackBar extends React.Component{
         toValue: -height,
         duration: 200
       }).start(() =>{
-        this.setState({ status: 0 })
+        this.setState({ status: 0, visible: false })
         resolve()
       })
     })
@@ -59,6 +61,7 @@ export default class SnackBar extends React.Component{
 
   render (){
     return (
+      !this.state.visible ? null :
       <Animated.View style={{ ...styles.main, bottom: this.state.transitionTop }}>
         <Text style={{ color: 'white' }} numberOfLines={1}>{this.state.content}</Text>
       </Animated.View>
