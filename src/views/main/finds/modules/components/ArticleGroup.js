@@ -21,7 +21,7 @@ export default function ArticleGroup({
 }){
   return (
     <View style={{ ...styles.container, ...style }}>
-      <View style={styles.header}>
+      <View style={{ ...styles.header, borderBottomWidth: status === 3 ? 1 : 0 }}>
         <View style={{ height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {icon}
@@ -67,8 +67,7 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: 10,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1
+    borderBottomColor: '#ccc'
   },
 
   item: {
