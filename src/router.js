@@ -25,7 +25,10 @@ const icon = name => ({ tintColor }) => <MaterialIcon name={name} color={$colors
 const BottomTabNavigator = createBottomTabNavigator(
   { home, finds, history },
   
-  { tabBarComponent: props => <BottomNavigation {...props} /> }
+  { 
+    tabBarComponent: props => <BottomNavigation {...props} />,
+    backBehavior: 'none'
+  }
 )
 
 const StackNavigator = createStackNavigator(
