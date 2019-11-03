@@ -81,7 +81,7 @@ class Settings extends React.Component{
     const setConfig = param => this.setState({ config: { ...config, ...param } })
 
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <StatusBar />  
         <Toolbar size={26}
           centerElement="设置"
@@ -89,7 +89,7 @@ class Settings extends React.Component{
           onLeftElementPress={() => this.props.navigation.goBack()}
         />
         
-        <ScrollView>
+        <ScrollView style={{ flex: 1 }}>
           <Title>条目</Title>
 
           <SwitchItem title="黑幕开关" 

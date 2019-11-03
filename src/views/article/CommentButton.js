@@ -5,35 +5,33 @@ import {
   StyleSheet
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { getComments } from '~/api/comment'
+import commentHOC from '~/redux/comment/HOC'
 
 const size = 60
 
-export default class CommentBtn extends React.Component{
+class CommentBtn extends React.Component{
   static propTypes = {
     id: PropTypes.number,
     onTap: PropTypes.func,
-    onLoaded: PropTypes.func
+    getRef: PropTypes.func
   }
 
   constructor (props){
     super(props)
+    props.getRef && props.getRef(this)
     this.state = {
       transitionScale: new Animated.Value(1),
-      transitionCheck: new Animated.Value(1),     // 按钮check动画的映射变量
-      visible: false,
-      
-      total: 0,
-      firstData: null,
-      status: 1
+      visible: false
     }
 
     this.animateLock = false
+
+    props.comment.setActiveId(props.id)
+    props.comment.load()
   }
 
   componentDidMount (){
     setTimeout(this.show, 2000)
-    this.getComments()
   }
 
   show = () =>{
@@ -68,35 +66,30 @@ export default class CommentBtn extends React.Component{
     }), 500)
   }
 
-  getComments (){
-    this.setState({ status: 2 })
-    getComments(this.props.id).then(data =>{
-      this.setState({ status: 3, total: data.count, firstData: data })
-      this.props.onLoaded(data)
-    }).catch(e =>{
-      this.setState({ status: 0 })
-    })
-  }
-
   tap = () =>{
-    if(this.state.status === 0) this.getComments()
+    var state = this.props.comment.getActiveData()
+    if(state.status === 0) this.props.comment.load()
     this.props.onTap()
   }
 
   render (){
+    const state = this.props.comment.getActiveData()
+
     return (
       !this.state.visible ? null :
       <TouchableOpacity onPress={this.tap} style={{ ...styles.container,  transform: [{ scale: this.state.transitionScale }] }}>
         <Animated.View style={{ ...styles.main }}>
           <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
             <Icon name="comment" size={30} color="white" style={{ position: 'relative', top: -4 }} />
-            <Text style={{ position: 'absolute', bottom: 6, color: 'white' }}>{{ 0: '×', 1: '...', 2: '...', 3: this.state.total }[this.state.status]}</Text>
+            <Text style={{ position: 'absolute', bottom: 6, color: 'white' }}>{{ 0: '×', 1: '...', 2: '...' }[state.status] || state.data.count}</Text>
           </View>
         </Animated.View>
       </TouchableOpacity>
     )
   }
 }
+
+export default commentHOC(CommentBtn)
 
 const styles = StyleSheet.create({
   container: {

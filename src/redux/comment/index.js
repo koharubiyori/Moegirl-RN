@@ -1,59 +1,90 @@
-import { SET, INIT, INCREMENT_DATA, DEL, SET_LIKE_STATUS } from './actionTypes'
+import { SET_ACTIVE_ID, SET, INCREMENT_DATA, DEL, SET_LIKE_STATUS } from './actionTypes'
 import Tree from '~/utils/tree'
 
 const init = (pageId = '') =>({
-  data: null,
-  tree: null,
+  data: {
+    popular: [],
+    posts: [],
+    count: 0
+  },
+
+  tree: new Tree,
   pageId,
-  title: '',
-  activeId: '',
-  status: 1
+  status: 1,
+  activeId: ''        // 当前正在显示的评论id(处于评论的回复界面)
 })
 
-export default function reducer(state = init(), action){
+export default function reducer(state = {
+  pages: {},
+  activeId: ''     // 当前正在显示的页面id(处于评论界面)
+}, action){
+  var activeData = state.pages[state.activeId]
+  const mixinActiveData = data => ({
+    ...state,
+    pages: {
+      ...state.pages,
+      [state.activeId]: {
+        ...activeData,
+        ...data
+      }
+    }
+  })
+
   switch(action.type){
-    // data
-    case SET: {
-      return { ...state, ...action.data }
-    }
-    
-    case INIT: {
-      return init(action.pageId)
-    }
-
-    // id, posts, count
-    case INCREMENT_DATA: {
-      var currentPostIds = state.data.posts.map(item => item.id)
-      var posts = action.posts.filter(item => !currentPostIds.includes(item.id))
-
-      var newPosts = [ ...posts, ...state.data.posts ]
-
+    // id
+    case SET_ACTIVE_ID: {
       return {
         ...state,
+        activeId: action.id,
+        pages: {
+          ...state.pages,
+          [action.id]: init(action.id)
+        }
+      }
+    }
+
+    // data
+    case SET: {    
+      return mixinActiveData(action.data)
+    }
+    
+    // posts, count
+    case INCREMENT_DATA: {
+      var currentPostIds = activeData.data.posts.map(item => item.id)
+      var posts = action.posts.filter(item => !currentPostIds.includes(item.id))
+
+      if(action.isReply){
+        var newPosts = [ ...activeData.data.posts, ...posts ]
+      }else{
+        var newPosts = [ ...posts, ...activeData.data.posts, ]
+      }
+
+      return mixinActiveData({
         data: {
-          ...state.data,
+          ...activeData.data,
           posts: newPosts,
           count: action.count
         },
 
         tree: new Tree(newPosts)
-      }
+      })
     }
 
-    // id
+    // id, isReply(删除回复时不减count)
     case DEL: {
-      var newPosts = state.data.posts.filter(item => item.id !== action.id)
+      var newPosts = activeData.data.posts.filter(item => item.id !== action.id)
+      var newPopular = activeData.data.popular.filter(item => item.id !== action.id)
 
-      return {
-        ...state,
+      var count = action.isReply ? activeData.data.count : (activeData.data.count - 1)
+      return mixinActiveData({
         data: {
-          ...state.data,
           posts: newPosts,
-          count: state.data.count - 1
+          popular: newPopular,
+          count
         },
 
         tree: new Tree(newPosts)
-      }
+      })
     }
 
     // id
@@ -65,13 +96,12 @@ export default function reducer(state = init(), action){
         }
       }
 
-      state.data.posts.forEach(changeTargetComment)
-      state.data.popular.forEach(changeTargetComment)
+      activeData.data.posts.forEach(changeTargetComment)
+      activeData.data.popular.forEach(changeTargetComment)
 
-      return {
-        ...state,
-        tree: new Tree(state.data.posts)
-      }
+      return mixinActiveData({
+        tree: new Tree(activeData.data.posts)
+      })
     }
 
     default: {

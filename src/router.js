@@ -1,8 +1,15 @@
 import React from 'react'
 import { createAppContainer } from "react-navigation"
 import { createStackNavigator, StackViewStyleInterpolator } from 'react-navigation-stack'
+import { createBottomTabNavigator } from 'react-navigation-tabs'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import IonIcon from 'react-native-vector-icons/Ionicons'
+// import main from './views/main/Index'
+import home from './views/main/Home'
+import finds from './views/main/finds/Index'
+import history from './views/main/history/Index'
+import BottomNavigation from './views/main/BottomNavigation'
 
-import main from './views/main/Index'
 import article from './views/article/Index'
 import search from './views/search/Index'
 import searchResult from './views/searchResult/Index'
@@ -13,9 +20,17 @@ import reply from './views/comment/Reply'
 import about from './views/About'
 import settings from './views/settings/Index'
 
+const icon = name => ({ tintColor }) => <MaterialIcon name={name} color={$colors.main} size={24} />
+
+const BottomTabNavigator = createBottomTabNavigator(
+  { home, finds, history },
+  
+  { tabBarComponent: props => <BottomNavigation {...props} /> }
+)
+
 const StackNavigator = createStackNavigator(
   { 
-    main, article, search, searchResult, login, about,
+    BottomTabNavigator, article, search, searchResult, login, about,
     settings,
 
     edit: {
@@ -41,7 +56,7 @@ const StackNavigator = createStackNavigator(
   },
 
   { 
-    initialRouteName: 'main',
+    initialRouteName: 'BottomTabNavigator',
     headerMode: 'none',
     transitionConfig: sceneProps => ({
       screenInterpolator: screenInterpolator(sceneProps)

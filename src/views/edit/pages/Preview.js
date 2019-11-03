@@ -26,6 +26,7 @@ export default class Preview extends React.Component{
   parseCodes = argContent =>{
     this.setState({ status: 2 })
     const {content, title} = this.props.navigation.getScreenProps()
+    console.log(argContent, content)
     getPreview(argContent || content, title).then(data =>{
       this.setState({ status: 3, html: data.parse.text['*'] })
     }).catch(e =>{

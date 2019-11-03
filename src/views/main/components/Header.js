@@ -5,9 +5,9 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { Toolbar } from 'react-native-material-ui'
-import { NavigationContext } from '../Index'
+import { withNavigation } from 'react-navigation'
 
-export default class IndexHeader extends React.Component{
+class IndexHeader extends React.Component{
   static propTypes = {
     title: PropTypes.string.isRequired 
   }
@@ -17,33 +17,31 @@ export default class IndexHeader extends React.Component{
     this.state = {
       showToast: false
     }
-
   }
   
-  eventHandlers = (event, navigation) =>{
-    console.log(event)
+  eventHandlers = event =>{
     if(event.action === 'search'){
-      navigation.push('search')
+      this.props.navigation.push('search')
     }
   }
 
   render (){
     return (
-      <NavigationContext.Consumer>{navigation =>
-        <Toolbar size={26}
-          leftElement="menu"
-          centerElement={this.props.title}
-          rightElement={{
-            actions: ['search'],
-          }}
+      <Toolbar size={26}
+        leftElement="menu"
+        centerElement={this.props.title}
+        rightElement={{
+          actions: ['search'],
+        }}
 
-          onLeftElementPress={() => $drawer.open()}
-          onRightElementPress={event =>{ this.eventHandlers(event, navigation) }}
-        />
-      }</NavigationContext.Consumer>
+        onLeftElementPress={() => $drawer.open()}
+        onRightElementPress={event =>{ this.eventHandlers(event) }}
+      />
     )
   }
 }
+
+export default withNavigation(IndexHeader)
 
 const styles = StyleSheet.create({
 

@@ -6,14 +6,13 @@ import {
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
 import Header from '../components/Header'
-import { NavigationContext } from '~/views/main/Index'
 
 import Trend from './modules/Trend'
 import Recommended from './modules/Recommended'
 
 export default class Finds extends React.Component{
   static propTypes = {
-    style: PropTypes.object
+   
   }
 
   constructor (props){
@@ -47,20 +46,18 @@ export default class Finds extends React.Component{
 
   render (){
     return (
-      <NavigationContext.Consumer>{navigation =>
-        <View style={{ ...this.props.style, backgroundColor: '#eee' }}>
-          <StatusBar />
-          <Header title="发现" />
+      <View style={{ flex: 1, backgroundColor: '#eee' }}>
+        <StatusBar />
+        <Header title="发现" />
 
-          <ScrollView
-            refreshControl={<RefreshControl colors={[$colors.main]} onRefresh={this.reload} refreshing={this.state.visibleRefreshControl} />}
-          >
-            {/* <Text style={{ marginVertical: 20, marginLeft: 20, fontSize: 16 }}>{this.dateStr()}</Text> */}
-            <Trend navigation={navigation} ref={this._ref.trend} />
-            <Recommended navigation={navigation} ref={this._ref.recommended} />
-          </ScrollView>
-        </View>
-      }</NavigationContext.Consumer>
+        <ScrollView
+          refreshControl={<RefreshControl colors={[$colors.main]} onRefresh={this.reload} refreshing={this.state.visibleRefreshControl} />}
+        >
+          {/* <Text style={{ marginVertical: 20, marginLeft: 20, fontSize: 16 }}>{this.dateStr()}</Text> */}
+          <Trend navigation={this.props.navigation} ref={this._ref.trend} />
+          <Recommended navigation={this.props.navigation} ref={this._ref.recommended} />
+        </ScrollView>
+      </View>
     )
   }
 }

@@ -71,9 +71,8 @@ class ArticleView extends React.Component{
       // 获取配置，注入webView
       storage.get('config').then(config =>{
         if(config){
-          if(!this.state.config){ return this.setState({ config }, this.loadContent) }
-          if(JSON.stringify(config) !== JSON.stringify(this.state.config)){
-            this.setState({ config }, this.loadContent)
+          if(JSON.stringify(config) !== JSON.stringify(this.state.config || {})){
+            this.setState({ config }, () => this.props.html ? this.writeContent(this.props.html) : this.loadContent())
           }
         }
       })
@@ -153,7 +152,7 @@ class ArticleView extends React.Component{
           this.props.onLoaded(data)
           var html = data.parse.text['*']
           this.writeContent(html)          
-          $dialog.dropToast.show('因读取失败，载入条目缓存')
+          $dialog.snackBar.show('因读取失败，载入条目缓存')
           this.setState({ status: 3 })    // 将状态标记为：读取失败，载入缓存
         }else{
           throw new Error
@@ -181,6 +180,21 @@ class ArticleView extends React.Component{
       console.log('--- WebViewError ---', data)
     }
 
+    if(type === 'request'){
+      var { config, callbackName } = data
+      request({
+        baseURL: config.url,
+        method: config.method,
+        params: config.params
+      }).then(data =>{
+        // 数据中的换行会导致解析json失败
+        this.injectScript(`window.${callbackName}(\`${JSON.stringify(data).replace(/\\n/g, '')}\`)`)
+      }).catch(e =>{
+        console.log(e)
+        this.injectScript(`window.${callbackName}('${JSON.stringify({ error: true })}')`)
+      })
+    }
+
     if(this.props.disabledLink){ return }
 
     if(type === 'onTapLink'){
@@ -198,21 +212,6 @@ class ArticleView extends React.Component{
           $dialog.alert.show({ content: '该条目还未创建' })
         }
       })[data.type]()
-    }
-
-    if(type === 'request'){
-      var { config, callbackName } = data
-      request({
-        baseURL: config.url,
-        method: config.method,
-        params: config.params
-      }).then(data =>{
-        // 数据中的换行会导致解析json失败
-        this.injectScript(`window.${callbackName}(\`${JSON.stringify(data).replace(/\\n/g, '')}\`)`)
-      }).catch(e =>{
-        console.log(e)
-        this.injectScript(`window.${callbackName}('${JSON.stringify({ error: true })}')`)
-      })
     }
 
     if(type === 'openApp'){

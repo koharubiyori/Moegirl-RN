@@ -1,35 +1,32 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text,
+  View, Text, DeviceEventEmitter,
   StyleSheet
 } from 'react-native'
 import { BottomNavigation } from 'react-native-material-ui'
 
 export default class MyBottomNavigation extends React.Component{
   static propTypes = {
-    active: PropTypes.string,
-    onPress: PropTypes.func
+    
   }
 
   constructor (props){
     super(props)
 
-    this.itemStyle = {
-      container: {},
-      active: { color: $colors.main },
-      disabled: {}
+    this.state = {
+      active: 'home'
     }
   }
 
   selectTab = key =>{
-    this.props.onPress(key)
     this.setState({ active: key })
+    this.props.jumpTo(key)
   }
   
   render (){
     return (
-      <BottomNavigation active={this.props.active}>
+      <BottomNavigation active={this.state.active}>
         <BottomNavigation.Action
           key="home"
           icon="book"

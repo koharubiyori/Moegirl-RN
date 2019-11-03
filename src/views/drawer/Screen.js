@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, Image, TouchableOpacity, Dimensions,
-  StyleSheet, NativeModules
+  View, Text, Image, TouchableOpacity, Dimensions, TouchableNativeFeedback,
+  StyleSheet, 
 } from 'react-native'
 import userHOC from '~/redux/user/HOC'
 import Item from './components/Item'
@@ -35,10 +35,10 @@ class DrawerScreen extends React.Component{
       <View style={{ backgroundColor: 'white', height: Dimensions.get('window').height }}>
         <View style={styles.header}>
           {this.props.state.user.name ? 
-            <>
+            <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.push('article', { link: 'User:' + this.props.state.user.name }))}>
               <Image source={{ uri: $avatarUrl + this.props.state.user.name }} style={styles.avatar} />
               <Text style={styles.hintText}>欢迎你，{this.props.state.user.name}</Text>
-            </>
+            </TouchableOpacity>
           : 
             <>
               <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.navigate('login'))}>
@@ -59,10 +59,6 @@ class DrawerScreen extends React.Component{
             <Item icon="forum" title="讨论版" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:讨论版' })} />
             {/* <Item icon="exposure-plus-1" title="支持萌娘百科" onPress={() => $appNavigator.current._navigation.push('article', { link: '萌娘百科:捐款' })} /> */}
           </View>
-
-          {/* <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ color: '#ABABAB', fontSize: 16 }}>其他功能敬请期待</Text>
-          </View> */}
         </View>
       </View>
       
