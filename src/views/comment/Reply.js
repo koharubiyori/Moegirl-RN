@@ -39,12 +39,11 @@ class CommentReply extends React.Component{
   }
 
   delCommentData = id =>{
-    if(this.props.state.comment.activeId === id){ this.props.navigation.goBack() }
-    this.props.comment.del(id)
+    this.props.comment.del(id, true)
   }
   
   render (){
-    const state = this.props.state.comment
+    const state = this.props.comment.getActiveData()
 
     const activeComment = state.tree.tree.filter(item => item.id === state.activeId)[0]
     const children = format.children(activeComment.children, state.activeId)
@@ -56,16 +55,16 @@ class CommentReply extends React.Component{
         <Editor ref="editor"
           pageId={state.pageId}
           targetId={this.state.replyId || state.activeId}  
-          onPosted={this.props.comment.incrementLoad}
+          onPosted={() => this.props.comment.incrementLoad(true)}
          />
       
         <ScrollView style={{ flex: 1 }}>
           <View>
-            <Item data={activeComment} onDel={this.delCommentData} navigation={this.props.navigation} visibleReply={false} visibleReplyBtn={false} visibleDelBtn={false} />
+            <Item isReply data={activeComment} onDel={this.delCommentData} navigation={this.props.navigation} visibleReply={false} visibleReplyBtn={false} visibleDelBtn={false} />
             {children.length !== 0 ? <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginVertical: 10 }}>回复</Text> : null}
           </View>
           
-          {children.map(item => <Item visibleReply={false} visibleReplyNum={false}
+          {children.map(item => <Item isReply visibleReply={false} visibleReplyNum={false}
             key={item.id}
             data={item}
             navigation={this.props.navigation}

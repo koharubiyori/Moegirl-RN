@@ -6000,10 +6000,10 @@ react-navigation-stack@^1.8.1:
   dependencies:
     prop-types "^15.7.2"
 
-react-navigation-tabs@^2.5.5:
-  version "2.5.5"
-  resolved "https://registry.npm.taobao.org/react-navigation-tabs/download/react-navigation-tabs-2.5.5.tgz#f651355b140b35ef5753aac434da5e1943abdd26"
-  integrity sha1-9lE1WxQLNe9XU6rENNpeGUOr3SY=
+react-navigation-tabs@^2.5.6:
+  version "2.5.6"
+  resolved "https://registry.npm.taobao.org/react-navigation-tabs/download/react-navigation-tabs-2.5.6.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-navigation-tabs%2Fdownload%2Freact-navigation-tabs-2.5.6.tgz#51f1a39b6c9525e6b5fe035945c243c04e53242b"
+  integrity sha1-UfGjm2yVJea1/gNZRcJDwE5TJCs=
   dependencies:
     hoist-non-react-statics "^3.3.0"
     react-lifecycles-compat "^3.0.4"

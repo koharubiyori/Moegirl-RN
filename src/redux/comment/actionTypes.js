@@ -1,5 +1,5 @@
+export const SET_ACTIVE_ID = Symbol()
 export const SET = Symbol()
-export const INIT = Symbol()
 export const INCREMENT_DATA = Symbol()
 export const DEL = Symbol()
 export const SET_LIKE_STATUS = Symbol()

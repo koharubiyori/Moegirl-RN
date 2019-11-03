@@ -16,7 +16,7 @@ import format from '../utils/format'
 class CommentItem extends React.PureComponent{
   static propTypes = {
     data: PropTypes.object,
-    contentName: PropTypes.string,
+    isReply: PropTypes.bool,
     visibleReply: PropTypes.bool,
     visibleReplyBtn: PropTypes.bool,
     visibleReplyNum: PropTypes.bool,
@@ -32,7 +32,7 @@ class CommentItem extends React.PureComponent{
     visibleReplyBtn: true,
     visibleReplyNum: true,
     visibleDelBtn: true,
-    contentName: '评论'
+    isReply: false
   }
 
   constructor (props){
@@ -68,7 +68,7 @@ class CommentItem extends React.PureComponent{
     if(this.state.isReported){ return toast.show('不能重复举报') }
     
     $dialog.confirm.show({ 
-      content: `确定要举报这条${this.props.contentName}吗？`,
+      content: `确定要举报这条${this.props.isReply ? '回复' : '评论'}吗？`,
       onTapCheck: () =>{
         toast.showLoading()
         report(this.props.data.id)
@@ -85,14 +85,14 @@ class CommentItem extends React.PureComponent{
 
   del = () =>{
     $dialog.confirm.show({
-      content: `确定要删除自己的这条${this.props.contentName}吗？`,
+      content: `确定要删除自己的这条${this.props.isReply ? '回复' : '评论'}吗？`,
       onTapCheck: () =>{
         toast.showLoading()
         delComment(this.props.data.id)
           .finally(() => toast.hide())
           .then(() =>{
             this.props.onDel(this.props.data.id)
-            setTimeout(() => $dialog.alert.show({ content: `${this.props.contentName}已删除` }))
+            setTimeout(() => $dialog.alert.show({ content: `${this.props.isReply ? '回复' : '评论'}已删除` }))
           })
           .catch(e =>{
             console.log(e)

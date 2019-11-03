@@ -8,10 +8,11 @@ import ArticleView from '~/components/webView/ArticleView'
 import StatusBar from '~/components/StatusBar'
 import Header from './Header'
 import CatalogTriggerView from './catalogTriggerView/index'
-import CommentBtn from './FloatButton'
+import CommentButton from './CommentButton'
 import storage from '~/utils/storage'
 import saveHistory from '~/utils/saveHistory'
 import toast from '~/utils/toast'
+import { getActiveData as getActiveCommentData } from '~/redux/comment/HOC'
 
 const NavigationContext = React.createContext()
 
@@ -38,7 +39,8 @@ export default class Article extends React.Component{
 
     this._refs = {
       header: null,
-      articleView: null
+      articleView: null,
+      commentButton: null
     }
 
     this.articleViewInjectCss = `
@@ -81,7 +83,7 @@ export default class Article extends React.Component{
   // 接收需要隐藏或显示header的指令
   changeHeaderVisible = isVisible =>{
     const {show, hide} = this._refs.header
-    const {show: showBtn, hide: hideBtn} = this.refs.commentBtn
+    const {show: showBtn, hide: hideBtn} = this._refs.commentButton
     isVisible ? show() : hide()
     isVisible ? showBtn() : hideBtn()
   }
@@ -94,7 +96,7 @@ export default class Article extends React.Component{
     storage.merge('articleCache', { [trueTitle]: data })
 
     if(title !== trueTitle){
-      $dialog.dropToast.show(`“${this.state.pageName}”被重定向至此页`)
+      $dialog.snackBar.show(`“${this.state.pageName}”被重定向至此页`)
 
       // 记录至文章重定向表
       storage.merge('articleRedirectMap', { [title]: trueTitle })
@@ -117,8 +119,8 @@ export default class Article extends React.Component{
   }
 
   toComment = () =>{
-    if(!this.state.firstData){ return toast.show('加载评论中，请稍候') }
-    this.props.navigation.push('comment', { id: this.state.id, title: this.state.pageName, firstData: this.state.firstData })
+    if([1, 2].includes(getActiveCommentData().status)){ return toast.show('加载评论中，请稍候') }
+    this.props.navigation.push('comment', { title: this.state.pageName, id: this.state.id })
   }
 
   render (){
@@ -146,9 +148,10 @@ export default class Article extends React.Component{
           />       
         </CatalogTriggerView>
 
-        {this.state.id ? <CommentBtn ref="commentBtn" id={this.state.id}
+        {this.state.id ? <CommentButton 
+          id={this.state.id}
           onTap={this.toComment}
-          onLoaded={data => this.setState({ firstData: data })}
+          getRef={self => this._refs.commentButton = self}
         /> : null } 
       </NavigationContext.Provider>
     )

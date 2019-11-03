@@ -2,10 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, Animated, 
-  StyleSheet, NativeModules
+  StyleSheet, 
 } from 'react-native'
 
-export default class DropToast extends React.Component{
+const height = 45
+
+export default class SnackBar extends React.Component{
   static propTypes = {
     
   }
@@ -13,7 +15,7 @@ export default class DropToast extends React.Component{
   constructor (props){
     super(props)
     this.state = {
-      transitionTop: new Animated.Value(-56 - NativeModules.StatusBarManager.HEIGHT),
+      transitionTop: new Animated.Value(-height),
       content: '',
       status: 0,
       queue: []
@@ -27,7 +29,7 @@ export default class DropToast extends React.Component{
 
     this.setState({ content, status: 1 })
     Animated.timing(this.state.transitionTop, {
-      toValue: NativeModules.StatusBarManager.HEIGHT,
+      toValue: 0,
       duration: 200
     }).start(() =>{
       setTimeout(() =>{
@@ -46,7 +48,7 @@ export default class DropToast extends React.Component{
   hide = () =>{
     return new Promise((resolve, reject) =>{
       Animated.timing(this.state.transitionTop, {
-        toValue: -56 - NativeModules.StatusBarManager.HEIGHT,
+        toValue: -height,
         duration: 200
       }).start(() =>{
         this.setState({ status: 0 })
@@ -57,8 +59,8 @@ export default class DropToast extends React.Component{
 
   render (){
     return (
-      <Animated.View style={{ ...styles.main, top: this.state.transitionTop }}>
-        <Text style={{ color: 'white' }} numberOfLines={2}>{this.state.content}</Text>
+      <Animated.View style={{ ...styles.main, bottom: this.state.transitionTop }}>
+        <Text style={{ color: 'white' }} numberOfLines={1}>{this.state.content}</Text>
       </Animated.View>
     )
   }
@@ -66,8 +68,9 @@ export default class DropToast extends React.Component{
 
 const styles = StyleSheet.create({
   main: {
-    height: 56,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    height,
+    paddingHorizontal: 20,
+    backgroundColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',

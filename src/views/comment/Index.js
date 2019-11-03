@@ -1,15 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, ActivityIndicator, FlatList, TouchableOpacity,
-  StyleSheet, LayoutAnimation
+  View, Text, ActivityIndicator, FlatList, TouchableOpacity, 
+  StyleSheet, LayoutAnimation, InteractionManager
 } from 'react-native'
-import Tree from '~/utils/tree'
 import toast from '~/utils/toast'
 import StatusBar from '~/components/StatusBar'
 import commentHOC from '~/redux/comment/HOC'
-import * as commentActions from '~/redux/comment/actionTypes'
 import store from '~/redux'
+import * as commentActions from '~/redux/comment/actionTypes'
 import Header from './Header'
 import Editor from './Editor'
 import Item from './components/Item'
@@ -22,21 +21,7 @@ class Comment extends React.Component{
   constructor (props){
     super(props)
 
-    var data = props.navigation.getParam('firstData')
-    var tree = new Tree(props.navigation.getParam('firstData').posts)
-    var status = tree.tree.length >= data.count ? 4 : 1
-    if(data.count === 0) status = 5
-
-    store.dispatch({
-      type: commentActions.SET,
-      data: {
-        data, tree, status,
-        pageId: props.navigation.getParam('id'),
-        title: props.navigation.getParam('title'),
-        activeId: ''
-      }
-    })
-
+    this.title = props.navigation.getParam('title')
     this.pageId = props.navigation.getParam('id')
   }
   
@@ -47,7 +32,9 @@ class Comment extends React.Component{
   }
 
   loadList = () =>{
-    this.props.comment.load(this.pageId).catch(() => toast.show('加载失败，正在重试'))
+    InteractionManager.runAfterInteractions(() =>{
+      this.props.comment.load().catch(() => toast.show('加载失败，正在重试'))
+    })
   }
 
   addComment = () =>{
@@ -69,13 +56,13 @@ class Comment extends React.Component{
 
   render (){
     // 使用redux的数据源
-    const state = this.props.state.comment
-    if(!state.data) return null
+    const state = this.props.comment.getActiveData()
+    if(state.status === 1) return null
 
     return (
       <View style={{ flex: 1, backgroundColor: '#eee' }}>
         <StatusBar />
-        <Header title={'评论：' + state.title} onTapAddComment={this.addComment} navigation={this.props.navigation} />
+        <Header title={'评论：' + this.title} onTapAddComment={this.addComment} navigation={this.props.navigation} />
         <Editor ref="editor" pageId={state.pageId} onPosted={this.props.comment.incrementLoad} />
       
         <FlatList data={state.tree.tree} 

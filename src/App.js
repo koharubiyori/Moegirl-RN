@@ -4,7 +4,7 @@ import { ThemeContext, getTheme } from 'react-native-material-ui'
 import AppNavigator from './router'
 import Alert from '~/components/dialog/Alert'
 import Confirm from '~/components/dialog/Confirm'
-import DropToast from '~/components/dialog/DropToast'
+import SnackBar from '~/components/dialog/SnackBar'
 import Drawer from '~/views/drawer'
 import store from './redux'
 import { Provider } from 'react-redux'
@@ -66,7 +66,7 @@ export default class App extends React.Component {
 
         <Alert ref="alert" />
         <Confirm ref="confirm" />
-        <DropToast ref="dropToast" />
+        <SnackBar ref="snackBar" />
       </ThemeContext.Provider>
     )
   }
