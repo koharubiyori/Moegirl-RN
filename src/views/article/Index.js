@@ -14,10 +14,6 @@ import saveHistory from '~/utils/saveHistory'
 import toast from '~/utils/toast'
 import { getActiveData as getActiveCommentData } from '~/redux/comment/HOC'
 
-const NavigationContext = React.createContext()
-
-export { NavigationContext }
-
 export default class Article extends React.Component{
   static propTypes = {
     navigation: PropTypes.object
@@ -125,7 +121,7 @@ export default class Article extends React.Component{
 
   render (){
     return (
-      <NavigationContext.Provider value={this.props.navigation}>
+      <>
         <StatusBar hidden={this.state.immersionMode} />
         <Header style={{ ...styles.header }} 
           navigation={this.props.navigation} 
@@ -153,7 +149,7 @@ export default class Article extends React.Component{
           onTap={this.toComment}
           getRef={self => this._refs.commentButton = self}
         /> : null } 
-      </NavigationContext.Provider>
+      </>
     )
   }
 }

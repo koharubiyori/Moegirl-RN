@@ -12,10 +12,6 @@ import RecentSearch from './RecentSearch'
 import storage from '~/utils/storage'
 import { getHint } from '~/api/search'
 
-const NavigationContext = React.createContext()
-
-export { NavigationContext }
-
 export default class Search extends React.Component{
   static propTypes = {
     navigation: PropTypes.object
@@ -71,24 +67,22 @@ export default class Search extends React.Component{
 
   render (){
     return (
-      <NavigationContext.Provider value={this.props.navigation}>
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
-          <StatusBar blackText color="white" />
-            <Header value={this.state.searchWord} 
-              onChangeText={this.changeText} 
-              onSubmit={() => this.toSearchResultView()}
-            />
-            {this.state.searchWord ? 
-              <SearchHint titles={this.state.searchHint} onTapTitle={title => this.toSearchResultView(title)} />
-            : 
-              <RecentSearch 
-                titles={this.state.searchHistory}
-                onTapDelete={this.clearSearchHistory}
-                onTapTitle={title => this.toSearchResultView(title)}
-              />
-            }
-        </View>
-      </NavigationContext.Provider>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
+        <StatusBar blackText color="white" />
+        <Header value={this.state.searchWord} 
+          onChangeText={this.changeText} 
+          onSubmit={() => this.toSearchResultView()}
+        />
+        {this.state.searchWord ? 
+          <SearchHint titles={this.state.searchHint} onTapTitle={title => this.toSearchResultView(title)} />
+        : 
+          <RecentSearch 
+            titles={this.state.searchHistory}
+            onTapDelete={this.clearSearchHistory}
+            onTapTitle={title => this.toSearchResultView(title)}
+          />
+        }
+      </View>
     )
   }
 }

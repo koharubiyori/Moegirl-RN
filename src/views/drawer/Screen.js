@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, Image, TouchableOpacity, Dimensions, TouchableNativeFeedback,
+  View, Text, Image, TouchableOpacity, Dimensions,
   StyleSheet, 
 } from 'react-native'
 import userHOC from '~/redux/user/HOC'
@@ -26,7 +26,7 @@ class DrawerScreen extends React.Component{
   tap = handler =>{
     return () =>{
       $drawer.close()
-      handler()
+      handler($appNavigator.current._navigation)
     }
   }
 
@@ -35,17 +35,17 @@ class DrawerScreen extends React.Component{
       <View style={{ backgroundColor: 'white', height: Dimensions.get('window').height }}>
         <View style={styles.header}>
           {this.props.state.user.name ? 
-            <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.push('article', { link: 'User:' + this.props.state.user.name }))}>
+            <TouchableOpacity onPress={this.tap(navigation => navigation.push('article', { link: 'User:' + this.props.state.user.name }))}>
               <Image source={{ uri: $avatarUrl + this.props.state.user.name }} style={styles.avatar} />
               <Text style={styles.hintText}>欢迎你，{this.props.state.user.name}</Text>
             </TouchableOpacity>
           : 
             <>
-              <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.navigate('login'))}>
+              <TouchableOpacity onPress={this.tap(navigation => navigation.navigate('login'))}>
                 <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={this.tap(() => $appNavigator.current._navigation.navigate('login'))}>
+              <TouchableOpacity onPress={this.tap(navigation => navigation.navigate('login'))}>
                 <Text style={styles.hintText}>登录/加入萌娘百科</Text>
               </TouchableOpacity>
             </>

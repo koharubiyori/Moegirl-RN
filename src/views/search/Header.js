@@ -4,9 +4,9 @@ import {
   View, TextInput,
   StyleSheet
 } from 'react-native'
+import { withNavigation } from 'react-navigation'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
-import { NavigationContext } from './Index'
 
 SearchHeader.propTypes = {
   value: PropTypes.string.isRequired,
@@ -14,31 +14,32 @@ SearchHeader.propTypes = {
   onSubmit: PropTypes.func
 }
 
-export default function SearchHeader({
+function SearchHeader({
   value,
   onChangeText,
-  onSubmit
+  onSubmit,
+  navigation
 }){
   return (
-    <NavigationContext.Consumer>{navigation =>
-      <View style={styles.body}>
-        <Button onPress={() => navigation.goBack()} rippleColor="#ccc">
-          <Icon name="keyboard-backspace" size={26} color="#666" />
-        </Button>
+    <View style={styles.body}>
+      <Button onPress={() => navigation.goBack()} rippleColor="#ccc">
+        <Icon name="keyboard-backspace" size={26} color="#666" />
+      </Button>
 
-        <TextInput autoFocus value={value}
-          autoCapitalize="none"
-          returnKeyType="search"
-          autoCorrect={false}
-          placeholder="搜索萌娘百科..."
-          onChangeText={onChangeText}
-          onSubmitEditing={onSubmit}
-          style={styles.input}
-        ></TextInput>
-      </View>
-    }</NavigationContext.Consumer>
+      <TextInput autoFocus value={value}
+        autoCapitalize="none"
+        returnKeyType="search"
+        autoCorrect={false}
+        placeholder="搜索萌娘百科..."
+        onChangeText={onChangeText}
+        onSubmitEditing={onSubmit}
+        style={styles.input}
+      ></TextInput>
+    </View>
   )
 }
+
+export default withNavigation(SearchHeader)
 
 const styles = StyleSheet.create({
   body: {
