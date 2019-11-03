@@ -15,7 +15,7 @@ export const getActiveData = () =>{
 }
 
 export const setActiveId = id =>{
-  imr(() => dispatch({ type: SET_ACTIVE_ID, id }))
+  return imr(() => dispatch({ type: SET_ACTIVE_ID, id }))
 }
 
 export const load = () => dispatch((dispatch, getState) =>
@@ -53,7 +53,7 @@ export const load = () => dispatch((dispatch, getState) =>
 
 export const incrementLoad = (isReply = false) => dispatch((dispatch, getState) =>{
   var state = getActiveData()
-  imr(() =>
+  return imr(() =>
     getComments(state.pageId).then(data => dispatch({ type: INCREMENT_DATA, posts: data.posts, count: data.count, isReply }))
   ) 
 })

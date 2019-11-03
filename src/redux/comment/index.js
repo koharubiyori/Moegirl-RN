@@ -19,6 +19,7 @@ export default function reducer(state = {
   activeId: ''     // 当前正在显示的页面id(处于评论界面)
 }, action){
   var activeData = state.pages[state.activeId]
+
   const mixinActiveData = data => ({
     ...state,
     pages: {
@@ -32,13 +33,13 @@ export default function reducer(state = {
 
   switch(action.type){
     // id
-    case SET_ACTIVE_ID: {
+    case SET_ACTIVE_ID: {       
       return {
         ...state,
         activeId: action.id,
         pages: {
           ...state.pages,
-          [action.id]: init(action.id)
+          [action.id]: state.pages[action.id] || init(action.id)
         }
       }
     }
