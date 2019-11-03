@@ -12,9 +12,9 @@ import CommentButton from './CommentButton'
 import storage from '~/utils/storage'
 import saveHistory from '~/utils/saveHistory'
 import toast from '~/utils/toast'
-import { getActiveData as getActiveCommentData } from '~/redux/comment/HOC'
+import commentHOC from '~/redux/comment/HOC'
 
-export default class Article extends React.Component{
+class Article extends React.Component{
   static propTypes = {
     navigation: PropTypes.object
   }
@@ -74,6 +74,11 @@ export default class Article extends React.Component{
       // 读取配置
       storage.get('config').then(config => config && this.setState({ immersionMode: config.immersionMode }))
     })
+
+    // 后退后设置当前页面comment的activeId
+    this.props.navigation.addListener('didFocus', () =>{
+      this.state.id && props.comment.setActiveId(this.state.id)
+    })
   }
 
   // 接收需要隐藏或显示header的指令
@@ -115,7 +120,7 @@ export default class Article extends React.Component{
   }
 
   toComment = () =>{
-    if([1, 2].includes(getActiveCommentData().status)){ return toast.show('加载评论中，请稍候') }
+    if([0, 1, 2].includes(this.props.comment.getActiveData().status)){ return toast.show('加载评论中，请稍候') }
     this.props.navigation.push('comment', { title: this.state.pageName, id: this.state.id })
   }
 
@@ -161,6 +166,8 @@ export default class Article extends React.Component{
     )
   }
 }
+
+export default commentHOC(Article)
 
 const styles = StyleSheet.create({
   header: {

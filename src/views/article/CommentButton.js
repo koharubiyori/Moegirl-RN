@@ -4,6 +4,7 @@ import {
   View, Text, TouchableOpacity, Animated,
   StyleSheet
 } from 'react-native'
+import { withNavigation } from 'react-navigation'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import commentHOC from '~/redux/comment/HOC'
 
@@ -89,7 +90,7 @@ class CommentBtn extends React.Component{
   }
 }
 
-export default commentHOC(CommentBtn)
+export default withNavigation(commentHOC(CommentBtn))
 
 const styles = StyleSheet.create({
   container: {
