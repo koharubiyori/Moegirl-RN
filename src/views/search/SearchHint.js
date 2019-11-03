@@ -5,7 +5,6 @@ import {
   StyleSheet
 } from 'react-native'
 import Button from '~/components/Button'
-import { NavigationContext } from './Index'
 
 SearchHint.propTypes = {
   titles: PropTypes.array,
@@ -17,26 +16,24 @@ export default function SearchHint({
   onTapTitle  
 }){
   return (
-    <NavigationContext.Consumer>{navigation =>
-      <View style={{ flex: 1 }}>
-        {titles ? 
-          <ScrollView  keyboardShouldPersistTaps="always">{titles.map(title =>
-            <Button contentContainerStyle={{}} rippleColor="#ccc" noLimit={false} 
-              onPress={() => onTapTitle(title)}
-              key={title}
-            >
-              <View style={styles.title}>
-                <Text style={{ color: '#666' }}>{title}</Text>
-              </View>
-            </Button>
-          )}</ScrollView>
-        :
-          <View style={styles.title}>
-            <Text style={{ color: '#666' }}>搜索中...</Text>
-          </View>
-        }
-      </View>
-    }</NavigationContext.Consumer>
+    <View style={{ flex: 1 }}>
+      {titles ? 
+        <ScrollView  keyboardShouldPersistTaps="always">{titles.map(title =>
+          <Button contentContainerStyle={{}} rippleColor="#ccc" noLimit={false} 
+            onPress={() => onTapTitle(title)}
+            key={title}
+          >
+            <View style={styles.title}>
+              <Text style={{ color: '#666' }}>{title}</Text>
+            </View>
+          </Button>
+        )}</ScrollView>
+      :
+        <View style={styles.title}>
+          <Text style={{ color: '#666' }}>搜索中...</Text>
+        </View>
+      }
+    </View>
   )
 }
 
