@@ -10,7 +10,7 @@ import commentHOC from '~/redux/comment/HOC'
 
 const size = 60
 
-class CommentBtn extends React.Component{
+class CommentButton extends React.Component{
   static propTypes = {
     id: PropTypes.number,
     onTap: PropTypes.func,
@@ -90,7 +90,7 @@ class CommentBtn extends React.Component{
   }
 }
 
-export default withNavigation(commentHOC(CommentBtn))
+export default withNavigation(commentHOC(CommentButton))
 
 const styles = StyleSheet.create({
   container: {

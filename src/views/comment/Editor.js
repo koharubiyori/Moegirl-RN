@@ -25,10 +25,11 @@ export default class CommentEditor extends React.Component{
   }
   
   show = () =>{
-    this.setState({ visible: true })
-    setTimeout(() => this.refs.textInput.focus())
-    Animated.timing(this.state.transitionOpacity, { toValue: 1, duration: 300, useNativeDriver: true }).start()
-    Animated.timing(this.state.transitionTranslateY, { toValue: 0, duration: 300, useNativeDriver: true }).start()
+    this.setState({ visible: true }, () =>{
+      Animated.timing(this.state.transitionOpacity, { toValue: 1, duration: 300, useNativeDriver: true }).start()
+      Animated.timing(this.state.transitionTranslateY, { toValue: 0, duration: 300, useNativeDriver: true }).start()
+      setTimeout(() => this.refs.textInput.focus())
+    })
   }
 
   hide = () =>{
