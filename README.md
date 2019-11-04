@@ -8,6 +8,8 @@
 
 <del>垃圾RN性能是真的干不过原生，今后只能指望flutter了</del>
 
+下载：https://www.coolapk.com/apk/247471
+
 ## 特性
 
 * 适配移动端，提供良好的阅读体验
