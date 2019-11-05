@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, DrawerLayoutAndroid, Dimensions, DeviceEventEmitter,
+  View, Text, DrawerLayoutAndroid, Dimensions, BackHandler,
   StyleSheet
 } from 'react-native'
 import storage from '~/utils/storage'
@@ -27,6 +27,13 @@ export default class MyDrawer extends React.PureComponent{
     //   this.setState({ isWatchingArticle: lastRouteName === 'article' })
     //   storage.get('config').then(config => config && this.setState({ immersionMode: config.immersionMode }))
     // })
+
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () =>{
+      if(this.visible){
+        this.close()
+        return true
+      }
+    })
   }
   
   componentDidMount (){

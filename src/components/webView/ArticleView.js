@@ -81,6 +81,10 @@ class ArticleView extends React.Component{
     })
   }
   
+  shouldComponentUpdate (nextProps, nextState){
+    return this.props.navigation.isFocused()
+  }
+
   componentDidMount (){
     if(this.props.link){
       this.loadContent()

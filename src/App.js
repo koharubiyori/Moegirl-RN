@@ -31,11 +31,6 @@ export default class App extends React.Component {
 
     var onPressBackBtnMark = false
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () =>{
-      if($drawer && $drawer.visible){
-        $drawer.close()
-        return true
-      }
-
       if(!onPressBackBtnMark){
         toast.show('再按一次返回键退出应用')
         onPressBackBtnMark = true
