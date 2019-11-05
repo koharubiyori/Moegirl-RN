@@ -1,5 +1,6 @@
 import React from 'react'
 import { BackHandler, DeviceEventEmitter } from 'react-native'
+import SplashScreen from 'react-native-splash-screen'
 import { ThemeContext, getTheme } from 'react-native-material-ui'
 import AppNavigator from './router'
 import Alert from '~/components/dialog/Alert'
@@ -49,6 +50,7 @@ export default class App extends React.Component {
   componentDidMount (){
     global.$dialog = { ...this.refs }
     require('./init')
+    setTimeout(SplashScreen.hide, 1000)
   }
 
   componentWillUnmount (){
