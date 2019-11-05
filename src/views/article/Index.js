@@ -81,6 +81,10 @@ class Article extends React.Component{
     })
   }
 
+  shouldComponentUpdate (nextProps, nextState){
+    return this.props.navigation.isFocused()
+  }
+
   // 接收需要隐藏或显示header的指令
   changeHeaderVisible = isVisible =>{
     const {show, hide} = this._refs.header
@@ -90,7 +94,7 @@ class Article extends React.Component{
   }
 
   contentLoaded = data =>{
-    var title = this.state.pageName
+    var title = this.state.pageName.replace(/_/g, ' ')
     var trueTitle = data.parse.title
 
     // 写入缓存
