@@ -9,6 +9,7 @@ import { Toolbar } from 'react-native-material-ui'
 import storage from '~/utils/storage'
 import SwitchItem from './components/SwitchItem'
 import toast from '~/utils/toast'
+import configHOC from '~/redux/config/HOC'
 import userHOC from '~/redux/user/HOC'
 
 function Title(props){
@@ -28,20 +29,8 @@ class Settings extends React.Component{
     super(props)
     
     this.state = {
-      config: {
-        heimu: true,
-        biliPlayerReload: false,
-        immersionMode: false,
-      }
+
     }
-
-    storage.get('config').then(config =>{
-      config && this.setState({ config })
-    })
-  }
-
-  componentDidUpdate (){
-    storage.set('config', this.state.config)
   }
   
   clearArticleCache = () =>{
@@ -77,8 +66,8 @@ class Settings extends React.Component{
   }
 
   render (){
-    const { config } = this.state
-    const setConfig = param => this.setState({ config: { ...config, ...param } })
+    const { config } = this.props.state
+    const setConfig = config => this.props.config.set(config)
 
     return (
       <View style={{ flex: 1 }}>
@@ -142,7 +131,7 @@ class Settings extends React.Component{
   }
 }
 
-export default userHOC(Settings)
+export default configHOC(userHOC(Settings))
 
 const styles = StyleSheet.create({
   title: {

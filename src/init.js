@@ -1,8 +1,9 @@
 import store from './redux'
 import storage from './utils/storage'
 import { SET_INFO } from './redux/user/actionTypes'
-import { logout } from './redux/user/HOC'
-import { check } from './redux/user/HOC'
+import { logout as userLogout } from './redux/user/HOC'
+import { check as checkLoginStatus } from './redux/user/HOC'
+import { set as setConfig, init as initConfig } from './redux/config/HOC'
 
 store.dispatch(dispatch =>{
   storage.get('userName').then(name =>{
@@ -10,8 +11,8 @@ store.dispatch(dispatch =>{
     dispatch({ type: SET_INFO, name })
 
     // 获取一次编辑令牌，判断登录状态是否有效
-    check().catch(() =>{
-      logout()
+    checkLoginStatus().catch(() =>{
+      userLogout()
       $dialog.confirm.show({
         content: '登录状态貌似失效了，要前往登录吗？',
         onTapCheck: () =>{
@@ -22,10 +23,6 @@ store.dispatch(dispatch =>{
   })
 })
 
-storage.get('config').then(config =>{
-  if(!config) storage.set('config', {
-    heimu: true,
-    biliPlayerReload: false,
-    immersionMode: false
-  })
+storage.get('config').then(localConfig =>{
+  localConfig ? setConfig(localConfig) : initConfig()
 })

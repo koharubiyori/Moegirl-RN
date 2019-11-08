@@ -12,6 +12,7 @@ import userHOC from '~/redux/user/HOC'
 import { controlsCodeString } from './controls/index' 
 import { getImageUrl } from '~/api/article'
 import request from '~/utils/request'
+import store from '~/redux'
 
 class ArticleView extends React.Component{
   static propTypes = {
@@ -71,13 +72,10 @@ class ArticleView extends React.Component{
 
     this.props.navigation.addListener('willFocus', () =>{
       // 获取配置，注入webView
-      storage.get('config').then(config =>{
-        if(config){
-          if(JSON.stringify(config) !== JSON.stringify(this.state.config || {})){
-            this.setState({ config }, () => this.props.html ? this.writeContent(this.props.html) : this.loadContent())
-          }
-        }
-      })
+      var { config } = store.getState()
+      if(JSON.stringify(config) !== JSON.stringify(this.state.config || {})){
+        this.setState({ config }, () => this.props.html ? this.writeContent(this.props.html) : this.loadContent())
+      }
     })
   }
   
