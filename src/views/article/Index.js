@@ -13,6 +13,7 @@ import storage from '~/utils/storage'
 import saveHistory from '~/utils/saveHistory'
 import toast from '~/utils/toast'
 import commentHOC from '~/redux/comment/HOC'
+import store from '~/redux'
 
 class Article extends React.Component{
   static propTypes = {
@@ -28,9 +29,7 @@ class Article extends React.Component{
       id: 0,
 
       catalogItems: [],
-      firstData: null,
-
-      immersionMode: false
+      firstData: null
     }
 
     this._refs = {
@@ -69,11 +68,6 @@ class Article extends React.Component{
     }).toString()
 
     this.articleViewInjectJs = `(${injectedJs})();`
-
-    this.props.navigation.addListener('willFocus', () =>{
-      // 读取配置
-      storage.get('config').then(config => config && this.setState({ immersionMode: config.immersionMode }))
-    })
 
     // 后退后设置当前页面comment的activeId
     this.props.navigation.addListener('didFocus', () =>{
@@ -136,9 +130,11 @@ class Article extends React.Component{
   }
 
   render (){
+    const { config } = store.getState()
+
     return (
       <>
-        <StatusBar hidden={this.state.immersionMode} />
+        <StatusBar hidden={config.immersionMode} />
         <Header style={{ ...styles.header }} 
           navigation={this.props.navigation} 
           title={this.state.pageName} 
