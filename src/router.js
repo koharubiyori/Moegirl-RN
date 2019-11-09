@@ -2,9 +2,6 @@ import React from 'react'
 import { createAppContainer } from "react-navigation"
 import { createStackNavigator, StackViewStyleInterpolator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import IonIcon from 'react-native-vector-icons/Ionicons'
-// import main from './views/main/Index'
 import home from './views/main/Home'
 import finds from './views/main/finds/Index'
 import history from './views/main/history/Index'
@@ -19,8 +16,6 @@ import comment from './views/comment/Index'
 import reply from './views/comment/Reply'
 import about from './views/About'
 import settings from './views/settings/Index'
-
-const icon = name => ({ tintColor }) => <MaterialIcon name={name} color={$colors.main} size={24} />
 
 const BottomTabNavigator = createBottomTabNavigator(
   { home, finds, history },

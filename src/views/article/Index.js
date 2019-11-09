@@ -25,6 +25,7 @@ class Article extends React.Component{
 
     this.state = {
       link: props.navigation.getParam('link'),
+      anchor: props.navigation.getParam('anchor'),
       pageName: props.navigation.getParam('link'),
       id: 0,
 
@@ -44,9 +45,10 @@ class Article extends React.Component{
       }
     `
 
-    // 给webview注入的字符串js代码
+    // 给webview注入的字符串js代码，一定要使用匿名函数，否则编译后会出问题
     var injectedJs = (function(){
       var lastPosition = 0,
+      activeDistance = 0,       // 用于判断上划一定距离后再显示头栏和评论按钮
       postMessageFlag = false   // 设置一个标记，防止和webview通信过频降低性能
 
       $(window).scroll(function(){
@@ -58,11 +60,22 @@ class Article extends React.Component{
         }
 
         if(window.scrollY < 100){
+          activeDistance = 0
           changeHeaderVisible(true)
           return true
         }
 
-        changeHeaderVisible(!(window.scrollY > lastPosition))
+        if(window.scrollY < lastPosition){
+          activeDistance += 2
+          if(activeDistance >= 100){
+            activeDistance = 0
+            changeHeaderVisible(true)
+          }
+        }else{
+          activeDistance = 0
+          changeHeaderVisible(false)
+        }
+        
         lastPosition = window.scrollY
       })
     }).toString()
@@ -73,6 +86,10 @@ class Article extends React.Component{
     this.props.navigation.addListener('didFocus', () =>{
       this.state.id && props.comment.setActiveId(this.state.id)
     })
+  }
+
+  componentDidMount (){
+    this.props.navigation.setParams({ reloadMethod: () => this._refs.articleView.loadContent(true) })
   }
 
   shouldComponentUpdate (nextProps, nextState){
@@ -109,11 +126,20 @@ class Article extends React.Component{
       catalogItems: data.parse.sections,
       id: data.parse.pageid
     })
+
+    if(this.state.anchor){
+      // 这里需要优化，因为不知道为什么导致语句没有执行，所以采取了等待500毫秒的手段
+      // 考虑是dom还没能加载完毕导致的
+      setTimeout(() =>{
+        this.articleViewIntoAnchor(this.state.anchor, false)
+        $dialog.snackBar.show(`该链接指向了“${decodeURIComponent(this.state.anchor.replace(/\./g, '%'))}”章节`)
+      }, 500)
+    }
   }
 
-  articleViewIntoAnchor = anchor =>{
+  articleViewIntoAnchor = (anchor, isSmooth = true) =>{
     this._refs.articleView.injectScript(`
-      document.getElementById('${anchor}').scrollIntoView({ behavior: 'smooth' })
+      document.getElementById('${anchor}').scrollIntoView({ behavior: '${isSmooth ? 'smooth' : 'instant'}' })
     `)
   }
 

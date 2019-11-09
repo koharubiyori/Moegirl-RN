@@ -5804,6 +5804,11 @@ react-native-animatable@^1.2.4:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-autogrow-textinput@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.npm.taobao.org/react-native-autogrow-textinput/download/react-native-autogrow-textinput-5.2.0.tgz#acf736454781f5beaba8b7d9c943b7333691b65e"
+  integrity sha1-rPc2RUeB9b6rqLfZyUO3MzaRtl4=
+
 react-native-cookies@^3.3.0:
   version "3.3.0"
   resolved "https://registry.npm.taobao.org/react-native-cookies/download/react-native-cookies-3.3.0.tgz#527f65eb2d8a7a000107706bb11beb57f511e701"

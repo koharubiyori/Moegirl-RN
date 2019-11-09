@@ -25,11 +25,12 @@ export default class Edit extends React.Component{
     this.essentialUpdate = false
     this.articleReloadFlag = false
 
+    // 监听stackNavigator的变化，如果离开时已编辑flag为true，且页面堆栈最后一个为article，则执行那个article页面实例上在params暴露的reload方法
     this.navigationStateChangeListener = DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) =>{
       var lastRoute = state.routes[state.routes.length - 1]
       if(this.articleReloadFlag && lastRoute.routeName === 'article'){
         this.articleReloadFlag = false
-        console.log(lastRoute)
+        lastRoute.params.reloadMethod()
       }
     })
 

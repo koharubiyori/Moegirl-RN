@@ -88,12 +88,12 @@ class Settings extends React.Component{
           />
 
           <SwitchItem title="B站播放器重载" 
-            subtext="开启后，收起B站播放器后将彻底关闭关闭播放器，而不是后台继续播放，但再次展开将消耗额外的流量" 
+            subtext="开启后，收起B站播放器后将彻底关闭播放器，而不是后台继续播放，但再次展开将消耗额外的流量" 
             value={config.biliPlayerReload}
             onChange={val => setConfig({ biliPlayerReload: val })}
           />
 
-          <SwitchItem title="完全沉浸模式" 
+          <SwitchItem title="沉浸模式" 
             subtext="浏览条目时将隐藏状态栏" 
             value={config.immersionMode}
             onChange={val => setConfig({ immersionMode: val })}
