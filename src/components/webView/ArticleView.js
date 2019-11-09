@@ -140,12 +140,12 @@ class ArticleView extends React.Component{
   }
 
   loadContent = (forceLoad = false) =>{
+    if(this.state.status === 2){ return }
     this.setState({ status: 2 })
     this.props.webView.getContent(this.props.link, forceLoad).then(data =>{
-      this.props.onLoaded(data)
       var html = data.parse.text['*']
       this.writeContent(html)
-      this.setState({ status: 3 })
+      this.setState({ status: 3 }, () => this.props.onLoaded(data))
     }).catch(async e =>{
       if(e.code === 'missingtitle') return this.props.onMissing(this.props.link)
 
@@ -155,11 +155,11 @@ class ArticleView extends React.Component{
         const articleCache = await storage.get('articleCache') || {}
         const data = articleCache[link]
         if(data){
-          this.props.onLoaded(data)
+          
           var html = data.parse.text['*']
           this.writeContent(html)          
           $dialog.snackBar.show('因读取失败，载入条目缓存')
-          this.setState({ status: 3 })    // 将状态标记为：读取失败，载入缓存
+          this.setState({ status: 3 }, () => this.props.onLoaded(data))    // 将状态标记为：读取失败，载入缓存
         }else{
           throw new Error
         }
@@ -186,6 +186,14 @@ class ArticleView extends React.Component{
       console.log('--- WebViewError ---', data)
     }
 
+    if(type === 'onTapAnchor'){
+      $dialog.alert.show({
+        title: '注释',
+        content: data.content,
+        checkText: '关闭'
+      })
+    }
+
     if(type === 'request'){
       var { config, callbackName } = data
       request({
@@ -205,7 +213,10 @@ class ArticleView extends React.Component{
 
     if(type === 'onTapLink'){
       ;({
-        inner: () => this.props.navigation.push('article', { link: data.link }),
+        inner: () =>{
+          var [link, anchor] = data.link.split('#')
+          this.props.navigation.push('article', { link, anchor }) 
+        },
 
         outer (){
           $dialog.confirm.show({

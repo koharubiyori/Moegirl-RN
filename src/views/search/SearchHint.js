@@ -18,7 +18,7 @@ export default function SearchHint({
   return (
     <View style={{ flex: 1 }}>
       {titles ? 
-        <ScrollView  keyboardShouldPersistTaps="always">{titles.map(title =>
+        <ScrollView removeClippedSubviews keyboardShouldPersistTaps="always">{titles.map(title =>
           <Button contentContainerStyle={{}} rippleColor="#ccc" noLimit={false} 
             onPress={() => onTapTitle(title)}
             key={title}

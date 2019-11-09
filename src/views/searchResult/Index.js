@@ -60,7 +60,6 @@ export default class SearchResult extends React.Component{
         })
       }).catch(() =>{
         this.setState({ status: 0 })
-        toast.show('加载失败，正在重试')
       })
   }
 

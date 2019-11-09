@@ -35,6 +35,17 @@ export default function(){
     var type = 'inner'
     if(/^\/File:/.test(link)){
       return ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapImage', data: { name: link.replace(/^\/File:/, '') } }))
+    }else if(/^#cite_note-/.test(link)){
+      var content = $(link).text().replace(/^↑/, '').trim()
+      if(content.length > 400){   // 文字过多dialog会装不下
+        document.querySelector(link).scrollIntoView()
+        return window.scrollTo(0, window.scrollY - 60)
+      }else{
+        return ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapAnchor', data: { anchor: link, content } }))
+      }
+    }else if(/^#/.test(link)){
+      document.querySelector(link).scrollIntoView()
+      return window.scrollTo(0, window.scrollY - 60)
     }else if(link.indexOf('redlink=1') >= 0){
       type = 'notExists'
     }else if(/^\//.test(link)){
