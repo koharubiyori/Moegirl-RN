@@ -4,7 +4,6 @@ import {
   View, Text, TextInput, ActivityIndicator, Dimensions, ScrollView,
   StyleSheet
 } from 'react-native'
-import AutoGrowInput from 'react-native-autogrow-textinput'
 import Button from '~/components/Button'
 import { getCode } from '~/api/edit'
 
