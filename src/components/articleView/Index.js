@@ -7,7 +7,7 @@ import { WebView } from 'react-native-webview'
 import toast from '~/utils/toast'
 import storage from '~/utils/storage'
 import ImageViewer from './ImageViewer'
-import webViewHOC from '~/redux/webView/HOC'
+import articleViewHOC from '~/redux/articleView/HOC'
 import userHOC from '~/redux/user/HOC'
 import { controlsCodeString } from './controls/index' 
 import { getImageUrl } from '~/api/article'
@@ -142,7 +142,7 @@ class ArticleView extends React.Component{
   loadContent = (forceLoad = false) =>{
     if(this.state.status === 2){ return }
     this.setState({ status: 2 })
-    this.props.webView.getContent(this.props.link, forceLoad).then(data =>{
+    this.props.articleView.getContent(this.props.link, forceLoad).then(data =>{
       var html = data.parse.text['*']
       this.writeContent(html)
       this.setState({ status: 3 }, () => this.props.onLoaded(data))
@@ -289,7 +289,7 @@ class ArticleView extends React.Component{
   }
 }
 
-export default webViewHOC(userHOC(ArticleView))
+export default articleViewHOC(userHOC(ArticleView))
 
 const styles = StyleSheet.create({
   container: {

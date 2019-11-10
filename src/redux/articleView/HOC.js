@@ -7,9 +7,9 @@ const { dispatch } = store
 
 export const getContent = (link, forceLoad = false) => dispatch((dispatch, getState) =>
   new Promise((resolve, reject) =>{
-    const {webView} = getState()
+    const {articleView} = getState()
 
-    var cache = webView.pagesCache[link]
+    var cache = articleView.pagesCache[link]
     if(cache && !forceLoad){ return resolve(cache) }
 
     getArticle(link)
@@ -26,7 +26,7 @@ export default function(Element){
   return connect(
     state => ({ state }),
     dispatch => ({ 
-      webView: { getContent } 
+      articleView: { getContent } 
     })
   )(Element)
 }

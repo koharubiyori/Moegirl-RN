@@ -4,7 +4,7 @@ import {
   View, Text, ActivityIndicator,
   StyleSheet
 } from 'react-native'
-import ArticleView from '~/components/webView/ArticleView'
+import ArticleView from '~/components/articleView/Index'
 import { Button } from 'react-native-material-ui'
 import { getPreview } from '~/api/edit'
 
