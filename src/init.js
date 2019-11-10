@@ -39,7 +39,6 @@ export const checkUpdate = (isSilent = false) =>{
       }
 
       if(info.update){
-        $dialog.alert.show(JSON.stringify(info))
         var metaInfo = JSON.parse(info.metaInfo || '{}')
 
         // 如果在远程配置了isSilentUpdate(静默更新)且本身也为静默模式，则完全静默，进行用户无感知的热更新
@@ -48,7 +47,7 @@ export const checkUpdate = (isSilent = false) =>{
         }else{
           setTimeout(() =>{
             $dialog.confirm.show({
-              content: `检查到新版本：${info.name}，是否进行更新？\n${info.description}`,
+              content: `检查到新版本：${info.name}，是否进行更新？\n\n${info.description}`,
               onTapCheck: () =>{
                 toast.showLoading('执行热更新')
                 downloadUpdate(info)
@@ -56,15 +55,16 @@ export const checkUpdate = (isSilent = false) =>{
                   .then(hash =>{
                     var date = new Date()
                     storage.set('lastUpdateDate', [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('.'))
+                    storage.set('lastUpdateVersion', info.name)
                     $dialog.alert.show({ 
                       content: '更新成功，即将重启应用',
-                      onTapCheck: () => setTimeout(() => switchVersion(hash))
+                      onTapCheck: () => setTimeout(() => switchVersion(hash), 500)
                     })
                   })
-                  .catch(() => $dialog.alert.show({ content: '更新失败' }))
+                  .catch(() => !isSilent && $dialog.alert.show({ content: '更新失败' }))
               }
             })
-          }, 1000)
+          }, 500)
         }
       }
 

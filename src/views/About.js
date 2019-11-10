@@ -6,7 +6,6 @@ import {
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { packageVersion } from 'react-native-update'
 
 function Item({
   title, value
@@ -30,7 +29,7 @@ export default class About extends React.Component{
       
     }
 
-    this.version = packageVersion || '1.0.0'
+    this.version = $lastUpdateVersion || '1.0.0'
     this.date = $lastUpdateDate || '2019.11.09'
   }
 
@@ -38,7 +37,7 @@ export default class About extends React.Component{
     return (
       <View style={{ flex: 1 }}>
         <StatusBar blackText color="white" />    
-        <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={{ position: 'absolute', top: 20, right: 20 }}>
+        <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={{ position: 'absolute', top: 10, right: 20 }}>
           <MaterialIcon name="close" size={36} color="#ABABAB" />
         </TouchableOpacity>
         <View style={{ flex: 1, alignItems: 'center' }}>
