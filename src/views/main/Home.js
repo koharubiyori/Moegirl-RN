@@ -4,7 +4,7 @@ import {
   StyleSheet
 } from 'react-native'
 import PropTypes from 'prop-types'
-import ArticleView from '~/components/webView/ArticleView'
+import ArticleView from '~/components/articleView/Index'
 import StatusBar from '~/components/StatusBar'
 import Header from './components/Header'
 
