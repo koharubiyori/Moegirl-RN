@@ -30,16 +30,14 @@ export const load = () => dispatch((dispatch, getState) =>
           dispatch({ type: SET, data: { status: 5 } })
           return resolve()
         }
-  
+
         var status = 3
+        data.posts = state.data.posts.concat(data.posts)
         var tree = new Tree(data.posts)
   
-        if(data.count <= state.tree.tree.length + tree.tree.length){
-          status = 4
-        }
-  
-        data.posts = state.data.posts.concat(data.posts)
-        dispatch({ type: SET, data: { data, status, tree: new Tree(data.posts) } })
+        if(data.count === tree.tree.length) status = 4
+
+        dispatch({ type: SET, data: { data, status, tree } })
   
         resolve()
       }).catch(e =>{

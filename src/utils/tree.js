@@ -6,7 +6,7 @@ export default class Tree{
 
   static toFlat (root){
     function flat(children){
-      var children = JSON.parse(JSON.stringify(children))
+      var children = [ ...children ]
       return children.reduce((prev, next) =>{
         const children = next.children || []
         delete next.children
@@ -57,9 +57,7 @@ export default class Tree{
 
   // 树化
   toTree (){
-    var roots = this.data.filter(catalog =>{
-      return !this.data.some(original => catalog.parentid == original.id)
-    })
+    var roots = this.data.filter(item => !item.parentid)
 
     roots.forEach(root =>{
       root.children = this.getChildrenById(root)
