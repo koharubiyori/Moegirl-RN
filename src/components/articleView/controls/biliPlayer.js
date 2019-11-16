@@ -3,23 +3,25 @@ export default function(){
   var viewBox = $('#webViewContainer')
 
   viewBox.find('.wikitable.bilibili-video-container').each(function () {
-    var avId = $(this).data('aid').toString().replace('av', '')
+    var avId = parseInt($(this).data('aid').toString().replace('av', ''))
+    var page = $(this).data('page')
     var isReload = _appConfig.biliPlayerReload
     var player = `<iframe src="https://player.bilibili.com/player.html?aid=${avId}&page=${$(this).data('page')}" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="width:100%; background-color:#ccc" class="bilibili-player"></iframe>`
 
     var title = $('<div class="bilibili-video-title">标题获取中...</div>')
     var container = $(this).data('collapsed', true)
     title.click(function(){
-      if(container.data('collapsed')){
-        isReload && container.append(player)
-        container.find('.bilibili-player').slideDown(200)
-        container.data('collapsed', false)
-      }else{
-        container.find('.bilibili-player').slideUp(200, function(){
-          isReload && $(this).remove()
-        })
-        container.data('collapsed', true)
-      }
+      // if(container.data('collapsed')){
+      //   isReload && container.append(player)
+      //   container.find('.bilibili-player').slideDown(200)
+      //   container.data('collapsed', false)
+      // }else{
+      //   container.find('.bilibili-player').slideUp(200, function(){
+      //     isReload && $(this).remove()
+      //   })
+      //   container.data('collapsed', true)
+      // }
+      ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapBiliVideo', data: { avId, page } }))
     })
 
     var titlePhoneEvent = new Hammer(title[0])

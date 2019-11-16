@@ -17,6 +17,9 @@ import reply from './views/comment/Reply'
 import about from './views/About'
 import settings from './views/settings/Index'
 
+// 本来想在模态框中实现，因发现webView的全屏模式和模态框一起使用时发生了bug(全屏后白屏)，故这里用一个单独的路由来显示
+import biliPlayer from './components/articleView/BiliPlayer'
+
 const BottomTabNavigator = createBottomTabNavigator(
   { home, finds, history },
   
@@ -51,6 +54,13 @@ const StackNavigator = createStackNavigator(
         transitionType: 'forHorizontal'
       }
     },
+
+    biliPlayer: {
+      screen: biliPlayer,
+      params: {
+        transitionType: 'forFade'
+      }
+    }
   },
 
   { 

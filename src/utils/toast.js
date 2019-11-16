@@ -17,10 +17,12 @@ export default {
 
   hide (){
     Toast.hide()
+    global.$isVisibleLoading = false
   },
 
   showLoading (text){
     Toast.showLoading(text)
+    global.$isVisibleLoading = true
   },
 
   showSuccess (text){

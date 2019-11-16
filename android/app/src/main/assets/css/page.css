@@ -111,9 +111,9 @@ table.wikitable > * > tr > td {
   padding: .2em .4em;
 }
 .wide-table-wrapper {
-  overflow-x:auto;
-  overflow-y:hidden;
-  width:100%
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
 }
 .wide-table-wrapper table {
   width: max-content;
@@ -168,6 +168,10 @@ ul.gallery li p {
 .navbox .navbar,
 .navbox .navbox-list {
   display: none;
+}
+.navbox .navbar[colspan="2"],
+.navbox .navbox-list[colspan="2"] {
+  display: initial;
 }
 .navbox tr.group-spread {
   width: calc(100% - 5px);

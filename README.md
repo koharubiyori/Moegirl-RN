@@ -4,8 +4,6 @@
 
 该项目是一个萌娘百科第三方安卓客户端，使用React-Native开发。
 
-目前版本为<code>0.9.2</code>，今后也将继续更新维护。
-
 > 下载：https://www.coolapk.com/apk/247471
 
 <del>垃圾RN性能是真的干不过原生，今后只能指望flutter了</del>
