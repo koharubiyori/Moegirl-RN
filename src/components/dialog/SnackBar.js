@@ -5,8 +5,6 @@ import {
   StyleSheet, 
 } from 'react-native'
 
-const height = 45
-
 export default class SnackBar extends React.Component{
   static propTypes = {
     
@@ -14,13 +12,16 @@ export default class SnackBar extends React.Component{
 
   constructor (props){
     super(props)
+    this.height = 45
+
     this.state = {
-      transitionTop: new Animated.Value(-height),
+      transitionTop: new Animated.Value(-this.height),
       visible: false,
       content: '',
       status: 0,
       queue: []
     }
+
   }
 
   show = content =>{
@@ -50,20 +51,23 @@ export default class SnackBar extends React.Component{
   hide = () =>{
     return new Promise((resolve, reject) =>{
       Animated.timing(this.state.transitionTop, {
-        toValue: -height,
+        toValue: -this.height,
         duration: 200
       }).start(() =>{
-        this.setState({ status: 0, visible: false })
-        resolve()
+        this.setState({ status: 0, visible: false }, resolve)
       })
     })
+  }
+
+  layoutChange = e =>{
+    this.height = e.nativeEvent.layout.height
   }
 
   render (){
     return (
       !this.state.visible ? null :
-      <Animated.View style={{ ...styles.main, bottom: this.state.transitionTop }}>
-        <Text style={{ color: 'white' }} numberOfLines={1}>{this.state.content}</Text>
+      <Animated.View style={{ ...styles.main, bottom: this.state.transitionTop }} onLayout={this.layoutChange}>
+        <Text style={{ color: 'white', lineHeight: 25 }}>{this.state.content}</Text>
       </Animated.View>
     )
   }
@@ -71,7 +75,7 @@ export default class SnackBar extends React.Component{
 
 const styles = StyleSheet.create({
   main: {
-    height,
+    minHeight: 45,
     paddingHorizontal: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'center',

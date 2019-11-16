@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, Image, TouchableOpacity, KeyboardAvoidingView,
+  View, Text, Image, TouchableOpacity,
   StyleSheet, BackHandler, Linking, 
 } from 'react-native'
 import { TextField } from 'react-native-material-textfield'
@@ -54,7 +54,7 @@ class Login extends React.Component{
   
   render (){
     return (
-      <KeyboardAvoidingView style={{ flex: 1, alignItems: 'center' }}>
+      <View style={{ flex: 1, alignItems: 'center' }}>
         <StatusBar blackText color="white" />
         <Image source={require('~/assets/images/moemoji.png')} style={{ width: 70, height: 80, marginTop: 20, marginLeft: -10 }} resizeMode="cover" />
         <Text style={{ color: $colors.main, fontSize: 17, marginTop: 20 }}>萌娘百科，万物皆可萌的百科全书！</Text>
@@ -64,10 +64,11 @@ class Login extends React.Component{
           <Text style={{ color: 'white', fontSize: 18}}>登录</Text>
         </Button>
 
-        <TouchableOpacity style={{ position: 'absolute', bottom: 10 }} onPress={() => Linking.openURL('https://mzh.moegirl.org/index.php?title=Special:创建账户')}>
+        <View style={{ flex: 1 }}></View>
+        <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => Linking.openURL('https://mzh.moegirl.org/index.php?title=Special:创建账户')}>
           <Text style={{ color: $colors.sub, textDecorationLine: 'underline', fontSize: 16 }}>还没有萌百帐号？点击前往官网进行注册</Text>
         </TouchableOpacity>
-      </KeyboardAvoidingView>
+      </View>
     )
   }
 }
