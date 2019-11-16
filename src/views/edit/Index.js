@@ -35,14 +35,18 @@ export default class Edit extends React.Component{
     })
 
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () =>{
-      const {params} = this.refs.tabNavigator.state.nav.routes[0]
-      if(params && params.isContentChanged){
-        $dialog.confirm.show({
-          content: '编辑还未保存，确定要放弃编辑的内容？',
-          onTapCheck: () => this.props.navigation.goBack()
-        })
-  
+      if(global.$isVisibleLoading){
         return true
+      }else{
+        const {params} = this.refs.tabNavigator.state.nav.routes[0]
+        if(params && params.isContentChanged){
+          $dialog.confirm.show({
+            content: '编辑还未保存，确定要放弃编辑的内容？',
+            onTapCheck: () => this.props.navigation.goBack()
+          })
+    
+          return true
+        }
       }
     })
   }

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, Image, TouchableOpacity, Linking, KeyboardAvoidingView,
-  StyleSheet
+  View, Text, Image, TouchableOpacity, KeyboardAvoidingView,
+  StyleSheet, BackHandler, Linking, 
 } from 'react-native'
 import { TextField } from 'react-native-material-textfield'
 import StatusBar from '~/components/StatusBar'
@@ -29,6 +29,12 @@ class Login extends React.Component{
       baseColor: $colors.sub,
       tintColor: $colors.sub
     }
+
+    this.backHandlerListener = BackHandler.addEventListener('hardwareBackPress', () => global.$isVisibleLoading)
+  }
+
+  componentWillUnmount (){
+    this.backHandlerListener.remove()
   }
 
   submit = () =>{

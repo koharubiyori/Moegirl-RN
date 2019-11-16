@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   View, StyleSheet, Text, Dimensions, Linking, ActivityIndicator, TouchableOpacity,
+  BackHandler
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { WebView } from 'react-native-webview'
@@ -46,7 +47,7 @@ class ArticleView extends React.Component{
       status: 1,
 
       showingImg: '',
-      config: null
+      config: null,
     }
 
     this.libScript = ['fastclick.min', 'jquery.min', 'hammer.min']
@@ -77,6 +78,13 @@ class ArticleView extends React.Component{
         this.setState({ config }, () => this.props.html ? this.writeContent(this.props.html) : this.loadContent())
       }
     })
+
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () =>{
+      if(global.$isVisibleLoading){
+        toast.hide()
+        return true
+      }
+    })
   }
   
   shouldComponentUpdate (nextProps, nextState){
@@ -89,6 +97,10 @@ class ArticleView extends React.Component{
     }else{
       this.setState({ html: this.props.html, status: 3 }, () => this.writeContent(this.props.html))
     }
+  }
+
+  componentWillUnmount (){
+    this.backHandler.remove()
   }
 
   writeContent = html =>{
@@ -147,13 +159,15 @@ class ArticleView extends React.Component{
       this.writeContent(html)
       this.setState({ status: 3 }, () => this.props.onLoaded(data))
     }).catch(async e =>{
-      if(e.code === 'missingtitle') return this.props.onMissing(this.props.link)
-
       try{
+        if(!e) throw new Error
+        if(e.code === 'missingtitle') return this.props.onMissing(this.props.link)
+        
         const redirectMap = await storage.get('articleRedirectMap') || {}
         var link = redirectMap[this.props.link] || this.props.link
         const articleCache = await storage.get('articleCache') || {}
         const data = articleCache[link]
+        console.log(data)
         if(data){
           
           var html = data.parse.text['*']
@@ -252,7 +266,14 @@ class ArticleView extends React.Component{
       .finally(toast.hide)
       .then(url =>{
         this.setState({ showingImg: url })
-      }).catch(() => setTimeout(() => toast.show('获取链接失败')))
+      }).catch(e =>{
+        console.log(e)
+        setTimeout(() => toast.show('获取链接失败'))
+      })
+    }
+
+    if(type === 'onTapBiliVideo'){
+      this.props.navigation.push('biliPlayer', data)
     }
 
     if(this.props.onMessages){
@@ -270,7 +291,7 @@ class ArticleView extends React.Component{
           1: () => null,
           2: () => <ActivityIndicator color={$colors.main} size={50} />,
           3: () => <>
-            <WebView allowFileAccess allowsFullscreenVideo
+            <WebView allowFileAccess
               cacheMode="LOAD_CACHE_ELSE_NETWORK"
               scalesPageToFit={false}
               source={{ html: this.state.html, baseUrl: this.baseUrl }}

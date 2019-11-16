@@ -29,8 +29,8 @@ export default class About extends React.Component{
       
     }
 
-    this.version = $lastUpdateVersion || '1.0.0'
-    this.date = $lastUpdateDate || '2019.11.09'
+    this.version = global.$lastUpdateVersion || '1.0.1'
+    this.date = global.$lastUpdateDate || '2019.11.16'
   }
 
   render (){

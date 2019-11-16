@@ -53,8 +53,7 @@ export const checkUpdate = (isSilent = false) =>{
                 downloadUpdate(info)
                   .finally(toast.hide)
                   .then(hash =>{
-                    var date = new Date()
-                    storage.set('lastUpdateDate', [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('.'))
+                    storage.set('lastUpdateDate', metaInfo.date)
                     storage.set('lastUpdateVersion', info.name)
                     $dialog.alert.show({ 
                       content: '更新成功，即将重启应用',

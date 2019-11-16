@@ -6080,6 +6080,11 @@ react-native-modal@^9.0.0:
     prop-types "^15.6.2"
     react-native-animatable "^1.2.4"
 
+react-native-orientation@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.npm.taobao.org/react-native-orientation/download/react-native-orientation-3.1.3.tgz#d45803841fe94b6cce9acbe904fd5ca191a3711e"
+  integrity sha1-1FgDhB/pS2zOmsvpBP1coZGjcR4=
+
 react-native-progress@^3.6.0:
   version "3.6.0"
   resolved "https://registry.npm.taobao.org/react-native-progress/download/react-native-progress-3.6.0.tgz#feaf37491f91bb421207fd761e20cb7258a2a3a6"

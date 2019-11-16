@@ -34,7 +34,7 @@ export default function(){
     var link = $(e.target).attr('href') || $(e.target).parent('a').attr('href')
     var type = 'inner'
     if(/^\/File:/.test(link)){
-      return ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapImage', data: { name: link.replace(/^\/File:/, '') } }))
+      return ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapImage', data: { name: decodeURIComponent(link.replace(/^\/File:/, '')) } }))
     }else if(/^#cite_note-/.test(link)){
       var content = $(link).text().replace(/^↑/, '').trim()
       if(content.length > 400){   // 文字过多dialog会装不下
