@@ -30,9 +30,19 @@ class DrawerScreen extends React.Component{
     }
   }
 
+  showActionHelps = () =>{
+    $dialog.alert.show({
+      title: '操作提示',
+      content: '1. 左滑开启抽屉\n2. 条目页右滑开启目录\n3. 条目内容中长按b站播放器按钮跳转至b站对应视频页(当然前提是手机里有b站app)'
+    })
+  }
+
   render (){
     return (
       <View style={{ backgroundColor: 'white', height: Dimensions.get('window').height }}>
+        <Image source={require('~/assets/images/drawer_bg.png')} resizeMode="cover" 
+          style={{ ...styles.bgImage, width: Dimensions.get('window').width * 0.6, height: Dimensions.get('window').height - 160 }}
+        />
         <View style={styles.header}>
           {this.props.state.user.name ? 
             <TouchableOpacity onPress={this.tap(navigation => navigation.push('article', { link: 'User:' + this.props.state.user.name }))}>
@@ -57,6 +67,7 @@ class DrawerScreen extends React.Component{
             <Item icon="settings" title="设置" onPress={() => $appNavigator.current._navigation.navigate('settings')} />
             <Item icon="help" title="提问求助区" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:提问求助区' })} />
             <Item icon="forum" title="讨论版" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:讨论版' })} />
+            <Item icon="touch-app" title="操作提示" onPress={this.showActionHelps} />
             {/* <Item icon="exposure-plus-1" title="支持萌娘百科" onPress={() => $appNavigator.current._navigation.push('article', { link: '萌娘百科:捐款' })} /> */}
           </View>
         </View>
@@ -72,7 +83,15 @@ const styles = StyleSheet.create({
   header: {
     height: 160,
     justifyContent: 'center',
-    backgroundColor: $colors.light
+    backgroundColor: $colors.main,
+    elevation: 5,
+  },
+
+  bgImage: {
+    position: 'absolute', 
+    top: 160, 
+    left: 0,
+    opacity: 0.1
   },
 
   avatar: {

@@ -6,6 +6,7 @@ import {
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { date, version } from '../../app.json'
 
 function Item({
   title, value
@@ -29,8 +30,8 @@ export default class About extends React.Component{
       
     }
 
-    this.version = global.$lastUpdateVersion || '1.0.1'
-    this.date = global.$lastUpdateDate || '2019.11.16'
+    this.version = global.$lastUpdateVersion || version
+    this.date = global.$lastUpdateDate || date
   }
 
   render (){

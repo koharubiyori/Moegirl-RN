@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity,
+  View, Text, Image, FlatList, ActivityIndicator, TouchableOpacity,
   StyleSheet, LayoutAnimation
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -81,29 +81,36 @@ export default class SearchResult extends React.Component{
           </View>
         : null} */}
 
-        <FlatList data={this.state.list} 
-          onEndReachedThreshold={0.5}
-          onEndReached={this.loadList}
-          style={styles.list}
-          renderItem={item => <Item 
-            key={item.item.id}
-            data={item.item}
-            searchWord={this.searchWord} 
-            onPress={link => this.props.navigation.push('article', { link })}
-          />}
+        {this.state.status !== 5 ?
+          <FlatList data={this.state.list} 
+            onEndReachedThreshold={0.5}
+            onEndReached={this.loadList}
+            style={{ flex: 1 }}
+            renderItem={item => <Item 
+              key={item.item.id}
+              data={item.item}
+              searchWord={this.searchWord} 
+              onPress={link => this.props.navigation.push('article', { link })}
+            />}
 
-          ListFooterComponent={({
-            0: () => 
-            <TouchableOpacity onPress={this.loadList}>
-              <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>加载失败，点击重试</Text>
-              </View>
-            </TouchableOpacity>,
-            2: () => <ActivityIndicator color={$colors.main} size={50} style={{ marginVertical: 10 }} />,
-            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>
-          }[this.state.status] || new Function)()}
-          textBreakStrategy="balanced"
-        />
+            ListFooterComponent={({
+              0: () => 
+              <TouchableOpacity onPress={this.loadList}>
+                <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text>加载失败，点击重试</Text>
+                </View>
+              </TouchableOpacity>,
+              2: () => <ActivityIndicator color={$colors.main} size={50} style={{ marginVertical: 10 }} />,
+              4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
+            }[this.state.status] || new Function)()}
+            textBreakStrategy="balanced"
+          />
+        :
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', position: 'relative', top: -40 }}>
+            <Image source={require('~/assets/images/sushimoe.png')} style={{width: 170, height: 170 }} />
+            <Text style={{ color: '#ABABAB' }}>什么也没找到...</Text>
+          </View>
+        }
       </View>
     )
   }
@@ -124,12 +131,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 10,
   },
-
-  totalHint: {
-    
-  },
-
-  list: {
-    flex: 1
-  }
 })

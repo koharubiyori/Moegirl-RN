@@ -5,6 +5,7 @@ import { SET_INFO } from './redux/user/actionTypes'
 import { logout as userLogout } from './redux/user/HOC'
 import { check as checkLoginStatus } from './redux/user/HOC'
 import { set as setConfig, init as initConfig } from './redux/config/HOC'
+// 暂时隐藏热更新
 // import { Platform, Linking } from 'react-native'
 // import {
 //   isFirstTime,

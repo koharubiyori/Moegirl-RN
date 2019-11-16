@@ -159,15 +159,13 @@ class ArticleView extends React.Component{
       this.writeContent(html)
       this.setState({ status: 3 }, () => this.props.onLoaded(data))
     }).catch(async e =>{
+      if(e && e.code === 'missingtitle') return this.props.onMissing(this.props.link)
+
       try{
-        if(!e) throw new Error
-        if(e.code === 'missingtitle') return this.props.onMissing(this.props.link)
-        
         const redirectMap = await storage.get('articleRedirectMap') || {}
         var link = redirectMap[this.props.link] || this.props.link
         const articleCache = await storage.get('articleCache') || {}
         const data = articleCache[link]
-        console.log(data)
         if(data){
           
           var html = data.parse.text['*']

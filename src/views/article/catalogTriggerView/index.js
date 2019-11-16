@@ -24,7 +24,7 @@ export default class CatalogTriggerView extends React.Component {
     this.moveEvents = PanResponder.create({
       onMoveShouldSetPanResponder: (e, gestureState) => 
       // 判断是否从右侧边缘开始滑动
-      gestureState.moveX > (Dimensions.get('window').width - 40) && !this.state.eventLock,
+      gestureState.moveX > (Dimensions.get('window').width - 40) && !this.state.eventLock || this.state.visible,
 
       // 判定成功，开启显示modal
       onPanResponderGrant: () => this.setState({ visible: true }),
