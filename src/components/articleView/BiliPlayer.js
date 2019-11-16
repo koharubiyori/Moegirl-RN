@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Orientation from 'react-native-orientation';
+import Orientation from 'react-native-orientation'
+import StatusBar from '~/components/StatusBar'
 import {
   View, Text,
   StyleSheet
@@ -32,7 +33,7 @@ export default class BiliPlayer extends React.Component{
     // 要传入的html代码
     var injectJsCodes = `
       ${global.__DEV__ ? 'try{' : ''}
-        (${js})();
+        ;(${js})();
       ${global.__DEV__ ? `
         }catch(e){
           ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
@@ -94,6 +95,7 @@ export default class BiliPlayer extends React.Component{
   render (){
     return (
       <View style={{ flex: 1 }}>
+        <StatusBar hidden />
         <WebView allowsFullscreenVideo
           scalesPageToFit={false}
           source={{ html: this.createHtmlDocument() }}

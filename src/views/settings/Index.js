@@ -11,7 +11,7 @@ import SwitchItem from './components/SwitchItem'
 import toast from '~/utils/toast'
 import configHOC from '~/redux/config/HOC'
 import userHOC from '~/redux/user/HOC'
-import { checkUpdate } from '../../init'
+// import { checkUpdate } from '../../init'
 
 function Title(props){
   return (
@@ -118,11 +118,11 @@ class Settings extends React.Component{
             onPress={() => this.props.state.user.name ? this.logout() : this.props.navigation.push('login')}
           />
 
-          <Title>其他</Title>
+          {/* <Title>其他</Title>
           <SwitchItem hideSwitch
             title="检查更新"
             onPress={() => checkUpdate()}
-          />
+          /> */}
 
           <SwitchItem hideSwitch
             title="关于"
