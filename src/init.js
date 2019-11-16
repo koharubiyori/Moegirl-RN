@@ -73,8 +73,6 @@ export const checkUpdate = (isSilent = false) =>{
     })
 }
 
-checkUpdate(true)
-
 store.dispatch(dispatch =>{
   storage.get('userName').then(name =>{
     if(!name){ return }
