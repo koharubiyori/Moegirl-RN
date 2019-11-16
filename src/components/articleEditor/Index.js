@@ -31,7 +31,7 @@ export default class ArticleEditor extends React.Component{
     // 要传入的html代码
     var injectJsCodes = `
       ${global.__DEV__ ? 'try{' : ''}
-        (${js})();
+        ;(${js})();
       ${global.__DEV__ ? `
         }catch(e){
           ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
