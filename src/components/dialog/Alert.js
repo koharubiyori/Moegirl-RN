@@ -39,13 +39,14 @@ export default class Alert extends React.Component{
     const {visible, title, content, checkText, onTapCheck} = this.state
 
     return (
-      <View>
-        <Dialog.Container visible={visible}>
-          <Dialog.Title>{title}</Dialog.Title>
-          <Dialog.Description>{content}</Dialog.Description>
-          <Dialog.Button label={checkText} onPress={onTapCheck} style={{ color: $colors.main }} />
-        </Dialog.Container>
-      </View>
+      <Dialog.Container visible={visible}
+       onBackButtonPress={() => this.setState({ visible: false })}
+       onBackdropPress={() => this.setState({ visible: false })}
+      >
+        <Dialog.Title>{title}</Dialog.Title>
+        <Dialog.Description>{content}</Dialog.Description>
+        <Dialog.Button label={checkText} onPress={onTapCheck} style={{ color: $colors.main }} />
+      </Dialog.Container>
     )
   }
 }

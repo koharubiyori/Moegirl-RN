@@ -4,7 +4,6 @@ import {
   View, Text, ScrollView, RefreshControl,
   StyleSheet
 } from 'react-native'
-import StatusBar from '~/components/StatusBar'
 import Header from '../components/Header'
 
 import Trend from './modules/Trend'
@@ -47,7 +46,6 @@ export default class Finds extends React.Component{
   render (){
     return (
       <View style={{ flex: 1, backgroundColor: '#eee' }}>
-        <StatusBar />
         <Header title="发现" />
 
         <ScrollView

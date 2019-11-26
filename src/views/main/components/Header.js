@@ -1,11 +1,12 @@
 import React from 'react'
 import {
   View, Text,
-  StyleSheet
+  StyleSheet, 
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { Toolbar } from 'react-native-material-ui'
 import { withNavigation } from 'react-navigation'
+import StatusBar from '~/components/StatusBar'
 
 class IndexHeader extends React.Component{
   static propTypes = {
@@ -27,16 +28,19 @@ class IndexHeader extends React.Component{
 
   render (){
     return (
-      <Toolbar size={26}
-        leftElement="menu"
-        centerElement={this.props.title}
-        rightElement={{
-          actions: ['search'],
-        }}
+      <>
+        <StatusBar />
+        <Toolbar size={26}
+          leftElement="menu"
+          centerElement={this.props.title}
+          rightElement={{
+            actions: ['search'],
+          }}
 
-        onLeftElementPress={() => $drawer.open()}
-        onRightElementPress={event =>{ this.eventHandlers(event) }}
-      />
+          onLeftElementPress={() => $drawer.open()}
+          onRightElementPress={event =>{ this.eventHandlers(event) }}
+        />
+      </>
     )
   }
 }

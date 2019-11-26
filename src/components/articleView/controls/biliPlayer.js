@@ -43,18 +43,10 @@ export default function(){
         }
       }, function(data){
         data = JSON.parse(data)
-        if(data.error) return title.text('标题获取失败')
-        if('data' in data){
-          title.text(data.data.title)
+        if(data.code !== 0){
+          title.text(data.code === -404 ? '视频又挂了_(:з」∠)_' : '标题获取失败')
         }else{
-          switch(data.code){
-            default: {
-              return title.text('标题获取失败')
-            }
-            case '-404': {
-              return title.text('视频又挂了_(:з」∠)_')
-            }
-          }
+          title.text(data.data.title)
         }
       })
 

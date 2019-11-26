@@ -88,11 +88,11 @@ class Settings extends React.Component{
             onChange={val => setConfig({ heimu: val })}
           />
 
-          <SwitchItem title="B站播放器重载" 
+          {/* <SwitchItem title="B站播放器重载" 
             subtext="开启后，收起B站播放器后将彻底关闭播放器，而不是后台继续播放，但再次展开将消耗额外的流量" 
             value={config.biliPlayerReload}
             onChange={val => setConfig({ biliPlayerReload: val })}
-          />
+          /> */}
 
           <SwitchItem title="沉浸模式" 
             subtext="浏览条目时将隐藏状态栏" 
