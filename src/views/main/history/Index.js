@@ -5,7 +5,6 @@ import {
   StyleSheet, DeviceEventEmitter
 } from 'react-native'
 import storage from '~/utils/storage'
-import StatusBar from '~/components/StatusBar'
 import Header from '../components/Header'
 import Item from './components/Item'
 import Title from './components/Title'
@@ -92,7 +91,6 @@ export default class Finds extends React.Component{
   render (){
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <StatusBar />
         <Header title="浏览历史" />
 
         {!this.state.lists.all.length ?

@@ -54,20 +54,21 @@ export default class Alert extends React.Component{
     const {visible, title, content, checkText, closeText, onTapCheck, onTapClose, hasInput, input, inputPlaceholder} = this.state
 
     return (
-      <View>
-        <Dialog.Container visible={visible}>
-          <Dialog.Title>{title}</Dialog.Title>
-          {content ? <Dialog.Description>{content}</Dialog.Description> : null}
-          {hasInput ?
-            <Dialog.Input autoFocus placeholder={inputPlaceholder} value={input} 
-              onChangeText={val => this.setState({ input: val })}
-              wrapperStyle={styles.input}
-            />
-          : null}
-          <Dialog.Button label={closeText} onPress={onTapClose} style={{ marginRight: 10, color: $colors.main }} />
-          <Dialog.Button label={checkText} onPress={onTapCheck} style={{ color: $colors.main }} />
-        </Dialog.Container>
-      </View>
+      <Dialog.Container visible={visible} 
+        onBackButtonPress={() => this.setState({ visible: false })}
+        onBackdropPress={() => this.setState({ visible: false })}
+      >
+        <Dialog.Title>{title}</Dialog.Title>
+        {content ? <Dialog.Description>{content}</Dialog.Description> : null}
+        {hasInput ?
+          <Dialog.Input autoFocus placeholder={inputPlaceholder} value={input} 
+            onChangeText={val => this.setState({ input: val })}
+            wrapperStyle={styles.input}
+          />
+        : null}
+        <Dialog.Button label={closeText} onPress={onTapClose} style={{ marginRight: 10, color: '#ABABAB' }} />
+        <Dialog.Button label={checkText} onPress={onTapCheck} style={{ color: $colors.main }} />
+      </Dialog.Container>
     )
   }
 }

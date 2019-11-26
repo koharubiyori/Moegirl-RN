@@ -139,7 +139,8 @@ class ArticleView extends React.Component{
         ${scriptTags}
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
-          window._appConfig = ${JSON.stringify(this.state.config || {})};
+          window._appConfig = ${JSON.stringify(this.state.config || {})}
+          window._colors = ${JSON.stringify($colors)}
           $(function(){ 
             ${injectJsCodes};
           })

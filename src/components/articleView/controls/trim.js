@@ -28,6 +28,7 @@ export default function(viewBox){
     $(this).wrap('<div class="wide-table-wrapper"></div>')
       .on('touchend', function (e) { e.stopPropagation() })
   })
+
   function isTemplateHide(element) {
     var tr = $(element).children('tbody').children('tr')
     if ($(element).hasClass('mw-collapsible') &&  tr.length === 2) {
@@ -45,4 +46,6 @@ export default function(viewBox){
     var parent = thumbBlock.parent().parent()
     parent.after(thumbBlock)
   })
+
+  viewBox.find('a[href^="#cite_ref"]').text('[跳转至目标]').css('color', _colors.sub)
 }

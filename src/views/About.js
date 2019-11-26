@@ -6,6 +6,7 @@ import {
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { Toolbar } from 'react-native-material-ui'
 import { date, version } from '../../app.json'
 
 function Item({
@@ -38,9 +39,17 @@ export default class About extends React.Component{
     return (
       <View style={{ flex: 1 }}>
         <StatusBar blackText color="white" />    
-        <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={{ position: 'absolute', top: 10, right: 20 }}>
-          <MaterialIcon name="close" size={36} color="#ABABAB" />
-        </TouchableOpacity>
+        <Toolbar size={26}
+          style={{ 
+            container: { backgroundColor: 'white' }, 
+            titleText: { color: '#666' },
+            leftElement: { color: '#666' }
+          }}
+          leftElement="keyboard-backspace"
+          centerElement="关于"
+          onLeftElementPress={() => this.props.navigation.goBack()}
+        />        
+
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Image source={require('~/assets/images/moegirl.png')} style={{ width: 105, height: 130, marginTop: 50 }} />
 

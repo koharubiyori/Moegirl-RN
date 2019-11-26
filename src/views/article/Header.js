@@ -30,10 +30,6 @@ class ArticleHeader extends React.Component{
 
     this.animateLock = false
   }
-
-  componentWillUnmount (){
-    this.articleChangeListener.remove()
-  }
   
   hide = () =>{
     if(this.animateLock || !this.state.visible){ return }

@@ -2,7 +2,7 @@ export default function(){
   var viewBox = $('#webViewContainer')
 
   viewBox.find('a').each(function (e) {
-    // 编辑按钮替换图片 && 登录后显示
+    // 编辑按钮替换图片
     if ($(this).text() === '编辑') {
       $(this).addClass('page-editBtn').html('<div class="edit-btn page-editBtn">')
     }
