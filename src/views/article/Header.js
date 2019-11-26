@@ -28,9 +28,6 @@ class ArticleHeader extends React.Component{
       transitionTranslateY: new Animated.Value(0)
     }
 
-    
-    // 防止在返回时不滑动看不到标题
-    this.articleChangeListener = DeviceEventEmitter.addListener('navigationStateChange', () => this.show())
     this.animateLock = false
   }
 

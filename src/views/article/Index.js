@@ -1,7 +1,7 @@
 import React from 'react'
 import { 
   View, Text,
-  StyleSheet, NativeModules,
+  StyleSheet, NativeModules, DeviceEventEmitter
 } from 'react-native'
 import PropTypes from 'prop-types'
 import ArticleView from '~/components/articleView/Index'
@@ -30,7 +30,8 @@ class Article extends React.Component{
       id: 0,
 
       catalogItems: [],
-      firstData: null
+      firstData: null,
+      visibleHeader: true     // 主要用于给statusBar的颜色变化做判断
     }
 
     this._refs = {
@@ -86,18 +87,35 @@ class Article extends React.Component{
     this.props.navigation.addListener('didFocus', () =>{
       this.state.id && props.comment.setActiveId(this.state.id)
     })
+
+    // 防止后退后看不到标题
+    this.articleChangeListener = DeviceEventEmitter.addListener('navigationStateChange', () => this.setState({ visibleHeader: true }))
   }
 
   componentDidMount (){
     this.props.navigation.setParams({ reloadMethod: () => this._refs.articleView.loadContent(true) })
   }
 
+  componentWillUpdate (nextProps, nextState){
+    // 如果退出沉浸模式，则立即显示头部
+    if(this.props.state.config.immersionMode && !nextProps.state.config.immersionMode){
+      this.changeHeaderVisible(true)
+    }else{
+      this.changeHeaderVisible(nextState.visibleHeader)
+    }
+  }
+
   shouldComponentUpdate (nextProps, nextState){
     return this.props.navigation.isFocused()
   }
 
-  // 接收需要隐藏或显示header的指令
+  componentWillUnmount (){
+    this.articleChangeListener.remove()
+  }
+
+  // 以一个值的变化映射头栏和评论按钮的显隐变化
   changeHeaderVisible = isVisible =>{
+    if(!this._refs.header || !this._refs.commentButton){ return }
     const {show, hide} = this._refs.header
     const {show: showBtn, hide: hideBtn} = this._refs.commentButton
     isVisible ? show() : hide()
@@ -160,7 +178,7 @@ class Article extends React.Component{
 
     return (
       <>
-        <StatusBar hidden={config.immersionMode} />
+        <StatusBar hidden={config.immersionMode} color={this.state.visibleHeader ? $colors.dark : 'white'} blackText={!this.state.visibleHeader} />
         <Header style={{ ...styles.header }} 
           navigation={this.props.navigation} 
           title={this.state.pageName} 
@@ -176,7 +194,7 @@ class Article extends React.Component{
             injectStyle={['page']}
             injectCss={this.articleViewInjectCss}
             injectJs={this.articleViewInjectJs}
-            onMessages={{ changeHeaderVisible: this.changeHeaderVisible }}
+            onMessages={{ changeHeaderVisible: isVisible => this.setState({ visibleHeader: isVisible }) }}
             onLoaded={this.contentLoaded}
             onMissing={this.missingGoBack}
             getRef={self => this._refs.articleView = self}
