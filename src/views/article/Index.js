@@ -115,11 +115,15 @@ class Article extends React.Component{
 
   // 以一个值的变化映射头栏和评论按钮的显隐变化
   changeHeaderVisible = isVisible =>{
-    if(!this._refs.header || !this._refs.commentButton){ return }
-    const {show, hide} = this._refs.header
-    const {show: showBtn, hide: hideBtn} = this._refs.commentButton
-    isVisible ? show() : hide()
-    isVisible ? showBtn() : hideBtn()
+    if(this._refs.header){
+      const {show, hide} = this._refs.header
+      isVisible ? show() : hide()
+    }
+
+    if(this._refs.commentButton){
+      const {show: showBtn, hide: hideBtn} = this._refs.commentButton
+      isVisible ? showBtn() : hideBtn()
+    }
   }
 
   contentLoaded = data =>{
