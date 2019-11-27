@@ -124,6 +124,8 @@ export default class ArticleEditor extends React.Component{
       editor.selectionStart = location
       editor.selectionEnd = location
       editor.focus()
+
+      ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: editor.value } }))
     }).toString()
 
     js = `(${js})("${codes}", ${offset})`
@@ -150,8 +152,8 @@ export default class ArticleEditor extends React.Component{
             <QuickInsertItem title="|" onPress={() => this.insertCodes('|')} />
             <QuickInsertItem title="<del>" onPress={() => this.insertCodes('<del></del>', 6)} />
             <QuickInsertItem title="黑幕" onPress={() => this.insertCodes('{{黑幕|}}', 2)} />
-            <QuickInsertItem title="== ==" onPress={() => this.insertCodes('==  ==', 3)} />
-            <QuickInsertItem title="=== ===" onPress={() => this.insertCodes('===  ===', 4)} />
+            <QuickInsertItem title="==" onPress={() => this.insertCodes('==  ==', 3)} />
+            <QuickInsertItem title="===" onPress={() => this.insertCodes('===  ===', 4)} />
           </ScrollView>
         : null}
       </>
@@ -180,9 +182,9 @@ function QuickInsertItem (props){
       onPress={props.onPress}
     >
       {props.title ? 
-        <Text style={{ fontSize: 20, color: '#ABABAB' }}>{props.title}</Text>
+        <Text style={{ fontSize: 20, color: '#666' }}>{props.title}</Text>
       :
-        <MaterialCommunityIcon name={props.icon} size={30} color="#ABABAB" />
+        <MaterialCommunityIcon name={props.icon} size={30} color="#666" />
       } 
     </Button>
   )
