@@ -173,6 +173,10 @@ class Article extends React.Component{
     })
   }
 
+  isVisibleComment = () =>{
+    return !/^([Tt]alk|讨论|[Tt]emplate( talk|)|模板(讨论|)|[Mm]odule( talk|)|模块(讨论|)|[Cc]ategory( talk|)|分类(讨论|)):/.test(this.state.pageName)
+  }
+
   render (){
     const { config } = store.getState()
 
@@ -201,7 +205,7 @@ class Article extends React.Component{
           />       
         </CatalogTriggerView>
 
-        {this.state.id ? <CommentButton 
+        {this.state.id && this.isVisibleComment() ? <CommentButton 
           id={this.state.id}
           onTap={this.toComment}
           getRef={self => this._refs.commentButton = self}
