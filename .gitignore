@@ -60,3 +60,4 @@ buck-out/
 /ios/Pods/
 
 .update
+android/gradle.properties
