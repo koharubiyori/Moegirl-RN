@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, DrawerLayoutAndroid, Dimensions, BackHandler,
+  View, Text, DrawerLayoutAndroid, Dimensions, BackHandler, DeviceEventEmitter,
   StyleSheet
 } from 'react-native'
 import storage from '~/utils/storage'
@@ -22,11 +22,11 @@ export default class MyDrawer extends React.PureComponent{
     this.visible = false
 
     // 监听路由变化，判断用户是否在article页面上（暂时用不上了）
-    // DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) =>{
-    //   var lastRouteName = state.routes[state.routes.length - 1].routeName
-    //   this.setState({ isWatchingArticle: lastRouteName === 'article' })
-    //   storage.get('config').then(config => config && this.setState({ immersionMode: config.immersionMode }))
-    // })
+    DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) =>{
+      var lastRouteName = state.routes[state.routes.length - 1].routeName
+      this.setState({ isWatchingArticle: lastRouteName === 'article' })
+      storage.get('config').then(config => config && this.setState({ immersionMode: config.immersionMode }))
+    })
 
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () =>{
       if(this.visible){
@@ -50,6 +50,8 @@ export default class MyDrawer extends React.PureComponent{
   }
 
   render (){
+    console.log(this.state.immersionMode, this.state.isWatchingArticle)
+
     return (
       <DrawerLayoutAndroid 
         renderNavigationView={() => <DrawerScreen immersionMode={this.state.immersionMode && this.state.isWatchingArticle} />}

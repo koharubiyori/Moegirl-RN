@@ -22,7 +22,7 @@ export default function(content){
     
     var nav = $('<div class="tabNav" style="text-align:center; margin-bottom:5px;">')
     for (let i = 0; i < titles.length; i++) {
-      var btn = $(`<span class="tabBtn" style="display:inline-block; border-radius:10px; background:${theme.before.back}; color:${theme.before.text}; margin:0 2.5px; padding:3px 8px;">${titles[i]}</span>`)
+      var btn = $(`<span class="tabBtn" style="display:inline-block; border-radius:10px; background:${theme.before.back}; color:${theme.before.text}; margin:5px 2.5px; padding:3px 8px;">${titles[i]}</span>`)
         .click(function () {
           $(this).parent().find('.tabBtn').css({
             background: theme.before.back,

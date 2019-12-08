@@ -5,7 +5,7 @@ import {
   StyleSheet
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
-import { Toolbar } from 'react-native-material-ui'
+import Toolbar from '~/components/Toolbar'
 import storage from '~/utils/storage'
 import SwitchItem from './components/SwitchItem'
 import toast from '~/utils/toast'

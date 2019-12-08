@@ -4,7 +4,7 @@ import {
   View, Text, Animated, 
   StyleSheet, Dimensions, Clipboard, DeviceEventEmitter
 } from 'react-native'
-import { Toolbar } from 'react-native-material-ui'
+import Toolbar from '~/components/Toolbar'
 import userHOC from '~/redux/user/HOC'
 import toast from '~/utils/toast'
 
@@ -89,7 +89,7 @@ class ArticleHeader extends React.Component{
     return (
       <Animated.View style={{ ...styles.body, ...this.props.style, transform: [{ translateY: this.state.transitionTranslateY }] }}>
         <Toolbar size={26}
-          leftElement="keyboard-backspace"
+          leftElement="home"
           centerElement={this.props.title}
           rightElement={{
             actions: [
@@ -107,7 +107,7 @@ class ArticleHeader extends React.Component{
             }
           }}
 
-          onLeftElementPress={() => this.props.navigation.goBack()}
+          onLeftElementPress={() => this.props.navigation.popToTop()}
           onRightElementPress={event =>{ this.eventHandlers(event, this.props.navigation) }}
         />
       </Animated.View>

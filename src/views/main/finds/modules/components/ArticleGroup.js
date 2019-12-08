@@ -21,7 +21,7 @@ export default function ArticleGroup({
 }){
   return (
     <View style={{ ...styles.container, ...style }}>
-      <View style={{ ...styles.header, borderBottomWidth: status === 3 ? 1 : 0 }}>
+      <View style={{ ...styles.header, borderBottomWidth: status === 3 || status === 4 ? 1 : 0 }}>
         <View style={{ height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {icon}
@@ -46,6 +46,10 @@ export default function ArticleGroup({
             </View>
           </TouchableOpacity>
         )}</View>
+      : null}
+
+      {status === 4 ?
+        <Text style={{ marginVertical: 20, color: '#ABABAB', textAlign: 'center' }}>暂无相关条目</Text>
       : null}
 
       {status === 0 ? 

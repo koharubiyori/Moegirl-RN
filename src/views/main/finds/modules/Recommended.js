@@ -4,7 +4,7 @@ import {
   View, Text, 
   StyleSheet
 } from 'react-native'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import ArticleGroup from './components/ArticleGroup'
 import storage from '~/utils/storage'
 import { getHint } from '~/api/search'
@@ -80,7 +80,8 @@ export default class FindsModuleTrend extends React.Component{
         var images = await Promise.all(results.map(title => getMainImage(title)))
         results = results.map((title, index) => ({ title, image: images[index] ? images[index].source : null }))
   
-        this.setState({ data: results, status: 3 })
+        console.log(results)
+        this.setState({ data: results, status: results.length === 0 ? 4 : 3 })
         resolve()
       }catch(e){
         console.log(e)
@@ -94,8 +95,8 @@ export default class FindsModuleTrend extends React.Component{
     return (
       <ArticleGroup
         title="推荐"
-        subtitle={this.state.searchTitle && this.state.status === 3 ? `因为您阅读了“${this.state.searchTitle}”` : null}
-        icon={<MaterialIcon name="history" color={$colors.sub} size={26} />}
+        subtitle={this.state.searchTitle && this.state.status === 3 || this.state.status === 4 ? `因为您阅读了“${this.state.searchTitle}”` : null}
+        icon={<MaterialCommunityIcons name="star-box" color={$colors.sub} size={26} />}
         articles={this.state.data}
         navigation={this.props.navigation}
         status={this.state.status}

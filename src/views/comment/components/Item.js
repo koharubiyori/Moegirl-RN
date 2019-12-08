@@ -22,6 +22,7 @@ class CommentItem extends React.PureComponent{
     visibleReplyNum: PropTypes.bool,
     visibleDelBtn: PropTypes.bool,
     navigation: PropTypes.object,
+    signedName: PropTypes.bool,
     onDel: PropTypes.func,
     onPress: PropTypes.func,
     onTapReply: PropTypes.func
@@ -44,7 +45,7 @@ class CommentItem extends React.PureComponent{
   }
 
   toggleLike = () =>{
-    if(!store.getState().user.name){
+    if(!this.props.signedName){
       return $dialog.confirm.show({
         content: '未登录无法进行点赞，是否要前往登录界面？',
         onTapCheck: () => this.props.navigation.push('login')
@@ -121,7 +122,7 @@ class CommentItem extends React.PureComponent{
               </View>
             </View>
 
-            {this.props.visibleDelBtn && this.props.data.username === store.getState().user.name ? 
+            {this.props.visibleDelBtn && this.props.data.username === this.props.signedName ? 
               <TouchableOpacity onPress={this.del}>
                 <MaterialIcon name="clear" color="#ccc" size={iconSize} />
               </TouchableOpacity>
