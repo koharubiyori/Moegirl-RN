@@ -4,7 +4,7 @@ import {
   View, Text,
   StyleSheet
 } from 'react-native'
-import { Toolbar } from 'react-native-material-ui'
+import Toolbar from '~/components/Toolbar'
 
 EditHeader.propTypes = {
   title: PropTypes.string,

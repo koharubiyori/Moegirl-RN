@@ -4,7 +4,7 @@ import {
   StyleSheet, 
 } from 'react-native'
 import PropTypes from 'prop-types'
-import { Toolbar } from 'react-native-material-ui'
+import Toolbar from '~/components/Toolbar'
 import { withNavigation } from 'react-navigation'
 import StatusBar from '~/components/StatusBar'
 

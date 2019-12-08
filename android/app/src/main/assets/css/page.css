@@ -21,6 +21,11 @@ h3 {
 a {
   text-decoration: none;
   color: #0b0080;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.2s;
+}
+a:active {
+  opacity: 0.3;
 }
 a[target="_blank"] {
   padding-right: 16px;

@@ -38,7 +38,7 @@ export default function reducer(state = {
         ...state,
         activeId: action.id,
         pages: {
-          // ...state.pages,        // 不缓存评论，尝试是否能解决评论卡顿的问题
+          ...state.pages, 
           [action.id]: state.pages[action.id] || init(action.id)
         }
       }

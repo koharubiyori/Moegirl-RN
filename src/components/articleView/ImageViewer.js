@@ -5,6 +5,7 @@ import {
   StyleSheet
 } from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer'
+import Button from '~/components/Button'
 
 export default class MyImageViewer extends React.Component{
   static propTypes = {

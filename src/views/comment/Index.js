@@ -23,6 +23,7 @@ class Comment extends React.Component{
 
     this.title = props.navigation.getParam('title')
     this.pageId = props.navigation.getParam('id')
+    this.signedName = store.getState().user.name
   }
   
   componentWillUpdate (){
@@ -38,8 +39,7 @@ class Comment extends React.Component{
   }
 
   addComment = () =>{
-    var state = store.getState()
-    if(!state.user.name){
+    if(!this.signedName){
       return $dialog.confirm.show({
         content: '需要先登录才能发表评论，是否前往登录界面？',
         onTapCheck: () => this.props.navigation.push('login')
@@ -51,7 +51,7 @@ class Comment extends React.Component{
 
   toReply = id =>{
     store.dispatch({ type: commentActions.SET, data: { activeId: id } })
-    this.props.navigation.push('reply')
+    this.props.navigation.push('reply', { signedName: this.signedName })
   }
 
   render (){
@@ -73,6 +73,7 @@ class Comment extends React.Component{
             key={item.item.id}
             data={item.item}
             navigation={this.props.navigation}
+            signedName={this.signedName}
             onDel={this.props.comment.del}
             onTapReply={this.toReply}
           />}

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  View, Text, Image, TouchableOpacity,
+  View, Text, Image, TouchableOpacity, 
   StyleSheet, BackHandler, Linking, 
 } from 'react-native'
 import { TextField } from 'react-native-material-textfield'
@@ -55,7 +55,7 @@ class Login extends React.Component{
   render (){
     return (
       <View style={{ flex: 1, alignItems: 'center' }}>
-        <StatusBar blackText color="white" />
+        <StatusBar translucent={false} blackText color="white" />
         <Image source={require('~/assets/images/moemoji.png')} style={{ width: 70, height: 80, marginTop: 20, marginLeft: -10 }} resizeMode="cover" />
         <Text style={{ color: $colors.main, fontSize: 17, marginTop: 20 }}>萌娘百科，万物皆可萌的百科全书！</Text>
         <TextField label="用户名" {...this.textFieldStyle} value={this.state.userName} onChangeText={val => this.setState({ userName: val })} />

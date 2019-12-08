@@ -21,7 +21,7 @@ function SearchHeader({
   navigation
 }){
   return (
-    <View style={styles.body}>
+    <View style={{ ...styles.body }}>
       <Button onPress={() => navigation.goBack()} rippleColor="#ccc">
         <Icon name="keyboard-backspace" size={26} color="#666" />
       </Button>
@@ -43,7 +43,7 @@ export default withNavigation(SearchHeader)
 
 const styles = StyleSheet.create({
   body: {
-    height: 55,
+    height: 56,
     elevation: 3,
     paddingHorizontal: 15,
     flexDirection: 'row',

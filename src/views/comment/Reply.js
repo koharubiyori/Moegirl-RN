@@ -10,7 +10,6 @@ import Item from './components/Item'
 import Header from './Header'
 import Editor from './Editor'
 import format from './utils/format'
-import store from '~/redux'
 
 class CommentReply extends React.Component{
   static propTypes = {
@@ -22,11 +21,12 @@ class CommentReply extends React.Component{
     this.state = {
       replyId: ''
     }
+
+    this.signedName = this.props.navigation.getParam('signedName')
   }
 
   addReply = (replyId = '') =>{
-    var state = store.getState()
-    if(!state.user.name){
+    if(!this.signedName){
       return $dialog.confirm.show({
         content: '需要先登录才能回复，是否前往登录界面？',
         onTapCheck: () => this.props.navigation.push('login')
@@ -44,7 +44,7 @@ class CommentReply extends React.Component{
   
   render (){
     const state = this.props.comment.getActiveData()
-
+    console.log(state)
     const activeComment = state.tree.tree.filter(item => item.id === state.activeId)[0]
     const children = format.children(activeComment.children, state.activeId)
 

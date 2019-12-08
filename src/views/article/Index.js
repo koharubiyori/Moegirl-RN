@@ -85,7 +85,9 @@ class Article extends React.Component{
 
     // 后退后设置当前页面comment的activeId
     this.props.navigation.addListener('didFocus', () =>{
-      this.state.id && props.comment.setActiveId(this.state.id)
+      if(this.state.id){
+        props.comment.setActiveId(this.state.id)
+      }
     })
 
     // 防止后退后看不到标题
@@ -183,11 +185,12 @@ class Article extends React.Component{
 
   render (){
     const { config } = store.getState()
+    const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
 
     return (
       <>
         <StatusBar hidden={config.immersionMode} color={this.state.visibleHeader ? $colors.dark : 'white'} blackText={!this.state.visibleHeader} />
-        <Header style={{ ...styles.header }} 
+        <Header style={{ ...styles.header, top: config.immersionMode ? 0 : statusBarHeight }} 
           navigation={this.props.navigation} 
           title={this.state.pageName} 
           onTapRefreshBtn={() => this._refs.articleView.loadContent(true)}

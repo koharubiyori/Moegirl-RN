@@ -199,7 +199,7 @@ class ArticleView extends React.Component{
       console.log('--- WebViewError ---', data)
     }
 
-    if(type === 'onTapAnchor'){
+    if(type === 'onTapNote'){
       $dialog.alert.show({
         title: '注释',
         content: data.content,
