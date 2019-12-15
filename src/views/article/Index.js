@@ -36,7 +36,7 @@ class Article extends React.Component{
 
     this._refs = {
       header: null,
-      articleView: null,
+      articleView: React.createRef(),
       commentButton: null
     }
 
@@ -95,7 +95,7 @@ class Article extends React.Component{
   }
 
   componentDidMount (){
-    this.props.navigation.setParams({ reloadMethod: () => this._refs.articleView.loadContent(true) })
+    this.props.navigation.setParams({ reloadMethod: () => this._refs.articleView.current.loadContent(true) })
   }
 
   componentWillUpdate (nextProps, nextState){
@@ -162,7 +162,7 @@ class Article extends React.Component{
   }
 
   articleViewIntoAnchor = (anchor, isSmooth = true) =>{
-    this._refs.articleView.injectScript(`
+    this._refs.articleView.current.injectScript(`
       document.getElementById('${anchor}').scrollIntoView({ behavior: '${isSmooth ? 'smooth' : 'instant'}' })
     `)
   }
@@ -193,7 +193,7 @@ class Article extends React.Component{
         <Header style={{ ...styles.header, top: config.immersionMode ? 0 : statusBarHeight }} 
           navigation={this.props.navigation} 
           title={this.state.pageName} 
-          onTapRefreshBtn={() => this._refs.articleView.loadContent(true)}
+          onTapRefreshBtn={() => this._refs.articleView.current.loadContent(true)}
           onTapOpenCatalog={() => this.refs.catalog.showCatalog()}
           getRef={self => this._refs.header = self} 
         />
@@ -208,7 +208,7 @@ class Article extends React.Component{
             onMessages={{ changeHeaderVisible: isVisible => this.setState({ visibleHeader: isVisible }) }}
             onLoaded={this.contentLoaded}
             onMissing={this.missingGoBack}
-            getRef={self => this._refs.articleView = self}
+            getRef={this._refs.articleView}
           />       
         </CatalogTriggerView>
 

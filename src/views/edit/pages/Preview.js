@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, ActivityIndicator,
@@ -8,45 +8,36 @@ import ArticleView from '~/components/articleView/Index'
 import { Button } from 'react-native-material-ui'
 import { getPreview } from '~/api/edit'
 
-export default class Preview extends React.Component{
-  static propTypes = {
-    
-  }
+function EditPreview(props){
+  const [html, setHtml] = useState('')
+  const [status, setStatus] = useState(1)
 
-  constructor (props){
-    super(props)
-    this.state = {
-      html: '',
-      status: 1
-    }
+  useEffect(() =>{
+    props.navigation.setParams({ refresh: parseCodes })
+  }, [])
 
-    props.navigation.setParams({ refresh: this.parseCodes })
-  }
-  
-  parseCodes = argContent =>{
-    this.setState({ status: 2 })
-    const {content, title} = this.props.navigation.getScreenProps()
+  function parseCodes(argContent){
+    setStatus(2)
+    const {content, title} = props.navigation.getScreenProps()
     getPreview(argContent || content, title).then(data =>{
-      this.setState({ status: 3, html: data.parse.text['*'] })
+      setHtml(data.parse.text['*'])
+      setStatus(3)
     }).catch(e =>{
-      this.setState({ status: 0 })
+      console.log(e)
+      setStatus(0)
     })
   }
 
-  render (){
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        {{
-          0: () => <Button primary text="重新加载" onPress={() => this.parseCodes()}></Button>,
-          1: () => null,
-          2: () => <ActivityIndicator color={$colors.main} size={50} />,
-          3: () => <ArticleView disabledLink style={{ flex: 1 }} html={this.state.html} injectStyle={['page']} navigation={this.props.navigation} />
-        }[this.state.status]()}
-      </View>
-    )
-  }
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      {{
+        0: () => <Button primary text="重新加载" onPress={() => parseCodes()}></Button>,
+        1: () => null,
+        2: () => <ActivityIndicator color={$colors.main} size={50} />,
+        3: () => <ArticleView disabledLink style={{ flex: 1 }} html={html} injectStyle={['page']} navigation={props.navigation} />
+      }[status]()}
+    </View>
+  )
 }
 
-const styles = StyleSheet.create({
-  
-})
+export default EditPreview

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, 
@@ -9,35 +9,34 @@ import ArticleGroup from './components/ArticleGroup'
 import { getRecentChanges } from '~/api/query'
 import { getMainImage } from '~/api/article'
 
-export default class FindsModuleTrend extends React.Component{
-  static propTypes = {
-    navigation: PropTypes.object,
-    style: PropTypes.object
+FindsModuleTrend.propTypes = {
+  navigation: PropTypes.object,
+  style: PropTypes.object,
+  getRef: PropTypes.object
+}
+
+function FindsModuleTrend(props){
+  const [data, setData] = useState([])
+  const [status, setStatus] = useState(2)
+  
+  if(props.getRef) props.getRef.current = { reload }
+
+  useEffect(() =>{
+    getRecentChangesData()
+  }, [])
+
+  function reload(){
+    getRecentChangesData()
   }
 
-  constructor (props){
-    super(props)
-    this.state = {
-      data: [],
-      status: 2
-    }
-
-   
-    this.getRecentChanges()
-  }
-
-  reload = () =>{
-    return this.getRecentChanges()
-  }
-
-  getRecentChanges = () =>{
-    this.setState({ status: 2 })
+  function getRecentChangesData(){
+    setStatus(2)
     return new Promise((resolve, reject) =>{
       getRecentChanges()
         .then(data =>{
           data = data.query.recentchanges
     
-          var total = {}   // 保存总数统计
+          let total = {}   // 保存总数统计
           data.map(item => item.title).forEach(title =>{
             if(total[title]){
               total[title]++
@@ -46,44 +45,37 @@ export default class FindsModuleTrend extends React.Component{
             }
           })
     
-          var result = Object.keys(total).map(title => ({ title, total: total[title] })).sort((x, y) => x.total < y.total ? 1 : -1)
+          let result = Object.keys(total).map(title => ({ title, total: total[title] })).sort((x, y) => x.total < y.total ? 1 : -1)
           return result.filter((_, index) => index < 5)  
         })    
         .then(data =>{
           Promise.all(
             data.map(item => getMainImage(item.title))
           ).then(images =>{
-            this.setState({ status: 3 })
+            setStatus(3)
             data.forEach((item, index) => item.image = images[index] ? images[index].source : null)
-            this.setState({ data })
+            setData(data)
             resolve()
           }).catch(e => Promise.reject(e))
         })
         .catch(e =>{
           console.log(e)
-          this.setState({ status: 0 })
+          setStatus(0)
           reject()
         })
     })
-
   }
-  
 
-  render (){
-
-    return (
-      <ArticleGroup
-        title="趋势"
-        icon={<MaterialCommunityIcon name="flash-circle" color={$colors.sub} size={26} />}
-        articles={this.state.data}
-        navigation={this.props.navigation}
-        status={this.state.status}
-        onTapReload={this.reload}
-      />
-    )
-  }
+  return (
+    <ArticleGroup
+      title="趋势"
+      icon={<MaterialCommunityIcon name="flash-circle" color={$colors.sub} size={26} />}
+      articles={data}
+      navigation={props.navigation}
+      status={status}
+      onTapReload={reload}
+    />
+  )
 }
 
-const styles = StyleSheet.create({
-
-})
+export default FindsModuleTrend

@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { 
   View, Text,
   StyleSheet,
 } from 'react-native'
-import PropTypes from 'prop-types'
 import ArticleView from '~/components/articleView/Index'
 import Header from './components/Header'
 

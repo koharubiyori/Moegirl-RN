@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, TextInput, ActivityIndicator,
@@ -8,67 +8,46 @@ import Button from '~/components/Button'
 import ArticleEditor from '~/components/articleEditor/Index'
 import { getCode } from '~/api/edit'
 
-export default class CodeEdit extends React.Component{
-  static propTypes = {
+function CodeEdit(props){
+  const [status, setStatus] = useState(1)
+  const [content, setContent] = useState('')
+  const initContentSample = useRef('')
 
-  }
+  useEffect(() =>{
+    loadCode()
+  }, [])
 
-  constructor (props){
-    super(props)
-    this.state = {
-      content: '',
-      status: 1,
-    }
-
-    this.initContentSample = ''
-  }
-
-  componentDidMount (){    
-    this.loadCode()
-  }
-
-  loadCode = () =>{
-    this.setState({ status: 2 })
-    const {title, section} = this.props.navigation.getScreenProps()
+  function loadCode (){
+    setStatus(2)
+    const {title, section} = props.navigation.getScreenProps()
     getCode(title, section).then(data =>{
-      const content = data.parse.wikitext['*'] || ' '
-      this.setState({ content, status: 3 }, () =>{
-        // this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } })
-        // setTimeout(() => this.refs.textInput.setNativeProps({ selection: null }))
-      })
-      this.props.navigation.setParams({ loadStatus: 3, content })
-      this.initContentSample = content
+      let wikitext = data.parse.wikitext['*'] || ' '
+      setStatus(3)
+      setContent(wikitext)
+      props.navigation.setParams({ loadStatus: 3, content: wikitext })
+      initContentSample.current = wikitext
     }).catch(e =>{
-      this.setState({ status: 0 })
-      this.props.navigation.setParams({ status: 0 })
+      console.log(e)
+      setStatus(0)
+      props.navigation.setParams({ status: 0 })
     })
   }
 
-  getSourceCode (){
-    return this.state.content
+  function changeText(text){
+    setContent(text)
+    props.navigation.setParams({ content: text, isContentChanged: initContentSample.current !== text })
   }
 
-  changeText = text =>{
-    console.log(text)
-    this.setState({ content: text })
-    this.props.navigation.setParams({ content: text, isContentChanged: this.initContentSample !== text })
-  }
-
-  render (){
-    // onContentSizeChange
-    return (
-      <View keyboardVerticalOffset={-160} behavior="padding" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        {{
-          0: () => <Button primary text="重新加载" onPress={this.loadCode}></Button>,
-          1: () => null, 
-          2: () => <ActivityIndicator color={$colors.main} size={50} />,
-          3: () => <ArticleEditor value={this.state.content} onChangeText={this.changeText} />
-        }[this.state.status]()}
-      </View>
-    )
-  }
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      {{
+        0: () => <Button primary text="重新加载" onPress={loadCode}></Button>,
+        1: () => null, 
+        2: () => <ActivityIndicator color={$colors.main} size={50} />,
+        3: () => <ArticleEditor content={content} onChangeText={changeText} />
+      }[status]()}
+    </View>
+  )
 }
 
-const styles = StyleSheet.create({
-  
-})
+export default CodeEdit
