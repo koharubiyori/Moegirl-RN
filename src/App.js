@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { BackHandler, DeviceEventEmitter } from 'react-native'
 import SplashScreen from 'react-native-splash-screen'
 import { ThemeContext, getTheme } from 'react-native-material-ui'
@@ -20,17 +20,18 @@ const theme = {
   },
 }
 
-export default class App extends React.Component {
-  constructor (props){
-    super(props)
-    this.state = {
+function App(){
+  global.$appNavigator = useRef()
+  const refs = {
+    alert: useRef(),
+    confirm: useRef(),
+    snackBar: useRef()
+  }
 
-    }
-    
-    global.$appNavigator = React.createRef()
-
-    var onPressBackBtnMark = false
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () =>{
+  useEffect(() =>{
+    let onPressBackBtnMark = false
+    const listener = BackHandler.addEventListener('hardwareBackPress', () =>{
+      if($appNavigator.current.state.nav.routes.length !== 1){ return }
       if(!onPressBackBtnMark){
         toast.show('再按一次返回键退出应用')
         onPressBackBtnMark = true
@@ -40,35 +41,39 @@ export default class App extends React.Component {
         BackHandler.exitApp()
       }
     })
-  }
 
-  componentDidMount (){
-    global.$dialog = { ...this.refs }
+    return listener.remove
+  }, [])
+
+  useEffect(() =>{
+    let dialog = {}
+    for(let key in refs){
+      dialog[key] = refs[key].current
+    }
+    
+    global.$dialog = dialog
+
     require('./init')
     setTimeout(SplashScreen.hide, 1000)
-  }
+  }, [])
 
-  componentWillUnmount (){
-    this.backHandler.remove()
-  }
-
-  navigationStateChange (prevState, state){
+  function navigationStateChange (prevState, state){
     DeviceEventEmitter.emit('navigationStateChange', prevState, state)
   }
 
-  render (){
-    return (
-      <ThemeContext.Provider value={getTheme(theme)}>
-        <Provider store={store}>
-          <Drawer ref="drawer">
-            <AppNavigator onNavigationStateChange={this.navigationStateChange} ref={$appNavigator} />
-          </Drawer>
-        </Provider>
+  return (
+    <ThemeContext.Provider value={getTheme(theme)}>
+      <Provider store={store}>
+        <Drawer>
+          <AppNavigator onNavigationStateChange={navigationStateChange} ref={$appNavigator} />
+        </Drawer>
+      </Provider>
 
-        <Alert ref="alert" />
-        <Confirm ref="confirm" />
-        <SnackBar ref="snackBar" />
-      </ThemeContext.Provider>
-    )
-  }
+      <Alert getRef={refs.alert} />
+      <Confirm getRef={refs.confirm} />
+      <SnackBar getRef={refs.snackBar} />
+    </ThemeContext.Provider>
+  )
 }
+
+export default App

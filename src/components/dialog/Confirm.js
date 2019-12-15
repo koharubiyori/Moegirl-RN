@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, TouchableWithoutFeedback,
@@ -6,29 +6,28 @@ import {
 } from 'react-native'
 import Dialog from 'react-native-dialog'
 
-export default class Alert extends React.Component{
-  static propTypes = {
-    
-  }
+Confirm.propTypes = {
+  getRef: PropTypes.object
+}
 
-  constructor (props){
-    super(props)
-    this.state = {
-      visible: false,
-      title: '',
-      content: '',
-      checkText: '',
-      closeText: '',
-      onTapCheck: new Function,
-      onTapClose: new Function,
+function Confirm(props){
+  const [visible, setVisible] = useState(false)
+  const [params, setParams] = useState({
+    visible: false,
+    title: '',
+    content: '',
+    checkText: '',
+    closeText: '',
+    onTapCheck: new Function,
+    onTapClose: new Function,
+    inputPlaceholder: '',
+    hasInput: false,
+  })
+  const [inputVal, setInputVal] = useState('')
 
-      input: '',
-      inputPlaceholder: '',
-      hasInput: false,
-    }
-  }
-  
-  show ({
+  if(props.getRef) props.getRef.current = { show, hide }
+
+  function show ({
     title = '提示',
     content = '',
     checkText = '确定',
@@ -38,40 +37,44 @@ export default class Alert extends React.Component{
     hasInput = false,
     inputPlaceholder,
   }){
-    this.setState({ visible: true, title, content, checkText, 
-      onTapCheck: () =>{ onTapCheck(this.state.hasInput ? this.state.input : undefined); this.hide() }, 
+    setVisible(true)
+    setParams({ 
+      title, 
+      content, 
+      checkText, 
+      onTapCheck: inputVal =>{ onTapCheck(inputVal); hide() }, 
       closeText, 
-      onTapClose: () =>{ onTapClose(); this.hide() },
-      hasInput, inputPlaceholder
+      onTapClose: () =>{ onTapClose(); hide() },
+      hasInput, 
+      inputPlaceholder
     })
   }
 
-  hide = () =>{
-    this.setState({ visible: false })
+  function hide(){
+    setVisible(false)
   }
 
-  render (){
-    const {visible, title, content, checkText, closeText, onTapCheck, onTapClose, hasInput, input, inputPlaceholder} = this.state
-
-    return (
-      <Dialog.Container visible={visible} 
-        onBackButtonPress={() => this.setState({ visible: false })}
-        onBackdropPress={() => this.setState({ visible: false })}
-      >
-        <Dialog.Title>{title}</Dialog.Title>
-        {content ? <Dialog.Description>{content}</Dialog.Description> : null}
-        {hasInput ?
-          <Dialog.Input autoFocus placeholder={inputPlaceholder} value={input} 
-            onChangeText={val => this.setState({ input: val })}
-            wrapperStyle={styles.input}
-          />
-        : null}
-        <Dialog.Button label={closeText} onPress={onTapClose} style={{ marginRight: 10, color: '#ABABAB' }} />
-        <Dialog.Button label={checkText} onPress={onTapCheck} style={{ color: $colors.main }} />
-      </Dialog.Container>
-    )
-  }
+  const {title, content, checkText, closeText, onTapCheck, onTapClose, hasInput, inputPlaceholder} = params
+  return (
+    <Dialog.Container visible={visible} 
+      onBackButtonPress={hide}
+      onBackdropPress={hide}
+    >
+      <Dialog.Title>{title}</Dialog.Title>
+      {content ? <Dialog.Description>{content}</Dialog.Description> : null}
+      {hasInput ?
+        <Dialog.Input autoFocus placeholder={inputPlaceholder} value={inputVal} 
+          onChangeText={setInputVal}
+          wrapperStyle={styles.input}
+        />
+      : null}
+      <Dialog.Button label={closeText} onPress={onTapClose} style={{ marginRight: 10, color: '#ABABAB' }} />
+      <Dialog.Button label={checkText} onPress={() => onTapCheck(inputVal)} style={{ color: $colors.main }} />
+    </Dialog.Container>
+  )
 }
+
+export default Confirm
 
 const styles = StyleSheet.create({
   input: {

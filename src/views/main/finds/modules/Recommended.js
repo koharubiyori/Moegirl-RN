@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, 
@@ -11,38 +11,38 @@ import { getHint } from '~/api/search'
 import { getMainImage } from '~/api/article'
 import { getRandomPages } from '~/api/query'
 
-var random = (max = 1, min = 0) => Math.floor((Math.random() * max - min) + min)
+let random = (max = 1, min = 0) => Math.floor((Math.random() * max - min) + min)
 
-export default class FindsModuleTrend extends React.Component{
-  static propTypes = {
-    navigation: PropTypes.object,
-    style: PropTypes.object
+FindsModuleTrend.propTypes = {
+  navigation: PropTypes.object,
+  style: PropTypes.object,
+  getRef: PropTypes.object
+}
+
+function FindsModuleTrend(props){
+  const [data, setData] = useState([])
+  const [status, setStatus] = useState(2)
+  const [searchTitle, setSearchTitle] = useState('')
+
+  if(props.getRef) props.getRef.current = { reload }
+
+  useEffect(() =>{
+    getArticleCaches()
+  }, [])
+
+  function reload(){
+    getArticleCaches()
   }
 
-  constructor (props){
-    super(props)
-    this.state = {
-      data: [],
-      status: 2,
-      searchTitle: ''
-    }
-
-    this.getArticleCaches()
-  }
-
-  reload = () =>{
-    return this.getArticleCaches()
-  }
-
-  getArticleCaches = () =>{
-    this.setState({ status: 2 })
+  function getArticleCaches (){
+    setStatus(2)
     return new Promise(async (resolve, reject) =>{
       try{
-        var cache = await storage.get('articleCache')
+        let cache = await storage.get('articleCache')
   
         if(cache){
           // 拿到缓存中所有标题
-          var data = Object.values(cache).map(item => item.parse.title)
+          let data = Object.values(cache).map(item => item.parse.title)
           if(data.length <= 5){
             var lastPages = data
           }else{
@@ -51,9 +51,9 @@ export default class FindsModuleTrend extends React.Component{
           }
     
           // 随机抽出一个，执行搜索
-          var title = lastPages[random(lastPages.length)]
-          this.setState({ searchTitle: title })
-          var searchedPages = await getHint(title, 11)
+          let title = lastPages[random(lastPages.length)]
+          setSearchTitle(title)
+          let searchedPages = await getHint(title, 11)
           searchedPages = searchedPages.query.search.map(item => item.title).filter(item => item != title)
   
           if(searchedPages.length > 5){
@@ -61,7 +61,7 @@ export default class FindsModuleTrend extends React.Component{
             
             // 从搜索结果中随机抽出5个
             while(results.length < 5){
-              var ran = searchedPages[random(searchedPages.length)]
+              let ran = searchedPages[random(searchedPages.length)]
               !results.includes(ran) && results.push(ran)
             }
           }else{
@@ -69,7 +69,7 @@ export default class FindsModuleTrend extends React.Component{
           }
         }else{
           // 没有缓存，执行完全随机
-          var randomPages = await getRandomPages()
+          let randomPages = await getRandomPages()
           var results = randomPages.query.random.map(item => item.title)
         }
   
@@ -77,35 +77,31 @@ export default class FindsModuleTrend extends React.Component{
         results = results.filter(title => title !== 'Mainpage')
   
         // 为随机结果添加配图
-        var images = await Promise.all(results.map(title => getMainImage(title)))
+        let images = await Promise.all(results.map(title => getMainImage(title)))
         results = results.map((title, index) => ({ title, image: images[index] ? images[index].source : null }))
   
-        console.log(results)
-        this.setState({ data: results, status: results.length === 0 ? 4 : 3 })
+        setData(results)
+        setStatus(results.length === 0 ? 4 : 3)
         resolve()
       }catch(e){
         console.log(e)
-        this.setState({ status: 0 })
+        setStatus(0)
         reject()
       }
     })
   }
 
-  render (){
-    return (
-      <ArticleGroup
-        title="推荐"
-        subtitle={this.state.searchTitle && this.state.status === 3 || this.state.status === 4 ? `因为您阅读了“${this.state.searchTitle}”` : null}
-        icon={<MaterialCommunityIcons name="star-box" color={$colors.sub} size={26} />}
-        articles={this.state.data}
-        navigation={this.props.navigation}
-        status={this.state.status}
-        onTapReload={this.reload}
-      />
-    )
-  }
+  return (
+    <ArticleGroup
+      title="推荐"
+      subtitle={searchTitle && status === 3 || status === 4 ? `因为您阅读了“${searchTitle}”` : null}
+      icon={<MaterialCommunityIcons name="star-box" color={$colors.sub} size={26} />}
+      articles={data}
+      navigation={props.navigation}
+      status={status}
+      onTapReload={reload}
+    />
+  )
 }
 
-const styles = StyleSheet.create({
-
-})
+export default FindsModuleTrend

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, 
@@ -12,91 +12,73 @@ import RecentSearch from './RecentSearch'
 import storage from '~/utils/storage'
 import { getHint } from '~/api/search'
 
-export default class Search extends React.Component{
-  static propTypes = {
-    navigation: PropTypes.object
-  }
+Search.propTypes = {
+  navigation: PropTypes.object
+}
 
-  constructor (props){
-    super(props)
-    this.state = {
-      searchWord: '',
-      searchHint: null,
-      searchHistory: []
-    }
+function Search(props){
+  const [searchWord, setSearchWord] = useState('')
+  const [searchHint, setSearchHint] = useState(null)
+  const [searchHistory, setSearchHistory] = useState([])
+  const setTimeoutKey = useRef(0)
 
-    this.setTimeoutKey = 0
+  useEffect(() =>{
+    storage.get('searchHistory').then(data => data && setSearchHistory(data))
+  }, [])
 
-    storage.get('searchHistory').then(data => data && this.setState({ searchHistory: data }))
-  }
-
-  changeText = text =>{
+  function changeText(text){
     text = text.trim()
-    this.setState({ searchWord: text })
-    clearTimeout(this.setTimeoutKey)
-    if(!text){ return this.setState({ searchHint: null }) }
-    this.setTimeoutKey = setTimeout(() => getHint(text).then(data => this.setState({
-      searchHint: data.query.search.map(item => item.title)
-    })), 1000)
+    setSearchWord(text)
+    clearTimeout(setTimeoutKey.current)
+    if(!text) return setSearchHint(null)
+    setTimeoutKey.current = setTimeout(() => getHint(text).then(data => 
+      setSearchHint(data.query.search.map(item => item.title))
+    ), 1000)
   }
 
-  toSearchResultView = (text = this.state.searchWord.trim()) =>{
+  function toSearchResultView(text = searchWord.trim()){
     if(!text){
       toast.show('搜索关键词不能为空', 'center')
       return
     }
 
-    var searchHistory = this.state.searchHistory.filter(item => item !== text)
-    searchHistory.unshift(text)
-    this.setState({ searchHistory })
-    storage.set('searchHistory', searchHistory)
+    let searchHistoryData = searchHistory.filter(item => item !== text)
+    searchHistoryData.unshift(text)
+    setSearchHistory(searchHistoryData)
+    storage.set('searchHistory', searchHistoryData)
 
-    this.props.navigation.push('searchResult', { searchWord: text })
+    props.navigation.push('searchResult', { searchWord: text })
   }
 
-  clearSearchHistory = () =>{
+  function clearSearchHistory (){
     $dialog.confirm.show({
       content: '确定要删除所有搜索记录吗？',
       onTapCheck: () =>{
         storage.remove('searchHistory')
-        this.setState({ searchHistory: [] })
+        setSearchHistory([])
         toast.show('操作成功')
       }
     })
   }
 
-  render (){
-    return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <StatusBar blackText color="white" />
-        <Header value={this.state.searchWord} 
-          onChangeText={this.changeText} 
-          onSubmit={() => this.toSearchResultView()}
+  return (
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <StatusBar blackText color="white" />
+      <Header value={searchWord} 
+        onChangeText={changeText} 
+        onSubmit={() => toSearchResultView()}
+      />
+      {searchWord ? 
+        <SearchHint titles={searchHint} onTapTitle={toSearchResultView} />
+      : 
+        <RecentSearch 
+          titles={searchHistory}
+          onTapDelete={clearSearchHistory}
+          onTapTitle={toSearchResultView}
         />
-        {this.state.searchWord ? 
-          <SearchHint titles={this.state.searchHint} onTapTitle={title => this.toSearchResultView(title)} />
-        : 
-          <RecentSearch 
-            titles={this.state.searchHistory}
-            onTapDelete={this.clearSearchHistory}
-            onTapTitle={title => this.toSearchResultView(title)}
-          />
-        }
-      </View>
-    )
-  }
+      }
+    </View>
+  )
 }
 
-const styles = StyleSheet.create({
-  main: {
-
-  },
-
-  mainHeader: {
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20
-  }
-})
+export default Search

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, Dimensions, Keyboard, ScrollView,
@@ -8,31 +8,42 @@ import { WebView } from 'react-native-webview'
 import Button from '~/components/Button'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-export default class ArticleEditor extends React.Component{
-  static propTypes = {
-    style: PropTypes.object,
-    value: PropTypes.string,
-    onChangeText: PropTypes.func
+ArticleEditor.propTypes = {
+  style: PropTypes.object,
+  content: PropTypes.string,
+  onChangeText: PropTypes.func
+}
+
+function ArticleEditor(props){
+  const [html, setHtml] = useState('')
+  const [visibleQuickInsertBar, setVisibleQuickInertBar] = useState(false)
+  const refs = {
+    webView: useRef()
   }
 
-  constructor (props){
-    super(props)
-    this.state = {
-      html: '',
-      visibleQuickInsertBar: false
+  useEffect(() =>{
+    if(html === '' && props.content !== '') setHtml(createDocument(props.content)) 
+  }, [props.content])
+
+  useEffect(() =>{
+    const keyboardShowListener = Keyboard.addListener('keyboardDidShow', () => setVisibleQuickInertBar(true))
+    const keyboardHideListener = Keyboard.addListener('keyboardDidHide', () => setVisibleQuickInertBar(false))
+
+    return () =>{
+      keyboardShowListener.remove()
+      keyboardHideListener.remove()
     }
+  }, [])
 
-    this.content = this.props.value
-
-    var js = (function(){
+  function createDocument(content){
+    let js = (function(){
       var edit = document.querySelector('#editArea')
       edit.addEventListener('input', e =>{
         ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: e.target.value } }))
       })
     }).toString()
 
-    // 要传入的html代码
-    var injectJsCodes = `
+    let injectJsCodes = `
       ${global.__DEV__ ? 'try{' : ''}
         ;(${js})();
       ${global.__DEV__ ? `
@@ -42,7 +53,7 @@ export default class ArticleEditor extends React.Component{
       ` : ''}
     `
 
-    this.html = `
+    return `
       <!DOCTYPE html>
       <html lang="en">
       <head>
@@ -77,25 +88,17 @@ export default class ArticleEditor extends React.Component{
         </style>
       </head>
       <body>
-        <textarea id="editArea">${this.content}</textarea>
+        <textarea id="editArea">${content}</textarea>
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           ${injectJsCodes};
         </script>
       </body>
       </html>      
-    `   
-
-    this.keyboardShowListener = Keyboard.addListener('keyboardDidShow', () => this.setState({ visibleQuickInsertBar: true }))
-    this.keyboardHideListener = Keyboard.addListener('keyboardDidHide', () => this.setState({ visibleQuickInsertBar: false }))
+    `  
   }
 
-  componentWillUnmount (){
-    this.keyboardShowListener.remove()
-    this.keyboardHideListener.remove()
-  }
-  
-  receiveMessage = e =>{
+  function receiveMessage(e){
     const {type, data} = JSON.parse(e.nativeEvent.data)
 
     if(type === 'print'){
@@ -107,12 +110,12 @@ export default class ArticleEditor extends React.Component{
     }
 
     if(type === 'onInput'){
-      this.props.onChangeText(data.text)
+      props.onChangeText(data.text)
     }
   }
 
-  insertCodes = (codes, offset = 0) =>{
-    var js = (function(codes, offset){
+  function insertCodes (codes, offset = 0){
+    let js = (function(codes, offset){
       var editor = document.querySelector('#editArea')
       var content = editor.value
       var nowLocation = editor.selectionStart
@@ -130,36 +133,36 @@ export default class ArticleEditor extends React.Component{
 
     js = `(${js})("${codes}", ${offset})`
 
-    this.refs.webView.injectJavaScript(js)
+    refs.webView.current.injectJavaScript(js)
   }
 
-  render (){
-    return (
-      <>
-        <WebView
-          scalesPageToFit={false}
-          source={{ html: this.html, baseUrl: 'file:///android_asset/assets' }}
-          style={{ ...this.props.style, width: Dimensions.get('window').width }}
-          onMessage={this.receiveMessage}
-          ref="webView"
-        />
-        {this.state.visibleQuickInsertBar ?
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickInsertBar}>
-            <QuickInsertItem icon="fountain-pen-tip" onPress={() => this.insertCodes(' --~~~~')} />
-            <QuickInsertItem title="[[ ]]" onPress={() => this.insertCodes('[[]]', 2)} />
-            <QuickInsertItem title="{{ }}" onPress={() => this.insertCodes('{{}}', 2)} />
-            <QuickInsertItem title="''' '''" onPress={() => this.insertCodes("''''''", 3)} />
-            <QuickInsertItem title="|" onPress={() => this.insertCodes('|')} />
-            <QuickInsertItem title="<del>" onPress={() => this.insertCodes('<del></del>', 6)} />
-            <QuickInsertItem title="黑幕" onPress={() => this.insertCodes('{{黑幕|}}', 2)} />
-            <QuickInsertItem title="==" onPress={() => this.insertCodes('==  ==', 3)} />
-            <QuickInsertItem title="===" onPress={() => this.insertCodes('===  ===', 4)} />
-          </ScrollView>
-        : null}
-      </>
-    )
-  }
+  return (
+    <>
+      <WebView
+        scalesPageToFit={false}
+        source={{ html, baseUrl: 'file:///android_asset/assets' }}
+        style={{ ...props.style, width: Dimensions.get('window').width }}
+        onMessage={receiveMessage}
+        ref={refs.webView}
+      />
+      {visibleQuickInsertBar ?
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickInsertBar}>
+          <QuickInsertItem icon="fountain-pen-tip" onPress={() => insertCodes(' --~~~~')} />
+          <QuickInsertItem title="[[ ]]" onPress={() => insertCodes('[[]]', 2)} />
+          <QuickInsertItem title="{{ }}" onPress={() => insertCodes('{{}}', 2)} />
+          <QuickInsertItem title="''' '''" onPress={() => insertCodes("''''''", 3)} />
+          <QuickInsertItem title="|" onPress={() => insertCodes('|')} />
+          <QuickInsertItem title="<del>" onPress={() => insertCodes('<del></del>', 6)} />
+          <QuickInsertItem title="黑幕" onPress={() => insertCodes('{{黑幕|}}', 2)} />
+          <QuickInsertItem title="==" onPress={() => insertCodes('==  ==', 3)} />
+          <QuickInsertItem title="===" onPress={() => insertCodes('===  ===', 4)} />
+        </ScrollView>
+      : null}
+    </>
+  )
 }
+
+export default ArticleEditor
 
 const styles = StyleSheet.create({
   quickInsertBar: {
