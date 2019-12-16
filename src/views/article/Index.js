@@ -13,7 +13,6 @@ import storage from '~/utils/storage'
 import saveHistory from '~/utils/saveHistory'
 import toast from '~/utils/toast'
 import commentHOC from '~/redux/comment/HOC'
-import store from '~/redux'
 
 function Article(props){
   const [loadedPageInfo, setLoadedPageInfo] = useState({
@@ -170,39 +169,41 @@ function Article(props){
     return !/^([Tt]alk|讨论|[Tt]emplate( talk|)|模板(讨论|)|[Mm]odule( talk|)|模块(讨论|)|[Cc]ategory( talk|)|分类(讨论|)):/.test(loadedPageInfo.pageName)
   }
 
-  const {config} = store.getState()
+  const {config} = props.state
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
   return (
-    <>
+    <CatalogTriggerView 
+      immersionMode={config.immersionMode}
+      items={loadedPageInfo.catalogItems} 
+      onTapTitle={articleViewIntoAnchor} 
+      getRef={refs.catalog}
+    >
       <StatusBar hidden={config.immersionMode} color={visibleHeader ? $colors.dark : 'white'} blackText={!visibleHeader} />
       <Header style={{ ...styles.header, top: config.immersionMode ? -statusBarHeight : 0 }} 
         navigation={props.navigation} 
         title={loadedPageInfo.pageName} 
         onTapRefreshBtn={() => refs.articleView.current.loadContent(true)}
-        onTapOpenCatalog={() => refs.catalog.current.showCatalog()}
+        onTapOpenCatalog={() => refs.catalog.current.open()}
         getRef={refs.header} 
       />
 
-      {/* 这只是一个普通的view，但被绑定了滑动显示catalog的事件 */}
-      <CatalogTriggerView style={{ flex: 1 }} items={loadedPageInfo.catalogItems} onTapTitle={articleViewIntoAnchor} getRef={refs.catalog}>
-       <ArticleView style={{ flex: 1 }} navigation={props.navigation}
-          link={link} 
-          injectStyle={['page']}
-          injectCss={articleViewInjectCss}
-          injectJs={articleViewInjectJs}
-          onMessages={{ changeHeaderVisible: setVisibleHeader }}
-          onLoaded={contentLoaded}
-          onMissing={missingGoBack}
-          getRef={refs.articleView}
-        />       
-      </CatalogTriggerView>
+      <ArticleView style={{ flex: 1 }} navigation={props.navigation}
+        link={link} 
+        injectStyle={['page']}
+        injectCss={articleViewInjectCss}
+        injectJs={articleViewInjectJs}
+        onMessages={{ changeHeaderVisible: setVisibleHeader }}
+        onLoaded={contentLoaded}
+        onMissing={missingGoBack}
+        getRef={refs.articleView}
+      />       
 
       {loadedPageInfo.id && isVisibleComment() ? <CommentButton 
         id={loadedPageInfo.id}
         onTap={toComment}
         getRef={refs.commentButton}
       /> : null } 
-    </>
+    </CatalogTriggerView>
   )
 }
 

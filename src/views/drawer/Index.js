@@ -5,7 +5,7 @@ import {
   StyleSheet
 } from 'react-native'
 import storage from '~/utils/storage'
-import DrawerScreen from './Screen'
+import DrawerBody from './Body'
 
 function MyDrawer(props){
   const [immersionMode, setImmersionMode] = useState(false)
@@ -51,7 +51,7 @@ function MyDrawer(props){
 
   return (
     <DrawerLayoutAndroid 
-      renderNavigationView={() => <DrawerScreen immersionMode={immersionMode && isWatchingArticle} />}
+      renderNavigationView={() => <DrawerBody immersionMode={immersionMode && isWatchingArticle} />}
       drawerWidth={Dimensions.get('window').width * 0.6}
       onDrawerOpen={() => visible.current = true}
       onDrawerClose={() => visible.current = false}
