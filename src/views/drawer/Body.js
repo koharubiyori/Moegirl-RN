@@ -7,11 +7,11 @@ import {
 import userHOC from '~/redux/user/HOC'
 import Item from './components/Item'
 
-DrawerScreen.propTypes = {
+DrawerBody.propTypes = {
   immersionMode: PropTypes.bool   // 暂时用不上了
 }
 
-function DrawerScreen(props){
+function DrawerBody(props){
 
   function tap(handler){
     return () =>{
@@ -72,7 +72,7 @@ function DrawerScreen(props){
   )
 }
 
-export default userHOC(DrawerScreen)
+export default userHOC(DrawerBody)
 
 const styles = StyleSheet.create({
   header: {
