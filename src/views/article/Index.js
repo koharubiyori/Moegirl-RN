@@ -174,7 +174,7 @@ function Article(props){
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
   return (
     <>
-      <StatusBar translucent hidden={config.immersionMode} color={visibleHeader ? $colors.dark : 'white'} blackText={!visibleHeader} />
+      <StatusBar hidden={config.immersionMode} color={visibleHeader ? $colors.dark : 'white'} blackText={!visibleHeader} />
       <Header style={{ ...styles.header, top: config.immersionMode ? -statusBarHeight : 0 }} 
         navigation={props.navigation} 
         title={loadedPageInfo.pageName} 

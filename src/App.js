@@ -32,6 +32,7 @@ function App(){
     let onPressBackBtnMark = false
     const listener = BackHandler.addEventListener('hardwareBackPress', () =>{
       if($appNavigator.current.state.nav.routes.length !== 1){ return }
+      if($drawer.visible.current) return $drawer.close()
       if(!onPressBackBtnMark){
         toast.show('再按一次返回键退出应用')
         onPressBackBtnMark = true

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, Image, FlatList, ActivityIndicator, TouchableOpacity,
-  StyleSheet, LayoutAnimation
+  StyleSheet, LayoutAnimation, NativeModules
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
@@ -55,10 +55,11 @@ function SearchResult(props){
       })
   }
 
+  const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
   return (
     <View style={{ flex: 1 }}>
       <StatusBar blackText color="white" />
-      <View style={styles.header}>
+      <View style={{ ...styles.header, height: 56 + statusBarHeight, paddingTop: statusBarHeight }}>
         <Button onPress={() => props.navigation.goBack()} rippleColor={$colors.light}>
           <Icon name="keyboard-backspace" size={25} color="#666" />
         </Button>

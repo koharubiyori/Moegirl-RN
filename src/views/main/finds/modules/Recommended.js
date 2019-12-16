@@ -31,7 +31,7 @@ function FindsModuleTrend(props){
   }, [])
 
   function reload(){
-    getArticleCaches()
+    return getArticleCaches()
   }
 
   function getArticleCaches (){
