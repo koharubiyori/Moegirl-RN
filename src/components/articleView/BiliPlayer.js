@@ -8,30 +8,19 @@ import {
 } from 'react-native'
 import WebView from 'react-native-webview'
 
-export default class BiliPlayer extends React.Component{
-  static propTypes = {
+function BiliPlayer(props){
+  const avId = props.navigation.getParam('avId')
+  const page = props.navigation.getParam('page')
 
-  }
-
-  constructor (props){
-    super(props)
-    this.state = {
-      
-    }
-
-    this.avId = props.navigation.getParam('avId')
-    this.page = props.navigation.getParam('page')
-  }
-
-  createHtmlDocument (){
-    var js = (function(){
+  function createDocument (){
+    let js = (function(){
       window.addEventListener('fullscreenchange', function(){
         ReactNativeWebView.postMessage(JSON.stringify({ type: 'onFullScreenChange', data: { isFullScreen: !!document.fullscreenElement } }))
       })
     }).toString()
 
     // 要传入的html代码
-    var injectJsCodes = `
+    let injectJsCodes = `
       ${global.__DEV__ ? 'try{' : ''}
         ;(${js})();
       ${global.__DEV__ ? `
@@ -41,8 +30,7 @@ export default class BiliPlayer extends React.Component{
       ` : ''}
     `
 
-   
-    var html = `
+    return `
       <!DOCTYPE html>
       <html lang="en">
       <head>
@@ -71,12 +59,10 @@ export default class BiliPlayer extends React.Component{
         </script>
       </body>
       </html>      
-    `   
-
-    return html
+    `
   }
 
-  receiveMessage = e =>{
+  function receiveMessage(e){
     const {type, data} = JSON.parse(e.nativeEvent.data)
 
     if(type === 'print'){
@@ -91,21 +77,17 @@ export default class BiliPlayer extends React.Component{
       data.isFullScreen ? Orientation.lockToLandscape() : Orientation.lockToPortrait()
     }
   }
-  
-  render (){
-    return (
-      <View style={{ flex: 1 }}>
-        <StatusBar hidden />
-        <WebView allowsFullscreenVideo
-          scalesPageToFit={false}
-          source={{ html: this.createHtmlDocument() }}
-          onMessage={this.receiveMessage}
-        />
-      </View>
-    )
-  }
+
+  return (
+    <View style={{ flex: 1 }}>
+      <StatusBar hidden />
+      <WebView allowsFullscreenVideo
+        scalesPageToFit={false}
+        source={{ html: createDocument() }}
+        onMessage={receiveMessage}
+      />
+    </View>
+  )
 }
 
-const styles = StyleSheet.create({
-  
-})
+export default BiliPlayer
