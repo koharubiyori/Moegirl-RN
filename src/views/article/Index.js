@@ -83,7 +83,7 @@ function Article(props){
     })
 
     return () => listener.remove()
-  }, [])
+  }, [loadedPageInfo])
 
   useEffect(() =>{
     const listener = DeviceEventEmitter.addListener('navigationStateChange', () => setVisibleHeader(true) )
@@ -144,7 +144,7 @@ function Article(props){
       setTimeout(() =>{
         articleViewIntoAnchor(anchor, false)
         $dialog.snackBar.show(`该链接指向了“${decodeURIComponent(anchor.replace(/\./g, '%'))}”章节`)
-      }, 500)
+      }, 700)
     }
   }
 

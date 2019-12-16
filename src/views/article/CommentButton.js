@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, TouchableOpacity, Animated,
@@ -19,6 +19,7 @@ const size = 60
 function CommentButton(props){
   const [visible, setVisible] = useState(false)
   const [transitionScale] = useState(new Animated.Value(1))
+  const showLock = useRef(true)     // 为了保证动画(条目加载成功两秒后显示)，声明一个变量用于判断前两秒不响应show方法
   const animateLock = useRef(false)
 
   if(props.getRef) props.getRef.current = { show, hide }
@@ -26,11 +27,14 @@ function CommentButton(props){
   useLayoutEffect(() =>{
     props.comment.setActiveId(props.id)
     props.comment.load()
-    setTimeout(show, 2000)
+    setTimeout(() =>{
+      showLock.current = false
+      show()
+    }, 1000)
   }, [])
 
   function show(){
-    if(animateLock.current || visible){ return }
+    if(animateLock.current || visible || showLock.current){ return }
 
     animateLock.current = true
     setVisible(true)
