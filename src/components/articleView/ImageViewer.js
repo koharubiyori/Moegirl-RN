@@ -5,36 +5,27 @@ import {
   StyleSheet
 } from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer'
-import Button from '~/components/Button'
+import StatusBar from '~/components/StatusBar'
 
-export default class MyImageViewer extends React.Component{
-  static propTypes = {
-    imgs: PropTypes.array,
-    visible: PropTypes.bool,
-    onClose: PropTypes.func
-  }
-
-  constructor (props){
-    super(props)
-    this.state = {
-      index: 0
-    }
-  }
-
-  render (){
-    return (
-      <Modal visible={this.props.visible} onRequestClose={this.props.onClose} animationType="fade">
-        <ImageViewer 
-          imageUrls={this.props.imgs} 
-          index={this.props.index} 
-          saveToLocalByLongPress={false} 
-          loadingRender={() => <ActivityIndicator color="white" size={60} />}
-        />
-      </Modal>
-    )
-  }
+MyImageViewer.propTypes = {
+  imgs: PropTypes.array,
+  visible: PropTypes.bool,
+  onClose: PropTypes.func
 }
 
-const styles = StyleSheet.create({
-  
-})
+function MyImageViewer(props){
+
+  return (
+    <Modal visible={props.visible} onRequestClose={props.onClose} animationType="fade">
+      <StatusBar hidden />
+      <ImageViewer 
+        imageUrls={props.imgs} 
+        index={props.index} 
+        saveToLocalByLongPress={false} 
+        loadingRender={() => <ActivityIndicator color="white" size={60} />}
+      />
+    </Modal>
+  )
+}
+
+export default MyImageViewer

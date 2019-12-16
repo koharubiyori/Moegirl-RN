@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, Modal, Animated, ScrollView, TouchableWithoutFeedback,
@@ -9,80 +9,78 @@ import Button from '~/components/Button'
 
 export const width = 200
 
-// 虽然这个组件主要只负责显示视图，但因为需要根据组件id判断是否点击了mask，所以不能写成函数组件( 用React.createRef()应该还是能写成函数组件的，懒得改了_(:з」∠)_
-export class Catalog extends React.Component{
-  static propTypes = {
-    transitionRight: PropTypes.instanceOf(Animated.Value).isRequired,
-    transitionMaskOpacity: PropTypes.instanceOf(Animated.Value).isRequired,
-    visible: PropTypes.bool.isRequired,
-    items: PropTypes.array.isRequired,
-    onClose: PropTypes.func,
-    onTapTitle: PropTypes.func
+Catalog.propTypes = {
+  transitionRight: PropTypes.instanceOf(Animated.Value).isRequired,
+  transitionMaskOpacity: PropTypes.instanceOf(Animated.Value).isRequired,
+  visible: PropTypes.bool.isRequired,
+  items: PropTypes.array.isRequired,
+  onClose: PropTypes.func,
+  onTapTitle: PropTypes.func
+}
+
+function Catalog(props){
+  const refs = {
+    mask: useRef()
   }
+  const moveEvents = useRef(createMoveEvents())
 
-  constructor (props){
-    super(props)
-    this.state = {
-
-    }
-
-    this.moveEvents = PanResponder.create({
+  function createMoveEvents(){
+    return PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderRelease: (e, gestureState) =>{
         var {dx} = gestureState
-        if(dx > 50) this.props.onClose()
+        if(dx > 50) props.onClose()
       }
     })
   }
 
-  // 使用组件id判断是否点击的是mask
-  tapMaskToCloseSelf = e =>{
-    this.refs.mask._component._nativeTag === e.target && this.props.onClose()
+  function tapMaskToCloseSelf(e){
+    refs.mask.current._component._nativeTag === e.target && props.onClose()
   }
 
-  render (){
-    return (
-      <Modal transparent visible={this.props.visible} onRequestClose={this.props.onClose}>
-        <TouchableWithoutFeedback onPress={this.tapMaskToCloseSelf}>
-          <Animated.View style={{ ...styles.container, opacity: this.props.transitionMaskOpacity }} ref="mask">
-            <Animated.View {...this.moveEvents.panHandlers} style={{ ...styles.body, right: this.props.transitionRight }}>
-              {/* 蜜汁bug，没有响应事件的地方会无法触发panHandlers，只好在这里加了个TouchableWithoutFeedback */}
-              <TouchableWithoutFeedback>
-                <View style={{ flex: 1 }}>
-                  <View style={styles.header}>
-                    <Text style={styles.headerText}>目录</Text>
-                    <MaterialIcon name="chevron-right" size={40} color="white" style={{ marginRight: 10 }} onPress={this.props.onClose} />
-                  </View>
-
-                  <ScrollView 
-                    style={{ flex: 1 }} 
-                    contentContainerStyle={styles.titles}
-                  >{
-                    this.props.items.filter(item => parseInt(item.level) < 5 && item.level !== '1').map((item, index) => 
-                      <Button onPress={() => this.props.onTapTitle(item.anchor)}
-                        rippleColor="#ccc"
-                        noLimit={false}
-                        key={index}
-                      >
-                        <Text 
-                          numberOfLines={1}
-                          style={{ 
-                            ...(parseInt(item.level) < 3 ? styles.title : styles.subTitle),
-                            paddingLeft: (parseInt(item.level) - 2) * 5
-                          }}
-                        >{(parseInt(item.level) > 2 ? '- ' : '') + item.line}</Text>
-                      </Button>
-                    )
-                  }</ScrollView>     
+  return (
+    <Modal transparent visible={props.visible} onRequestClose={props.onClose}>
+      <TouchableWithoutFeedback onPress={tapMaskToCloseSelf}>
+        <Animated.View style={{ ...styles.container, opacity: props.transitionMaskOpacity }} ref={refs.mask}>
+          <Animated.View {...moveEvents.current.panHandlers} style={{ ...styles.body, right: props.transitionRight }}>
+            {/* 蜜汁bug，没有响应事件的地方会无法触发panHandlers，只好在这里加了个TouchableWithoutFeedback */}
+            <TouchableWithoutFeedback>
+              <View style={{ flex: 1 }}>
+                <View style={styles.header}>
+                  <Text style={styles.headerText}>目录</Text>
+                  <MaterialIcon name="chevron-right" size={40} color="white" style={{ marginRight: 10 }} onPress={props.onClose} />
                 </View>
-              </TouchableWithoutFeedback>
-            </Animated.View>
+
+                <ScrollView 
+                  style={{ flex: 1 }} 
+                  contentContainerStyle={styles.titles}
+                >{
+                  props.items.filter(item => parseInt(item.level) < 5 && item.level !== '1').map((item, index) => 
+                    <Button onPress={() => props.onTapTitle(item.anchor)}
+                      rippleColor="#ccc"
+                      noLimit={false}
+                      key={index}
+                    >
+                      <Text 
+                        numberOfLines={1}
+                        style={{ 
+                          ...(parseInt(item.level) < 3 ? styles.title : styles.subTitle),
+                          paddingLeft: (parseInt(item.level) - 2) * 5
+                        }}
+                      >{(parseInt(item.level) > 2 ? '- ' : '') + item.line}</Text>
+                    </Button>
+                  )
+                }</ScrollView>     
+              </View>
+            </TouchableWithoutFeedback>
           </Animated.View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    )
-  }
+        </Animated.View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  )
 }
+
+export { Catalog }
 
 const styles = StyleSheet.create({
   container: {
