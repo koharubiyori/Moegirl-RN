@@ -32,13 +32,12 @@ ArticleView.propTypes = {
   getRef: PropTypes.object
 }
 
-function ArticleView(props){
-  props = {
-    ...props,
-    onLoaded: props.onLoaded || new Function,
-    onMissing: props.onMissing || new Function
-  }
+ArticleView.defaultProps = {
+  onLoaded: new Function,
+  onMissing: new Function
+}
 
+function ArticleView(props){
   const [html, setHtml] = useState('')
   const [status, setStatus] = useState(1)
   const [showingImg, setShowingImg] = useState('')
