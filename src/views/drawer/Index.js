@@ -38,7 +38,7 @@ function MyDrawer(props){
   }, [])
 
   useEffect(() =>{
-    global.$drawer = { open, close }
+    global.$drawer = { visible, open, close }
   }, [])
 
   function open(){

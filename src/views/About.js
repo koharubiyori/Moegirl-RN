@@ -5,8 +5,7 @@ import {
   StyleSheet
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { Toolbar } from 'react-native-material-ui'
+import Toolbar from '~/components/Toolbar'
 import { date, version } from '../../app.json'
 
 

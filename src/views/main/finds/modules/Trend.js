@@ -26,7 +26,7 @@ function FindsModuleTrend(props){
   }, [])
 
   function reload(){
-    getRecentChangesData()
+    return getRecentChangesData()
   }
 
   function getRecentChangesData(){
