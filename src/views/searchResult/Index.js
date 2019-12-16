@@ -78,7 +78,7 @@ function SearchResult(props){
           onEndReached={loadList}
           style={{ flex: 1 }}
           renderItem={item => <Item 
-            key={item.item.id}
+            // key={item.item.id}
             data={item.item}
             searchWord={searchWord} 
             onPress={link => props.navigation.push('article', { link })}

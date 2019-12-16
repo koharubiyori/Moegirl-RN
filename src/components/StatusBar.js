@@ -13,7 +13,7 @@ MyStatusBar.propTypes = {
 export default function MyStatusBar({
   animated = true,
   hidden = false,
-  translucent = false,
+  translucent = true,
   color = $colors.dark || '#318D32',
   blackText = false
 }){

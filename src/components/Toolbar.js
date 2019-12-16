@@ -15,14 +15,14 @@ export default function MyToolbar(props){
 
   return (
     <Toolbar {...props} 
-      // style={{
-      //   ...props.style,
-      //   container: {
-      //     ...(props.style && props.style.container ? props.style.container : {}),
-      //     height: 56 + statusBarHeight,
-      //     paddingTop: statusBarHeight
-      //   }
-      // }} 
+      style={{
+        ...props.style,
+        container: {
+          ...(props.style && props.style.container ? props.style.container : {}),
+          height: 56 + statusBarHeight,
+          paddingTop: statusBarHeight
+        }
+      }} 
     />
   )
 }

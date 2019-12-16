@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { 
-  View, TextInput,
+  View, TextInput, NativeModules,
   StyleSheet
 } from 'react-native'
 import { withNavigation } from 'react-navigation'
@@ -20,8 +20,10 @@ function SearchHeader({
   onSubmit,
   navigation
 }){
+  const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
+
   return (
-    <View style={{ ...styles.body }}>
+    <View style={{ ...styles.body, height: 56 + statusBarHeight, paddingTop: statusBarHeight }}>
       <Button onPress={() => navigation.goBack()} rippleColor="#ccc">
         <Icon name="keyboard-backspace" size={26} color="#666" />
       </Button>
