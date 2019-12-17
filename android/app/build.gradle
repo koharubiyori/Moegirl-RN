@@ -206,7 +206,6 @@ dependencies {
     implementation project(':react-native-webview')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-splash-screen')
-    implementation project(':react-native-update')
     implementation project(':react-native-orientation')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
