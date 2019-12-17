@@ -11,7 +11,6 @@ import SwitchItem from './components/SwitchItem'
 import toast from '~/utils/toast'
 import configHOC from '~/redux/config/HOC'
 import userHOC from '~/redux/user/HOC'
-// import { checkUpdate } from '../../init'
 
 function Settings(props){
 
@@ -67,12 +66,6 @@ function Settings(props){
           onChange={val => setConfig({ heimu: val })}
         />
 
-        {/* <SwitchItem title="B站播放器重载" 
-          subtext="开启后，收起B站播放器后将彻底关闭播放器，而不是后台继续播放，但再次展开将消耗额外的流量" 
-          value={config.biliPlayerReload}
-          onChange={val => setConfig({ biliPlayerReload: val })}
-        /> */}
-
         <SwitchItem title="沉浸模式" 
           subtext="浏览条目时将隐藏状态栏" 
           value={config.immersionMode}
@@ -96,12 +89,6 @@ function Settings(props){
           title={props.state.user.name ? '登出' : '登录'}
           onPress={() => props.state.user.name ? logout() : props.navigation.push('login')}
         />
-
-        {/* <Title>其他</Title>
-        <SwitchItem hideSwitch
-          title="检查更新"
-          onPress={() => checkUpdate()}
-        /> */}
 
         <SwitchItem hideSwitch
           title="关于"
