@@ -40,7 +40,6 @@ ArticleView.defaultProps = {
 function ArticleView(props){
   const [html, setHtml] = useState('')
   const [status, setStatus] = useState(1)
-  const [showingImg, setShowingImg] = useState('')
   const config = useRef(store.getState().config)
   const refs = {
     webView: useRef()
@@ -266,7 +265,7 @@ function ArticleView(props){
       getImageUrl(data.name)
         .finally(toast.hide)
         .then(url =>{
-          setShowingImg(url)
+          props.navigation.push('imageViewer', { imgs: [{ url }] })
         })
         .catch(e =>{
           console.log(e)
@@ -292,7 +291,7 @@ function ArticleView(props){
           </TouchableOpacity>,
         1: () => null,
         2: () => <ActivityIndicator color={$colors.main} size={50} />,
-        3: () => <>
+        3: () => 
           <WebView allowFileAccess
             cacheMode="LOAD_CACHE_ELSE_NETWORK"
             scalesPageToFit={false}
@@ -302,10 +301,6 @@ function ArticleView(props){
             onMessage={receiveMessage}
             ref={refs.webView}
           />
-
-          <ImageViewer visible={!!showingImg} imgs={[{ url: showingImg }]} onClose={() => setShowingImg('')} />
-        </>
-        
       }[status]()}
     </View>
   )

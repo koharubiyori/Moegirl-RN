@@ -7,24 +7,18 @@ import {
 import ImageViewer from 'react-native-image-zoom-viewer'
 import StatusBar from '~/components/StatusBar'
 
-MyImageViewer.propTypes = {
-  imgs: PropTypes.array,
-  visible: PropTypes.bool,
-  onClose: PropTypes.func
-}
-
 function MyImageViewer(props){
+  const imgs = props.navigation.getParam('imgs')
 
   return (
-    <Modal visible={props.visible} onRequestClose={props.onClose} animationType="fade">
+    <>
       <StatusBar hidden />
       <ImageViewer 
-        imageUrls={props.imgs} 
-        index={props.index} 
+        imageUrls={imgs} 
         saveToLocalByLongPress={false} 
         loadingRender={() => <ActivityIndicator color="white" size={60} />}
       />
-    </Modal>
+    </>
   )
 }
 
