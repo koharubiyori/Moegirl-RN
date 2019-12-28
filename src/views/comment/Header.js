@@ -12,27 +12,14 @@ CommentHeader.propTypes = {
   onTapEdit: PropTypes.func
 }
 
-export default function CommentHeader({
-  title,
-  navigation,
-  onTapAddComment
-}){
-  function eventHandlers(event){
-    if(event.action === 'insert-comment'){
-      onTapAddComment()
-    }
-  }
-
+export default function CommentHeader(props){
   return (
-    <Toolbar size={26}
-      rightElement={{
-        actions: ['insert-comment'],
-      }}
-
-      leftElement="keyboard-backspace"
-      centerElement={title}
-      onLeftElementPress={() => navigation.goBack()}
-      onRightElementPress={eventHandlers}
+    <Toolbar
+      title={props.title}
+      leftIcon="keyboard-backspace"
+      rightIcon="add"
+      onPressLeftIcon={props.navigation.goBack}
+      onPressRightIcon={props.onTapAddComment}
     />
   )
 }

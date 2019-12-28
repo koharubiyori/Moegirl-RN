@@ -13,6 +13,7 @@ import storage from '~/utils/storage'
 import saveHistory from '~/utils/saveHistory'
 import toast from '~/utils/toast'
 import commentHOC from '~/redux/comment/HOC'
+import configHOC from '~/redux/config/HOC'
 
 function Article(props){
   const [loadedPageInfo, setLoadedPageInfo] = useState({
@@ -30,11 +31,7 @@ function Article(props){
   }
   const link = props.navigation.getParam('link')
   const anchor = props.navigation.getParam('anchor')
-  const articleViewInjectCss = `
-    body {
-      padding-top: 55px;
-    }
-  `
+
   const articleViewInjectJs = function(){
     let codeStr = (function(){
       var lastPosition = 0,
@@ -100,6 +97,8 @@ function Article(props){
     }else{
       changeHeaderVisible(visibleHeader)
     }
+
+    prevProps.current = props
   })
 
   // 以一个值的变化映射头栏和评论按钮的显隐变化
@@ -171,6 +170,7 @@ function Article(props){
 
   const {config} = props.state
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
+
   return (
     <CatalogTriggerView 
       immersionMode={config.immersionMode}
@@ -187,10 +187,11 @@ function Article(props){
         getRef={refs.header} 
       />
 
-      <ArticleView style={{ flex: 1 }} navigation={props.navigation}
+      <ArticleView autoPaddingTopForHeader
+        style={{ flex: 1 }} 
+        navigation={props.navigation}
         link={link} 
         injectStyle={['page']}
-        injectCss={articleViewInjectCss}
         injectJs={articleViewInjectJs}
         onMessages={{ changeHeaderVisible: setVisibleHeader }}
         onLoaded={contentLoaded}
@@ -207,7 +208,7 @@ function Article(props){
   )
 }
 
-export default commentHOC(Article)
+export default configHOC(commentHOC(Article))
 
 const styles = StyleSheet.create({
   header: {

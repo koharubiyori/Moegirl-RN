@@ -50,59 +50,45 @@ function ArticleHeader(props){
     }).start(() => animateLock.current = false)
   }
 
-  function eventHandlers(event, navigation){
-    if(event.action === 'search'){
-      navigation.push('search')
+  function eventHandlers(eventName, index){
+    if(index === 0){
+      props.onTapRefreshBtn()
+    }
+    
+    if(index === 1){
+      if(props.state.user.name){
+        props.navigation.push('edit', { title: props.title })
+      }else{
+        props.navigation.push('login')
+      }
     }
 
-    if(event.action === 'menu'){
-      if(event.index === 0){
-        props.onTapRefreshBtn()
-      }
+    if(index === 2){
+      const shareUrl = `萌娘百科 - ${props.title} https://mzh.moegirl.org/${props.title}`
+      Clipboard.setString(shareUrl)
+      toast.show('已将分享链接复制至剪切板', 'center')
+    }
 
-      if(event.index === 1){
-        if(props.state.user.name){
-          props.navigation.push('edit', { title: props.title })
-        }else{
-          props.navigation.push('login')
-        }
-      }
-
-      if(event.index === 2){
-        const shareUrl = `萌娘百科 - ${props.title} https://mzh.moegirl.org/${props.title}`
-        Clipboard.setString(shareUrl)
-        toast.show('已将分享链接复制至剪切板', 'center')
-      }
-
-      if(event.index === 3){
-        props.onTapOpenCatalog()
-      }
+    if(index === 3){
+      props.onTapOpenCatalog()
     }
   }
 
   return (
     <Animated.View style={{ ...styles.body, ...props.style, transform: [{ translateY: transitionTranslateY }] }}>
-      <Toolbar size={26}
-        leftElement="home"
-        centerElement={props.title}
-        rightElement={{
-          actions: [
-            'search'
-          ],
-
-          menu: {
-              icon: 'more-vert',
-              labels: [
-                '刷新',
-                ...[props.state.user.name ? '编辑此页' : '登录'],
-                '分享',
-                '打开目录'
-              ]
-          }
-        }}
-
-        onLeftElementPress={() => props.navigation.popToTop()}
-        onRightElementPress={event =>{ eventHandlers(event, props.navigation) }}
+      <Toolbar 
+        title={props.title}
+        leftIcon="home"
+        rightIcon="search"
+        actions={[
+          '刷新',
+          ...[props.state.user.name ? '编辑此页' : '登录'],
+          '分享',
+          '打开目录'
+        ]}
+        onPressLeftIcon={() => props.navigation.popToTop()}
+        onPressRightIcon={() => props.navigation.push('search')}
+        onPressActions={eventHandlers}
       />
     </Animated.View>
   )

@@ -7,7 +7,7 @@ import {
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { toggleLike, report, delComment } from '~/api/comment'
+import * as commentApi from '~/api/comment'
 import commentHOC from '~/redux/comment/HOC'
 import toast from '~/utils/toast'
 import format from '../utils/format'
@@ -48,7 +48,7 @@ function CommentItem(props){
     var isLiked = props.data.myatt
     
     toast.showLoading()
-    toggleLike(props.data.id, isLiked)
+    commentApi.toggleLike(props.data.id, isLiked)
       .finally(toast.hide)
       .then(data =>{
         props.comment.setLikeStatus(props.data.id, !isLiked)
@@ -65,7 +65,7 @@ function CommentItem(props){
       content: `确定要举报这条${props.isReply ? '回复' : '评论'}吗？`,
       onTapCheck: () =>{
         toast.showLoading()
-        report(props.data.id)
+        commentApi.report(props.data.id)
           .finally(() => toast.hide())
           .then(() =>{
             isReported.current = true
@@ -82,7 +82,7 @@ function CommentItem(props){
       content: `确定要删除自己的这条${props.isReply ? '回复' : '评论'}吗？`,
       onTapCheck: () =>{
         toast.showLoading()
-        delComment(props.data.id)
+        commentApi.delComment(props.data.id)
           .finally(() => toast.hide())
           .then(() =>{
             props.onDel(props.data.id)

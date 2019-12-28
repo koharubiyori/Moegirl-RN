@@ -5811,6 +5811,13 @@ react-native-cookies@^3.3.0:
   dependencies:
     invariant "^2.1.0"
 
+react-native-default-menu@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.npm.taobao.org/react-native-default-menu/download/react-native-default-menu-0.0.8.tgz#d7d40a7e6928a27ef3ca3160bd5776e69d11b4a5"
+  integrity sha1-19QKfmkoon7zyjFgvVd25p0RtKU=
+  dependencies:
+    react-native-vector-icons "^6.1.0"
+
 react-native-dialog@^5.6.0:
   version "5.6.0"
   resolved "https://registry.npm.taobao.org/react-native-dialog/download/react-native-dialog-5.6.0.tgz#8c36a1e9f397eba0cea88821ebcf92f029236a1a"
@@ -5947,7 +5954,7 @@ react-native-tiny-toast@^1.0.3:
     react-native-iphone-x-helper latest
     react-native-root-siblings latest
 
-react-native-vector-icons@^6.6.0:
+react-native-vector-icons@^6.1.0, react-native-vector-icons@^6.6.0:
   version "6.6.0"
   resolved "https://registry.npm.taobao.org/react-native-vector-icons/download/react-native-vector-icons-6.6.0.tgz#66cf004918eb05d90778d64bd42077c1800d481b"
   integrity sha1-Zs8ASRjrBdkHeNZL1CB3wYANSBs=

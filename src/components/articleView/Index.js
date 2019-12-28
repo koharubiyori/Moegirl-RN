@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import {
   View, StyleSheet, Text, Dimensions, Linking, ActivityIndicator, TouchableOpacity,
-  BackHandler
+  BackHandler, NativeModules
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { WebView } from 'react-native-webview'
@@ -25,6 +25,7 @@ ArticleView.propTypes = {
   injectStyle: PropTypes.arrayOf(PropTypes.string),   // 载入位于 /android/main/assets 的样式表
   injectCss: PropTypes.string,
   injectJs: PropTypes.string,
+  autoPaddingTopForHeader: PropTypes.bool,
 
   onMessages: PropTypes.objectOf(PropTypes.func),   // 接收webView的postMessage
   onLoaded: PropTypes.func,
@@ -132,6 +133,13 @@ function ArticleView(props){
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Document</title>
         ${styleTags}
+        ${props.autoPaddingTopForHeader ? `
+          <style>
+            body {
+              padding-top: ${store.getState().config.immersionMode ? 55 : 55 + NativeModules.StatusBarManager.HEIGHT}px;
+            }
+          </style>
+        `: ''}
         <style>${props.injectCss || ''}</style>
       </head>
       <body>
@@ -161,6 +169,7 @@ function ArticleView(props){
         props.onLoaded(data)
       })
       .catch(async e =>{
+        console.log(e)
         if(e && e.code === 'missingtitle') return props.onMissing(props.link)
 
         try{

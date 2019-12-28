@@ -14,15 +14,14 @@ function About(props){
   return (
     <View style={{ flex: 1 }}>
       <StatusBar blackText color="white" />    
-      <Toolbar size={26}
+      <Toolbar
+        title="关于"
         style={{ 
-          container: { backgroundColor: 'white' }, 
-          titleText: { color: '#666' },
-          leftElement: { color: '#666' }
+          backgroundColor: 'white'
         }}
-        leftElement="keyboard-backspace"
-        centerElement="关于"
-        onLeftElementPress={() => props.navigation.goBack()}
+        textColor="#666"
+        leftIcon="keyboard-backspace"
+        onPressLeftIcon={() => props.navigation.goBack()}
       />        
 
       <View style={{ flex: 1, alignItems: 'center' }}>

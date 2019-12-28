@@ -12,31 +12,20 @@ EditHeader.propTypes = {
   onTapDoneBtn: PropTypes.func
 }
 
-export default function EditHeader({
-  title,
-  navigation,
-  onTapDoneBtn
-}){
-  function eventHandlers(event){
-    if(event.action === 'done'){
-      onTapDoneBtn()
-    }
-  }
-
+export default function EditHeader(props){
   return (
-    <Toolbar size={26}
+    <Toolbar
       style={{
-        container: { elevation: 0, borderBottomColor: 'white', borderBottomWidth: 1 },
+        elevation: 0, 
+        borderBottomColor: 'white', 
+        borderBottomWidth: 1
       }}
 
-      rightElement={{
-        actions: ['done'],
-      }}
-
-      leftElement="keyboard-backspace"
-      centerElement={`编辑：${title}`}
-      onLeftElementPress={() => navigation.goBack()}
-      onRightElementPress={eventHandlers}
+      title={`编辑：${props.title}`}
+      leftIcon="keyboard-backspace"
+      rightIcon="done"
+      onPressLeftIcon={props.navigation.goBack}
+      onPressRightIcon={props.onTapDoneBtn}
     />
   )
 }

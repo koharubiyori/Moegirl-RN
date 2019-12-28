@@ -13,24 +13,15 @@ IndexHeader.propTypes = {
 }
 
 function IndexHeader(props, ref){
-  function eventHandlers(event){
-    if(event.action === 'search'){
-      props.navigation.push('search')
-    }
-  }
-
   return (
     <>
       <StatusBar />
-      <Toolbar size={26}
-        leftElement="menu"
-        centerElement={props.title}
-        rightElement={{
-          actions: ['search'],
-        }}
-
-        onLeftElementPress={() => $drawer.open()}
-        onRightElementPress={event =>{ eventHandlers(event) }}
+      <Toolbar
+        title={props.title}
+        leftIcon="menu"
+        rightIcon="search"
+        onPressLeftIcon={() => $drawer.open()}
+        onPressRightIcon={() => props.navigation.push('search')}
       />
     </>
   )
