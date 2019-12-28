@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BottomNavigation } from 'react-native-material-ui'
+import BottomNavigation from 'react-native-material-ui/src/BottomNavigation'
 
 function MyBottomNavigation(props){
   const [active, setActive] = useState('home')

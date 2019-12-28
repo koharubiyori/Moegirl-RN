@@ -61,7 +61,7 @@ function CommentEditor(props){
     postComment(props.pageId, inputText, props.targetId)
       .finally(toast.hide)
       .then(() =>{
-        setTimeout(() => toast.showSuccess('发表成功'))
+        setTimeout(() => toast.show('发表成功'))
         setInputText('')
         hide()
         props.onPosted()

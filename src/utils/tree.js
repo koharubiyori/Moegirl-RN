@@ -6,10 +6,8 @@ export default class Tree{
 
   static toFlat (root){
     function flat(children){
-      // var children = [ ...children ]     // 不再拷贝数据，以减少内存占用
       return children.reduce((prev, next) =>{
         const children = next.children || []
-        // delete next.children
         return prev.concat([next], flat(children))
       }, [])
     }

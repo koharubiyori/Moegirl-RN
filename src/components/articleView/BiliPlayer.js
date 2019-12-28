@@ -52,7 +52,7 @@ function BiliPlayer(props){
         </style>
       </head>
       <body>
-        <iframe src="https://player.bilibili.com/player.html?aid=${this.avId}&page=${this.page}" scrolling="no" framespacing="0" border="0" frameborder="no"  allowfullscreen="true" style="width:100%; background-color:#ccc;" class="bilibili-player"></iframe>
+        <iframe src="https://player.bilibili.com/player.html?aid=${avId}&page=${page}" scrolling="no" framespacing="0" border="0" frameborder="no"  allowfullscreen="true" style="width:100%; background-color:#ccc;" class="bilibili-player"></iframe>
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           ${injectJsCodes};

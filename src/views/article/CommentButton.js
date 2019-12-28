@@ -8,6 +8,8 @@ import { withNavigation } from 'react-navigation'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import commentHOC from '~/redux/comment/HOC'
 
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
+
 CommentButton.propTypes = {
   id: PropTypes.number,
   onTap: PropTypes.func,
@@ -18,7 +20,7 @@ const size = 60
 
 function CommentButton(props){
   const [visible, setVisible] = useState(false)
-  const [transitionScale] = useState(new Animated.Value(1))
+  const [transitionBottom] = useState(new Animated.Value(-size))
   const showLock = useRef(true)     // 为了保证动画(条目加载成功两秒后显示)，声明一个变量用于判断前两秒不响应show方法
   const animateLock = useRef(false)
 
@@ -38,33 +40,24 @@ function CommentButton(props){
 
     animateLock.current = true
     setVisible(true)
-    Animated.timing(transitionScale, {
-      toValue: 1.1,
-      duration: 100,
-      useNativeDriver: true
+    Animated.timing(transitionBottom, {
+      toValue: 30,
+      duration: 150,
     })
-      .start(() =>{
-        Animated.timing(transitionScale, {
-          toValue: 1,
-          duration: 50,
-          useNativeDriver: true
-        })
-          .start(() => animateLock.current = false)
-      })
+      .start(() => animateLock.current = false)
   }
 
   function hide(){
     if(animateLock.current || !visible){ return }
 
     animateLock.current = true
-    setTimeout(() => Animated.timing(transitionScale, {
-      toValue: 0,
+    Animated.timing(transitionBottom, {
+      toValue: -size,
       duration: 150,
-      useNativeDriver: true
     }).start(() =>{
       setVisible(false)
       animateLock.current = false
-    }), 500)
+    })
   }
 
   function tap(){
@@ -76,14 +69,14 @@ function CommentButton(props){
   const state = props.comment.getActiveData()
   return (
     !visible ? null :
-    <TouchableOpacity onPress={tap} style={{ ...styles.container,  transform: [{ scale: transitionScale }] }}>
-      <Animated.View style={{ ...styles.main }}>
+    <AnimatedTouchableOpacity onPress={tap} style={{ ...styles.container, bottom: transitionBottom }}>
+      <View style={{ ...styles.main }}>
         <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
           <Icon name="comment" size={30} color="white" style={{ position: 'relative', top: -4 }} />
           <Text style={{ position: 'absolute', bottom: 6, color: 'white' }}>{{ 0: '×', 1: '...', 2: '...' }[state.status] || state.data.count}</Text>
         </View>
-      </Animated.View>
-    </TouchableOpacity>
+      </View>
+    </AnimatedTouchableOpacity>
   )
 }
 
@@ -92,7 +85,7 @@ export default withNavigation(commentHOC(CommentButton))
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 30,
     right: 30
   },
 

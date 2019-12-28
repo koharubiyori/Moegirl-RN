@@ -62,7 +62,7 @@ function Comment(props){
         onEndReached={loadList}
         initialNumToRender={4}
         style={{ flex: 1 }}
-        renderItem={item => <Item 
+        renderItem={item => <Item key={item.id} 
           data={item.item}
           navigation={props.navigation}
           signedName={signedName}
@@ -74,7 +74,14 @@ function Comment(props){
           <View style={{ marginVertical: 10 }}>
             <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginBottom: 10 }}>热门评论</Text>
             {state.data.popular.map(item =>
-              <Item key={item.id} data={item} navigation={props.navigation} onDel={props.comment.del} visibleReply={false} visibleReplyBtn={false} />  
+              <Item key={item.id} 
+                data={item} 
+                navigation={props.navigation} 
+                visibleReply={false} 
+                visibleReplyBtn={false} 
+                signedName={signedName}
+                onDel={props.comment.del} 
+              />  
             )}
             <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginTop: 10 }}>全部评论</Text>
           </View>

@@ -81,7 +81,7 @@ function Edit(props){
           editArticle(props.navigation.getParam('title'), props.navigation.getParam('section'), content, text.trim())
             .finally(toast.hide)
             .then(() =>{
-              setTimeout(() => toast.showSuccess('编辑成功'))
+              setTimeout(() => toast.show('编辑成功'))
               articleReloadFlag.current = true
               props.navigation.goBack()
             })

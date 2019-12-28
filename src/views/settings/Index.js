@@ -51,10 +51,11 @@ function Settings(props){
   return (
     <View style={{ flex: 1 }}>
       <StatusBar />  
-      <Toolbar size={26}
-        centerElement="设置"
-        leftElement="keyboard-backspace"
-        onLeftElementPress={() => props.navigation.goBack()}
+
+      <Toolbar
+        title="设置"
+        leftIcon="keyboard-backspace"
+        onPressLeftIcon={props.navigation.goBack}
       />
       
       <ScrollView style={{ flex: 1 }}>
