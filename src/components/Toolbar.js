@@ -41,14 +41,14 @@ export default function MyToolbar(props){
       height: 56 + statusBarHeight,
       paddingTop: statusBarHeight
     }}>
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row', flex: 1 }}>
         <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressLeftIcon && props.onPressLeftIcon()}>
           <MaterialIcon name={props.leftIcon} size={28} color={props.textColor} {...props.leftIconProps} />
         </Button>
-        <Text style={{ ...styles.title, color: props.textColor }}>{props.title}</Text>
+        <Text style={{ ...styles.title, color: props.textColor }} numberOfLines={1}>{props.title}</Text>
       </View>
 
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row', marginLeft: 10 }}>
         {props.rightIcon ? 
           <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressRightIcon && props.onPressRightIcon()}>
             <MaterialIcon name={props.rightIcon} size={28} color={props.textColor} {...props.rightIconProps} style={{ position: 'relative', top: 1 }} />
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     color: 'white', 
     fontSize: 19, 
     position: 'relative',
-    top: 4.5
+    top: 4.5,
+    flex: 1
   }
 })
