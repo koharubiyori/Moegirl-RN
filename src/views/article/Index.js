@@ -137,12 +137,18 @@ function Article(props){
     })
 
     if(anchor){
-      // 这里需要优化，因为不知道为什么导致语句没有执行，所以采取了等待500毫秒的手段
-      // 考虑是dom还没能加载完毕导致的
-      setTimeout(() =>{
-        articleViewIntoAnchor(anchor, false)
-        $dialog.snackBar.show(`该链接指向了“${decodeURIComponent(anchor.replace(/\./g, '%'))}”章节`)
-      }, 700)
+      refs.articleView.current.injectScript(`
+        var target = document.getElementById('${anchor}')
+        if(target){
+          setTimeout(() => window.scrollTo(0, target.getBoundingClientRect().top))
+        }else{
+          window.onload = function(){
+            document.getElementById('${anchor}').scrollIntoView()
+          }
+        }
+      `)
+
+      $dialog.snackBar.show(`该链接指向了“${decodeURIComponent(anchor.replace(/\./g, '%'))}”章节`)
     }
   }
 
