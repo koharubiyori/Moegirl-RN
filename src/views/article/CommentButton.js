@@ -73,7 +73,7 @@ function CommentButton(props){
       <View style={{ ...styles.main }}>
         <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
           <Icon name="comment" size={30} color="white" style={{ position: 'relative', top: -4 }} />
-          <Text style={{ position: 'absolute', bottom: 6, color: 'white' }}>{{ 0: '×', 1: '...', 2: '...' }[state.status] || state.data.count}</Text>
+          <Text style={{ position: 'absolute', bottom: 6, color: 'white' }}>{{ 0: '×', 1: '...', 2: '...' }[state.status || 1] || state.data.count}</Text>
         </View>
       </View>
     </AnimatedTouchableOpacity>

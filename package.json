@@ -12,15 +12,14 @@
     "postinstall": "jetifier -r",
     "menu": "adb shell input keyevent 82",
     "build": "cd android && ./gradlew assembleRelease && cd ../",
-    "pushyhot": "pushy bundle --platform android",
-    "pushyapk": "pushy uploadApk android/app/build/outputs/apk/release/app-release.apk"
+    "push": "adb push android/app/build/outputs/apk/release/app-release.apk sdcard"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
     "axios": "^0.19.0",
     "qs": "^6.8.0",
     "react": "16.8.6",
-    "react-native": "0.60.5",
+    "react-native": "^0.61.5",
     "react-native-cookies": "^3.3.0",
     "react-native-default-menu": "^0.0.8",
     "react-native-dialog": "^5.6.0",
@@ -48,6 +47,7 @@
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/runtime": "^7.5.5",
+    "@bam.tech/react-native-make": "^1.0.3",
     "@react-native-community/eslint-config": "^0.0.5",
     "babel-jest": "^24.9.0",
     "babel-plugin-root-import": "^6.4.1",
