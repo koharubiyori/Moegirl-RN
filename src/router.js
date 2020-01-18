@@ -17,6 +17,7 @@ import reply from './views/comment/Reply'
 import about from './views/About'
 import settings from './views/settings/Index'
 import imageViewer from './components/articleView/ImageViewer'
+import notifications from './views/notification/Index'
 
 // 本来想在模态框中实现，因发现webView的全屏模式和模态框一起使用时发生了bug(全屏后白屏)，故这里用一个单独的路由来显示
 import biliPlayer from './components/articleView/BiliPlayer'
@@ -35,33 +36,12 @@ const StackNavigator = createStackNavigator(
     BottomTabNavigator, article, search, searchResult, login, about,
     settings, imageViewer,
 
-    edit: {
-      screen: edit,
-      params: {
-        transitionType: 'forHorizontal'
-      }
-    }, 
+    edit: systemView(edit),
+    comment: systemView(comment),
+    reply: systemView(reply),
+    notifications: systemView(notifications),
     
-    comment: {
-      screen: comment,
-      params: {
-        transitionType: 'forHorizontal'
-      }
-    },
-
-    reply: {
-      screen: reply,
-      params: {
-        transitionType: 'forHorizontal'
-      }
-    },
-
-    biliPlayer: {
-      screen: biliPlayer,
-      params: {
-        transitionType: 'forFade'
-      }
-    }
+    biliPlayer: systemView(biliPlayer, 'forFade'),
   },
 
   { 
@@ -72,6 +52,13 @@ const StackNavigator = createStackNavigator(
     })
   }
 )
+
+function systemView(component, transitionType = 'forHorizontal'){
+  return {
+    screen: component,
+    params: { transitionType }
+  }
+}
 
 function screenInterpolator(sceneProps) {
   const params = sceneProps.scene.route.params || {}
