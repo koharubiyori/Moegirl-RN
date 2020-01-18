@@ -6,6 +6,8 @@ import {
 } from 'react-native'
 import userHOC from '~/redux/user/HOC'
 import Item from './components/Item'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import Button from '~/components/Button'
 
 DrawerBody.propTypes = {
   immersionMode: PropTypes.bool   // 暂时用不上了
@@ -39,6 +41,12 @@ function DrawerBody(props){
         style={{ ...styles.bgImage, width: Dimensions.get('window').width * 0.6, height: Dimensions.get('window').height - 160 }}
       />
       <View style={{ ...styles.header, ...(props.immersionMode ? { height: 150 } : { height: 150 + statusBarHeight, paddingTop: statusBarHeight }) }}>
+        <Button style={{ ...styles.headerIcon, top: statusBarHeight + 10 }}
+          onPress={() => { $appNavigator.current._navigation.navigate('notifications'); $drawer.close() }}
+        >
+          <MaterialIcon name="notifications" size={25} color="white" />
+        </Button>
+        
         {props.state.user.name ? 
           <TouchableOpacity onPress={tap(navigation => navigation.push('article', { link: 'User:' + props.state.user.name }))}>
             <Image source={{ uri: $avatarUrl + props.state.user.name }} style={styles.avatar} />
@@ -79,6 +87,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: $colors.main,
     elevation: 5,
+  },
+
+  headerIcon: {
+    position: 'absolute', 
+    right: 20, 
+    zIndex: 10000
   },
 
   bgImage: {
