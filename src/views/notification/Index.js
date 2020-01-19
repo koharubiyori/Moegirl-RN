@@ -5,6 +5,7 @@ import {
   StyleSheet
 } from 'react-native'
 import { getNotifications } from '~/api/notification'
+import Toolbar from '~/components/Toolbar'
 
 Notifications.propTypes = {
   
@@ -29,8 +30,12 @@ export default function Notifications(props){
   }
   
   return (
-    <View>
-      
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <Toolbar
+        title="通知"
+        leftIcon="keyboard-backspace"
+        onPressLeftIcon={() => props.navigation.goBack()}
+      />   
     </View>
   )
 }

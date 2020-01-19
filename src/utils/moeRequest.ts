@@ -1,4 +1,3 @@
-import CookieManager from 'react-native-cookies'
 import request from './request'
 
 export default function(config){
