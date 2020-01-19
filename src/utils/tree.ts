@@ -1,35 +1,46 @@
-export default class Tree{
-  constructor (data){
+export interface OriginalTreeData {
+  id: string
+  parentid: string
+}
+
+export interface TreeData extends OriginalTreeData {
+  children: TreeData[]
+}
+
+export default class Tree {
+  tree: TreeData[]
+  
+  constructor (data: OriginalTreeData[]) {
     // this.data = data || []     // Tree实例中不再保存原始评论数据，以此尝试是否能提高性能解决评论卡顿
     this.tree = this.toTree(data || [])
   }
 
-  static toFlat (root){
-    function flat(children){
-      return children.reduce((prev, next) =>{
+  static toFlat (children: TreeData[]) {
+    function flat(children: TreeData[]): TreeData[] {
+      return children.reduce<TreeData[]>((prev, next) => {
         const children = next.children || []
         return prev.concat([next], flat(children))
       }, [])
     }
 
-    return flat(root)
+    return flat(children)
   }
 
   // 获取一个目录下所有目录
-  getChildrenById (item, data){
-    var through = item =>{
-      var result = []
-      data.forEach(original =>{
-        if(item.id === original.parentid){
-          original.children = through(original)
-          result.push(original)
+  getChildrenById (root: OriginalTreeData, data: OriginalTreeData[]) {
+    let through = (root: OriginalTreeData) => {
+      let result: TreeData[] = []
+      data.forEach(original => {
+        if (root.id === original.parentid) {
+          (original as TreeData).children = through(original)
+          result.push(original as TreeData)
         }
       })
       
       return result
     }
 
-    return through(item) 
+    return through(root) 
   }
 
   // 获取一个目录的所有父级目录（包括自己）
@@ -54,10 +65,9 @@ export default class Tree{
   // }
 
   // 树化
-  toTree (data){
-    var roots = data.filter(item => !item.parentid)
-
-    roots.forEach(root =>{
+  toTree (data: OriginalTreeData[]) {
+    let roots = data.filter(item => !item.parentid) as any as TreeData[]
+    roots.forEach(root => {
       root.children = this.getChildrenById(root, data)
     })
 

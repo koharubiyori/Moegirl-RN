@@ -1,12 +1,16 @@
-import React, { useRef } from 'react'
-import { 
-  View, Text,
-  StyleSheet,
-} from 'react-native'
+import React, { PropsWithChildren } from 'react'
+import { StyleSheet, View } from 'react-native'
 import ArticleView from '~/components/articleView/Index'
 import Header from './components/Header'
 
-export default function Home(props){
+export interface Props {
+
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation
+
+function Home(props: PropsWithChildren<FinalProps>) {
+
   return (
     <View style={{ flex: 1 }}>
       <Header title="萌娘百科" />
@@ -16,6 +20,8 @@ export default function Home(props){
     </View>
   )
 }
+
+export default Home
 
 const styles = StyleSheet.create({
   

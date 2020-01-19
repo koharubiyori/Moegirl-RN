@@ -1,18 +1,16 @@
-import React from 'react'
-import {
-  View, Text,
-  StyleSheet, 
-} from 'react-native'
-import PropTypes from 'prop-types'
-import Toolbar from '~/components/Toolbar'
+import React, { PropsWithChildren } from 'react'
 import { withNavigation } from 'react-navigation'
 import StatusBar from '~/components/StatusBar'
+import Toolbar from '~/components/Toolbar'
 
-IndexHeader.propTypes = {
-  title: PropTypes.string.isRequired 
+export interface Props {
+  title: string
 }
 
-function IndexHeader(props, ref){
+type FinalProps = Props & __Navigation.InjectedNavigation
+
+function IndexHeader(props: PropsWithChildren<FinalProps>) {
+  
   return (
     <>
       <StatusBar />

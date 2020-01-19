@@ -1,5 +1,3 @@
-import storage from './utils/storage'
-
 const colors = {
   main: '#3CAD3D',
   dark: '#318D32',

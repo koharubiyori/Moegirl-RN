@@ -1,67 +1,67 @@
-import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { 
-  View, Text, NativeModules, ToolbarAndroid, TouchableNativeFeedback,
-  StyleSheet
-} from 'react-native'
-import { Toolbar } from 'react-native-material-ui'
-import Menu from 'react-native-default-menu'
+import React, { useRef, PropsWithChildren } from 'react'
+import { NativeModules, StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native'
+import Menu, { DefaultMenuRef } from 'react-native-default-menu'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
+import { IconProps } from 'react-native-vector-icons/Icon'
 
-MyToolbar.propTypes = {
-  style: PropTypes.object,
-  title: PropTypes.string,
-  textColor: PropTypes.string,
-  leftIcon: PropTypes.string,
-  rightIcon: PropTypes.string,
-  leftIconProps: PropTypes.object,
-  rightIconProps: PropTypes.object,
-  actions: PropTypes.array,
-  moreIconProps: PropTypes.object,
-  onPressLeftIcon: PropTypes.func,
-  onPressRightIcon: PropTypes.func,
-  onPressActions: PropTypes.func
+export interface Props {
+  title: string
+  style?: StyleProp<ViewStyle>
+  textColor?: string
+  leftIcon?: string
+  rightIcon?: string
+  leftIconProps?: IconProps
+  rightIconProps?: IconProps
+  actions?: string[]
+  moreIconProps?: IconProps
+  onPressLeftIcon? (): void
+  onPressRightIcon? (): void
+  onPressActions? (eventName: string, index: number): void
 }
 
-MyToolbar.defaultProps = {
-  textColor: 'white'
+(MyToolbar as DefaultProps<Props>).defaultProps = {
+  textColor: 'white',
+  leftIcon: 'keyboard-backspace',
 }
 
-export default function MyToolbar(props){
+type FinalProps = Props
+
+export default function MyToolbar(props: PropsWithChildren<FinalProps>) {
   const refs = {
-    menu: useRef()
+    menu: useRef<DefaultMenuRef>()
   }
 
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
   return (
     <View style={{
       ...styles.body,
-      ...props.style,
+      ...(props.style as object),
       height: 56 + statusBarHeight,
       paddingTop: statusBarHeight
     }}>
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressLeftIcon && props.onPressLeftIcon()}>
-          <MaterialIcon name={props.leftIcon} size={28} color={props.textColor} {...props.leftIconProps} />
+          <MaterialIcon name={props.leftIcon!} size={28} color={props.textColor} {...props.leftIconProps} />
         </Button>
         <Text style={{ ...styles.title, color: props.textColor }} numberOfLines={1}>{props.title}</Text>
       </View>
 
       <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-        {props.rightIcon ? 
-          <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressRightIcon && props.onPressRightIcon()}>
+        {props.rightIcon 
+          ? <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressRightIcon && props.onPressRightIcon()}>
             <MaterialIcon name={props.rightIcon} size={28} color={props.textColor} {...props.rightIconProps} style={{ position: 'relative', top: 1 }} />
           </Button>
-        : null}
+          : null}
 
-        {props.actions ?
-          <Menu options={props.actions} onPress={props.onPressActions} ref={refs.menu}>
-            <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => refs.menu.current.showPopupMenu()}>
+        {props.actions
+          ? <Menu options={props.actions} onPress={props.onPressActions} ref={refs.menu}>
+            <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => refs.menu.current!.showPopupMenu()}>
               <MaterialIcon name="more-vert" size={28} color={props.textColor} {...props.moreIconProps} style={{ position: 'relative', top: 1 }} />
             </Button>
           </Menu>
-        : null}
+          : null}
       </View>
     </View>
   )
