@@ -7,7 +7,9 @@ export as namespace __Navigation
 type NavigationFn = (routeName: RouteName, params?: object) => void
 
 declare namespace Navigation {
+  type Navigation<State = {}> = NavigationScreenProp<{}, State> & { [Key in 'navigate' | 'push' | 'replace']: NavigationFn }
+  
   interface InjectedNavigation<State = {}> {
-    navigation: NavigationScreenProp<{}, State> & { [Key in 'navigate' | 'push' | 'replace']: NavigationFn }
+    navigation: Navigation<State>
   } 
 }

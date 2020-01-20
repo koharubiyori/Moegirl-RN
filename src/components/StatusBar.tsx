@@ -1,18 +1,17 @@
 import React, { PropsWithChildren } from 'react'
-import PropTypes from 'prop-types'
-import { StatusBar, View, NativeModules } from 'react-native'
+import { NativeModules, StatusBar, View } from 'react-native'
 
 export interface Props {
-  animated: boolean
-  hidden: boolean
-  translucent: boolean
-  color: string
-  blackText: boolean
+  animated?: boolean
+  hidden?: boolean
+  translucent?: boolean
+  color?: string
+  blackText?: boolean
 }
 
 (MyStatusBar as DefaultProps<Props>).defaultProps = {
   animated: true,
-  hidden: true,
+  hidden: false,
   translucent: true,
   color: $colors.dark || '#318D32',
   blackText: false

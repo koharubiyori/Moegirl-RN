@@ -37,6 +37,8 @@ module.exports = {
     'no-undef': 0,  // 不能使用未定义的变量(reactNative环境比较特殊，这里禁用eslint的，ts的变量检查还是会起作用)
     'react/display-name': 0,   // 必须设置组件的displayName
     'no-use-before-define': 0, // 禁止定义前使用(对ts类型的错误检测) 
-    'padded-blocks': 0
+    'padded-blocks': 0, // 代码块首尾必须要空行
+    'no-return-assign': 0, // 不能返回赋值语句
+    'camelcase': 0  // 变量必须是camelcase风格的，目前来看开启这个会导致不能使用下划线开头的属性或变量
   }
 }

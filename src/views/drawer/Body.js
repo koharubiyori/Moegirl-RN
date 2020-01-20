@@ -42,7 +42,7 @@ function DrawerBody(props){
       />
       <View style={{ ...styles.header, ...(props.immersionMode ? { height: 150 } : { height: 150 + statusBarHeight, paddingTop: statusBarHeight }) }}>
         <Button style={{ ...styles.headerIcon, top: statusBarHeight + 10 }}
-          onPress={() => { $appNavigator.current._navigation.navigate('notifications'); $drawer.close() }}
+          onPress={() => { $appNavigator.navigate('notifications'); $drawer.close() }}
         >
           <MaterialIcon name="notifications" size={25} color="white" />
         </Button>
@@ -67,12 +67,12 @@ function DrawerBody(props){
 
       <ScrollView style={{ flex: 1 }}>
         <View style={styles.items}>
-          <Item icon="settings" title="设置" onPress={() => $appNavigator.current._navigation.navigate('settings')} />
-          <Item icon="help" title="提问求助区" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:提问求助区' })} />
-          <Item icon="forum" title="讨论版" onPress={() => $appNavigator.current._navigation.push('article', { link: 'Talk:讨论版' })} />
+          <Item icon="settings" title="设置" onPress={() => $appNavigator.navigate('settings')} />
+          <Item icon="help" title="提问求助区" onPress={() => $appNavigator.push('article', { link: 'Talk:提问求助区' })} />
+          <Item icon="forum" title="讨论版" onPress={() => $appNavigator.push('article', { link: 'Talk:讨论版' })} />
           <Item icon="touch-app" title="操作提示" onPress={showActionHelps} />
           <Item icon="subdirectory-arrow-left" title="退出应用" onPress={BackHandler.exitApp} />
-          {/* <Item icon="exposure-plus-1" title="支持萌娘百科" onPress={() => $appNavigator.current._navigation.push('article', { link: '萌娘百科:捐款' })} /> */}
+          {/* <Item icon="exposure-plus-1" title="支持萌娘百科" onPress={() => $appNavigator.push('article', { link: '萌娘百科:捐款' })} /> */}
         </View>
       </ScrollView>
     </View>

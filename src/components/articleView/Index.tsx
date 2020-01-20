@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, MutableRefObject, PropsWithChildren } from 'react'
 import {
   View, StyleSheet, Text, Dimensions, Linking, ActivityIndicator, TouchableOpacity,
-  BackHandler, NativeModules
+  BackHandler, NativeModules, StyleProp, ViewStyle
 } from 'react-native'
 import PropTypes from 'prop-types'
 import { WebView } from 'react-native-webview'
@@ -15,51 +15,56 @@ import { getImageUrl } from '~/api/article'
 import request from '~/utils/request'
 import store from '~/redux'
 
-ArticleView.propTypes = {
-  style: PropTypes.object,
-  navigation: PropTypes.object,
-  
-  link: PropTypes.string,
-  html: PropTypes.string,
-  disabledLink: PropTypes.bool,
-  injectStyle: PropTypes.arrayOf(PropTypes.string),   // 载入位于 /android/main/assets 的样式表
-  injectCss: PropTypes.string,
-  injectJs: PropTypes.string,
-  autoPaddingTopForHeader: PropTypes.bool,
-
-  onMessages: PropTypes.objectOf(PropTypes.func),   // 接收webView的postMessage
-  onLoaded: PropTypes.func,
-  onMissing: PropTypes.func,
-  getRef: PropTypes.object
+export interface Props {
+  navigation: __Navigation.Navigation
+  style?: StyleProp<ViewStyle>
+  link?: string
+  html?: string
+  disabledLink?: boolean
+  injectStyle?: string[]
+  injectCss?: string
+  injectJs?: string
+  autoPaddingTopForHeader?: boolean
+  onMessages?: { [msgName: string]: () => void }
+  onLoaded? (): void
+  onMissing? (): void
+  getRef: MutableRefObject<any>
 }
 
-ArticleView.defaultProps = {
-  onLoaded: new Function,
-  onMissing: new Function
+export interface ArticleViewRef {
+  loadContent (forceLoad?: boolean): void
+  injectScript (script: string): void
 }
 
-function ArticleView(props){
+(ArticleView as DefaultProps<Props>).defaultProps = {
+  onLoaded: () => {},
+  onMissing: () => {}
+}
+
+type FinalProps = Props
+
+function ArticleView(props: PropsWithChildren<FinalProps>) {
   const [html, setHtml] = useState('')
   const [status, setStatus] = useState(1)
   const config = useRef(store.getState().config)
   const refs = {
-    webView: useRef()
+    webView: useRef<any>()
   }
 
-  if(props.getRef) props.getRef.current = { loadContent, injectScript }
+  if (props.getRef) props.getRef.current = { loadContent, injectScript }
 
   const libScript = ['fastclick.min', 'jquery.min', 'hammer.min']
   const baseUrl = 'file:///android_asset/assets'
 
-  useEffect(() =>{
-    const listener = props.navigation.addListener('willFocus', () =>{
+  useEffect(() => {
+    const listener = props.navigation.addListener('willFocus', () => {
       // 获取配置，注入webView
       let newConfig = store.getState().config
-      if(JSON.stringify(config.current) !== JSON.stringify(newConfig || {})){
+      if (JSON.stringify(config.current) !== JSON.stringify(newConfig || {})) {
         config.current = newConfig
-        if(props.html){
+        if (props.html) {
           setHtml(createDocument(props.html))
-        }else{
+        } else {
           loadContent()
         }
       }
@@ -68,9 +73,9 @@ function ArticleView(props){
     return () => listener.remove()
   }, [])
 
-  useEffect(() =>{
-    const listener = BackHandler.addEventListener('hardwareBackPress', () =>{
-      if(global.$isVisibleLoading){
+  useEffect(() => {
+    const listener = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (global.$isVisibleLoading) {
         toast.hide()
         return true
       }
@@ -79,30 +84,30 @@ function ArticleView(props){
     return () => listener.remove()
   }, [])
 
-  useEffect(() =>{
-    if(props.link){
+  useEffect(() => {
+    if (props.link) {
       loadContent()
-    }else{
-      setHtml(createDocument(props.html))
+    } else {
+      setHtml(createDocument(props.html!))
       setStatus(3)
     }
   }, [])
 
-  function createDocument(content){
-    let injectRequestUtil = (function(){
+  function createDocument(content: string) {
+    let injectRequestUtil = function() {
       // 注入一个请求器，用于通信
-      window._request = function(config, callback){
-        if(!window._request_id) window._request_id = 0 
+      window._request = function(config, callback) {
+        if (!window._request_id) window._request_id = 0 
 
-        var callbackName = '_request_' + window._request_id
+        let callbackName = '_request_' + window._request_id
         
-        window[callbackName] = callback
+        ;(window as any)[callbackName] = callback
         window._request_id++
 
         // 必须返回，之后单独使用postMessage发送出去，不能对postMessage进行封装，否则webView无法接收到
         return { config, callbackName }
       }
-    }).toString()
+    }.toString()
     injectRequestUtil = `(${injectRequestUtil})();`
 
     // 载入资源（位于 /android/main/assets ）
@@ -139,7 +144,7 @@ function ArticleView(props){
               padding-top: ${store.getState().config.immersionMode ? 55 : 55 + NativeModules.StatusBarManager.HEIGHT}px;
             }
           </style>
-        `: ''}
+        ` : ''}
         <style>${props.injectCss || ''}</style>
       </head>
       <body>
@@ -158,35 +163,35 @@ function ArticleView(props){
     `
   }
 
-  function loadContent(forceLoad = false){
-    if(status === 2){ return }
+  function loadContent(forceLoad = false) {
+    if (status === 2) { return }
     setStatus(2)
     props.articleView.getContent(props.link, forceLoad)
-      .then(data =>{
+      .then(data => {
         let html = data.parse.text['*']
         setHtml(createDocument(html))
         setStatus(3)
         props.onLoaded(data)
       })
-      .catch(async e =>{
+      .catch(async e => {
         console.log(e)
-        if(e && e.code === 'missingtitle') return props.onMissing(props.link)
+        if (e && e.code === 'missingtitle') return props.onMissing(props.link)
 
-        try{
+        try {
           const redirectMap = await storage.get('articleRedirectMap') || {}
           let link = redirectMap[props.link] || props.link
           const articleCache = await storage.get('articleCache') || {}
           const data = articleCache[link]
-          if(data){
+          if (data) {
             let html = data.parse.text['*']
             setHtml(createDocument(html))
             $dialog.snackBar.show('因读取失败，载入条目缓存')
             setStatus(3)
             props.onLoaded(data)
-          }else{
-            throw new Error
+          } else {
+            throw new Error()
           }
-        }catch(e){
+        } catch (e) {
           console.log(e)
           toast.show('网络超时，读取失败')
           setStatus(0)
@@ -194,22 +199,22 @@ function ArticleView(props){
       })
   }
 
-  function injectScript(script){
+  function injectScript(script) {
     refs.webView.current.injectJavaScript(script)
   }
 
-  function receiveMessage(e){
-    const {type, data} = JSON.parse(e.nativeEvent.data)
+  function receiveMessage(e) {
+    const { type, data } = JSON.parse(e.nativeEvent.data)
     
-    if(type === 'print'){
+    if (type === 'print') {
       console.log('=== print ===', data)
     }
 
-    if(type === 'error'){
+    if (type === 'error') {
       console.log('--- WebViewError ---', data)
     }
 
-    if(type === 'onTapNote'){
+    if (type === 'onTapNote') {
       $dialog.alert.show({
         title: '注释',
         content: data.content,
@@ -217,51 +222,51 @@ function ArticleView(props){
       })
     }
 
-    if(type === 'request'){
-      let {config, callbackName} = data
+    if (type === 'request') {
+      let { config, callbackName } = data
       request({
         baseURL: config.url,
         method: config.method,
         params: config.params
-      }).then(data =>{
+      }).then(data => {
         // 数据中的换行会导致解析json失败
         injectScript(`window.${callbackName}(\`${JSON.stringify(data).replace(/\\n/g, '')}\`)`)
-      }).catch(e =>{
+      }).catch(e => {
         console.log(e)
         injectScript(`window.${callbackName}('${JSON.stringify({ error: true })}')`)
       })
     }
 
-    if(props.disabledLink){ return }
+    if (props.disabledLink) { return }
 
-    if(type === 'onTapLink'){
+    if (type === 'onTapLink') {
       ;({
-        inner: () =>{
+        inner: () => {
           let [link, anchor] = data.link.split('#')
           props.navigation.push('article', { link, anchor }) 
         },
 
-        outer (){
+        outer () {
           $dialog.confirm.show({
             content: '这是一个外链，是否要打开外部浏览器进行访问？',
             onTapCheck: () => Linking.openURL(data.link)
           })
         },
 
-        notExists (){
+        notExists () {
           $dialog.alert.show({ content: '该条目还未创建' })
         }
       })[data.type]()
     }
 
-    if(type === 'openApp'){
+    if (type === 'openApp') {
       Linking.openURL(data.url)
     }
 
-    if(type === 'onTapEdit'){
-      if(props.state.user.name){
+    if (type === 'onTapEdit') {
+      if (props.state.user.name) {
         props.navigation.push('edit', { title: data.page, section: data.section })
-      }else{
+      } else {
         $dialog.confirm.show({
           content: '登录后才可以进行编辑，要前往登录界面吗？',
           onTapCheck: () => props.navigation.push('login')
@@ -269,40 +274,39 @@ function ArticleView(props){
       }
     }
 
-    if(type === 'onTapImage'){
+    if (type === 'onTapImage') {
       toast.showLoading('获取链接中')
       getImageUrl(data.name)
         .finally(toast.hide)
-        .then(url =>{
+        .then(url => {
           props.navigation.push('imageViewer', { imgs: [{ url }] })
         })
-        .catch(e =>{
+        .catch(e => {
           console.log(e)
           setTimeout(() => toast.show('获取链接失败'))
         })
     }
 
-    if(type === 'onTapBiliVideo'){
+    if (type === 'onTapBiliVideo') {
       props.navigation.push('biliPlayer', data)
     }
 
-    if(props.onMessages){
-      ;(props.onMessages[type] || new Function)(data)
+    if (props.onMessages) {
+      ;(props.onMessages[type] || () => {})(data)
     }
   }
 
   return (
-    <View style={{ ...styles.container, ...props.style }}>
-      {{
+    <View style={{ ...styles.container, ...(props.style as any) }}>
+      {({
         0: () => 
-          <TouchableOpacity onPress={loadContent}>
+          <TouchableOpacity onPress={() => loadContent(true)}>
             <Text style={{ fontSize: 18, color: $colors.main }}>重新加载</Text>
           </TouchableOpacity>,
         1: () => null,
         2: () => <ActivityIndicator color={$colors.main} size={50} />,
         3: () => 
           <WebView allowFileAccess
-            cacheMode="LOAD_CACHE_ELSE_NETWORK"
             scalesPageToFit={false}
             source={{ html, baseUrl }}
             originWhitelist={['*']}
@@ -310,7 +314,7 @@ function ArticleView(props){
             onMessage={receiveMessage}
             ref={refs.webView}
           />
-      }[status]()}
+      } as { [status: number]: () => JSX.Element | null })[status]()}
     </View>
   )
 }
