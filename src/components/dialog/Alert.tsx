@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, MutableRefObject, PropsWithChildren } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text,
@@ -10,35 +10,53 @@ Alert.propTypes = {
   getRef: PropTypes.object
 }
 
-function Alert(props){
+export interface Props {
+  getRef: MutableRefObject<any>
+}
+
+export interface ShowFnOptions {
+  title?: string
+  content?: string
+  checkText?: string
+  onTapCheck? (): void
+}
+
+export interface AlertRef {
+  show (options: ShowFnOptions): void
+  hide (): void
+}
+
+type FinalProps = Props
+
+function Alert(props: PropsWithChildren<FinalProps>) {
   const [visible, setVisible] = useState(false)
   const [params, setParams] = useState({
     title: '',
     content: '',
     checkText: '',
-    onTapCheck: new Function
+    onTapCheck: () => {}
   })
 
-  if(props.getRef) props.getRef.current = { show, hide }
+  if (props.getRef) props.getRef.current = { show, hide }
 
   function show({
     title = '提示',
     content = '',
     checkText = '确定',
-    onTapCheck = new Function
-  }){
+    onTapCheck = () => {}
+  }) {
     setVisible(true)
-    setParams({ title, content, checkText, onTapCheck: () =>{ onTapCheck(); hide() }})
+    setParams({ title, content, checkText, onTapCheck: () => { onTapCheck(); hide() } })
   }
 
-  function hide(){
+  function hide() {
     setVisible(false)
   }
 
   return (
     <Dialog.Container visible={visible}
-     onBackButtonPress={hide}
-     onBackdropPress={hide}
+      onBackButtonPress={hide}
+      onBackdropPress={hide}
     >
       <Dialog.Title>{params.title}</Dialog.Title>
       <Dialog.Description>{params.content}</Dialog.Description>

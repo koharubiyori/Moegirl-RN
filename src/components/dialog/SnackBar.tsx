@@ -1,25 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, MutableRefObject, PropsWithChildren } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, Animated, 
   StyleSheet, 
 } from 'react-native'
 
-SnackBar.propTypes = {
-  getRef: PropTypes.object
+export interface SnackBarRef {
+  show (message: string): void
+  hide (): void
 }
 
-function SnackBar(props){
+export interface Props {
+  getRef: MutableRefObject<any>
+}
+
+type FinalProps = Props
+
+function SnackBar(props: PropsWithChildren<FinalProps>) {
   const [height, setHeight] = useState(45)
   const [transitionTop, setTransitionTop] = useState(new Animated.Value(-height))
   const [visible, setVisible] = useState(false)
   const [content, setContent] = useState('')
-  const [queue, setQueue] = useState([])
+  const [queue, setQueue] = useState<string[]>([])
 
-  if(props.getRef) props.getRef.current = { show, hide }
+  if (props.getRef) props.getRef.current = { show, hide }
 
-  function show(content){
-    if(visible) return setQueue(prevVal => prevVal.concat([content]))
+  function show(message: string) {
+    if (visible) return setQueue(prevVal => prevVal.concat([message]))
 
     setContent(content)
     setVisible(true)
@@ -27,41 +34,41 @@ function SnackBar(props){
     Animated.timing(transitionTop, {
       toValue: 0,
       duration: 200
-    }).start(() =>{
-      setTimeout(() =>{
+    }).start(() => {
+      setTimeout(() => {
         // 等待hide结束，检查队列，若有等待的消息则500毫秒后显示
-        hide().then(() =>{
-          if(queue.length){
-            let content = queue.pop()
+        hide().then(() => {
+          if (queue.length) {
+            let message = queue.pop()
             setQueue(queue)
-            setTimeout(() => show(content), 500)
+            setTimeout(() => show(message!), 500)
           }
         })
       }, 3000)
     })
   }
 
-  function hide(){
-    return new Promise((resolve, reject) =>{
+  function hide() {
+    return new Promise((resolve, reject) => {
       Animated.timing(transitionTop, {
         toValue: -height,
         duration: 200
-      }).start(() =>{
+      }).start(() => {
         setVisible(false)
         resolve()
       })
     })
   }
 
-  function layoutChange(e){
+  function layoutChange(e: any) {
     setHeight(e.nativeEvent.layout.height)
   }
 
   return (
-    !visible ? null :
-    <Animated.View style={{ ...styles.main, bottom: transitionTop }} onLayout={layoutChange}>
-      <Text style={{ color: 'white', lineHeight: 20 }}>{content}</Text>
-    </Animated.View>
+    !visible ? null
+      : <Animated.View style={{ ...styles.main, bottom: transitionTop }} onLayout={layoutChange}>
+        <Text style={{ color: 'white', lineHeight: 20 }}>{content}</Text>
+      </Animated.View>
   )
 }
 

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, FC } from 'react'
 import { withNavigation } from 'react-navigation'
 import StatusBar from '~/components/StatusBar'
 import Toolbar from '~/components/Toolbar'
@@ -25,4 +25,4 @@ function IndexHeader(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default withNavigation(IndexHeader)
+export default withNavigation(IndexHeader) as FC<Props>
