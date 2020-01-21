@@ -5,7 +5,7 @@ import {
   StyleSheet, 
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
-import Header from './Header'
+import Header from './components/Header'
 import TabNavigator from './TabNavigator'
 import { editArticle } from '~/api/edit'
 import toast from '~/utils/toast'

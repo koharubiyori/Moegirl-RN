@@ -3,7 +3,7 @@ import { BackHandler, Dimensions, Image, NativeModules, ScrollView, StyleSheet, 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 import userHOC from '~/redux/user/HOC'
-import Item from './components/Item'
+import Item from './Item'
 
 export interface Props {
   immersionMode: boolean

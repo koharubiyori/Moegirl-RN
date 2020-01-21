@@ -3,8 +3,8 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import StatusBar from '~/components/StatusBar'
 import commentHOC from '~/redux/comment/HOC'
 import Item from './components/Item'
-import Editor, { CommentEditorRef } from './Editor'
-import Header from './Header'
+import Editor, { CommentEditorRef } from './components/Editor'
+import Header from './components/Header'
 import format from './utils/format'
 
 export interface Props {

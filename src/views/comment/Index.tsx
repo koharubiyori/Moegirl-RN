@@ -6,8 +6,8 @@ import * as commentActions from '~/redux/comment/actionTypes'
 import commentHOC from '~/redux/comment/HOC'
 import toast from '~/utils/toast'
 import Item from './components/Item'
-import Editor, { CommentEditorRef } from './Editor'
-import Header from './Header'
+import Editor, { CommentEditorRef } from './components/Editor'
+import Header from './components/Header'
 
 export interface Props {
 

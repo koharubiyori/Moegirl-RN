@@ -6,9 +6,9 @@ import {
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
 import toast from '~/utils/toast'
-import Header from './Header'
-import SearchHint from './SearchHint'
-import RecentSearch from './RecentSearch'
+import Header from './components/Header'
+import SearchHint from './components/SearchHint'
+import RecentSearch from './components/RecentSearch'
 import storage from '~/utils/storage'
 import { getHint } from '~/api/search'
 

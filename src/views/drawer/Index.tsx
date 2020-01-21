@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { BackHandler, DeviceEventEmitter, Dimensions, DrawerLayoutAndroid } from 'react-native'
 import storage from '~/utils/storage'
-import DrawerBody from './Body'
+import DrawerBody from './components/Body'
 
 export interface Props {
 
