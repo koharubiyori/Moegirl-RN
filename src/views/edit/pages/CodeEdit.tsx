@@ -1,12 +1,8 @@
-import React, { useState, useEffect, useRef, PropsWithChildren } from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, TextInput, ActivityIndicator,
-  StyleSheet
-} from 'react-native'
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, View } from 'react-native'
 import { Button } from 'react-native-material-ui'
-import ArticleEditor from '~/components/articleEditor/Index'
 import { getCode } from '~/api/edit'
+import ArticleEditor from '~/components/articleEditor'
 
 export interface Props {
 

@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 import { StyleSheet, View } from 'react-native'
-import ArticleView from '~/components/articleView/Index'
+import ArticleView from '~/components/articleView'
 import Header from './components/Header'
 
 export interface Props {

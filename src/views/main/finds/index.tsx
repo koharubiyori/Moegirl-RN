@@ -1,30 +1,36 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, PropsWithChildren } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, ScrollView, RefreshControl,
   StyleSheet
 } from 'react-native'
 import Header from '../components/Header'
-import Trend from './modules/Trend'
-import Recommended from './modules/Recommended'
+import Trend, { FindsModuleTrendRef } from './modules/Trend'
+import Recommended, { FindsModuleRecommendedRef } from './modules/Recommended'
 
-function Finds(props){
+export interface Props {
+
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation
+
+function Finds(props: PropsWithChildren<FinalProps>) {
   const [visibleRefreshControl, setVisibleRefreshControl] = useState(false)
   const refs = {
-    trend: useRef(),
-    recommended: useRef()
+    trend: useRef<FindsModuleTrendRef>(),
+    recommended: useRef<FindsModuleRecommendedRef>()
   }
 
-  function reload (){
+  function reload () {
     setVisibleRefreshControl(true)
     Promise.all(
-      Object.values(refs).map(ref => ref.current.reload())
-    ).finally(() =>{
+      Object.values(refs).map(ref => ref.current!.reload())
+    ).finally(() => {
       setVisibleRefreshControl(false)
     })
   }
 
-  function dateStr(){
+  function dateStr() {
     let date = new Date()
     let week = '日一二三四五六'
     return `${date.getMonth() + 1}月${date.getDate()}日 星期${week[date.getDay()]}`
