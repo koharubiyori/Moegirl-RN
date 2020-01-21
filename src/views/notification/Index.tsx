@@ -1,30 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react'
-import PropTypes from 'prop-types'
-import { 
-  View, Text,
-  StyleSheet
-} from 'react-native'
+import React, { PropsWithChildren, useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { getNotifications } from '~/api/notification'
 import Toolbar from '~/components/Toolbar'
 
-Notifications.propTypes = {
-  
+export interface Props {
+
 }
 
-export default function Notifications(props){
+type FinalProps = Props & __Navigation.InjectedNavigation
+
+export default function Notifications(props: PropsWithChildren<FinalProps>) {
   const [notificationList, setNotificationList] = useState({
     list: [],
     status: 1,
     continue: ''
   })
 
-  useEffect(() =>{
+  useEffect(() => {
     load()
   }, [])
 
-  function load(){
+  function load() {
     getNotifications()
-      .then(data =>{
+      .then(data => {
         console.log(data)
       })
   }

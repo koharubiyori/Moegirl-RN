@@ -1,78 +1,82 @@
-import React, { useState, useRef } from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, Modal, Animated, TextInput, TouchableWithoutFeedback, TouchableOpacity,
-  StyleSheet
-} from 'react-native'
+import React, { MutableRefObject, PropsWithChildren, useRef, useState, FC } from 'react'
+import { Animated, Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { postComment } from '~/api/comment'
 import toast from '~/utils/toast'
+import { withNavigation } from 'react-navigation'
 
-CommentEditor.propTypes = {
-  targetId: PropTypes.string,
-  pageId: PropTypes.number,
-  onPosted: PropTypes.func,
-  getRef: PropTypes.object
+export interface Props {
+  targetId?: string
+  pageId: number
+  onPosted (): void
+  getRef: MutableRefObject<any>
 }
 
-function CommentEditor(props){
+export interface CommentEditorRef {
+  show (): void
+  hide (): void
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation
+
+function CommentEditor(props: PropsWithChildren<FinalProps>) {
   const [visible, setVisible] = useState(false)
   const [inputText, setInputText] = useState('')
   const [transitionOpacity] = useState(new Animated.Value(0))
   const [transitionTranslateY] = useState(new Animated.Value(120))
   const refs = {
-    mask: useRef(),
-    textInput: useRef()
+    mask: useRef<any>(),
+    textInput: useRef<any>()
   }
 
-  if(props.getRef) props.getRef.current = { show, hide }
+  if (props.getRef) props.getRef.current = { show, hide }
 
-  function show(){
+  function show() {
     setVisible(true)
     Animated.timing(transitionOpacity, { toValue: 1, duration: 300, useNativeDriver: true }).start()
     Animated.timing(transitionTranslateY, { toValue: 0, duration: 300, useNativeDriver: true }).start()
     setTimeout(() => refs.textInput.current.focus())
   }
 
-  function hide(){
+  function hide() {
     Animated.timing(transitionOpacity, { toValue: 0, duration: 300, useNativeDriver: true }).start()
     Animated.timing(transitionTranslateY, { toValue: 120, duration: 300, useNativeDriver: true })
       .start(() => setVisible(false))
   }
 
-  function close(){
-    if(visible){
-      if(inputText){
+  function close() {
+    if (visible) {
+      if (inputText) {
         $dialog.confirm.show({
           content: '关闭后当前编辑的评论内容将不会保存，是否关闭？',
           onTapCheck: hide
         })
-      }else{
+      } else {
         hide()
       }
-    }else{
+    } else {
       props.navigation.goBack()
     }
   }
 
-  function submit(){
-    if(inputText === '0'){ return toast.show('因萌百评论系统的bug，不能以“0”作为评论内容') }
+  function submit() {
+    if (inputText === '0') { return toast.show('因萌百评论系统的bug，不能以“0”作为评论内容') }
 
     toast.showLoading('提交中')
     postComment(props.pageId, inputText, props.targetId)
       .finally(toast.hide)
-      .then(() =>{
+      .then(() => {
         setTimeout(() => toast.show('发表成功'))
         setInputText('')
         hide()
         props.onPosted()
       })
-      .catch(e =>{
+      .catch(e => {
         console.log(e)
         toast.show('网络错误，请重试', 'center')
       })
   }
 
-  function tapMaskToCloseSelf(e){
+  function tapMaskToCloseSelf(e: any) {
     refs.mask.current._component._nativeTag === e.target && close()
   }
 
@@ -100,7 +104,7 @@ function CommentEditor(props){
   )
 }
 
-export default CommentEditor
+export default withNavigation(CommentEditor) as FC<Props>
 
 const styles = StyleSheet.create({
   container: {

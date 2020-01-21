@@ -1,6 +1,7 @@
 export interface OriginalTreeData {
   id: string
   parentid: string
+  [key: string]: any
 }
 
 export interface TreeData extends OriginalTreeData {

@@ -1,38 +1,44 @@
-import React, { useState, useRef } from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, ScrollView,
-  StyleSheet
-} from 'react-native'
+import React, { PropsWithChildren, useRef, useState } from 'react'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import StatusBar from '~/components/StatusBar'
 import commentHOC from '~/redux/comment/HOC'
 import Item from './components/Item'
+import Editor, { CommentEditorRef } from './Editor'
 import Header from './Header'
-import Editor from './Editor'
 import format from './utils/format'
 
-function CommentReply(props){
+export interface Props {
+
+}
+
+export interface RouteParams {
+  signedName: string
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
+
+function CommentReply(props: PropsWithChildren<FinalProps>) {
   const [replyId, setReplyId] = useState('')
   const refs = {
-    editor: useRef()
+    editor: useRef<CommentEditorRef>()
   }
   const signedName = props.navigation.getParam('signedName')
 
-  function addReply(replyId = ''){
-    if(!signedName){
+  function addReply(replyId = '') {
+    if (signedName) {
       return $dialog.confirm.show({
         content: '需要先登录才能回复，是否前往登录界面？',
         onTapCheck: () => props.navigation.push('login')
       })
     }
     
-    refs.editor.current.show()
+    refs.editor.current!.show()
     
     setReplyId(replyId)
-    setTimeout(refs.editor.current.show)
+    setTimeout(refs.editor.current!.show)
   }
 
-  function delCommentData(id){
+  function delCommentData(id: string) {
     props.comment.del(id, true)
   }
 
@@ -48,7 +54,7 @@ function CommentReply(props){
         pageId={state.pageId}
         targetId={replyId || state.activeId}  
         onPosted={() => props.comment.incrementLoad(true)}
-       />
+      />
     
       <ScrollView style={{ flex: 1 }}>
         <View>
@@ -72,9 +78,9 @@ function CommentReply(props){
           onTapReply={() => addReply(item.id)}
         />)}
 
-          <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>
-            {children.length === 0 ? '还没有回复哦' : '已经没有啦'}
-          </Text>
+        <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>
+          {children.length === 0 ? '还没有回复哦' : '已经没有啦'}
+        </Text>
       </ScrollView>
     </View>
   )

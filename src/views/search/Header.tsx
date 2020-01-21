@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, FC } from 'react'
 import { NativeModules, StyleSheet, TextInput, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { withNavigation } from 'react-navigation'
@@ -34,7 +34,7 @@ function SearchHeader(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default withNavigation(SearchHeader)
+export default withNavigation(SearchHeader) as FC<Props>
 
 const styles = StyleSheet.create({
   body: {

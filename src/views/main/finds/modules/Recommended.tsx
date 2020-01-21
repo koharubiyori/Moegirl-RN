@@ -1,51 +1,49 @@
-import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, 
-  StyleSheet
-} from 'react-native'
+import React, { MutableRefObject, PropsWithChildren, useEffect, useState } from 'react'
+import { StyleProp, ViewStyle } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import ArticleGroup from './components/ArticleGroup'
-import storage from '~/utils/storage'
-import { getHint } from '~/api/search'
 import { getMainImage } from '~/api/article'
 import { getRandomPages } from '~/api/query'
+import { getHint } from '~/api/search'
+import storage from '~/utils/storage'
+import ArticleGroup from './components/ArticleGroup'
 
-let random = (max = 1, min = 0) => Math.floor((Math.random() * max - min) + min)
+const random = (max = 1, min = 0) => Math.floor((Math.random() * max - min) + min)
 
-FindsModuleTrend.propTypes = {
-  navigation: PropTypes.object,
-  style: PropTypes.object,
-  getRef: PropTypes.object
+export interface Props {
+  navigation: __Navigation.Navigation
+  style: StyleProp<ViewStyle>
+  getRef: MutableRefObject<any>
 }
 
-function FindsModuleTrend(props){
+type FinalProps = Props
+
+function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
   const [data, setData] = useState([])
   const [status, setStatus] = useState(2)
   const [searchTitle, setSearchTitle] = useState('')
 
-  if(props.getRef) props.getRef.current = { reload }
+  if (props.getRef) props.getRef.current = { reload }
 
-  useEffect(() =>{
+  useEffect(() => {
     getArticleCaches()
   }, [])
 
-  function reload(){
+  function reload() {
     return getArticleCaches()
   }
 
-  function getArticleCaches (){
+  function getArticleCaches () {
     setStatus(2)
-    return new Promise(async (resolve, reject) =>{
-      try{
+    return new Promise(async (resolve, reject) => {
+      try {
         let cache = await storage.get('articleCache')
   
-        if(cache){
+        if (cache) {
           // 拿到缓存中所有标题
           let data = Object.values(cache).map(item => item.parse.title)
-          if(data.length <= 5){
+          if (data.length <= 5) {
             var lastPages = data
-          }else{
+          } else {
             // 抽出最后五个
             var lastPages = [data.pop(), data.pop(), data.pop(), data.pop(), data.pop()]
           }
@@ -56,18 +54,18 @@ function FindsModuleTrend(props){
           let searchedPages = await getHint(title, 11)
           searchedPages = searchedPages.query.search.map(item => item.title).filter(item => item != title)
   
-          if(searchedPages.length > 5){
+          if (searchedPages.length > 5) {
             var results = []
             
             // 从搜索结果中随机抽出5个
-            while(results.length < 5){
+            while (results.length < 5) {
               let ran = searchedPages[random(searchedPages.length)]
               !results.includes(ran) && results.push(ran)
             }
-          }else{
+          } else {
             var results = searchedPages
           }
-        }else{
+        } else {
           // 没有缓存，执行完全随机
           let randomPages = await getRandomPages()
           var results = randomPages.query.random.map(item => item.title)
@@ -83,7 +81,7 @@ function FindsModuleTrend(props){
         setData(results)
         setStatus(results.length === 0 ? 4 : 3)
         resolve()
-      }catch(e){
+      } catch (e) {
         console.log(e)
         setStatus(0)
         reject()
@@ -94,7 +92,7 @@ function FindsModuleTrend(props){
   return (
     <ArticleGroup
       title="推荐"
-      subtitle={searchTitle && status === 3 || status === 4 ? `因为您阅读了“${searchTitle}”` : null}
+      subtitle={searchTitle && (status === 3 || status === 4) ? `因为您阅读了“${searchTitle}”` : undefined}
       icon={<MaterialCommunityIcons name="star-box" color={$colors.sub} size={26} />}
       articles={data}
       navigation={props.navigation}

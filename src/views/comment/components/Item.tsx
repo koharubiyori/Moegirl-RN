@@ -1,9 +1,6 @@
-import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
-import { 
-  View, Text, Image, TouchableOpacity,
-  StyleSheet
-} from 'react-native'
+import React, { PropsWithChildren, useRef } from 'react'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -26,7 +23,21 @@ CommentItem.propTypes = {
   onTapReply: PropTypes.func
 }
 
-CommentItem.defaultProps = {
+export interface Props {
+  data: any
+  isReply?: boolean
+  visibleReply?: boolean
+  visibleReplyBtn?: boolean
+  visibleReplyNum?: boolean
+  visibleDelBtn?: boolean
+  navigation: __Navigation.Navigation
+  signedName: string
+  onDel (commentId: string): void
+  onPress (): void
+  onTapReply (commentId: string): void
+}
+
+(CommentItem as DefaultProps<Props>).defaultProps = {
   visibleReply: true,
   visibleReplyBtn: true,
   visibleReplyNum: true,
@@ -34,11 +45,13 @@ CommentItem.defaultProps = {
   isReply: false
 }
 
-function CommentItem(props){
+type FinalProps = Props
+
+function CommentItem(props: PropsWithChildren<FinalProps>) {
   const isReported = useRef(false)
 
-  function toggleLike(){
-    if(!props.signedName){
+  function toggleLike() {
+    if (!props.signedName) {
       return $dialog.confirm.show({
         content: '未登录无法进行点赞，是否要前往登录界面？',
         onTapCheck: () => props.navigation.push('login')
@@ -50,45 +63,45 @@ function CommentItem(props){
     toast.showLoading()
     commentApi.toggleLike(props.data.id, isLiked)
       .finally(toast.hide)
-      .then(data =>{
+      .then(data => {
         props.comment.setLikeStatus(props.data.id, !isLiked)
-      }).catch(e =>{
+      }).catch(e => {
         console.log(e)
         setTimeout(() => toast.show('网络错误'))
       })
   }
 
-  function report(){
-    if(isReported.current){ return toast.show('不能重复举报') }
+  function report() {
+    if (isReported.current) { return toast.show('不能重复举报') }
     
     $dialog.confirm.show({ 
       content: `确定要举报这条${props.isReply ? '回复' : '评论'}吗？`,
-      onTapCheck: () =>{
+      onTapCheck: () => {
         toast.showLoading()
         commentApi.report(props.data.id)
           .finally(() => toast.hide())
-          .then(() =>{
+          .then(() => {
             isReported.current = true
             // 这里如果不做延时会受到toast.hide()的影响，造成alert不显示，且界面被一个透明遮罩层挡上
             setTimeout(() => $dialog.alert.show({ content: '已举报' }))
           })
           .catch(() => toast.show('网络错误，请重试'))
       }
-   })
+    })
   }
 
-  function del(){
+  function del() {
     $dialog.confirm.show({
       content: `确定要删除自己的这条${props.isReply ? '回复' : '评论'}吗？`,
-      onTapCheck: () =>{
+      onTapCheck: () => {
         toast.showLoading()
         commentApi.delComment(props.data.id)
           .finally(() => toast.hide())
-          .then(() =>{
+          .then(() => {
             props.onDel(props.data.id)
             setTimeout(() => $dialog.alert.show({ content: `${props.isReply ? '回复' : '评论'}已删除` }))
           })
-          .catch(e =>{
+          .catch(e => {
             console.log(e)
             toast.show('网络错误，请重试')
           })
@@ -97,46 +110,46 @@ function CommentItem(props){
   }
 
   const iconSize = 20
-  const {data} = props
-  const {myatt: isLiked, like: likeNum} = data
+  const { data } = props
+  const { myatt: isLiked, like: likeNum } = data
   const formattedChildren = format.children(data.children || [], data.id)
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-            <Image source={{ uri: $avatarUrl + data.username }} style={styles.avatar}  />
+            <Image source={{ uri: $avatarUrl + data.username }} style={styles.avatar} />
             <View>
               <Text>{data.username}</Text>
               <Text style={{ color: '#ABABAB', marginTop: 3 }}>{format.date(data.timestamp)}</Text>
             </View>
           </View>
 
-          {props.visibleDelBtn && props.data.username === props.signedName ? 
+          {props.visibleDelBtn && props.data.username === props.signedName ? <>
             <TouchableOpacity onPress={del}>
               <MaterialIcon name="clear" color="#ccc" size={iconSize} />
             </TouchableOpacity>
-          : null}
+          </> : null}
         </View>
       </View>
 
       <View style={styles.main}>
         <Text>
-          {props.data.targetName ?
+          {props.data.targetName ? <>
             <Text style={{ color: '#ABABAB' }}>
               <Text>回复 </Text>
               <Text style={{ color: '#007ACC' }}>{props.data.targetName}：  </Text>
-            </Text> 
-          : null}
+            </Text>
+          </> : null}
           
           <Text>{format.content(data.text)}</Text>
         </Text>
       </View>
 
-      {props.visibleReply && props.data.children && props.data.children.length !== 0 ? 
+      {props.visibleReply && props.data.children && props.data.children.length !== 0 ? <>
         <View style={styles.reply}>
           {formattedChildren.filter((_, ind) => ind < 3).map(item =>
-            <View style={{ marginVertical: 2 }}>
+            <View key={item.id} style={{ marginVertical: 2 }}>
               <Text>
                 <Text style={{ color: '#007ACC' }}>{item.username}</Text>
                 {item.targetName ? <Text> 回复 </Text> : null}
@@ -147,13 +160,13 @@ function CommentItem(props){
             </View>
           )}
 
-          {formattedChildren.length > 3 ?
-            <TouchableOpacity onPress={() => props.onTapReply(data.id)}>
+          {formattedChildren.length > 3
+            ? <TouchableOpacity onPress={() => props.onTapReply(data.id)}>
               <Text style={{ color: '#666', textAlign: 'center', marginTop: 10 }}>查看更多</Text>
             </TouchableOpacity>
-          : null}
+            : null}
         </View>
-      : null}
+      </> : null}
 
       <View style={styles.footer}>
         <TouchableOpacity style={{ ...styles.footerItem, position: 'relative', top: 1 }} 
@@ -165,20 +178,19 @@ function CommentItem(props){
           {likeNum > 0 ? <Text style={{ color: $colors.sub, marginLeft: 5 }}>{likeNum}</Text> : null}
         </TouchableOpacity>
 
-        {props.visibleReplyBtn ? 
-          <TouchableOpacity style={styles.footerItem} contentContainerStyle={styles.footerItem}
+        {props.visibleReplyBtn ? <>
+          <TouchableOpacity style={styles.footerItem}
             onPress={() => props.onTapReply(data.id)}
           >
-            {!props.visibleReplyNum || data.children.length === 0 ? 
-              <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />
-            :
-              <>
+            {!props.visibleReplyNum || data.children.length === 0 
+              ? <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />
+              : <>
                 <FontAwesomeIcon name="comment" color={$colors.sub} size={iconSize} />
                 <Text style={{ color: $colors.sub, marginLeft: 5 }}>{data.children.length}</Text>
               </>
             }
           </TouchableOpacity>
-        : null}
+        </> : null}
 
         <TouchableOpacity style={styles.footerItem} onPress={report}>
           <AntDesignIcon name="flag" color="#ccc" size={iconSize} /> 

@@ -20,7 +20,7 @@ export default {
     global.$isVisibleLoading = false
   },
 
-  showLoading (text: string) {
+  showLoading (text?: string) {
     Toast.showLoading(text)
     global.$isVisibleLoading = true
   },

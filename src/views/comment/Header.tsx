@@ -1,18 +1,16 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { 
-  View, Text,
-  StyleSheet
-} from 'react-native'
+import React, { PropsWithChildren } from 'react'
+import { StyleSheet } from 'react-native'
 import Toolbar from '~/components/Toolbar'
 
-CommentHeader.propTypes = {
-  title: PropTypes.string,
-  navigation: PropTypes.object,
-  onTapEdit: PropTypes.func
+export interface Props {
+  title: string
+  navigation: __Navigation.Navigation
+  onTapAddComment (): void
 }
 
-export default function CommentHeader(props){
+type FinalProps = Props
+
+export default function CommentHeader(props: PropsWithChildren<FinalProps>) {
   return (
     <Toolbar
       title={props.title}
