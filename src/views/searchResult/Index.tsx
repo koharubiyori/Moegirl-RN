@@ -1,55 +1,57 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, Image, FlatList, ActivityIndicator, TouchableOpacity,
-  StyleSheet, LayoutAnimation, NativeModules
-} from 'react-native'
+import React, { PropsWithChildren, useEffect, useState } from 'react'
+import { ActivityIndicator, FlatList, Image, LayoutAnimation, NativeModules, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { search } from '~/api/search'
 import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import Item from './components/Item'
-import { search } from '~/api/search'
 
-SearchResult.propTypes = {
-  navigation: PropTypes.object
+export interface Props {
+  
 }
 
-function SearchResult(props){
+export interface RouteParams {
+  searchWord: string
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
+
+function SearchResult(props: PropsWithChildren<FinalProps>) {
   const [list, setList] = useState([])
   const [total, setTotal] = useState(0)
-  const [status, setStatus] = useState(1)  // 1：初始值，2：加载中，3：加载成功，0：加载失败，4：全部加载完成，5：已加载，但结果为空
+  const [status, setStatus] = useState(1) // 1：初始值，2：加载中，3：加载成功，0：加载失败，4：全部加载完成，5：已加载，但结果为空
   let searchWord = props.navigation.getParam('searchWord')
 
-  useEffect(() =>{
+  useEffect(() => {
     loadList()
   }, [])
 
-  useEffect(() =>{
+  useEffect(() => {
     LayoutAnimation.configureNext(
       LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
     )
   })
 
-  function loadList (){
-    if(status === 4 || status === 2){ return }
+  function loadList () {
+    if (status === 4 || status === 2) { return }
     setStatus(2)
     search(searchWord, list.length)
-      .then(({query}) =>{
-        if(!query.searchinfo.totalhits){
+      .then(({ query }) => {
+        if (!query.searchinfo.totalhits) {
           setStatus(5)
           return
         }
 
         let status = 3
 
-        if(query.searchinfo.totalhits === list.length + query.search.length){
+        if (query.searchinfo.totalhits === list.length + query.search.length) {
           status = 4
         }
 
         setTotal(query.searchinfo.totalhits)
         setList(list.concat(query.search))
         setStatus(status)
-      }).catch(e =>{
+      }).catch(e => {
         console.log(e)
         setStatus(0)
       })
@@ -73,11 +75,12 @@ function SearchResult(props){
         </View>
       : null} */}
 
-      {status !== 5 ?
+      {status !== 5 ? <>
         <FlatList data={list} 
           onEndReachedThreshold={1}
           onEndReached={loadList}
           style={{ flex: 1 }}
+          // textBreakStrategy="balanced"
           renderItem={item => <Item 
             // key={item.item.id}
             data={item.item}
@@ -85,24 +88,23 @@ function SearchResult(props){
             onPress={link => props.navigation.push('article', { link })}
           />}
 
-          ListFooterComponent={({
+          ListFooterComponent={(({
             0: () => 
-            <TouchableOpacity onPress={loadList}>
-              <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>加载失败，点击重试</Text>
-              </View>
-            </TouchableOpacity>,
+              <TouchableOpacity onPress={loadList}>
+                <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text>加载失败，点击重试</Text>
+                </View>
+              </TouchableOpacity>,
             2: () => <ActivityIndicator color={$colors.main} size={50} style={{ marginVertical: 10 }} />,
             4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
-          }[status] || new Function)()}
-          textBreakStrategy="balanced"
+          } as { [status: number]: () => JSX.Element | null })[status] || (() => {}))()}
         />
-      :
+      </> : <>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', position: 'relative', top: -40 }}>
-          <Image source={require('~/assets/images/sushimoe.png')} style={{width: 170, height: 170 }} />
+          <Image source={require('~/assets/images/sushimoe.png')} style={{ width: 170, height: 170 }} />
           <Text style={{ color: '#ABABAB' }}>什么也没找到...</Text>
         </View>
-      }
+      </>}
     </View>
   )
 }

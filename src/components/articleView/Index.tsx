@@ -1,19 +1,14 @@
-import React, { useState, useEffect, useRef, MutableRefObject, PropsWithChildren } from 'react'
-import {
-  View, StyleSheet, Text, Dimensions, Linking, ActivityIndicator, TouchableOpacity,
-  BackHandler, NativeModules, StyleProp, ViewStyle
-} from 'react-native'
-import PropTypes from 'prop-types'
+import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, BackHandler, Dimensions, Linking, NativeModules, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
 import { WebView } from 'react-native-webview'
-import toast from '~/utils/toast'
-import storage from '~/utils/storage'
-import ImageViewer from './ImageViewer'
+import { getImageUrl } from '~/api/article'
+import store from '~/redux'
 import articleViewHOC from '~/redux/articleView/HOC'
 import userHOC from '~/redux/user/HOC'
-import { controlsCodeString } from './controls/index' 
-import { getImageUrl } from '~/api/article'
 import request from '~/utils/request'
-import store from '~/redux'
+import storage from '~/utils/storage'
+import toast from '~/utils/toast'
+import { controlsCodeString } from './controls/index'
 
 export interface Props {
   navigation: __Navigation.Navigation
@@ -25,9 +20,9 @@ export interface Props {
   injectCss?: string
   injectJs?: string
   autoPaddingTopForHeader?: boolean
-  onMessages?: { [msgName: string]: () => void }
+  onMessages?: { [msgName: string]: (data: any) => void }
   onLoaded? (): void
-  onMissing? (): void
+  onMissing? (link: string): void
   getRef: MutableRefObject<any>
 }
 
@@ -171,23 +166,23 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         let html = data.parse.text['*']
         setHtml(createDocument(html))
         setStatus(3)
-        props.onLoaded(data)
+        props.onLoaded && props.onLoaded(data)
       })
       .catch(async e => {
         console.log(e)
-        if (e && e.code === 'missingtitle') return props.onMissing(props.link)
+        if (e && e.code === 'missingtitle') return props.onMissing && props.onMissing(props.link!)
 
         try {
           const redirectMap = await storage.get('articleRedirectMap') || {}
-          let link = redirectMap[props.link] || props.link
+          let link = redirectMap[props.link!] || props.link
           const articleCache = await storage.get('articleCache') || {}
-          const data = articleCache[link]
+          const data = articleCache[link!]
           if (data) {
             let html = data.parse.text['*']
             setHtml(createDocument(html))
             $dialog.snackBar.show('因读取失败，载入条目缓存')
             setStatus(3)
-            props.onLoaded(data)
+            props.onLoaded && props.onLoaded(data)
           } else {
             throw new Error()
           }
@@ -199,30 +194,53 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
       })
   }
 
-  function injectScript(script) {
+  function injectScript(script: string) {
     refs.webView.current.injectJavaScript(script)
   }
 
-  function receiveMessage(e) {
-    const { type, data } = JSON.parse(e.nativeEvent.data)
-    
-    if (type === 'print') {
-      console.log('=== print ===', data)
+  function receiveMessage(event: any) {
+    type EventParamsMap = {
+      print: string
+      error: string
+      onTapNote: { content: string }
+      request: {
+        config: {
+          url: string
+          method: 'get' | 'post'
+          params: object
+        }
+        callbackName: string
+      }
+      onTapLink: {
+        type: 'inner' | 'outer' | 'notExists'
+        link: string
+      }
+      openApp: { url: string }
+      onTapEdit: {
+        page: string
+        section: number
+      }
+      onTapImage: { name: string }
+      onTapBiliVideo: string
     }
 
-    if (type === 'error') {
-      console.log('--- WebViewError ---', data)
-    }
+    const { type, data }: { type: keyof EventParamsMap, data: EventParamsMap[keyof EventParamsMap] } = JSON.parse(event.nativeEvent.data)
 
-    if (type === 'onTapNote') {
+    // 拿这个函数做数据结构映射
+    function setEventHandler<EventName extends keyof EventParamsMap>(eventName: EventName, handler: (data: EventParamsMap[EventName]) => void){
+      eventName == type && handler(data as any)
+    } 
+
+    setEventHandler('print', msg => console.log('=== print ===', msg))
+    setEventHandler('error', msg => console.log('--- WebViewError ---', msg))
+    setEventHandler('onTapNote', data =>{
       $dialog.alert.show({
         title: '注释',
         content: data.content,
         checkText: '关闭'
       })
-    }
-
-    if (type === 'request') {
+    })
+    setEventHandler('request', data =>{
       let { config, callbackName } = data
       request({
         baseURL: config.url,
@@ -235,11 +253,12 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         console.log(e)
         injectScript(`window.${callbackName}('${JSON.stringify({ error: true })}')`)
       })
-    }
+      
+    })
 
     if (props.disabledLink) { return }
-
-    if (type === 'onTapLink') {
+    
+    setEventHandler('onTapLink', data =>{
       ;({
         inner: () => {
           let [link, anchor] = data.link.split('#')
@@ -257,13 +276,9 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           $dialog.alert.show({ content: '该条目还未创建' })
         }
       })[data.type]()
-    }
-
-    if (type === 'openApp') {
-      Linking.openURL(data.url)
-    }
-
-    if (type === 'onTapEdit') {
+    })
+    setEventHandler('openApp', data => Linking.openURL(data.url))
+    setEventHandler('onTapEdit', data =>{
       if (props.state.user.name) {
         props.navigation.push('edit', { title: data.page, section: data.section })
       } else {
@@ -272,9 +287,8 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           onTapCheck: () => props.navigation.push('login')
         })
       }
-    }
-
-    if (type === 'onTapImage') {
+    })
+    setEventHandler('onTapImage', data =>{
       toast.showLoading('获取链接中')
       getImageUrl(data.name)
         .finally(toast.hide)
@@ -285,14 +299,11 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           console.log(e)
           setTimeout(() => toast.show('获取链接失败'))
         })
-    }
-
-    if (type === 'onTapBiliVideo') {
-      props.navigation.push('biliPlayer', data)
-    }
+    })
+    setEventHandler('onTapBiliVideo', data => props.navigation.push('biliPlayer', data))
 
     if (props.onMessages) {
-      ;(props.onMessages[type] || () => {})(data)
+      ;(props.onMessages[type] || (() => {}))(data)
     }
   }
 

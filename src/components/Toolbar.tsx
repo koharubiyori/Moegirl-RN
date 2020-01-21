@@ -49,19 +49,19 @@ export default function MyToolbar(props: PropsWithChildren<FinalProps>) {
       </View>
 
       <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-        {props.rightIcon 
-          ? <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressRightIcon && props.onPressRightIcon()}>
+        {props.rightIcon ? <>
+          <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressRightIcon && props.onPressRightIcon()}>
             <MaterialIcon name={props.rightIcon} size={28} color={props.textColor} {...props.rightIconProps} style={{ position: 'relative', top: 1 }} />
           </Button>
-          : null}
+        </> : null}
 
-        {props.actions
-          ? <Menu options={props.actions} onPress={props.onPressActions} ref={refs.menu}>
+        {props.actions ? <>
+          <Menu options={props.actions} onPress={props.onPressActions} ref={refs.menu}>
             <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => refs.menu.current!.showPopupMenu()}>
               <MaterialIcon name="more-vert" size={28} color={props.textColor} {...props.moreIconProps} style={{ position: 'relative', top: 1 }} />
             </Button>
           </Menu>
-          : null}
+        </> : null}
       </View>
     </View>
   )

@@ -1,28 +1,26 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, Image, TouchableOpacity, Dimensions, BackHandler, ScrollView, NativeModules,
-  StyleSheet, 
-} from 'react-native'
-import userHOC from '~/redux/user/HOC'
-import Item from './components/Item'
+import React, { PropsWithChildren } from 'react'
+import { BackHandler, Dimensions, Image, NativeModules, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
+import userHOC from '~/redux/user/HOC'
+import Item from './components/Item'
 
-DrawerBody.propTypes = {
-  immersionMode: PropTypes.bool   // 暂时用不上了
+export interface Props {
+  immersionMode: boolean
 }
 
-function DrawerBody(props){
+type FinalProps = Props
 
-  function tap(handler){
-    return () =>{
+function DrawerBody(props: PropsWithChildren<FinalProps>) {
+
+  function tap(handler: (navigation: __Navigation.Navigation) => void) {
+    return () => {
       $drawer.close()
-      handler($appNavigator.current._navigation)
+      handler($appNavigator)
     }
   }
 
-  function showActionHelps(){
+  function showActionHelps() {
     $dialog.alert.show({
       title: '操作提示',
       content: [
@@ -47,26 +45,24 @@ function DrawerBody(props){
           <MaterialIcon name="notifications" size={25} color="white" />
         </Button>
         
-        {props.state.user.name ? 
+        {props.state.user.name ? <>
           <TouchableOpacity onPress={tap(navigation => navigation.push('article', { link: 'User:' + props.state.user.name }))}>
             <Image source={{ uri: $avatarUrl + props.state.user.name }} style={styles.avatar} />
             <Text style={styles.hintText}>欢迎你，{props.state.user.name}</Text>
           </TouchableOpacity>
-        : 
-          <>
-            <TouchableOpacity onPress={tap(navigation => navigation.navigate('login'))}>
-              <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
-            </TouchableOpacity>
+        </> : <>
+          <TouchableOpacity onPress={tap(navigation => navigation.navigate('login'))}>
+            <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
+          </TouchableOpacity>
 
-            <TouchableOpacity onPress={tap(navigation => navigation.navigate('login'))}>
-              <Text style={styles.hintText}>登录/加入萌娘百科</Text>
-            </TouchableOpacity>
-          </>
-        }
+          <TouchableOpacity onPress={tap(navigation => navigation.navigate('login'))}>
+            <Text style={styles.hintText}>登录/加入萌娘百科</Text>
+          </TouchableOpacity>
+        </>}
       </View>
 
       <ScrollView style={{ flex: 1 }}>
-        <View style={styles.items}>
+        <View>
           <Item icon="settings" title="设置" onPress={() => $appNavigator.navigate('settings')} />
           <Item icon="help" title="提问求助区" onPress={() => $appNavigator.push('article', { link: 'Talk:提问求助区' })} />
           <Item icon="forum" title="讨论版" onPress={() => $appNavigator.push('article', { link: 'Talk:讨论版' })} />

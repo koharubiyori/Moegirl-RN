@@ -1,23 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, DrawerLayoutAndroid, Dimensions, BackHandler, DeviceEventEmitter,
-  StyleSheet
-} from 'react-native'
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
+import { BackHandler, DeviceEventEmitter, Dimensions, DrawerLayoutAndroid } from 'react-native'
 import storage from '~/utils/storage'
 import DrawerBody from './Body'
 
-function MyDrawer(props){
+export interface Props {
+
+}
+
+type FinalProps = Props
+
+function MyDrawer(props: PropsWithChildren<FinalProps>) {
   const [immersionMode, setImmersionMode] = useState(false)
   const [isWatchingArticle, setIsWatchingArticle] = useState(false)
   const visible = useRef(false)
   const refs = {
-    drawer: useRef()
+    drawer: useRef<any>()
   }
   
   // 监听路由变化，判断用户是否在article页面上
-  useEffect(() =>{
-    const listener = DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) =>{
+  useEffect(() => {
+    const listener = DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) => {
       let lastRouteName = state.routes[state.routes.length - 1].routeName
       setIsWatchingArticle(lastRouteName === 'article')
       storage.get('config').then(config => setImmersionMode(config.immersionMode))
@@ -26,9 +28,9 @@ function MyDrawer(props){
     return () => listener.remove()
   }, [])
 
-  useEffect(() =>{
-    const listener = BackHandler.addEventListener('hardwareBackPress', () =>{
-      if(visible.current){
+  useEffect(() => {
+    const listener = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (visible.current) {
         close()
         return true
       }
@@ -37,15 +39,15 @@ function MyDrawer(props){
     return () => listener.remove()
   }, [])
 
-  useEffect(() =>{
+  useEffect(() => {
     global.$drawer = { visible: visible, open, close }
   })
 
-  function open(){
+  function open() {
     refs.drawer.current.openDrawer()
   }
 
-  function close(){
+  function close() {
     refs.drawer.current.closeDrawer()
   }
 

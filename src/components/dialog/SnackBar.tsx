@@ -65,10 +65,11 @@ function SnackBar(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    !visible ? null
-      : <Animated.View style={{ ...styles.main, bottom: transitionTop }} onLayout={layoutChange}>
+    visible ? <>
+      <Animated.View style={{ ...styles.main, bottom: transitionTop }} onLayout={layoutChange}>
         <Text style={{ color: 'white', lineHeight: 20 }}>{content}</Text>
       </Animated.View>
+    </> : null
   )
 }
 

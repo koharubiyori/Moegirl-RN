@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-
+// 全局变量
 declare namespace NodeJS {
   interface Global extends __ReactNative.Global {
     $colors: { [Name in 'main' | 'dark' | 'light' | 'sub']: string }
@@ -22,11 +21,20 @@ declare const $drawer: NodeJS.Global['$drawer']
 declare const $appNavigator: NodeJS.Global['$appNavigator']
 declare const $dialog: NodeJS.Global['$dialog']
 
+// Webview环境下的全局变量
 declare interface Window {
-  _request (config: object, callback: () => {}): void
+  ReactNativeWebView: { postMessage: (msg: string) => void }
+  _request (config: object, callback: (data: string) => void): void
   _request_id: number
+  _appConfig: any
+  _colors: NodeJS.Global['$colors']
 }
 
 declare interface DefaultProps<Props> extends Function {
   defaultProps?: Partial<Props>
+}
+
+declare module '~/../app.json' {
+  export const date: string
+  export const version: string
 }

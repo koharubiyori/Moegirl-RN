@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, Image, TouchableOpacity,
@@ -6,10 +6,15 @@ import {
 } from 'react-native'
 import StatusBar from '~/components/StatusBar'
 import Toolbar from '~/components/Toolbar'
-import { date, version } from '../../app.json'
+import { date, version } from '~/../app.json'
 
+export interface Props {
 
-function About(props){
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation
+
+function About(props: PropsWithChildren<FinalProps>) {
 
   return (
     <View style={{ flex: 1 }}>
@@ -65,10 +70,9 @@ const styles = StyleSheet.create({
   }
 })
 
-
 function Item({
   title, value
-}){
+}: { title: string, value: string }) {
   return (
     <View style={styles.item}>
       <Text style={styles.itemText}>{title}</Text>
