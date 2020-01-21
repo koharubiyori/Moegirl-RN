@@ -80,12 +80,12 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
     >
       <Dialog.Title>{title!}</Dialog.Title>
       {content ? <Dialog.Description>{content}</Dialog.Description> : null}
-      {hasInput
-        ? <Dialog.Input autoFocus placeholder={inputPlaceholder} value={inputVal} 
+      {hasInput ? <>
+        <Dialog.Input autoFocus placeholder={inputPlaceholder} value={inputVal} 
           onChangeText={setInputVal}
           wrapperStyle={styles.input}
         />
-        : null}
+      </> : null}
       <Dialog.Button label={closeText!} onPress={onTapClose!} style={{ marginRight: 10, color: '#ABABAB' }} />
       <Dialog.Button label={checkText!} onPress={() => onTapCheck!(inputVal)} style={{ color: $colors.main }} />
     </Dialog.Container>

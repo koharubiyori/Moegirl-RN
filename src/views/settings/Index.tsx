@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, ScrollView, DeviceEventEmitter,
@@ -12,12 +12,18 @@ import toast from '~/utils/toast'
 import configHOC from '~/redux/config/HOC'
 import userHOC from '~/redux/user/HOC'
 
-function Settings(props){
+export interface Props {
 
-  function clearArticleCache(){
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation
+
+function Settings(props: PropsWithChildren<FinalProps>) {
+
+  function clearArticleCache() {
     $dialog.confirm.show({
       content: '确定要清空条目缓存吗？',
-      onTapCheck (){
+      onTapCheck () {
         storage.remove('articleCache')
         storage.remove('articleRedirectMap')
         toast.show('已清除所有条目缓存')
@@ -25,10 +31,10 @@ function Settings(props){
     })
   }
 
-  function clearHistory (){
+  function clearHistory () {
     $dialog.confirm.show({
       content: '确定要清空浏览历史吗？',
-      onTapCheck (){
+      onTapCheck () {
         storage.remove('browsingHistory')
         DeviceEventEmitter.emit('clearHistory')
         toast.show('已清除所有浏览历史')
@@ -36,17 +42,17 @@ function Settings(props){
     })
   }
 
-  function logout(){
+  function logout() {
     $dialog.confirm.show({
       content: '确定要登出吗？',
-      onTapCheck (){
+      onTapCheck () {
         props.user.logout()
         toast.show('已登出')
       }
     })
   }
 
-  const {config} = props.state
+  const { config } = props.state
   const setConfig = config => props.config.set(config)
   return (
     <View style={{ flex: 1 }}>
@@ -111,8 +117,7 @@ const styles = StyleSheet.create({
   }
 })
 
-
-function Title(props){
+function Title(props: PropsWithChildren<{}>) {
   return (
     <View style={styles.title}>
       <Text style={{ color: $colors.main, fontSize: 15 }}>{props.children}</Text>

@@ -1,47 +1,45 @@
-import React, { useState, useEffect, useRef } from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, Dimensions, Keyboard, ScrollView,
-  StyleSheet
-} from 'react-native'
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
+import { Dimensions, Keyboard, ScrollView, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { WebView } from 'react-native-webview'
 import Button from '~/components/Button'
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-ArticleEditor.propTypes = {
-  style: PropTypes.object,
-  content: PropTypes.string,
-  onChangeText: PropTypes.func
+export interface Props {
+  style?: StyleProp<ViewStyle>
+  content: string
+  onChangeText? (content: string): void
 }
 
-function ArticleEditor(props){
+type FinalProps = Props
+
+function ArticleEditor(props: PropsWithChildren<FinalProps>) {
   const [html, setHtml] = useState('')
   const [visibleQuickInsertBar, setVisibleQuickInertBar] = useState(false)
   const refs = {
-    webView: useRef()
+    webView: useRef<any>()
   }
 
-  useEffect(() =>{
-    if(html === '' && props.content !== '') setHtml(createDocument(props.content)) 
+  useEffect(() => {
+    if (html === '' && props.content !== '') setHtml(createDocument(props.content)) 
   }, [props.content])
 
-  useEffect(() =>{
+  useEffect(() => {
     const keyboardShowListener = Keyboard.addListener('keyboardDidShow', () => setVisibleQuickInertBar(true))
     const keyboardHideListener = Keyboard.addListener('keyboardDidHide', () => setVisibleQuickInertBar(false))
 
-    return () =>{
+    return () => {
       keyboardShowListener.remove()
       keyboardHideListener.remove()
     }
   }, [])
 
-  function createDocument(content){
-    let js = (function(){
-      var edit = document.querySelector('#editArea')
-      edit.addEventListener('input', e =>{
-        ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: e.target.value } }))
+  function createDocument(content: string) {
+    let js = function() {
+      let edit = document.querySelector('#editArea')
+      edit!.addEventListener('input', (e: any) => {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: e.target.value } }))
       })
-    }).toString()
+    }.toString()
 
     let injectJsCodes = `
       ${global.__DEV__ ? 'try{' : ''}
@@ -98,38 +96,38 @@ function ArticleEditor(props){
     `  
   }
 
-  function receiveMessage(e){
-    const {type, data} = JSON.parse(e.nativeEvent.data)
+  function receiveMessage(e: any) {
+    const { type, data } = JSON.parse(e.nativeEvent.data)
 
-    if(type === 'print'){
+    if (type === 'print') {
       console.log('=== print ===', data)
     }
 
-    if(type === 'error'){
+    if (type === 'error') {
       console.log('--- WebViewError ---', data)
     }
 
-    if(type === 'onInput'){
-      props.onChangeText(data.text)
+    if (type === 'onInput') {
+      props.onChangeText && props.onChangeText(data.text)
     }
   }
 
-  function insertCodes (codes, offset = 0){
-    let js = (function(codes, offset){
-      var editor = document.querySelector('#editArea')
-      var content = editor.value
-      var nowLocation = editor.selectionStart
-      var beforeContent = content.substring(0, nowLocation)
-      var afterContent = content.substring(nowLocation)
+  function insertCodes (codes: string, offset = 0) {
+    let js = function(codes: string, offset: number) {
+      let editor = document.querySelector('#editArea')! as HTMLTextAreaElement
+      let content = editor.value
+      let nowLocation = editor.selectionStart
+      let beforeContent = content.substring(0, nowLocation)
+      let afterContent = content.substring(nowLocation)
 
       editor.value = beforeContent + codes + afterContent
-      var location = nowLocation + codes.length - offset
+      let location = nowLocation + codes.length - offset
       editor.selectionStart = location
       editor.selectionEnd = location
       editor.focus()
 
-      ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: editor.value } }))
-    }).toString()
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: editor.value } }))
+    }.toString()
 
     js = `(${js})("${codes}", ${offset})`
 
@@ -141,11 +139,11 @@ function ArticleEditor(props){
       <WebView
         scalesPageToFit={false}
         source={{ html, baseUrl: 'file:///android_asset/assets' }}
-        style={{ ...props.style, width: Dimensions.get('window').width }}
+        style={{ ...(props.style as any), width: Dimensions.get('window').width }}
         onMessage={receiveMessage}
         ref={refs.webView}
       />
-      {visibleQuickInsertBar ?
+      {visibleQuickInsertBar ? <>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickInsertBar}>
           <QuickInsertItem icon="fountain-pen-tip" onPress={() => insertCodes(' --~~~~')} />
           <QuickInsertItem title="[[ ]]" onPress={() => insertCodes('[[]]', 2)} />
@@ -157,7 +155,7 @@ function ArticleEditor(props){
           <QuickInsertItem title="==" onPress={() => insertCodes('==  ==', 3)} />
           <QuickInsertItem title="===" onPress={() => insertCodes('===  ===', 4)} />
         </ScrollView>
-      : null}
+      </> : null}
     </>
   )
 }
@@ -173,8 +171,14 @@ const styles = StyleSheet.create({
   }
 })
 
-function QuickInsertItem (props){
-  var width = Dimensions.get('window').width / 5
+export interface QuickInsertItemProps {
+  title?: string
+  icon?: string
+  onPress (): void
+}
+
+function QuickInsertItem (props: PropsWithChildren<QuickInsertItemProps>) {
+  let width = Dimensions.get('window').width / 5
   width = width - width / 2 / 5
 
   return (
@@ -184,10 +188,9 @@ function QuickInsertItem (props){
       contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
       onPress={props.onPress}
     >
-      {props.title ? 
-        <Text style={{ fontSize: 20, color: '#666' }}>{props.title}</Text>
-      :
-        <MaterialCommunityIcon name={props.icon} size={30} color="#666" />
+      {props.title 
+        ? <Text style={{ fontSize: 20, color: '#666' }}>{props.title}</Text>
+        : <MaterialCommunityIcon name={props.icon!} size={30} color="#666" />
       } 
     </Button>
   )

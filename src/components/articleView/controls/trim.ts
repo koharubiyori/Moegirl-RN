@@ -1,17 +1,17 @@
-export default function(viewBox){
-  var viewBox = $('#webViewContainer')
+export default function() {
+  let viewBox = $('#webViewContainer')
 
-  var clientWidth = document.body.clientWidth
+  let clientWidth = document.body.clientWidth
   // 防止图片越界
   viewBox.find('img').each(function () {
-    if ($(this).attr('width') > clientWidth - 20) {
+    if (parseInt($(this).attr('width')!) > clientWidth - 20) {
       $(this).attr('width', clientWidth - 20).removeAttr('height')
     }
   })
 
   // 防止thumb越界
   viewBox.find('.thumbinner').each(function () {
-    if (parseInt($(this).css('width') || 0) > clientWidth - 20) {
+    if (parseInt($(this).css('width')! || '0') > clientWidth - 20) {
       $(this).css('width', clientWidth - 20)
     }
   })
@@ -29,9 +29,9 @@ export default function(viewBox){
       .on('touchend', function (e) { e.stopPropagation() })
   })
 
-  function isTemplateHide(element) {
-    var tr = $(element).children('tbody').children('tr')
-    if ($(element).hasClass('mw-collapsible') &&  tr.length === 2) {
+  function isTemplateHide(element: HTMLElement) {
+    let tr = $(element).children('tbody').children('tr')
+    if ($(element).hasClass('mw-collapsible') && tr.length === 2) {
       if ($(tr[0]).children('th').length === 1 && $(tr[1]).children('td').length === 1) {
         return true
       }
@@ -42,10 +42,10 @@ export default function(viewBox){
   // 解决li中图片出界问题
   viewBox.find('ul:not(.gallery) > li .thumb').each(function () {
     $(this).find('.thumbinner').removeAttr('style')
-    var thumbBlock = $(this)
-    var parent = thumbBlock.parent().parent()
+    let thumbBlock = $(this)
+    let parent = thumbBlock.parent().parent()
     parent.after(thumbBlock)
   })
 
-  viewBox.find('a[href^="#cite_ref"]').text('[跳转至目标]').css('color', _colors.sub)
+  viewBox.find('a[href^="#cite_ref"]').text('[跳转至目标]').css('color', window._colors.sub)
 }

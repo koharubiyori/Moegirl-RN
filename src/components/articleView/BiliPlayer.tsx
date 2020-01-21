@@ -1,23 +1,30 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { PropsWithChildren } from 'react'
+import { View } from 'react-native'
 import Orientation from 'react-native-orientation'
-import StatusBar from '~/components/StatusBar'
-import {
-  View, Text,
-  StyleSheet
-} from 'react-native'
 import WebView from 'react-native-webview'
+import StatusBar from '~/components/StatusBar'
 
-function BiliPlayer(props){
+export interface Props {
+
+}
+
+export interface RouteParams {
+  avId: string
+  page: number
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
+
+function BiliPlayer(props: PropsWithChildren<FinalProps>) {
   const avId = props.navigation.getParam('avId')
   const page = props.navigation.getParam('page')
 
-  function createDocument (){
-    let js = (function(){
-      window.addEventListener('fullscreenchange', function(){
-        ReactNativeWebView.postMessage(JSON.stringify({ type: 'onFullScreenChange', data: { isFullScreen: !!document.fullscreenElement } }))
+  function createDocument () {
+    let js = function() {
+      window.addEventListener('fullscreenchange', function() {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onFullScreenChange', data: { isFullScreen: !!document.fullscreenElement } }))
       })
-    }).toString()
+    }.toString()
 
     // 要传入的html代码
     let injectJsCodes = `
@@ -62,18 +69,18 @@ function BiliPlayer(props){
     `
   }
 
-  function receiveMessage(e){
-    const {type, data} = JSON.parse(e.nativeEvent.data)
+  function receiveMessage(event: any) {
+    const { type, data } = JSON.parse(event.nativeEvent.data)
 
-    if(type === 'print'){
+    if (type === 'print') {
       console.log('=== print ===', data)
     }
 
-    if(type === 'error'){
+    if (type === 'error') {
       console.log('--- WebViewError ---', data)
     }
 
-    if(type === 'onFullScreenChange'){
+    if (type === 'onFullScreenChange') {
       data.isFullScreen ? Orientation.lockToLandscape() : Orientation.lockToPortrait()
     }
   }

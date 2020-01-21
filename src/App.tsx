@@ -30,6 +30,8 @@ function App() {
   }
 
   useEffect(() => {
+    global.$appNavigator = refs.appNavigator.current!._navigation
+    
     let onPressBackBtnMark = false
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
       // navigation需要不断更新赋值，否则状态都是旧的(像是routes字段等)

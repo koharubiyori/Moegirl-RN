@@ -1,10 +1,10 @@
 // tabs实现
-export default function(content){
-  var viewBox = $('#webViewContainer')
+export default function() {
+  let viewBox = $('#webViewContainer')
 
   viewBox.find('.Tabs').each(function () {
-    var titles = []
-    var theme = {
+    let titles: string[] = []
+    let theme = {
       before: {
         back: '#26ca9b',
         text: 'white'
@@ -20,9 +20,9 @@ export default function(content){
       $(this).remove()
     })
     
-    var nav = $('<div class="tabNav" style="text-align:center; margin-bottom:5px;">')
+    let nav = $('<div class="tabNav" style="text-align:center; margin-bottom:5px;">')
     for (let i = 0; i < titles.length; i++) {
-      var btn = $(`<span class="tabBtn" style="display:inline-block; border-radius:10px; background:${theme.before.back}; color:${theme.before.text}; margin:5px 2.5px; padding:3px 8px;">${titles[i]}</span>`)
+      let btn = $(`<span class="tabBtn" style="display:inline-block; border-radius:10px; background:${theme.before.back}; color:${theme.before.text}; margin:5px 2.5px; padding:3px 8px;">${titles[i]}</span>`)
         .click(function () {
           $(this).parent().find('.tabBtn').css({
             background: theme.before.back,
