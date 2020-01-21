@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import { Image, StyleSheet, Text } from 'react-native'
 import Button from '~/components/Button'
-import { BrowsingHistoryWithViewDate } from '../Index'
+import { BrowsingHistoryWithViewDate } from '../index'
 
 export interface Props {
   data: BrowsingHistoryWithViewDate

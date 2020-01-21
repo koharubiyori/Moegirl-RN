@@ -11,13 +11,17 @@ const random = (max = 1, min = 0) => Math.floor((Math.random() * max - min) + mi
 
 export interface Props {
   navigation: __Navigation.Navigation
-  style: StyleProp<ViewStyle>
+  style?: StyleProp<ViewStyle>
   getRef: MutableRefObject<any>
+}
+
+export interface FindsModuleRecommendedRef {
+  reload (): void
 }
 
 type FinalProps = Props
 
-function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
+function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
   const [data, setData] = useState([])
   const [status, setStatus] = useState(2)
   const [searchTitle, setSearchTitle] = useState('')
@@ -102,4 +106,4 @@ function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default FindsModuleTrend
+export default FindsModuleRecommended

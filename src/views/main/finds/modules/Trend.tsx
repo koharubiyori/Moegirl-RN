@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import React, { MutableRefObject, PropsWithChildren, useEffect, useState } from 'react'
 import { StyleProp, ViewStyle } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -6,19 +5,19 @@ import { getMainImage } from '~/api/article'
 import { getRecentChanges } from '~/api/query'
 import ArticleGroup from './components/ArticleGroup'
 
-FindsModuleTrend.propTypes = {
-  navigation: PropTypes.object,
-  style: PropTypes.object,
-  getRef: PropTypes.object
-}
-
 export interface Props {
   navigation: __Navigation.Navigation
-  style: StyleProp<ViewStyle>
+  style?: StyleProp<ViewStyle>
   getRef: MutableRefObject<any>
 }
 
-function FindsModuleTrend(props: PropsWithChildren<Props>) {
+export interface FindsModuleTrendRef {
+  reload (): void
+}
+
+type FinalProps = Props
+
+function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
   const [data, setData] = useState([])
   const [status, setStatus] = useState(2)
   

@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { Button } from 'react-native-material-ui'
 import { getPreview } from '~/api/edit'
-import ArticleView from '~/components/articleView/Index'
+import ArticleView from '~/components/articleView'
 
 export interface Props {
 
