@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, PropsWithChildren } from 'react'
 import PropTypes from 'prop-types'
 import {
   View, Text, 
@@ -12,32 +12,34 @@ import RecentSearch from './RecentSearch'
 import storage from '~/utils/storage'
 import { getHint } from '~/api/search'
 
-Search.propTypes = {
-  navigation: PropTypes.object
+export interface Props {
+
 }
 
-function Search(props){
+type FinalProps = Props & __Navigation.InjectedNavigation
+
+function Search(props: PropsWithChildren<FinalProps>) {
   const [searchWord, setSearchWord] = useState('')
-  const [searchHint, setSearchHint] = useState(null)
+  const [searchHint, setSearchHint] = useState<string[] | null>(null)
   const [searchHistory, setSearchHistory] = useState([])
   const setTimeoutKey = useRef(0)
 
-  useEffect(() =>{
+  useEffect(() => {
     storage.get('searchHistory').then(data => data && setSearchHistory(data))
   }, [])
 
-  function changeText(text){
+  function changeText(text: string) {
     text = text.trim()
     setSearchWord(text)
     clearTimeout(setTimeoutKey.current)
-    if(!text) return setSearchHint(null)
+    if (!text) return setSearchHint(null)
     setTimeoutKey.current = setTimeout(() => getHint(text).then(data => 
       setSearchHint(data.query.search.map(item => item.title))
-    ), 1000)
+    ), 1000) as any as number
   }
 
-  function toSearchResultView(text = searchWord.trim()){
-    if(!text){
+  function toSearchResultView(text = searchWord.trim()) {
+    if (!text) {
       toast.show('搜索关键词不能为空', 'center')
       return
     }
@@ -50,10 +52,10 @@ function Search(props){
     props.navigation.push('searchResult', { searchWord: text })
   }
 
-  function clearSearchHistory (){
+  function clearSearchHistory () {
     $dialog.confirm.show({
       content: '确定要删除所有搜索记录吗？',
-      onTapCheck: () =>{
+      onTapCheck: () => {
         storage.remove('searchHistory')
         setSearchHistory([])
         toast.show('操作成功')
@@ -68,10 +70,9 @@ function Search(props){
         onChangeText={changeText} 
         onSubmit={() => toSearchResultView()}
       />
-      {searchWord ? 
-        <SearchHint titles={searchHint} onTapTitle={toSearchResultView} />
-      : 
-        <RecentSearch 
+      {searchWord 
+        ? <SearchHint titles={searchHint} onTapTitle={toSearchResultView} />
+        : <RecentSearch 
           titles={searchHistory}
           onTapDelete={clearSearchHistory}
           onTapTitle={toSearchResultView}

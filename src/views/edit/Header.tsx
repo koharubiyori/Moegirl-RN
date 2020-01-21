@@ -1,9 +1,6 @@
-import React from 'react'
 import PropTypes from 'prop-types'
-import { 
-  View, Text,
-  StyleSheet
-} from 'react-native'
+import React, { PropsWithChildren } from 'react'
+import { StyleSheet } from 'react-native'
 import Toolbar from '~/components/Toolbar'
 
 EditHeader.propTypes = {
@@ -12,7 +9,15 @@ EditHeader.propTypes = {
   onTapDoneBtn: PropTypes.func
 }
 
-export default function EditHeader(props){
+export interface Props {
+  title: string
+  navigation: __Navigation.Navigation
+  onTapDoneBtn (): void
+}
+
+type FinalProps = Props
+
+export default function EditHeader(props: PropsWithChildren<FinalProps>) {
   return (
     <Toolbar
       style={{

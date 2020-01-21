@@ -7,7 +7,12 @@ export as namespace __Navigation
 type NavigationFn = (routeName: RouteName, params?: object) => void
 
 declare namespace Navigation {
-  type Navigation<State = {}> = NavigationScreenProp<{}, State> & { [Key in 'navigate' | 'push' | 'replace']: NavigationFn }
+  type Navigation<State = {}> = NavigationScreenProp<any, State> & 
+    { [Key in 'navigate' | 'push' | 'replace']: NavigationFn } &
+    { 
+      getScreenProps <ScreenProps = {}>(): ScreenProps 
+      popToTop (): void
+    }
   
   interface InjectedNavigation<State = {}> {
     navigation: Navigation<State>

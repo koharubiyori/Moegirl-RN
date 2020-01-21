@@ -4,8 +4,8 @@ import codeEdit from './pages/CodeEdit'
 import preview from './pages/Preview'
 
 const TopTabNavigator = createMaterialTopTabNavigator({
-  '维基文本': codeEdit, 
-  '预览视图': preview
+  维基文本: codeEdit, 
+  预览视图: preview
 }, {
   swipeEnabled: false,
   tabBarOptions: {

@@ -1,20 +1,18 @@
-import React, { useRef } from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, ScrollView, NativeModules,
-  StyleSheet, Dimensions
-} from 'react-native'
+import React, { PropsWithChildren } from 'react'
+import { Dimensions, NativeModules, ScrollView, StyleSheet, Text, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 
-CatalogBody.propTypes = {
-  immersionMode: PropTypes.bool,
-  items: PropTypes.array.isRequired,
-  onClose: PropTypes.func,
-  onTapTitle: PropTypes.func
+export interface Props {
+  immersionMode: boolean
+  items: any[]
+  onClose (): void
+  onTapTitle (anchor: string): void
 }
 
-function CatalogBody(props){
+type FinalProps = Props
+
+function CatalogBody(props: PropsWithChildren<FinalProps>) {
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
   const titleHeight = props.immersionMode ? { height: 56 } : { height: 56 + statusBarHeight, paddingTop: statusBarHeight }
 
@@ -29,22 +27,22 @@ function CatalogBody(props){
         style={{ flex: 1 }} 
         contentContainerStyle={styles.titles}
       >{
-        props.items.filter(item => parseInt(item.level) < 5 && item.level !== '1').map((item, index) => 
-          <Button onPress={() => props.onTapTitle(item.anchor)}
-            rippleColor="#ccc"
-            noLimit={false}
-            key={index}
-          >
-            <Text 
-              numberOfLines={1}
-              style={{ 
-                ...(parseInt(item.level) < 3 ? styles.title : styles.subTitle),
-                paddingLeft: (parseInt(item.level) - 2) * 5
-              }}
-            >{(parseInt(item.level) > 2 ? '- ' : '') + item.line}</Text>
-          </Button>
-        )
-      }</ScrollView>     
+          props.items.filter(item => parseInt(item.level) < 5 && item.level !== '1').map((item, index) => 
+            <Button onPress={() => props.onTapTitle(item.anchor)}
+              rippleColor="#ccc"
+              noLimit={false}
+              key={index}
+            >
+              <Text 
+                numberOfLines={1}
+                style={{ 
+                  ...(parseInt(item.level) < 3 ? styles.title : styles.subTitle),
+                  paddingLeft: (parseInt(item.level) - 2) * 5
+                }}
+              >{(parseInt(item.level) > 2 ? '- ' : '') + item.line}</Text>
+            </Button>
+          )
+        }</ScrollView>     
     </View>
   )
 }

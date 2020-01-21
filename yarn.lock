@@ -1084,6 +1084,14 @@
     "@types/react-native" "*"
     react-native-modal ">=9.0.0"
 
+"@types/react-native-material-textfield@^0.16.3":
+  version "0.16.3"
+  resolved "https://registry.npm.taobao.org/@types/react-native-material-textfield/download/@types/react-native-material-textfield-0.16.3.tgz#e4db8bba1debf5481c4cb63cb5875928642aa88c"
+  integrity sha1-5NuLuh3r9UgcTLY8tYdZKGQqqIw=
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-native-orientation@^5.0.1":
   version "5.0.1"
   resolved "https://registry.npm.taobao.org/@types/react-native-orientation/download/@types/react-native-orientation-5.0.1.tgz#347f7041683249f9ca7386717aa4dd66b394d3fb"

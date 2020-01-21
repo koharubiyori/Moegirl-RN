@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, PropsWithChildren } from 'react'
 import BottomNavigation from 'react-native-material-ui/src/BottomNavigation'
 
-function MyBottomNavigation(props){
+export interface Props {
+
+}
+
+type FinalProps = Props & { jumpTo (routeName: string): void }
+
+function MyBottomNavigation(props: PropsWithChildren<FinalProps>) {
   const [active, setActive] = useState('home')
 
-  function selectTab(key){
+  function selectTab(key: string) {
     setActive(key)
     props.jumpTo(key)
   }

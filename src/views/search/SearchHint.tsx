@@ -12,7 +12,7 @@ SearchHint.propTypes = {
 }
 
 export interface Props {
-  titles: string[]
+  titles: string[] | null
   onTapTitle (title: string): void
 }
 
