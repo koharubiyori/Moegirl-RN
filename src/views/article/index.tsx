@@ -7,9 +7,9 @@ import configHOC from '~/redux/config/HOC'
 import saveHistory from '~/utils/saveHistory'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
-import CatalogTriggerView, { CatalogTriggerViewRef } from './catalogTriggerView'
-import CommentButton, { CommentButtonRef } from './CommentButton'
-import Header, { ArticleHeaderRef } from './Header'
+import CatalogTriggerView, { CatalogTriggerViewRef } from './components/catalogTriggerView'
+import CommentButton, { CommentButtonRef } from './components/CommentButton'
+import Header, { ArticleHeaderRef } from './components/Header'
 
 export interface Props {
 
