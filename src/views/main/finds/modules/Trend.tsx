@@ -2,8 +2,8 @@ import React, { MutableRefObject, PropsWithChildren, useEffect, useState } from 
 import { StyleProp, ViewStyle } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { getMainImage } from '~/api/article'
-import { getRecentChanges } from '~/api/query'
-import ArticleGroup from './components/ArticleGroup'
+import queryApi from '~/api/query'
+import ArticleGroup, { ArticleGroupArticle } from './components/ArticleGroup'
 
 export interface Props {
   navigation: __Navigation.Navigation
@@ -18,7 +18,7 @@ export interface FindsModuleTrendRef {
 type FinalProps = Props
 
 function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<ArticleGroupArticle[]>([])
   const [status, setStatus] = useState(2)
   
   if (props.getRef) props.getRef.current = { reload }
@@ -34,12 +34,12 @@ function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
   function getRecentChangesData() {
     setStatus(2)
     return new Promise((resolve, reject) => {
-      getRecentChanges()
+      queryApi.getRecentChanges()
         .then(data => {
-          data = data.query.recentchanges
+          let changes = data.query.recentchanges
     
-          let total = {} // 保存总数统计
-          data.map(item => item.title).forEach(title => {
+          let total: { [title: string]: number } = {} // 保存总数统计
+          changes.map(item => item.title).forEach(title => {
             if (total[title]) {
               total[title]++
             } else {
@@ -55,8 +55,9 @@ function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
             data.map(item => getMainImage(item.title))
           ).then(images => {
             setStatus(3)
-            data.forEach((item, index) => item.image = images[index] ? images[index].source : null)
-            setData(data)
+            // 为data添加image字段
+            data.forEach((item, index) => (item as any).image = images[index] ? images[index].source : null)
+            setData(data as any)
             resolve()
           }).catch(e => Promise.reject(e))
         })

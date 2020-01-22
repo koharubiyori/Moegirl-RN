@@ -10,7 +10,7 @@ import Header from './components/Header'
 import SearchHint from './components/SearchHint'
 import RecentSearch from './components/RecentSearch'
 import storage from '~/utils/storage'
-import { getHint } from '~/api/search'
+import searchApi from '~/api/search'
 
 export interface Props {
 
@@ -21,7 +21,7 @@ type FinalProps = Props & __Navigation.InjectedNavigation
 function Search(props: PropsWithChildren<FinalProps>) {
   const [searchWord, setSearchWord] = useState('')
   const [searchHint, setSearchHint] = useState<string[] | null>(null)
-  const [searchHistory, setSearchHistory] = useState([])
+  const [searchHistory, setSearchHistory] = useState<string[]>([])
   const setTimeoutKey = useRef(0)
 
   useEffect(() => {
@@ -33,7 +33,7 @@ function Search(props: PropsWithChildren<FinalProps>) {
     setSearchWord(text)
     clearTimeout(setTimeoutKey.current)
     if (!text) return setSearchHint(null)
-    setTimeoutKey.current = setTimeout(() => getHint(text).then(data => 
+    setTimeoutKey.current = setTimeout(() => searchApi.getHint(text).then(data => 
       setSearchHint(data.query.search.map(item => item.title))
     ), 1000) as any as number
   }
