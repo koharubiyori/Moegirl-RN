@@ -1,10 +1,11 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, LayoutAnimation, NativeModules, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { search } from '~/api/search'
+import searchApi from '~/api/search'
 import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import Item from './components/Item'
+import { SearchData } from '~/api/search'
 
 export interface Props {
   
@@ -17,7 +18,7 @@ export interface RouteParams {
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 
 function SearchResult(props: PropsWithChildren<FinalProps>) {
-  const [list, setList] = useState([])
+  const [list, setList] = useState<SearchData[]>([])
   const [total, setTotal] = useState(0)
   const [status, setStatus] = useState(1) // 1：初始值，2：加载中，3：加载成功，0：加载失败，4：全部加载完成，5：已加载，但结果为空
   let searchWord = props.navigation.getParam('searchWord')
@@ -35,7 +36,7 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
   function loadList () {
     if (status === 4 || status === 2) { return }
     setStatus(2)
-    search(searchWord, list.length)
+    searchApi.search(searchWord, list.length)
       .then(({ query }) => {
         if (!query.searchinfo.totalhits) {
           setStatus(5)

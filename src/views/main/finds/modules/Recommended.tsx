@@ -2,8 +2,8 @@ import React, { MutableRefObject, PropsWithChildren, useEffect, useState } from 
 import { StyleProp, ViewStyle } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { getMainImage } from '~/api/article'
-import { getRandomPages } from '~/api/query'
-import { getHint } from '~/api/search'
+import queryApi from '~/api/query'
+import searchApi from '~/api/search'
 import storage from '~/utils/storage'
 import ArticleGroup from './components/ArticleGroup'
 
@@ -55,23 +55,24 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
           // 随机抽出一个，执行搜索
           let title = lastPages[random(lastPages.length)]
           setSearchTitle(title)
-          let searchedPages = await getHint(title, 11)
-          searchedPages = searchedPages.query.search.map(item => item.title).filter(item => item != title)
+          let searchedPages = await searchApi.getHint(title, 11)
+          let searchedTitle = searchedPages.query.search.map(item => item.title).filter(item => item != title)
   
-          if (searchedPages.length > 5) {
+          if (searchedTitle.length > 5) {
             var results = []
             
             // 从搜索结果中随机抽出5个
             while (results.length < 5) {
-              let ran = searchedPages[random(searchedPages.length)]
+              let ran = searchedTitle[random(searchedTitle.length)]
               !results.includes(ran) && results.push(ran)
             }
           } else {
-            var results = searchedPages
+            var results = searchedTitle
           }
         } else {
           // 没有缓存，执行完全随机
-          let randomPages = await getRandomPages()
+          let randomPages = await queryApi.getRandomPages()
+          console.log(randomPages)
           var results = randomPages.query.random.map(item => item.title)
         }
   

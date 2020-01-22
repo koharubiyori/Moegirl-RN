@@ -1,11 +1,16 @@
 import React, { PropsWithChildren } from 'react'
 import { ActivityIndicator, Image, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
 
+export interface ArticleGroupArticle {
+  title: string
+  image: string
+}
+
 export interface Props {
   title: string
   subtitle?: string
   icon: JSX.Element
-  articles: any[]
+  articles: ArticleGroupArticle[]
   style?: StyleProp<ViewStyle>
   navigation: __Navigation.Navigation
   status: number

@@ -23,9 +23,6 @@ axiosInstance.interceptors.response.use(responseDataHandler)
 
 // 请求拦截器
 async function requestDataHandler(req: AxiosRequestConfig) {
-  if (!req.params) req.params = {}
-  req.params.format = 'json'
-
   if (req.method === 'post') {
     req.data = req.params
     delete req.params
@@ -41,7 +38,8 @@ async function requestDataHandler(req: AxiosRequestConfig) {
 
 // 响应拦截器
 function responseDataHandler(res: AxiosResponse) {
-  return res.data
+  
+  return res
 }
 
 export default axiosInstance
