@@ -1,8 +1,8 @@
 import request from '~/utils/moeRequest'
-import { ApiData } from './account.d'
+import { AccountApiData } from './account.d'
 
 function getToken() {
-  return request<ApiData.getToken>({
+  return request<AccountApiData.getToken>({
     method: 'post',
     params: {
       action: 'query',
@@ -13,7 +13,7 @@ function getToken() {
 }
 
 function _login(token: string, username: string, password: string) {
-  return request<ApiData.login>({
+  return request<AccountApiData.login>({
     method: 'post',
     params: {
       action: 'clientlogin',

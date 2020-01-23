@@ -8,7 +8,7 @@ declare module 'react-native-tiny-toast' {
   
   interface TinyToast {
     show (message: string, options?: ShowOptions): void
-    showLoading (message: string, options?: ShowOptions): void
+    showLoading (message?: string, options?: ShowOptions): void
     showSuccess (message: string, options?: ShowOptions): void
     hide (): void
   }

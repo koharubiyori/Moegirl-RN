@@ -1,7 +1,7 @@
 import React, { MutableRefObject, PropsWithChildren, useEffect, useState } from 'react'
 import { StyleProp, ViewStyle } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { getMainImage } from '~/api/article'
+import articleApi from '~/api/article'
 import queryApi from '~/api/query'
 import ArticleGroup, { ArticleGroupArticle } from './components/ArticleGroup'
 
@@ -52,7 +52,7 @@ function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
         })    
         .then(data => {
           Promise.all(
-            data.map(item => getMainImage(item.title))
+            data.map(item => articleApi.getMainImage(item.title))
           ).then(images => {
             setStatus(3)
             // 为data添加image字段

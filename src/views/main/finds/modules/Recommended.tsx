@@ -1,7 +1,7 @@
 import React, { MutableRefObject, PropsWithChildren, useEffect, useState } from 'react'
 import { StyleProp, ViewStyle } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { getMainImage } from '~/api/article'
+import articleApi from '~/api/article'
 import queryApi from '~/api/query'
 import searchApi from '~/api/search'
 import storage from '~/utils/storage'
@@ -22,7 +22,7 @@ export interface FindsModuleRecommendedRef {
 type FinalProps = Props
 
 function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<{ title: string, image: string | null }[]>([])
   const [status, setStatus] = useState(2)
   const [searchTitle, setSearchTitle] = useState('')
 
@@ -49,17 +49,17 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
             var lastPages = data
           } else {
             // 抽出最后五个
-            var lastPages = [data.pop(), data.pop(), data.pop(), data.pop(), data.pop()]
+            var lastPages = [data.pop()!, data.pop()!, data.pop()!, data.pop()!, data.pop()!]
           }
     
           // 随机抽出一个，执行搜索
           let title = lastPages[random(lastPages.length)]
           setSearchTitle(title)
           let searchedPages = await searchApi.getHint(title, 11)
-          let searchedTitle = searchedPages.query.search.map(item => item.title).filter(item => item != title)
+          let searchedTitle = searchedPages.query.search.map(item => item.title).filter(item => item !== title)
   
           if (searchedTitle.length > 5) {
-            var results = []
+            var results: string[] = []
             
             // 从搜索结果中随机抽出5个
             while (results.length < 5) {
@@ -72,7 +72,6 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
         } else {
           // 没有缓存，执行完全随机
           let randomPages = await queryApi.getRandomPages()
-          console.log(randomPages)
           var results = randomPages.query.random.map(item => item.title)
         }
   
@@ -80,10 +79,10 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
         results = results.filter(title => title !== 'Mainpage')
   
         // 为随机结果添加配图
-        let images = await Promise.all(results.map(title => getMainImage(title)))
-        results = results.map((title, index) => ({ title, image: images[index] ? images[index].source : null }))
+        let images = await Promise.all(results.map(title => articleApi.getMainImage(title)))
+        let finalResult = results.map((title, index) => ({ title, image: images[index] ? images[index].source : null }))
   
-        setData(results)
+        setData(finalResult)
         setStatus(results.length === 0 ? 4 : 3)
         resolve()
       } catch (e) {

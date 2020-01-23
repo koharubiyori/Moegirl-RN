@@ -1,5 +1,5 @@
 import Tree from '~/utils/tree'
-import { ApiData, CommentData } from '~/api/comment.d'
+import { CommentApiData, CommentData } from '~/api/comment.d'
 import setActionHandler from '~/utils/redux/setActionHandler'
 
 export const SET_ACTIVE_ID = Symbol()
@@ -38,7 +38,7 @@ export interface State {
   activeId: number
   pages: { 
     [commentId: string]: {
-      data: ApiData.Get['flowthread']
+      data: CommentApiData.Get['flowthread']
       tree: InstanceType<typeof Tree>
       pageId: number
       status: number

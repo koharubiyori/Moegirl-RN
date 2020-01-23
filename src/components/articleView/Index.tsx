@@ -9,7 +9,7 @@ import request from '~/utils/request'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import { controlsCodeString } from './controls/index'
-import { ApiData } from '~/api/article.d'
+import { ArticleApiData } from '~/api/article.d'
 
 export interface Props {
   navigation: __Navigation.Navigation
@@ -22,7 +22,7 @@ export interface Props {
   injectJs?: string
   autoPaddingTopForHeader?: boolean
   onMessages?: { [msgName: string]: (data: any) => void }
-  onLoaded? (articleData: ApiData.GetContent): void
+  onLoaded? (articleData: ArticleApiData.GetContent): void
   onMissing? (link: string): void
   getRef: MutableRefObject<any>
 }

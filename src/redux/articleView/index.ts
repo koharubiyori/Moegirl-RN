@@ -1,4 +1,4 @@
-import { ApiData } from '~/api/article.d'
+import { ArticleApiData } from '~/api/article.d'
 import setActionHandler from '~/utils/redux/setActionHandler'
 
 export const ADD = Symbol()
@@ -6,13 +6,13 @@ export const ADD = Symbol()
 export interface ActionTypes {
   [ADD]: {
     name: string
-    data: ApiData.GetContent
+    data: ArticleApiData.GetContent
   }
 } 
 
 export interface State {
   pagesCache: {
-    [pageName: string]: ApiData.GetContent
+    [pageName: string]: ArticleApiData.GetContent
   }
 }
 

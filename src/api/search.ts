@@ -1,8 +1,8 @@
 import request from '~/utils/moeRequest'
-import { ApiData } from './search.d'
+import { SearchApiData } from './search.d'
 
 function getHint(searchWord: string, srlimit = 10) {
-  return request<ApiData.GetHint>({
+  return request<SearchApiData.GetHint>({
     params: {
       action: 'query',
       list: 'search',
@@ -14,7 +14,7 @@ function getHint(searchWord: string, srlimit = 10) {
 }
 
 function search(searchWord: string, offset: number) {
-  return request<ApiData.Search>({
+  return request<SearchApiData.Search>({
     params: {
       action: 'query',
       list: 'search',

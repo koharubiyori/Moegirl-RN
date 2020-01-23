@@ -1,4 +1,4 @@
-export namespace ApiData {
+export namespace AccountApiData {
   interface getToken {
     query: {
       tokens: {

@@ -28,7 +28,7 @@ export interface NotificationData {
   }
 }
 
-export namespace ApiData {
+export namespace NotificationApiData {
   interface Get {
     query: {
       notifications: {

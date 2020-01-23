@@ -1,8 +1,8 @@
 import request from '~/utils/moeRequest'
-import { ApiData } from './comment.d'
+import { CommentApiData } from './comment.d'
 
 export function getComments(pageid: number, offset = 0) {
-  return request<ApiData.Get>({
+  return request<CommentApiData.Get>({
     params: {
       action: 'flowthread',
       type: 'list',

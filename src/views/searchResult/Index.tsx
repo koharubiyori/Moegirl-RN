@@ -5,7 +5,7 @@ import searchApi from '~/api/search'
 import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import Item from './components/Item'
-import { SearchData } from '~/api/search'
+import { SearchData } from '~/api/search.d'
 
 export interface Props {
   
