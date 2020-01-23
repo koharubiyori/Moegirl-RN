@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
-import React, { PropsWithChildren, useRef } from 'react'
+import React, { PropsWithChildren, useRef, FC } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import * as commentApi from '~/api/comment'
-import commentHOC from '~/redux/comment/HOC'
+import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
 import toast from '~/utils/toast'
 import format from '../utils/format'
 
@@ -31,10 +31,9 @@ export interface Props {
   visibleReplyNum?: boolean
   visibleDelBtn?: boolean
   navigation: __Navigation.Navigation
-  signedName: string
-  onDel (commentId: string): void
-  onPress (): void
-  onTapReply (commentId: string): void
+  signedName: string | null
+  onDel? (commentId: string): void
+  onTapReply? (commentId: string): void
 }
 
 (CommentItem as DefaultProps<Props>).defaultProps = {
@@ -45,7 +44,7 @@ export interface Props {
   isReply: false
 }
 
-type FinalProps = Props
+type FinalProps = Props & CommentConnectedProps
 
 function CommentItem(props: PropsWithChildren<FinalProps>) {
   const isReported = useRef(false)
@@ -64,7 +63,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
     commentApi.toggleLike(props.data.id, isLiked)
       .finally(toast.hide)
       .then(data => {
-        props.comment.setLikeStatus(props.data.id, !isLiked)
+        props.$comment.setLikeStatus(props.data.id, !isLiked)
       }).catch(e => {
         console.log(e)
         setTimeout(() => toast.show('网络错误'))
@@ -98,7 +97,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
         commentApi.delComment(props.data.id)
           .finally(() => toast.hide())
           .then(() => {
-            props.onDel(props.data.id)
+            props.onDel && props.onDel(props.data.id)
             setTimeout(() => $dialog.alert.show({ content: `${props.isReply ? '回复' : '评论'}已删除` }))
           })
           .catch(e => {
@@ -161,7 +160,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
           )}
 
           {formattedChildren.length > 3
-            ? <TouchableOpacity onPress={() => props.onTapReply(data.id)}>
+            ? <TouchableOpacity onPress={() => props.onTapReply && props.onTapReply(data.id)}>
               <Text style={{ color: '#666', textAlign: 'center', marginTop: 10 }}>查看更多</Text>
             </TouchableOpacity>
             : null}
@@ -200,7 +199,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default commentHOC(CommentItem)
+export default commentHOC(CommentItem) as FC<Props>
 
 const styles = StyleSheet.create({
   container: {

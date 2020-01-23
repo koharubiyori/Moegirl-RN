@@ -2,8 +2,8 @@ import React, { PropsWithChildren, useEffect, useRef } from 'react'
 import { ActivityIndicator, FlatList, InteractionManager, LayoutAnimation, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import StatusBar from '~/components/StatusBar'
 import store from '~/redux'
-import * as commentActions from '~/redux/comment/actionTypes'
-import commentHOC from '~/redux/comment/HOC'
+import { SET as COMMENT_SET } from '~/redux/comment'
+import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
 import toast from '~/utils/toast'
 import Item from './components/Item'
 import Editor, { CommentEditorRef } from './components/Editor'
@@ -17,7 +17,7 @@ export interface RouteParams {
   title: string
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & CommentConnectedProps
 
 function Comment(props: PropsWithChildren<FinalProps>) {
   const refs = {
@@ -34,7 +34,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
 
   function loadList() {
     InteractionManager.runAfterInteractions(() => {
-      props.comment.load().catch(() => toast.show('加载失败，正在重试'))
+      props.$comment.load().catch(() => toast.show('加载失败，正在重试'))
     })
   }
 
@@ -49,31 +49,30 @@ function Comment(props: PropsWithChildren<FinalProps>) {
     refs.editor.current!.show()
   }
 
-  function toReply(id: number) {
-    store.dispatch({ type: commentActions.SET, data: { activeId: id } })
+  function toReply(id: string) {
+    store.dispatch({ type: COMMENT_SET, data: { activeId: id } })
     props.navigation.push('reply', { signedName })
   }
 
   // 使用redux的数据源
-  const state = props.comment.getActiveData()
+  const state = props.$comment.getActiveData()
   if (state.status === 1) return null
   return (
     <View style={{ flex: 1, backgroundColor: '#eee' }}>
       <StatusBar />
       <Header title={'评论：' + title} onTapAddComment={addComment} navigation={props.navigation} />
-      <Editor getRef={refs.editor} pageId={state.pageId} onPosted={props.comment.incrementLoad} />
+      <Editor getRef={refs.editor} pageId={state.pageId} onPosted={props.$comment.incrementLoad} />
     
       <FlatList removeClippedSubviews data={state.tree.tree} 
         onEndReachedThreshold={1}
         onEndReached={loadList}
         initialNumToRender={4}
         style={{ flex: 1 }}
-        // textBreakStrategy="balanced"
-        renderItem={item => <Item key={item.id} 
+        renderItem={item => <Item key={item.item.id} 
           data={item.item}
           navigation={props.navigation}
           signedName={signedName}
-          onDel={props.comment.del}
+          onDel={props.$comment.del}
           onTapReply={toReply}
         />}
         
@@ -87,7 +86,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
                 visibleReply={false} 
                 visibleReplyBtn={false} 
                 signedName={signedName}
-                onDel={props.comment.del} 
+                onDel={props.$comment.del} 
               />  
             )}
             <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginTop: 10 }}>全部评论</Text>

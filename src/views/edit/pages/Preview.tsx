@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { Button } from 'react-native-material-ui'
-import { getPreview } from '~/api/edit'
+import editApi from '~/api/edit'
 import ArticleView from '~/components/articleView'
 
 export interface Props {
@@ -21,7 +21,7 @@ function EditPreview(props: PropsWithChildren<FinalProps>) {
   function parseCodes(argContent?: string) {
     setStatus(2)
     const { content, title } = props.navigation.getScreenProps()
-    getPreview(argContent || content, title).then(data => {
+    editApi.getPreview(argContent || content, title).then(data => {
       setHtml(data.parse.text['*'])
       setStatus(3)
     }).catch(e => {

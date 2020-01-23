@@ -28,7 +28,7 @@ function SnackBar(props: PropsWithChildren<FinalProps>) {
   function show(message: string) {
     if (visible) return setQueue(prevVal => prevVal.concat([message]))
 
-    setContent(content)
+    setContent(message)
     setVisible(true)
 
     Animated.timing(transitionTop, {

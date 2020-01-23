@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { Button } from 'react-native-material-ui'
-import { getCode } from '~/api/edit'
+import editApi from '~/api/edit'
 import ArticleEditor from '~/components/articleEditor'
 
 export interface Props {
@@ -27,7 +27,7 @@ function CodeEdit(props: PropsWithChildren<FinalProps>) {
   function loadCode () {
     setStatus(2)
     const { title, section } = props.navigation.getScreenProps<ScreenProps>()
-    getCode(title, section).then(data => {
+    editApi.getCode(title, section).then(data => {
       let wikitext = data.parse.wikitext['*'] || ' '
       setStatus(3)
       setContent(wikitext)

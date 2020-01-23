@@ -27,4 +27,5 @@ function search(searchWord: string, offset: number) {
   })
 }
 
-export default { getHint, search }
+const searchApi = { getHint, search }
+export default searchApi
