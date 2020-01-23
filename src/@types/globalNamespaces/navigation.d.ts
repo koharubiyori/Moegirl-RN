@@ -4,7 +4,7 @@ import { RouteName } from '~/router'
 export = Navigation
 export as namespace __Navigation
 
-type NavigationFn = (routeName: RouteName, params?: object) => void
+type NavigationFn = (routeName: RouteName, params?: any) => void
 
 declare namespace Navigation {
   type Navigation<State = {}> = NavigationScreenProp<any, State> & 

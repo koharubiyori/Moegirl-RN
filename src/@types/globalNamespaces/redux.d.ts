@@ -9,5 +9,5 @@ declare namespace Redux {
     [key: string]: any
   }
 
-  type ReduxReducer<State, Type = symbol, ParamNames = any> = Reducer<State, ReduxAction<Type>>
+  type ReduxReducer<State, Type = symbol> = Reducer<State, ReduxAction<Type>>
 }

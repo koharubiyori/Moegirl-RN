@@ -1,14 +1,15 @@
 import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, BackHandler, Dimensions, Linking, NativeModules, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
 import { WebView } from 'react-native-webview'
-import { getImageUrl } from '~/api/article'
+import articleApi from '~/api/article'
 import store from '~/redux'
-import articleViewHOC from '~/redux/articleView/HOC'
+import { articleViewHOC, ArticleViewConnectedProps } from '~/redux/articleView/HOC'
 import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import request from '~/utils/request'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import { controlsCodeString } from './controls/index'
+import { ApiData } from '~/api/article.d'
 
 export interface Props {
   navigation: __Navigation.Navigation
@@ -21,7 +22,7 @@ export interface Props {
   injectJs?: string
   autoPaddingTopForHeader?: boolean
   onMessages?: { [msgName: string]: (data: any) => void }
-  onLoaded? (): void
+  onLoaded? (articleData: ApiData.GetContent): void
   onMissing? (link: string): void
   getRef: MutableRefObject<any>
 }
@@ -36,7 +37,7 @@ export interface ArticleViewRef {
   onMissing: () => {}
 }
 
-type FinalProps = Props & UserConnectedProps
+type FinalProps = Props & UserConnectedProps & ArticleViewConnectedProps
 
 function ArticleView(props: PropsWithChildren<FinalProps>) {
   const [html, setHtml] = useState('')
@@ -161,7 +162,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
   function loadContent(forceLoad = false) {
     if (status === 2) { return }
     setStatus(2)
-    props.articleView.getContent(props.link, forceLoad)
+    props.$articleView.getContent(props.link!, forceLoad)
       .then(data => {
         let html = data.parse.text['*']
         setHtml(createDocument(html))
@@ -228,7 +229,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
     // 拿这个函数做数据结构映射
     function setEventHandler<EventName extends keyof EventParamsMap>(eventName: EventName, handler: (data: EventParamsMap[EventName]) => void) {
-      eventName == type && handler(data as any)
+      eventName === type && handler(data as any)
     } 
 
     setEventHandler('print', msg => console.log('=== print ===', msg))
@@ -290,7 +291,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     })
     setEventHandler('onTapImage', data => {
       toast.showLoading('获取链接中')
-      getImageUrl(data.name)
+      articleApi.getImageUrl(data.name)
         .finally(toast.hide)
         .then(url => {
           props.navigation.push('imageViewer', { imgs: [{ url }] })

@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { DeviceEventEmitter, NativeModules, StyleSheet } from 'react-native'
 import ArticleView, { ArticleViewRef } from '~/components/articleView'
 import StatusBar from '~/components/StatusBar'
-import commentHOC from '~/redux/comment/HOC'
+import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
 import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 import saveHistory from '~/utils/saveHistory'
 import storage from '~/utils/storage'
@@ -21,7 +21,7 @@ export interface RouteParams {
   reloadMethod? (): void // 这个参数是用来设置后供其他位置使用的，相当于暴露出去一个方法
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & ConfigConnectedProps
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & ConfigConnectedProps & CommentConnectedProps
 
 function Article(props: PropsWithChildren<FinalProps>) {
   const [loadedPageInfo, setLoadedPageInfo] = useState({
@@ -82,7 +82,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
   useEffect(() => {
     const listener = props.navigation.addListener('didFocus', () => {
       if (loadedPageInfo.id) {
-        props.comment.setActiveId(loadedPageInfo.id)
+        props.$comment.setActiveId(loadedPageInfo.id)
       }
     })
 
@@ -167,7 +167,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
   }
 
   function toComment() {
-    if ([0, 1, 2].includes(props.comment.getActiveData().status)) { return toast.show('加载评论中，请稍候') }
+    if ([0, 1, 2].includes(props.$comment.getActiveData().status)) { return toast.show('加载评论中，请稍候') }
     props.navigation.push('comment', { title: loadedPageInfo.pageName, id: loadedPageInfo.id })
   }
 

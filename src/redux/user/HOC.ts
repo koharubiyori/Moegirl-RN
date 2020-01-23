@@ -1,8 +1,8 @@
-import { connect } from 'react-redux'
 import { SET_INFO, CLEAR_INFO, State } from './index'
 import store from '~/redux'
 import accountApi from '~/api/account'
-import { getToken as getEditToken } from '~/api/edit'
+import editApi from '~/api/edit'
+import myConnect from '~/utils/redux/myConnect'
 
 const { dispatch, getState } = store
 
@@ -22,7 +22,7 @@ export const logout = () => {
 
 export const check = (): Promise<void> => {
   return new Promise((resolve, reject) => {
-    getEditToken()
+    editApi.getToken()
       .then(data => {
         if (data.query.tokens.csrftoken === '+\\') {
           logout()
@@ -50,9 +50,4 @@ export type UserConnectedProps = ConnectedDispatch & {
   state: { user: State }
 }
 
-export const userHOC = connect(
-  state => ({ state }),
-  dispatch => ({ 
-    $user: { login, logout, check }
-  })
-)
+export const userHOC = myConnect('$user', { login, logout, check })

@@ -7,7 +7,7 @@ import {
 import StatusBar from '~/components/StatusBar'
 import Header from './components/Header'
 import TabNavigator from './TabNavigator'
-import { editArticle } from '~/api/edit'
+import editApi from '~/api/edit'
 import toast from '~/utils/toast'
 import { NavigationState } from 'react-navigation'
 
@@ -71,14 +71,14 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   function navigationStateChange(prevState: NavigationState, state: NavigationState) {
     if (!state.routes[0].params) { return }
     const { status, content } = state.routes[0].params
-    const { refresh } = state.routes[1].params
+    const { refresh } = state.routes[1].params!
 
     setStatus(status)
     setContent(content)
     if (!prevState.routes[0].params && content) return refresh && refresh(content)
 
     // 如果内容不同，则标记为需要刷新
-    if ((prevState.routes[0].params.content !== content) && state.index === 0) { essentialUpdate.current = true }
+    if ((prevState.routes[0].params!.content !== content) && state.index === 0) { essentialUpdate.current = true }
     if (essentialUpdate.current && state.index === 1) {
       essentialUpdate.current = false
       refresh && refresh(content)
@@ -93,7 +93,7 @@ function Edit(props: PropsWithChildren<FinalProps>) {
         inputPlaceholder: '请输入编辑摘要',
         onTapCheck: text => {
           toast.showLoading('提交中')
-          editArticle(title, section, content, text.trim())
+          editApi.editArticle(title, section, content, text!.trim())
             .finally(toast.hide)
             .then(() => {
               setTimeout(() => toast.show('编辑成功'))
@@ -102,11 +102,13 @@ function Edit(props: PropsWithChildren<FinalProps>) {
             })
             .catch(code => {
               if (code) {
-                $dialog.alert.show({
+                const msg = (({
                   editconflict: '出现编辑冲突，请复制编辑的内容后再次进入编辑界面，并检查差异',
                   protectedpage: '没有权限编辑此页面！',
                   readonly: '目前数据库处于锁定状态，无法编辑'
-                }[code] || '未知错误')
+                } as { [code: string]: string })[code] || '未知错误')
+
+                $dialog.alert.show({ content: msg })
               } else {
                 $dialog.alert.show({ content: '网络错误，请稍候再试' })
               }             

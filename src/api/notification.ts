@@ -11,4 +11,5 @@ export function get() {
   })
 }
 
-export default { get }
+const notificationApi = { get }
+export default notificationApi

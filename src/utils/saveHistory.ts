@@ -1,7 +1,7 @@
 import { DeviceEventEmitter } from 'react-native'
 import storage from '~/utils/storage'
 import axios from 'axios'
-import { getMainImage } from '~/api/article'
+import articleApi from '~/api/article'
 
 export interface BrowsingHistory {
   title: string
@@ -14,7 +14,7 @@ export default function(title: string) {
 
   Promise.all([
     storage.get('browsingHistory'),
-    getMainImage(title)
+    articleApi.getMainImage(title)
   ]).then(async ([history, img]) => {
     let _history = history || []
     _history.some((item, index) => {

@@ -3,7 +3,7 @@ import React, { MutableRefObject, PropsWithChildren, useLayoutEffect, useRef, us
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { withNavigation } from 'react-navigation'
-import commentHOC from '~/redux/comment/HOC'
+import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 const size = 60
@@ -25,7 +25,7 @@ export interface CommentButtonRef {
   hide (): void
 }
 
-type FinalProps = Props
+type FinalProps = Props & CommentConnectedProps
 
 function CommentButton(props: PropsWithChildren<FinalProps>) {
   const [visible, setVisible] = useState(false)
@@ -36,8 +36,8 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
   if (props.getRef) props.getRef.current = { show, hide }
 
   useLayoutEffect(() => {
-    props.comment.setActiveId(props.id)
-    props.comment.load()
+    props.$comment.setActiveId(props.id)
+    props.$comment.load()
     setTimeout(() => {
       showLock.current = false
       show()
@@ -70,12 +70,12 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
   }
 
   function tap() {
-    let state = props.comment.getActiveData()
-    if (state.status === 0) props.comment.load()
+    let state = props.$comment.getActiveData()
+    if (state.status === 0) props.$comment.load()
     props.onTap()
   }
 
-  const state = props.comment.getActiveData()
+  const state = props.$comment.getActiveData()
   return (
     visible ? <>
       <AnimatedTouchableOpacity onPress={tap} style={{ ...styles.container, bottom: transitionBottom }}>
@@ -83,7 +83,7 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
           <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
             <Icon name="comment" size={30} color="white" style={{ position: 'relative', top: -4 }} />
             <Text style={{ position: 'absolute', bottom: 6, color: 'white' }}>
-              {({ 0: '×', 1: '...', 2: '...' } as { [status: number]: string })[state.status || 1] || state.data.count}
+              {({ 0: '×', 1: '...', 2: '...' } as { [status: number]: string })[state ? state.status : 1] || state.data.count}
             </Text>
           </View>
         </View>

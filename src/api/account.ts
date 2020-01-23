@@ -44,4 +44,5 @@ function logout() {
   })
 }
 
-export default { getToken, login, logout }
+const accountApi = { getToken, login, logout }
+export default accountApi

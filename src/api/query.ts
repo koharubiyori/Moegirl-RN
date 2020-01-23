@@ -23,4 +23,5 @@ function getRandomPages (rnlimit = 5) {
   })
 }
 
-export default { getRecentChanges, getRandomPages }
+const queryApi = { getRecentChanges, getRandomPages }
+export default queryApi

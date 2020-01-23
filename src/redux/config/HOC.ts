@@ -1,6 +1,6 @@
-import { SET, INIT, State } from './index'
-import { connect } from 'react-redux'
 import store from '~/redux'
+import myConnect from '~/utils/redux/myConnect'
+import { INIT, SET, State } from './index'
 
 const { dispatch, getState } = store
 
@@ -18,9 +18,4 @@ export type ConfigConnectedProps = ConnectedDispatch & {
   state: { config: State }
 }
 
-export const configHOC = connect(
-  state => ({ state }),
-  dispatch => ({
-    $config: { set, init }
-  })
-)
+export const configHOC = myConnect('$config', { set, init })

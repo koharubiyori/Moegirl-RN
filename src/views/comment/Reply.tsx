@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useRef, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import StatusBar from '~/components/StatusBar'
-import commentHOC from '~/redux/comment/HOC'
+import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
 import Item from './components/Item'
 import Editor, { CommentEditorRef } from './components/Editor'
 import Header from './components/Header'
@@ -15,7 +15,7 @@ export interface RouteParams {
   signedName: string
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & CommentConnectedProps
 
 function CommentReply(props: PropsWithChildren<FinalProps>) {
   const [replyId, setReplyId] = useState('')
@@ -25,7 +25,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
   const signedName = props.navigation.getParam('signedName')
 
   function addReply(replyId = '') {
-    if (signedName) {
+    if (!signedName) {
       return $dialog.confirm.show({
         content: '需要先登录才能回复，是否前往登录界面？',
         onTapCheck: () => props.navigation.push('login')
@@ -39,10 +39,10 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
   }
 
   function delCommentData(id: string) {
-    props.comment.del(id, true)
+    props.$comment.del(id, true)
   }
 
-  const state = props.comment.getActiveData()
+  const state = props.$comment.getActiveData()
   const activeComment = state.tree.tree.filter(item => item.id === state.activeId)[0]
   const children = format.children(activeComment.children, state.activeId)
 
@@ -53,7 +53,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
       <Editor getRef={refs.editor}
         pageId={state.pageId}
         targetId={replyId || state.activeId}  
-        onPosted={() => props.comment.incrementLoad(true)}
+        onPosted={() => props.$comment.incrementLoad(true)}
       />
     
       <ScrollView style={{ flex: 1 }}>
@@ -75,6 +75,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
           data={item}
           navigation={props.navigation}
           onDel={delCommentData}
+          signedName={signedName} 
           onTapReply={() => addReply(item.id)}
         />)}
 
