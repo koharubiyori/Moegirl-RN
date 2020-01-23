@@ -18,43 +18,41 @@ export const setActiveId = id =>{
   return imr(() => dispatch({ type: SET_ACTIVE_ID, id }))
 }
 
-export const load = () => dispatch((dispatch, getState) =>
-  new Promise((resolve, reject) =>{
-    imr(() =>{
-      var state = getActiveData()
-      if([2, 4, 5].includes(state.status)){ return resolve() }
-  
-      dispatch({ type: SET, data: { status: 2 } })
-      getComments(state.pageId, state.tree.tree.length).then(data =>{
-        if(data.count === 0){
-          dispatch({ type: SET, data: { status: 5 } })
-          return resolve()
-        }
+export const load = () => new Promise((resolve, reject) =>{
+  imr(() =>{
+    var state = getActiveData()
+    if([2, 4, 5].includes(state.status)){ return resolve() }
 
-        var status = 3
-        data.posts = state.data.posts.concat(data.posts)
-        var tree = new Tree(data.posts)
-  
-        if(data.count === tree.tree.length) status = 4
+    dispatch({ type: SET, data: { status: 2 } })
+    getComments(state.pageId, state.tree.tree.length).then(data =>{
+      if(data.count === 0){
+        dispatch({ type: SET, data: { status: 5 } })
+        return resolve()
+      }
 
-        dispatch({ type: SET, data: { data, status, tree } })
-  
-        resolve()
-      }).catch(e =>{
-        console.log(e)
-        dispatch({ type: SET, data: { status: 0 } })
-        reject()
-      })
+      var status = 3
+      data.posts = state.data.posts.concat(data.posts)
+      var tree = new Tree(data.posts)
+
+      if(data.count === tree.tree.length) status = 4
+
+      dispatch({ type: SET, data: { data, status, tree } })
+
+      resolve()
+    }).catch(e =>{
+      console.log(e)
+      dispatch({ type: SET, data: { status: 0 } })
+      reject()
     })
   })
-)
+})
 
-export const incrementLoad = (isReply = false) => dispatch((dispatch, getState) =>{
-  var state = getActiveData()
+export const incrementLoad = (isReply = false) => {
+  let state = getActiveData()
   return imr(() =>
     getComments(state.pageId).then(data => dispatch({ type: INCREMENT_DATA, posts: data.posts, count: data.count, isReply }))
   ) 
-})
+}
 
 export const del = (id, isReply = false) => imr(() => dispatch({ type: DEL, id, isReply })) 
 

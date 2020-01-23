@@ -3,14 +3,14 @@ import { BackHandler, Image, Linking, StyleSheet, Text, TouchableOpacity, View }
 import { TextField } from 'react-native-material-textfield'
 import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
-import userHOC from '~/redux/user/HOC'
+import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import toast from '~/utils/toast'
 
 export interface Props {
 
 }
 
-type FinalProps = Props
+type FinalProps = Props & __Navigation.InjectedNavigation & UserConnectedProps
 
 function Login(props: PropsWithChildren<FinalProps>) {
   const [userName, setUserName] = useState('')
@@ -34,7 +34,7 @@ function Login(props: PropsWithChildren<FinalProps>) {
     if (!password) return toast.show('密码不能为空')
 
     toast.showLoading('登录中')
-    props.user.login(userName, password)
+    props.$user.login(userName, password)
       .finally(toast.hide)
       .then(() => {
         setTimeout(() => toast.show('登录成功'))

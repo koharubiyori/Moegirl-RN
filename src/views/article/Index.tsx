@@ -3,7 +3,7 @@ import { DeviceEventEmitter, NativeModules, StyleSheet } from 'react-native'
 import ArticleView, { ArticleViewRef } from '~/components/articleView'
 import StatusBar from '~/components/StatusBar'
 import commentHOC from '~/redux/comment/HOC'
-import configHOC from '~/redux/config/HOC'
+import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 import saveHistory from '~/utils/saveHistory'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
@@ -21,7 +21,7 @@ export interface RouteParams {
   reloadMethod? (): void // 这个参数是用来设置后供其他位置使用的，相当于暴露出去一个方法
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & ConfigConnectedProps
 
 function Article(props: PropsWithChildren<FinalProps>) {
   const [loadedPageInfo, setLoadedPageInfo] = useState({

@@ -21,7 +21,7 @@ declare const $drawer: NodeJS.Global['$drawer']
 declare const $appNavigator: NodeJS.Global['$appNavigator']
 declare const $dialog: NodeJS.Global['$dialog']
 
-// Webview环境下的全局变量
+// Webview环境下的全局变量，只在Window接口下声明了，所以使用也要都写window前缀
 declare interface Window {
   ReactNativeWebView: { postMessage: (msg: string) => void }
   _request (config: object, callback: (data: string) => void): void

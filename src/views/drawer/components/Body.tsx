@@ -2,14 +2,14 @@ import React, { PropsWithChildren } from 'react'
 import { BackHandler, Dimensions, Image, NativeModules, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
-import userHOC from '~/redux/user/HOC'
+import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import Item from './Item'
 
 export interface Props {
   immersionMode: boolean
 }
 
-type FinalProps = Props
+type FinalProps = Props & UserConnectedProps
 
 function DrawerBody(props: PropsWithChildren<FinalProps>) {
 

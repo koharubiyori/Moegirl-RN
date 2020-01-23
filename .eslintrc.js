@@ -42,6 +42,7 @@ module.exports = {
     'no-async-promise-executor': 0, // promise的处理函数不能有async修饰符 
     'no-redeclare': 0, // 不能重复定义（在使用var声明变量时这个规则会误报）
     'prefer-promise-reject-errors': 0,  // promise的reject必须传入一个Error对象
+    'symbol-description': 0,  // symbol类型必需有描述
 
     'react/display-name': 0,   // 必须设置组件的displayName
     'react/prop-types': 0   // 检查属性是否在props上存在，有误报的情况

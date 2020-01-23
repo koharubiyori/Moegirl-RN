@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { MutableRefObject, PropsWithChildren, useRef, useState } from 'react'
 import { Animated, Clipboard, Dimensions, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import Toolbar from '~/components/Toolbar'
-import userHOC from '~/redux/user/HOC'
+import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import toast from '~/utils/toast'
 
 ArticleHeader.propTypes = {
@@ -30,7 +30,7 @@ export interface ArticleHeaderRef {
   hide (): void
 }
 
-type FinalProps = Props
+type FinalProps = Props & UserConnectedProps
 
 function ArticleHeader(props: PropsWithChildren<FinalProps>) {
   const [visible, setVisible] = useState(true)
