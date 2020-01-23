@@ -31,7 +31,7 @@ export interface ArticleImageInfoData {
   descriptionshorturl: string
 }
 
-export namespace ApiData {
+export namespace ArticleApiData {
   interface GetContent {
     error?: any
     

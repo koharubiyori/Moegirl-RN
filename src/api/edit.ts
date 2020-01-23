@@ -1,8 +1,8 @@
 import request from '~/utils/moeRequest'
-import { ApiData } from './edit.d'
+import { EditApiData } from './edit.d'
 
 function getCode(pageName: string, section: number) {
-  return request<ApiData.GetCode>({
+  return request<EditApiData.GetCode>({
     params: {
       action: 'parse',
       page: pageName,
@@ -13,7 +13,7 @@ function getCode(pageName: string, section: number) {
 }
 
 function getPreview(codes: string, title: string) {
-  return request<ApiData.GetPreview>({
+  return request<EditApiData.GetPreview>({
     method: 'post',
     params: {
       action: 'parse',
@@ -28,7 +28,7 @@ function getPreview(codes: string, title: string) {
 }
 
 function getLastTimestamp(title: string) {
-  return request<ApiData.GetLastTimestamp>({
+  return request<EditApiData.GetLastTimestamp>({
     params: {
       action: 'query',
       prop: 'revisions',
@@ -40,7 +40,7 @@ function getLastTimestamp(title: string) {
 }
 
 function getToken() {
-  return request<ApiData.GetToken>({
+  return request<EditApiData.GetToken>({
     method: 'post',
     params: {
       action: 'query',
@@ -50,7 +50,7 @@ function getToken() {
 }
 
 function _editArticle(title: string, section: number, content: string, summary: string, timestamp: string, token: string) {
-  return request<ApiData.EditArticle>({
+  return request<EditApiData.EditArticle>({
     method: 'post',
     params: {
       action: 'edit',

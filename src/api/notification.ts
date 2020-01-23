@@ -1,8 +1,8 @@
 import request from '~/utils/moeRequest'
-import { ApiData } from './notification.d'
+import { NotificationApiData } from './notification.d'
 
 export function get() {
-  return request<ApiData.Get>({
+  return request<NotificationApiData.Get>({
     params: {
       action: 'query',
       meta: 'notifications',

@@ -10,6 +10,7 @@ import toast from '~/utils/toast'
 import CatalogTriggerView, { CatalogTriggerViewRef } from './components/catalogTriggerView'
 import CommentButton, { CommentButtonRef } from './components/CommentButton'
 import Header, { ArticleHeaderRef } from './components/Header'
+import { ArticleApiData } from '~/api/article.d'
 
 export interface Props {
 
@@ -24,7 +25,11 @@ export interface RouteParams {
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & ConfigConnectedProps & CommentConnectedProps
 
 function Article(props: PropsWithChildren<FinalProps>) {
-  const [loadedPageInfo, setLoadedPageInfo] = useState({
+  const [loadedPageInfo, setLoadedPageInfo] = useState<{
+    pageName: string
+    catalogItems: ArticleApiData.GetContent['parse']['sections']
+    id: number
+  }>({
     pageName: props.navigation.getParam('link'),
     catalogItems: [],
     id: 0
@@ -122,7 +127,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
     }
   }
 
-  function contentLoaded(data) {
+  function contentLoaded(data: ArticleApiData.GetContent) {
     let title = loadedPageInfo.pageName.replace(/_/g, ' ')
     let trueTitle = data.parse.title
 

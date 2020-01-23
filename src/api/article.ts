@@ -1,8 +1,8 @@
 import request from '~/utils/moeRequest'
-import { ApiData } from './article.d'
+import { ArticleApiData } from './article.d'
 
 function getContent(pageName = 'Mainpage') {
-  return request<ApiData.GetContent>({
+  return request<ArticleApiData.GetContent>({
     params: {
       action: 'parse',
       page: pageName,
@@ -13,7 +13,7 @@ function getContent(pageName = 'Mainpage') {
 }
 
 function getMainImage(pageName: string) {
-  return request<ApiData.GetImages>({
+  return request<ArticleApiData.GetImages>({
     params: {
       action: 'query',
       prop: 'pageimages',
@@ -27,7 +27,7 @@ function getMainImage(pageName: string) {
 }
 
 function getImageUrl(imageName: string) {
-  return request<ApiData.getImgUrl>({
+  return request<ArticleApiData.getImgUrl>({
     baseURL: 'https://commons.moegirl.org/api.php',
     method: 'post',
     params: {

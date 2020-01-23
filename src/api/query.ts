@@ -1,8 +1,8 @@
 import request from '~/utils/moeRequest'
-import { ApiData } from './query.d'
+import { QueryApiData } from './query.d'
 
 function getRecentChanges () {
-  return request<ApiData.GetRecentChanges>({
+  return request<QueryApiData.GetRecentChanges>({
     params: {
       action: 'query',
       list: 'recentchanges',
@@ -13,7 +13,7 @@ function getRecentChanges () {
 }
 
 function getRandomPages (rnlimit = 5) {
-  return request<ApiData.GetRandomPages>({
+  return request<QueryApiData.GetRandomPages>({
     params: {
       action: 'query',
       list: 'random',

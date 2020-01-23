@@ -1,4 +1,4 @@
-export namespace ApiData {
+export namespace EditApiData {
   interface GetCode {
     parse: {
       title: string

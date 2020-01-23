@@ -179,7 +179,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
 
         {props.visibleReplyBtn ? <>
           <TouchableOpacity style={styles.footerItem}
-            onPress={() => props.onTapReply(data.id)}
+            onPress={() => props.onTapReply && props.onTapReply(data.id)}
           >
             {!props.visibleReplyNum || data.children.length === 0 
               ? <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />

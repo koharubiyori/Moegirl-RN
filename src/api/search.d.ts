@@ -16,7 +16,7 @@ export interface SearchData {
   timestamp: string
 }
 
-export namespace ApiData {
+export namespace SearchApiData {
   interface GetHint {
     continue: {
       sroffset: number

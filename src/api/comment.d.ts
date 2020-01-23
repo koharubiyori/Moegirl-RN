@@ -9,7 +9,7 @@ export interface CommentData {
   myatt: number
 } 
 
-export namespace ApiData {
+export namespace CommentApiData {
   interface Get {
     flowthread: {
       count: number

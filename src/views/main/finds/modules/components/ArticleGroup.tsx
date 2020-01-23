@@ -3,7 +3,7 @@ import { ActivityIndicator, Image, StyleProp, StyleSheet, Text, TouchableOpacity
 
 export interface ArticleGroupArticle {
   title: string
-  image: string
+  image: string | null
 }
 
 export interface Props {

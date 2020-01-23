@@ -15,7 +15,7 @@ export interface RandomPageData {
   title: string
 }
 
-export namespace ApiData {
+export namespace QueryApiData {
   interface GetRecentChanges {
     continue: {
       rccontinue: string
@@ -32,6 +32,6 @@ export namespace ApiData {
       continue: string
     }
 
-    quary: { random: RandomPageData[] }
+    query: { random: RandomPageData[] }
   }
 }
