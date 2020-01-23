@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview'
 import { getImageUrl } from '~/api/article'
 import store from '~/redux'
 import articleViewHOC from '~/redux/articleView/HOC'
-import userHOC from '~/redux/user/HOC'
+import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import request from '~/utils/request'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
@@ -36,7 +36,7 @@ export interface ArticleViewRef {
   onMissing: () => {}
 }
 
-type FinalProps = Props
+type FinalProps = Props & UserConnectedProps
 
 function ArticleView(props: PropsWithChildren<FinalProps>) {
   const [html, setHtml] = useState('')
@@ -227,20 +227,20 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     const { type, data }: { type: keyof EventParamsMap, data: EventParamsMap[keyof EventParamsMap] } = JSON.parse(event.nativeEvent.data)
 
     // 拿这个函数做数据结构映射
-    function setEventHandler<EventName extends keyof EventParamsMap>(eventName: EventName, handler: (data: EventParamsMap[EventName]) => void){
+    function setEventHandler<EventName extends keyof EventParamsMap>(eventName: EventName, handler: (data: EventParamsMap[EventName]) => void) {
       eventName == type && handler(data as any)
     } 
 
     setEventHandler('print', msg => console.log('=== print ===', msg))
     setEventHandler('error', msg => console.log('--- WebViewError ---', msg))
-    setEventHandler('onTapNote', data =>{
+    setEventHandler('onTapNote', data => {
       $dialog.alert.show({
         title: '注释',
         content: data.content,
         checkText: '关闭'
       })
     })
-    setEventHandler('request', data =>{
+    setEventHandler('request', data => {
       let { config, callbackName } = data
       request({
         baseURL: config.url,
@@ -258,7 +258,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
     if (props.disabledLink) { return }
     
-    setEventHandler('onTapLink', data =>{
+    setEventHandler('onTapLink', data => {
       ;({
         inner: () => {
           let [link, anchor] = data.link.split('#')
@@ -278,7 +278,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
       })[data.type]()
     })
     setEventHandler('openApp', data => Linking.openURL(data.url))
-    setEventHandler('onTapEdit', data =>{
+    setEventHandler('onTapEdit', data => {
       if (props.state.user.name) {
         props.navigation.push('edit', { title: data.page, section: data.section })
       } else {
@@ -288,7 +288,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         })
       }
     })
-    setEventHandler('onTapImage', data =>{
+    setEventHandler('onTapImage', data => {
       toast.showLoading('获取链接中')
       getImageUrl(data.name)
         .finally(toast.hide)

@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { getNotifications } from '~/api/notification'
+import notificationApi from '~/api/notification'
 import Toolbar from '~/components/Toolbar'
 
 export interface Props {
@@ -21,7 +21,7 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
   }, [])
 
   function load() {
-    getNotifications()
+    notificationApi.get()
       .then(data => {
         console.log(data)
       })

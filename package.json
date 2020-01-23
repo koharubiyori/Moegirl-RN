@@ -41,8 +41,7 @@
     "react-navigation-stack": "^1.8.1",
     "react-navigation-tabs": "^2.5.6",
     "react-redux": "^7.1.1",
-    "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "redux": "^4.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -60,6 +59,7 @@
     "@types/react-native-orientation": "^5.0.1",
     "@types/react-native-vector-icons": "^6.4.5",
     "@types/react-redux": "^7.1.6",
+    "@types/redux": "^3.6.0",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "babel-jest": "^24.9.0",

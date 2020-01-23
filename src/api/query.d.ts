@@ -17,7 +17,6 @@ export interface RandomPageData {
 
 export namespace ApiData {
   interface GetRecentChanges {
-    batchcomplete: string
     continue: {
       rccontinue: string
       continue: string
@@ -28,7 +27,6 @@ export namespace ApiData {
   }
 
   interface GetRandomPages {
-    batchcomplete: string
     continue: {
       rncontinue: string
       continue: string

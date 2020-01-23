@@ -1,22 +1,18 @@
 import React, { PropsWithChildren } from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, ScrollView, DeviceEventEmitter,
-  StyleSheet
-} from 'react-native'
+import { DeviceEventEmitter, ScrollView, StyleSheet, Text, View } from 'react-native'
 import StatusBar from '~/components/StatusBar'
 import Toolbar from '~/components/Toolbar'
+import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
+import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
 import storage from '~/utils/storage'
-import SwitchItem from './components/SwitchItem'
 import toast from '~/utils/toast'
-import configHOC from '~/redux/config/HOC'
-import userHOC from '~/redux/user/HOC'
+import SwitchItem from './components/SwitchItem'
 
 export interface Props {
 
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation
+type FinalProps = Props & __Navigation.InjectedNavigation & UserConnectedProps & ConfigConnectedProps
 
 function Settings(props: PropsWithChildren<FinalProps>) {
 
@@ -46,14 +42,14 @@ function Settings(props: PropsWithChildren<FinalProps>) {
     $dialog.confirm.show({
       content: '确定要登出吗？',
       onTapCheck () {
-        props.user.logout()
+        props.$user.logout()
         toast.show('已登出')
       }
     })
   }
 
   const { config } = props.state
-  const setConfig = config => props.config.set(config)
+  const setConfig = (config: Parameters<typeof props.$config.set>[0]) => props.$config.set(config)
   return (
     <View style={{ flex: 1 }}>
       <StatusBar />  
