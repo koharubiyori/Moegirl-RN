@@ -10,6 +10,15 @@ import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import { controlsCodeString } from './controls/index'
 import { ArticleApiData } from '~/api/article.d'
+import homeStyleSheet from './styles/home'
+import articleStyleSheet from './styles/article'
+
+const styleSheets = {
+  home: homeStyleSheet,
+  article: articleStyleSheet
+}
+
+export type InjectStyleSheetName = keyof typeof styleSheets
 
 export interface Props {
   navigation: __Navigation.Navigation
@@ -17,7 +26,7 @@ export interface Props {
   link?: string
   html?: string
   disabledLink?: boolean
-  injectStyle?: string[]
+  injectStyle?: InjectStyleSheetName[]
   injectCss?: string
   injectJs?: string
   autoPaddingTopForHeader?: boolean
@@ -106,11 +115,6 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     }.toString()
     injectRequestUtil = `(${injectRequestUtil})();`
 
-    // 载入资源（位于 /android/main/assets ）
-    const styleTags = props.injectStyle ? props.injectStyle.reduce((prev, next) => 
-      prev + `<link type="text/css" rel="stylesheet" href="css/${next}.css" />`, ''
-    ) : ''
-
     const scriptTags = libScript.reduce((prev, next) => prev + `<script src="js/lib/${next}.js"></script>`, '')
 
     let injectJsCodes = `
@@ -133,7 +137,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Document</title>
-        ${styleTags}
+        <style>${props.injectStyle ? props.injectStyle.map(name => styleSheets[name]).join('') : ''}</style>
         ${props.autoPaddingTopForHeader ? `
           <style>
             body {

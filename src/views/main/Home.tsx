@@ -14,7 +14,7 @@ function Home(props: PropsWithChildren<FinalProps>) {
   return (
     <View style={{ flex: 1 }}>
       <Header title="萌娘百科" />
-      <ArticleView style={{ flex: 1 }} link="Mainpage" injectStyle={['index', 'page']}
+      <ArticleView style={{ flex: 1 }} link="Mainpage" injectStyle={['article', 'home']}
         navigation={props.navigation}
       />
     </View>

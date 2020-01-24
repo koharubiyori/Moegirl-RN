@@ -210,7 +210,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
         style={{ flex: 1 }} 
         navigation={props.navigation}
         link={link} 
-        injectStyle={['page']}
+        injectStyle={['article']}
         injectJs={articleViewInjectJs}
         onMessages={{ changeHeaderVisible: setVisibleHeader }}
         onLoaded={contentLoaded}
