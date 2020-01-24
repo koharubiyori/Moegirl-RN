@@ -10,11 +10,27 @@ export default jss.createStyleSheet({
       display: 'none'
     },
 
+    '.mainpage-1stcontent, .mainpage-content': {
+      margin: '0 5px'
+    },
+
     '.mainpage-1stcontent > ul.gallery:first-child': {
       overflow: 'hidden',
       padding: 0,
       textAlign: 'center',
       fontSize: 0
+    },
+
+    '.mainpage-content p, dl, ul': {
+      margin: 0
+    },
+
+    '.mainpage-content p': {
+      margin: '5px 15px'
+    },
+
+    ul: {
+      paddingLeft: 0
     },
 
     li: {
