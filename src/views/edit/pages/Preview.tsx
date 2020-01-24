@@ -36,7 +36,7 @@ function EditPreview(props: PropsWithChildren<FinalProps>) {
         0: () => <Button primary text="重新加载" onPress={() => parseCodes()}></Button>,
         1: () => null,
         2: () => <ActivityIndicator color={$colors.main} size={50} />,
-        3: () => <ArticleView disabledLink style={{ flex: 1 }} html={html} injectStyle={['page']} navigation={props.navigation} />
+        3: () => <ArticleView disabledLink style={{ flex: 1 }} html={html} injectStyle={['article']} navigation={props.navigation} />
       } as { [status: number]: () => JSX.Element | null })[status]()}
     </View>
   )

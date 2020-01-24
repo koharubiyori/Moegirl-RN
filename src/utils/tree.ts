@@ -1,17 +1,17 @@
-export interface OriginalTreeData {
+export interface RawTreeData {
   id: string
   parentid: string
   [key: string]: any
 }
 
-export interface TreeData extends OriginalTreeData {
+export interface TreeData extends RawTreeData {
   children: TreeData[]
 }
 
 export default class Tree {
   tree: TreeData[]
   
-  constructor (data: OriginalTreeData[] = []) {
+  constructor (data: RawTreeData[] = []) {
     // this.data = data || []     // Tree实例中不再保存原始评论数据，以此尝试是否能提高性能解决评论卡顿
     this.tree = this.toTree(data)
   }
@@ -28,13 +28,13 @@ export default class Tree {
   }
 
   // 获取一个目录下所有目录
-  getChildrenById (root: OriginalTreeData, data: OriginalTreeData[]) {
-    let through = (root: OriginalTreeData) => {
+  getChildrenById (root: RawTreeData, data: RawTreeData[]) {
+    let through = (root: RawTreeData) => {
       let result: TreeData[] = []
-      data.forEach(original => {
-        if (root.id === original.parentid) {
-          (original as TreeData).children = through(original)
-          result.push(original as TreeData)
+      data.forEach(raw => {
+        if (root.id === raw.parentid) {
+          (raw as TreeData).children = through(raw)
+          result.push(raw as TreeData)
         }
       })
       
@@ -50,10 +50,10 @@ export default class Tree {
   //   var through = item =>{
   //     var result = {}
   //     if(item.parentid === 0){ return null }
-  //     this.data.some(original =>{
-  //       if(original.id === item.parentid){
-  //         parents.unshift(original)
-  //         result = through(original)
+  //     this.data.some(raw =>{
+  //       if(raw.id === item.parentid){
+  //         parents.unshift(raw)
+  //         result = through(raw)
   //         return true
   //       }
   //     })
@@ -66,7 +66,7 @@ export default class Tree {
   // }
 
   // 树化
-  toTree (data: OriginalTreeData[]) {
+  toTree (data: RawTreeData[]) {
     let roots = data.filter(item => !item.parentid) as any as TreeData[]
     roots.forEach(root => {
       root.children = this.getChildrenById(root, data)
