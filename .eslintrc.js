@@ -38,6 +38,7 @@ module.exports = {
     'no-use-before-define': 0, // 禁止定义前使用(对ts类型的错误检测) 
     'padded-blocks': 0, // 代码块首尾必须要空行
     'no-return-assign': 0, // 不能返回赋值语句
+    'no-cond-assign': 0, // 不能用赋值语句判断
     'camelcase': 0,  // 变量必须是camelcase风格的，目前来看开启这个会导致不能使用下划线开头的属性或变量
     'no-async-promise-executor': 0, // promise的处理函数不能有async修饰符 
     'no-redeclare': 0, // 不能重复定义（在使用var声明变量时这个规则会误报）
