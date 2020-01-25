@@ -32,7 +32,9 @@ const BottomTabNavigator = createBottomTabNavigator(
   }
 )
 
-export type RouteName = keyof typeof routes 
+export type RouteName = keyof (typeof routes & {
+  [Key in 'settings' | 'edit' | 'comment' | 'reply' | 'notifications' | 'biliPlayer']: any
+})
 
 const routes = { 
   BottomTabNavigator,
@@ -41,15 +43,19 @@ const routes = {
   searchResult,
   login,
   about,
-  settings,
   imageViewer,
 
-  edit: systemView(edit),
-  comment: systemView(comment),
-  reply: systemView(reply),
-  notifications: systemView(notifications),
+  ...systemViews({
+    settings,
+    edit,
+    comment,
+    reply,
+    notifications,
+  }),
   
-  biliPlayer: systemView(biliPlayer, 'forFade'),
+  ...systemViews({ 
+    biliPlayer 
+  }, 'forFade'),
 }
 
 const StackNavigator = createStackNavigator(routes, { 
@@ -60,11 +66,20 @@ const StackNavigator = createStackNavigator(routes, {
   }) as any
 })
 
-function systemView(component: FC<any>, transitionType: keyof typeof StackViewStyleInterpolator = 'forHorizontal') {
-  return {
-    screen: component,
-    params: { transitionType }
+function systemViews(
+  routes: { [routerName: string]: FC<any> },
+  transitionType: keyof typeof StackViewStyleInterpolator = 'forHorizontal'
+): { [routerName: string]: { screen: FC<any>, params: any } } {
+  let forHorizontalRoutes: any = {}
+  
+  for (let routeName in routes) {
+    forHorizontalRoutes[routeName] = {
+      screen: routes[routeName],
+      params: { transitionType }
+    }
   }
+
+  return forHorizontalRoutes
 }
 
 function screenInterpolator(sceneProps: TransitionProps) {

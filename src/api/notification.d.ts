@@ -1,10 +1,41 @@
+export interface NotificationSecondaryData {
+  url: string
+  label: string
+  tooltip: string
+  description: string
+  icon: string
+  prioritized: string
+}
+
 export interface NotificationData {
   wiki: string
   id: string
-  type: string
+  type: 'edit-thank' | 
+        'edit-user-talk' | 
+        'mention' |
+        'flowthread_reply' | 
+        'flowthread_userpage' | 
+        'flowthread_delete' | 
+        'flowthread_spam' | 
+        'flowthread_mention'
   category: string
   read: string
   targetpages: any[]
+  revid: number
+  '*': {
+    header: string
+    compactHeader: string
+    body: string
+    icon: string
+    links: {
+      primary: {
+        url: string
+        label: string
+      }
+
+      secondary: NotificationSecondaryData[]
+    }
+  }
 
   timestamp: {
     utciso8601: string
@@ -34,6 +65,8 @@ export namespace NotificationApiData {
       notifications: {
         list: NotificationData[]
         continue: string
+        rawcount: number
+        count: string
       }
     }
   }
