@@ -17,6 +17,7 @@ function dateFormat(timestamp: number, prefix?: string) {
   const bu_ling = (val: number) => val < 10 ? '0' + val : val.toString()
 
   let dateArr = [date.getFullYear(), bu_ling(date.getMonth() + 1), bu_ling(date.getDate())]
+  new Date().getFullYear() === date.getFullYear() && dateArr.shift()
   let timeArr = [bu_ling(date.getHours()), bu_ling(date.getMinutes())]
   if (prefix) {
     return `${prefix} ${timeArr.join(':')}`

@@ -12,6 +12,7 @@ export interface Props {
   textColor?: string
   leftIcon?: string
   rightIcon?: string
+  badge?: boolean
   leftIconProps?: IconProps
   rightIconProps?: IconProps
   actions?: string[]
@@ -86,5 +87,13 @@ const styles = StyleSheet.create({
     position: 'relative',
     top: 4.5,
     flex: 1
+  },
+
+  badge: {
+    width: 7,
+    height: 7,
+    backgroundColor: 'red',
+    borderRadius: 3.5,
+    position: 'absolute'
   }
 })

@@ -18,7 +18,7 @@ export interface Props {
 
 export interface RouteParams {
   link: string
-  anchor: string
+  anchor?: string
   reloadMethod? (): void // 这个参数是用来设置后供其他位置使用的，相当于暴露出去一个方法
 }
 
@@ -173,7 +173,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
 
   function toComment() {
     if ([0, 1, 2].includes(props.$comment.getActiveData().status)) { return toast.show('加载评论中，请稍候') }
-    props.navigation.push('comment', { title: loadedPageInfo.pageName, id: loadedPageInfo.id })
+    props.navigation.push('comment', { title: loadedPageInfo.pageName })
   }
 
   function missingGoBack() {

@@ -10,7 +10,11 @@ export interface Props {
 
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation & UserConnectedProps
+export interface RouteParams {
+
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & UserConnectedProps
 
 function Login(props: PropsWithChildren<FinalProps>) {
   const [userName, setUserName] = useState('')

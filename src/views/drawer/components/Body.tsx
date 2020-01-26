@@ -42,7 +42,16 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
         <Button style={{ ...styles.headerIcon, top: statusBarHeight + 10 }}
           onPress={() => { $appNavigator.navigate('notifications'); $drawer.close() }}
         >
-          <MaterialIcon name="notifications" size={25} color="white" />
+          <View>
+            <MaterialIcon name="notifications" size={25} color="white" />
+            {props.state.user.waitNotificationsTotal !== 0 ? <>
+              <View style={{ ...styles.badge, ...(props.state.user.waitNotificationsTotal > 99 ? { width: 28, right: -16 } : {}) }}>
+                <Text style={{ color: 'white', fontSize: 12 }}>
+                  {props.state.user.waitNotificationsTotal > 99 ? '99+' : props.state.user.waitNotificationsTotal}
+                </Text>
+              </View>
+            </> : null}
+          </View>
         </Button>
         
         {props.state.user.name ? <>
@@ -63,14 +72,36 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
 
       <ScrollView style={{ flex: 1 }}>
         <View>
-          <Item icon="settings" title="设置" onPress={() => $appNavigator.navigate('settings')} />
           <Item icon="help" title="提问求助区" onPress={() => $appNavigator.push('article', { link: 'Talk:提问求助区' })} />
           <Item icon="forum" title="讨论版" onPress={() => $appNavigator.push('article', { link: 'Talk:讨论版' })} />
           <Item icon="touch-app" title="操作提示" onPress={showActionHelps} />
-          <Item icon="subdirectory-arrow-left" title="退出应用" onPress={BackHandler.exitApp} />
           {/* <Item icon="exposure-plus-1" title="支持萌娘百科" onPress={() => $appNavigator.push('article', { link: '萌娘百科:捐款' })} /> */}
         </View>
       </ScrollView>
+
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Button noLimit={false}
+          style={{ flex: 1 }} 
+          contentContainerStyle={styles.footerButton} 
+          rippleColor="#ccc"
+          onPress={tap(() => $appNavigator.navigate('settings'))}
+        >
+          <MaterialIcon name="settings" size={22} color="#666" />
+          <Text style={{ color: '#666', marginLeft: 10 }}>设置</Text>
+        </Button>
+
+        <View style={{ width: 1, height: '60%', backgroundColor: '#ccc' }} />
+
+        <Button noLimit={false}
+          style={{ flex: 1 }} 
+          contentContainerStyle={styles.footerButton} 
+          rippleColor="#ccc"
+          onPress={() => BackHandler.exitApp()}
+        >
+          <MaterialIcon name="subdirectory-arrow-left" size={22} color="#666" />
+          <Text style={{ color: '#666', marginLeft: 10 }}>退出应用</Text>
+        </Button>
+      </View>
     </View>
     
   )
@@ -112,5 +143,24 @@ const styles = StyleSheet.create({
     marginLeft: 20, 
     marginTop: 15, 
     fontSize: 16
+  },
+
+  footerButton: {
+    flexDirection: 'row',
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  badge: {
+    width: 17, 
+    height: 17,
+    borderRadius: 8.5,
+    justifyContent: 'center',
+    alignItems: 'center', 
+    backgroundColor: 'red', 
+    position: 'absolute', 
+    top: -6, 
+    right: -6
   }
 })

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { BackHandler, DeviceEventEmitter } from 'react-native'
 import { getTheme, ThemeContext } from 'react-native-material-ui'
 import SplashScreen from 'react-native-splash-screen'
-import { Provider } from 'react-redux'
+import { Provider as ReduxProvider } from 'react-redux'
 import Alert, { AlertRef } from '~/components/dialog/Alert'
 import Confirm, { ConfirmRef } from '~/components/dialog/Confirm'
 import SnackBar, { SnackBarRef } from '~/components/dialog/SnackBar'
@@ -11,6 +11,7 @@ import store from './redux'
 import AppNavigator from './router'
 import toast from './utils/toast'
 import { NavigationState } from 'react-navigation'
+import { checkWaitNotificationsTotal } from './redux/user/HOC'
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()
@@ -53,6 +54,7 @@ function App() {
   }, [])
 
   useEffect(() => {
+    // 初始化dialog方法
     let dialog: any = {}
     for (let key in refs) {
       dialog[key] = refs[key as keyof typeof refs].current
@@ -60,8 +62,17 @@ function App() {
     
     global.$dialog = dialog
 
+    // 执行其他初始化操作
     require('./init')
+
+    // 初始化完成一秒后隐藏启动图
     setTimeout(SplashScreen.hide, 1000)
+  }, [])
+
+  // 每隔一分钟check一次未读通知
+  useEffect(() => {
+    const intervalKey = setInterval(checkWaitNotificationsTotal, 1000 * 60)
+    return () => clearInterval(intervalKey)
   }, [])
 
   function navigationStateChange (prevState: NavigationState, state: NavigationState) {
@@ -70,15 +81,15 @@ function App() {
 
   return (
     <ThemeContext.Provider value={getTheme(theme)}>
-      <Provider store={store}>
+      <ReduxProvider store={store}>
         <Drawer>
           <AppNavigator onNavigationStateChange={navigationStateChange} ref={refs.appNavigator as any} />
         </Drawer>
-      </Provider>
 
-      <Alert getRef={refs.alert} />
-      <Confirm getRef={refs.confirm} />
-      <SnackBar getRef={refs.snackBar} />
+        <Alert getRef={refs.alert} />
+        <Confirm getRef={refs.confirm} />
+        <SnackBar getRef={refs.snackBar} />
+      </ReduxProvider>
     </ThemeContext.Provider>
   )
 }

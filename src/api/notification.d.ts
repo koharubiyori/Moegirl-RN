@@ -70,4 +70,20 @@ export namespace NotificationApiData {
       }
     }
   }
+
+  interface GetToken {
+    query: {
+      tokens: {
+        csrftoken: string
+      }
+    }
+  }
+
+  interface CheckAll {
+    query: {
+      echomarkread: {
+        result: 'success'
+      }
+    }
+  }
 }
