@@ -39,20 +39,22 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
         style={{ ...styles.bgImage, width: Dimensions.get('window').width * 0.6, height: Dimensions.get('window').height - 160 }}
       />
       <View style={{ ...styles.header, ...(props.immersionMode ? { height: 150 } : { height: 150 + statusBarHeight, paddingTop: statusBarHeight }) }}>
-        <Button style={{ ...styles.headerIcon, top: statusBarHeight + 10 }}
-          onPress={() => { $appNavigator.navigate('notifications'); $drawer.close() }}
-        >
-          <View>
-            <MaterialIcon name="notifications" size={25} color="white" />
-            {props.state.user.waitNotificationsTotal !== 0 ? <>
-              <View style={{ ...styles.badge, ...(props.state.user.waitNotificationsTotal > 99 ? { width: 28, right: -16 } : {}) }}>
-                <Text style={{ color: 'white', fontSize: 12 }}>
-                  {props.state.user.waitNotificationsTotal > 99 ? '99+' : props.state.user.waitNotificationsTotal}
-                </Text>
-              </View>
-            </> : null}
-          </View>
-        </Button>
+        {props.state.user.name !== null ? <>
+          <Button style={{ ...styles.headerIcon, top: statusBarHeight + 10 }}
+            onPress={() => { $appNavigator.navigate('notifications'); $drawer.close() }}
+          >
+            <View>
+              <MaterialIcon name="notifications" size={25} color="white" />
+              {props.state.user.waitNotificationsTotal !== 0 ? <>
+                <View style={{ ...styles.badge, ...(props.state.user.waitNotificationsTotal > 99 ? { width: 28, right: -16 } : {}) }}>
+                  <Text style={{ color: 'white', fontSize: 12 }}>
+                    {props.state.user.waitNotificationsTotal > 99 ? '99+' : props.state.user.waitNotificationsTotal}
+                  </Text>
+                </View>
+              </> : null}
+            </View>
+          </Button>
+        </> : null}
         
         {props.state.user.name ? <>
           <TouchableOpacity onPress={tap(navigation => navigation.push('article', { link: 'User:' + props.state.user.name }))}>
@@ -111,7 +113,8 @@ export default userHOC(DrawerBody)
 
 const styles = StyleSheet.create({
   header: {
-    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: $colors.main,
     elevation: 5,
   },

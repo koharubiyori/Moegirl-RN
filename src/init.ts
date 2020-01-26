@@ -2,7 +2,7 @@ import store from './redux'
 import storage from './utils/storage'
 // import toast from './utils/toast'
 import { SET_USERNAME } from './redux/user'
-import { logout as userLogout, check as checkLoginStatus, checkWaitNotificationsTotal } from './redux/user/HOC'
+import { logout as userLogout, check as checkLoginStatus, getWaitNotificationsTotal } from './redux/user/HOC'
 
 import { set as setConfig, init as initConfig } from './redux/config/HOC'
 
@@ -13,7 +13,7 @@ storage.get('userName').then(name => {
   // 获取一次编辑令牌，判断登录状态是否有效
   checkLoginStatus()
     .then(() => {
-      checkWaitNotificationsTotal()
+      getWaitNotificationsTotal()
     })
     .catch(() => {
       userLogout()

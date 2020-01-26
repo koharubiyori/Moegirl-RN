@@ -11,7 +11,7 @@ import store from './redux'
 import AppNavigator from './router'
 import toast from './utils/toast'
 import { NavigationState } from 'react-navigation'
-import { checkWaitNotificationsTotal } from './redux/user/HOC'
+import { getWaitNotificationsTotal } from './redux/user/HOC'
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()
@@ -71,7 +71,7 @@ function App() {
 
   // 每隔一分钟check一次未读通知
   useEffect(() => {
-    const intervalKey = setInterval(checkWaitNotificationsTotal, 1000 * 60)
+    const intervalKey = setInterval(getWaitNotificationsTotal, 1000 * 60)
     return () => clearInterval(intervalKey)
   }, [])
 

@@ -4,6 +4,7 @@ import notificationApi from '~/api/notification'
 import { NotificationData } from '~/api/notification.d'
 import Toolbar from '~/components/Toolbar'
 import Item from './components/Item'
+import { markReadAllNotifications } from '~/redux/user/HOC'
 
 export interface Props {
 
@@ -32,7 +33,7 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
 
   useEffect(() => {
     reloadAll(true)
-    notificationApi.checkAll()
+    markReadAllNotifications()
   }, [])
 
   useEffect(() => {
