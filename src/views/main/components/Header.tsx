@@ -14,7 +14,7 @@ function IndexHeader(props: PropsWithChildren<FinalProps>) {
   return (
     <>
       <StatusBar />
-      <Toolbar
+      <Toolbar badge
         title={props.title}
         leftIcon="menu"
         rightIcon="search"

@@ -41,7 +41,7 @@ function _checkAll(token: string) {
   })
 }
 
-async function checkAll() {
+async function markReadAll() {
   try {
     const tokenData = await getToken()
     const result = await _checkAll(tokenData.query.tokens.csrftoken)
@@ -52,5 +52,5 @@ async function checkAll() {
   }
 }
 
-const notificationApi = { get, getToken, checkAll }
+const notificationApi = { get, getToken, markReadAll }
 export default notificationApi

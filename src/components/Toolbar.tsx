@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types'
-import React, { useRef, PropsWithChildren } from 'react'
+import React, { useRef, PropsWithChildren, FC } from 'react'
 import { NativeModules, StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native'
 import Menu, { DefaultMenuRef } from 'react-native-default-menu'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 import { IconProps } from 'react-native-vector-icons/Icon'
+import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
 
 export interface Props {
   title: string
@@ -27,9 +28,9 @@ export interface Props {
   leftIcon: 'keyboard-backspace',
 }
 
-type FinalProps = Props
+type FinalProps = Props & UserConnectedProps
 
-export default function MyToolbar(props: PropsWithChildren<FinalProps>) {
+function MyToolbar(props: PropsWithChildren<FinalProps>) {
   const refs = {
     menu: useRef<DefaultMenuRef>()
   }
@@ -45,6 +46,7 @@ export default function MyToolbar(props: PropsWithChildren<FinalProps>) {
       <View style={{ flexDirection: 'row', flex: 1 }}>
         <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressLeftIcon && props.onPressLeftIcon()}>
           <MaterialIcon name={props.leftIcon!} size={28} color={props.textColor} {...props.leftIconProps} />
+          {props.state.user.waitNotificationsTotal !== 0 && props.badge ? <View style={styles.badge} /> : null} 
         </Button>
         <Text style={{ ...styles.title, color: props.textColor }} numberOfLines={1}>{props.title}</Text>
       </View>
@@ -68,6 +70,8 @@ export default function MyToolbar(props: PropsWithChildren<FinalProps>) {
   )
 }
 
+export default userHOC(MyToolbar) as FC<Props>
+
 const styles = StyleSheet.create({
   body: {
     height: 56,
@@ -90,10 +94,12 @@ const styles = StyleSheet.create({
   },
 
   badge: {
-    width: 7,
-    height: 7,
+    width: 9,
+    height: 9,
     backgroundColor: 'red',
-    borderRadius: 3.5,
-    position: 'absolute'
+    borderRadius: 4.5,
+    position: 'absolute',
+    top: 3,
+    right: 0,
   }
 })

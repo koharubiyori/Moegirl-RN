@@ -39,8 +39,9 @@ export const check = (): Promise<void> => {
   })
 }
 
-export const checkWaitNotificationsTotal = (): Promise<number> => {
+export const getWaitNotificationsTotal = (): Promise<number> => {
   return new Promise((resolve, reject) => {
+    if (getState().user.name === null) return resolve(0)
     notificationApi.get(false, '', 1)
       .then(data => {
         dispatch({ type: SET_WAIT_NOTIFICATIONS_TOTAL, total: data.query.notifications.rawcount })
@@ -50,11 +51,18 @@ export const checkWaitNotificationsTotal = (): Promise<number> => {
   })
 }
 
+export const markReadAllNotifications = () => {
+  return notificationApi.markReadAll()
+    .then(() => dispatch({ type: SET_WAIT_NOTIFICATIONS_TOTAL, total: 0 }))
+}
+
 interface ConnectedDispatch {
   $user: {
     login: typeof login
     logout: typeof logout
     check: typeof check
+    getWaitNotificationsTotal: typeof getWaitNotificationsTotal
+    markReadAllNotifications: typeof markReadAllNotifications
   }
 }
 
@@ -62,4 +70,4 @@ export type UserConnectedProps = ConnectedDispatch & {
   state: { user: State }
 }
 
-export const userHOC = myConnect('$user', { login, logout, check })
+export const userHOC = myConnect('$user', { login, logout, check, getWaitNotificationsTotal, markReadAllNotifications })
