@@ -51,7 +51,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
 
   function toReply(id: string) {
     store.dispatch({ type: COMMENT_SET, data: { activeId: id } })
-    props.navigation.push('reply', { signedName })
+    props.navigation.push('reply', { signedName: signedName! })
   }
 
   // 使用redux的数据源

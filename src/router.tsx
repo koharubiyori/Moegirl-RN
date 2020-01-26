@@ -7,21 +7,21 @@ import finds from './views/main/finds'
 import history from './views/main/history'
 import BottomNavigation from './views/main/BottomNavigation'
 
-import article from './views/article'
-import search from './views/search'
-import searchResult from './views/searchResult'
-import login from './views/login'
-import edit from './views/edit'
-import comment from './views/comment'
-import reply from './views/comment/Reply'
-import about from './views/About'
-import settings from './views/settings'
-import imageViewer from './components/articleView/ImageViewer'
-import notifications from './views/notification'
+import article, { RouteParams as ArticleRP } from './views/article'
+import search, { RouteParams as SearchRP } from './views/search'
+import searchResult, { RouteParams as SearchResultRP } from './views/searchResult'
+import login, { RouteParams as LoginRP } from './views/login'
+import edit, { RouteParams as EditRP } from './views/edit'
+import comment, { RouteParams as CommentRP } from './views/comment'
+import reply, { RouteParams as ReplyRP } from './views/comment/Reply'
+import about, { RouteParams as AboutRP } from './views/About'
+import settings, { RouteParams as SettingsRP } from './views/settings'
+import imageViewer, { RouteParams as ImageViewerRP } from './components/articleView/ImageViewer'
+import notifications, { RouteParams as NotificationsRP } from './views/notification'
 
 // 本来想在模态框中实现，因发现webView的全屏模式和模态框一起使用时发生了bug(全屏后白屏)，故这里用一个单独的路由来显示
-import biliPlayer from './components/articleView/BiliPlayer'
-import { HeaderTransitionConfig, TransitionProps } from 'react-navigation-stack/lib/typescript/types'
+import biliPlayer, { RouteParams as BiliPlayerRP } from './components/articleView/BiliPlayer'
+import { TransitionProps } from 'react-navigation-stack/lib/typescript/types'
 
 const BottomTabNavigator = createBottomTabNavigator(
   { home, finds, history },
@@ -32,9 +32,21 @@ const BottomTabNavigator = createBottomTabNavigator(
   }
 )
 
-export type RouteName = keyof (typeof routes & {
-  [Key in 'settings' | 'edit' | 'comment' | 'reply' | 'notifications' | 'biliPlayer']: any
-})
+export type RoutesParams = {
+  article: ArticleRP
+  search: SearchRP
+  searchResult: SearchResultRP
+  login: LoginRP
+  about: AboutRP
+  imageViewer: ImageViewerRP
+  
+  settings: SettingsRP
+  edit: EditRP
+  comment: CommentRP
+  reply: ReplyRP
+  notifications: NotificationsRP
+  biliPlayer: BiliPlayerRP
+}
 
 const routes = { 
   BottomTabNavigator,

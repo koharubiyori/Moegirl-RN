@@ -16,7 +16,11 @@ export interface Props {
 
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation
+export interface RouteParams {
+
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 
 function Search(props: PropsWithChildren<FinalProps>) {
   const [searchWord, setSearchWord] = useState('')

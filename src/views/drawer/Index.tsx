@@ -22,7 +22,7 @@ function MyDrawer(props: PropsWithChildren<FinalProps>) {
     const listener = DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) => {
       let lastRouteName = state.routes[state.routes.length - 1].routeName
       setIsWatchingArticle(lastRouteName === 'article')
-      storage.get('config').then(config => setImmersionMode(config.immersionMode))
+      storage.get('config').then(config => setImmersionMode(config!.immersionMode))
     })
 
     return () => listener.remove()

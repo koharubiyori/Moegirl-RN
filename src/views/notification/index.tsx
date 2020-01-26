@@ -1,16 +1,19 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View, LayoutAnimation } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View, LayoutAnimation, RefreshControl } from 'react-native'
 import notificationApi from '~/api/notification'
 import { NotificationData } from '~/api/notification.d'
 import Toolbar from '~/components/Toolbar'
 import Item from './components/Item'
-import getStates from '~/utils/getStates'
 
 export interface Props {
 
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation
+export interface RouteParams {
+
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 
 type NotificationList = {
   list: NotificationData[]
@@ -28,8 +31,8 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
   })
 
   useEffect(() => {
-    loadUnChecked()
-    loadChecked()
+    reloadAll(true)
+    notificationApi.checkAll()
   }, [])
 
   useEffect(() => {
@@ -38,24 +41,23 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
     )
   })
 
-  function loadUnChecked() {
-    notificationApi.get(false)
+  function loadUnChecked(force = false) {
+    force && setUncheckedNotificationList([])
+    return notificationApi.get(false)
       .then(data => {
-        setUncheckedNotificationList(data.query.notifications.list)
+        setUncheckedNotificationList(data.query.notifications.list.reverse())
       })
   }
 
-  function loadChecked() {
-    if ([2, 4, 5].includes(notificationList.status)) { return }
-    setNotificationList(prevVal => ({ ...prevVal, status: 2 }))
-
-    // const [currentNotificationList] = getStates<[NotificationList]>(setNotificationList)
-    // console.log((currentNotificationList || notificationList).continue)
-    notificationApi.get(true, notificationList.continue)
+  function loadChecked(force = false) {
+    if ([2, 4, 5].includes(notificationList.status) && !force) return Promise.resolve()
+    setNotificationList(prevVal => force ? { list: [], status: 2, continue: '' } : { ...prevVal, status: 2 })
+    
+    return notificationApi.get(true, force ? '' : notificationList.continue)
       .then(data => {
         console.log(data)
         setNotificationList(prevVal => ({
-          list: prevVal.list.concat(data.query.notifications.list),
+          list: prevVal.list.concat(data.query.notifications.list.reverse()),
           status: 3,
           continue: data.query.notifications.continue
         }))
@@ -68,6 +70,10 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
         }
       })
   }
+
+  function reloadAll(force = false) {
+    return Promise.all([loadChecked(force), loadUnChecked(force)])
+  }
   
   return (
     <View style={{ flex: 1, backgroundColor: '#eee' }}>
@@ -79,18 +85,23 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
       
       <FlatList data={uncheckedNotificationList.concat(notificationList.list)} 
         onEndReachedThreshold={1}
-        onEndReached={loadChecked}
+        onEndReached={() => loadChecked()}
         style={{ flex: 1 }}
-        // textBreakStrategy="balanced"
         renderItem={item => <Item 
           key={item.index}
           notificationData={item.item}
-          onPress={() => {}}
+          onPress={() => props.navigation.push('article', { link: item.item.title.full })}
+        />}
+
+        refreshControl={<RefreshControl 
+          colors={[$colors.main]} 
+          onRefresh={() => reloadAll(true)} 
+          refreshing={false} 
         />}
 
         ListFooterComponent={(({
           0: () => 
-            <TouchableOpacity onPress={loadChecked}>
+            <TouchableOpacity onPress={() => loadChecked()}>
               <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
                 <Text>加载失败，点击重试</Text>
               </View>

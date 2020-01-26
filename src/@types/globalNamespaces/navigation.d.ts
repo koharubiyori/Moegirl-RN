@@ -1,10 +1,10 @@
 import { NavigationScreenProp } from 'react-navigation'
-import { RouteName } from '~/router'
+import { RoutesParams } from '~/router'
 
 export = Navigation
 export as namespace __Navigation
 
-type NavigationFn = (routeName: RouteName, params?: any) => void
+type NavigationFn = <RouteName extends keyof RoutesParams>(routeName: RouteName, params?: RoutesParams[RouteName]) => void
 
 declare namespace Navigation {
   type Navigation<State = {}> = NavigationScreenProp<any, State> & 

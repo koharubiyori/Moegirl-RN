@@ -12,7 +12,11 @@ export interface Props {
 
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation & UserConnectedProps & ConfigConnectedProps
+export interface RouteParams {
+
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & UserConnectedProps & ConfigConnectedProps
 
 function Settings(props: PropsWithChildren<FinalProps>) {
 
