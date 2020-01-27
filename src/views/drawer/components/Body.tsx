@@ -40,7 +40,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
       />
       <View style={{ ...styles.header, ...(props.immersionMode ? { height: 150 } : { height: 150 + statusBarHeight, paddingTop: statusBarHeight }) }}>
         {props.state.user.name !== null ? <>
-          <Button style={{ ...styles.headerIcon, top: statusBarHeight + 10 }}
+          <Button style={{ ...styles.headerIcon, top: (props.immersionMode ? 0 : statusBarHeight) + 10 }}
             onPress={() => { $appNavigator.navigate('notifications'); $drawer.close() }}
           >
             <View>
@@ -62,13 +62,15 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
             <Text style={styles.hintText}>欢迎你，{props.state.user.name}</Text>
           </TouchableOpacity>
         </> : <>
-          <TouchableOpacity onPress={tap(navigation => navigation.navigate('login'))}>
-            <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity onPress={tap(navigation => navigation.navigate('login'))}>
+              <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
+            </TouchableOpacity>
 
-          <TouchableOpacity onPress={tap(navigation => navigation.navigate('login'))}>
-            <Text style={styles.hintText}>登录/加入萌娘百科</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={tap(navigation => navigation.navigate('login'))}>
+              <Text style={styles.hintText}>登录/加入萌娘百科</Text>
+            </TouchableOpacity>
+          </View>
         </>}
       </View>
 
