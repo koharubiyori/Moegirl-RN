@@ -5,6 +5,7 @@ import { NotificationData } from '~/api/notification.d'
 import Toolbar from '~/components/Toolbar'
 import Item from './components/Item'
 import { markReadAllNotifications } from '~/redux/user/HOC'
+import StatusBar from '~/components/StatusBar'
 
 export interface Props {
 
@@ -19,20 +20,19 @@ type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 type NotificationList = {
   list: NotificationData[]
   status: number
-  continue: string
+  continue: string | null
 }
 
 export default function Notifications(props: PropsWithChildren<FinalProps>) {
   // 未读通知超过50条也只能显示50条，太懒不想处理这部分了_(:з」∠)_
-  const [uncheckedNotificationList, setUncheckedNotificationList] = useState<NotificationData[]>([])
   const [notificationList, setNotificationList] = useState<NotificationList>({
     list: [],
     status: 1,
-    continue: ''
+    continue: null
   })
 
   useEffect(() => {
-    reloadAll(true)
+    load(true)
     markReadAllNotifications()
   }, [])
 
@@ -42,28 +42,20 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
     )
   })
 
-  function loadUnChecked(force = false) {
-    force && setUncheckedNotificationList([])
-    return notificationApi.get(false)
-      .then(data => {
-        setUncheckedNotificationList(data.query.notifications.list.reverse())
-      })
-  }
-
-  function loadChecked(force = false) {
+  function load(force = false) {
     if ([2, 4, 5].includes(notificationList.status) && !force) return Promise.resolve()
-    setNotificationList(prevVal => force ? { list: [], status: 2, continue: '' } : { ...prevVal, status: 2 })
+    setNotificationList(prevVal => force ? { list: [], status: 2, continue: null } : { ...prevVal, status: 2 })
     
-    return notificationApi.get(true, force ? '' : notificationList.continue)
+    return notificationApi.get(force ? null : notificationList.continue)
       .then(data => {
-        console.log(data)
         setNotificationList(prevVal => ({
           list: prevVal.list.concat(data.query.notifications.list.reverse()),
           status: 3,
           continue: data.query.notifications.continue
         }))
 
-        if (data.query.notifications.continue === '' && data.query.notifications.list.length !== 0) {
+        console.log(data)
+        if (data.query.notifications.continue === null && data.query.notifications.list.length !== 0) {
           setNotificationList(prevVal => ({ ...prevVal, status: 4 }))
         }
         if (data.query.notifications.list.length === 0) {
@@ -71,22 +63,19 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
         }
       })
   }
-
-  function reloadAll(force = false) {
-    return Promise.all([loadChecked(force), loadUnChecked(force)])
-  }
   
   return (
     <View style={{ flex: 1, backgroundColor: '#eee' }}>
+      <StatusBar />  
       <Toolbar
         title="通知"
         leftIcon="keyboard-backspace"
         onPressLeftIcon={() => props.navigation.goBack()}
       />   
       
-      <FlatList data={uncheckedNotificationList.concat(notificationList.list)} 
+      <FlatList data={notificationList.list} 
         onEndReachedThreshold={1}
-        onEndReached={() => loadChecked()}
+        onEndReached={() => load()}
         style={{ flex: 1 }}
         renderItem={item => <Item 
           key={item.index}
@@ -96,13 +85,13 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
 
         refreshControl={<RefreshControl 
           colors={[$colors.main]} 
-          onRefresh={() => reloadAll(true)} 
+          onRefresh={() => load(true)} 
           refreshing={false} 
         />}
 
         ListFooterComponent={(({
           0: () => 
-            <TouchableOpacity onPress={() => loadChecked()}>
+            <TouchableOpacity onPress={() => load()}>
               <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
                 <Text>加载失败，点击重试</Text>
               </View>
