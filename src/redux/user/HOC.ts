@@ -42,7 +42,7 @@ export const check = (): Promise<void> => {
 export const getWaitNotificationsTotal = (): Promise<number> => {
   return new Promise((resolve, reject) => {
     if (getState().user.name === null) return resolve(0)
-    notificationApi.get(false, '', 1)
+    notificationApi.get('', 1)
       .then(data => {
         dispatch({ type: SET_WAIT_NOTIFICATIONS_TOTAL, total: data.query.notifications.rawcount })
         resolve(data.query.notifications.rawcount)
