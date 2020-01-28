@@ -10,24 +10,35 @@ export interface Props {
 export interface ScreenProps {
   title: string
   section: number
+  isCreate?: boolean
 }
 
 type FinalProps = Props & __Navigation.InjectedNavigation
 
 function CodeEdit(props: PropsWithChildren<FinalProps>) {
   const [status, setStatus] = useState(1)
-  const [content, setContent] = useState('')
+  const [content, setContent] = useState<string | null>(null)
   const initContentSample = useRef('')
 
   useEffect(() => {
-    loadCode()
+    const { isCreate } = props.navigation.getScreenProps<ScreenProps>()
+
+    if (isCreate) {
+      setStatus(3)
+      setContent('')
+      props.navigation.setParams({ loadStatus: 3, content: '' })
+      initContentSample.current = ''
+    } else {
+      loadCode()
+    }
+    
   }, [])
 
   function loadCode () {
     setStatus(2)
     const { title, section } = props.navigation.getScreenProps<ScreenProps>()
     editApi.getCode(title, section).then(data => {
-      let wikitext = data.parse.wikitext['*'] || ' '
+      let wikitext = data.parse.wikitext['*'] || ''
       setStatus(3)
       setContent(wikitext)
       props.navigation.setParams({ loadStatus: 3, content: wikitext })

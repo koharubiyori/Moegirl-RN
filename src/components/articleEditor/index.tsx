@@ -6,7 +6,7 @@ import Button from '~/components/Button'
 
 export interface Props {
   style?: StyleProp<ViewStyle>
-  content: string
+  content: string | null
   onChangeText? (content: string): void
 }
 
@@ -20,7 +20,7 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
   }
 
   useEffect(() => {
-    if (html === '' && props.content !== '') setHtml(createDocument(props.content)) 
+    if (html === '' && props.content !== null) setHtml(createDocument(props.content)) 
   }, [props.content])
 
   useEffect(() => {

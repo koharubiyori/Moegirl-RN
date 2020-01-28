@@ -11,6 +11,7 @@ import CatalogTriggerView, { CatalogTriggerViewRef } from './components/catalogT
 import CommentButton, { CommentButtonRef } from './components/CommentButton'
 import Header, { ArticleHeaderRef } from './components/Header'
 import { ArticleApiData } from '~/api/article.d'
+import store from '~/redux'
 
 export interface Props {
 
@@ -176,11 +177,18 @@ function Article(props: PropsWithChildren<FinalProps>) {
     props.navigation.push('comment', { title: loadedPageInfo.pageName })
   }
 
-  function missingGoBack() {
-    $dialog.alert.show({
-      content: '该条目还未创建',
-      onTapCheck: () => props.navigation.goBack()
-    })
+  function missingGoBack(link: string) {
+    const username = store.getState().user.name
+    if ('東東君/sandbox6' === link.split('User:')[1]) {
+      props.navigation.replace('edit', { title: link, isCreate: true })
+      toast.show('你的用户页不存在，请点击空白区域编辑并创建')
+    } else {
+      $dialog.alert.show({
+        content: '该条目还未创建',
+        onTapCheck: () => props.navigation.goBack(),
+        onClose: () => props.navigation.goBack()
+      })
+    }
   }
 
   function isVisibleComment() {
@@ -209,7 +217,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
       <ArticleView autoPaddingTopForHeader
         style={{ flex: 1 }} 
         navigation={props.navigation}
-        link={link} 
+        link={'User:東東君/sandbox6'} 
         injectStyle={['article']}
         injectJs={articleViewInjectJs}
         onMessages={{ changeHeaderVisible: setVisibleHeader }}
