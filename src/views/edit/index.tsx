@@ -1,15 +1,11 @@
-import React, { useState, useEffect, useRef, PropsWithChildren } from 'react'
-import PropTypes from 'prop-types'
-import {
-  View, Text, BackHandler, DeviceEventEmitter,
-  StyleSheet, 
-} from 'react-native'
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
+import { BackHandler, DeviceEventEmitter, View } from 'react-native'
+import { NavigationState } from 'react-navigation'
+import editApi from '~/api/edit'
 import StatusBar from '~/components/StatusBar'
+import toast from '~/utils/toast'
 import Header from './components/Header'
 import TabNavigator from './TabNavigator'
-import editApi from '~/api/edit'
-import toast from '~/utils/toast'
-import { NavigationState } from 'react-navigation'
 
 export interface Props {
 

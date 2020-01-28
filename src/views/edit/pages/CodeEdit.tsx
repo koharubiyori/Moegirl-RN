@@ -1,6 +1,5 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, View } from 'react-native'
-import { Button } from 'react-native-material-ui'
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native'
 import editApi from '~/api/edit'
 import ArticleEditor from '~/components/articleEditor'
 
@@ -48,7 +47,10 @@ function CodeEdit(props: PropsWithChildren<FinalProps>) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {({
-        0: () => <Button primary text="重新加载" onPress={loadCode}></Button>,
+        0: () => 
+          <TouchableOpacity onPress={loadCode}>
+            <Text style={{ fontSize: 16, color: $colors.main }}>重新加载</Text>
+          </TouchableOpacity>,
         1: () => null, 
         2: () => <ActivityIndicator color={$colors.main} size={50} />,
         3: () => <ArticleEditor content={content} onChangeText={changeText} />

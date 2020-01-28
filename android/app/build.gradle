@@ -196,17 +196,19 @@ android {
 }
 
 dependencies {
+    implementation project(':@koharubiyori_react-native-cookies')
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
     implementation project(':react-native-reanimated')
     implementation project(':react-native-screens')
     implementation project(':react-native-gesture-handler')
-    implementation project(':react-native-cookies')
+    implementation project(':@koharubiyori_react-native-cookies')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-webview')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-splash-screen')
-    implementation project(':react-native-orientation')
+    implementation project(':@koharubiyori_react-native-orientation')
+    implementation project(':react-native-svg')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 

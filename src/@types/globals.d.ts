@@ -24,7 +24,7 @@ declare const $dialog: NodeJS.Global['$dialog']
 // Webview环境下的全局变量，只在Window接口下声明了，所以使用也要都写window前缀
 declare interface Window {
   ReactNativeWebView: { postMessage: (msg: string) => void }
-  _request (config: object, callback: (data: string) => void): void
+  _request (config: object, callback: (data: any) => void): void
   _request_id: number
   _appConfig: any
   _colors: NodeJS.Global['$colors']

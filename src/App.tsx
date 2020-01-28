@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react'
 import { BackHandler, DeviceEventEmitter } from 'react-native'
-import { getTheme, ThemeContext } from 'react-native-material-ui'
 import SplashScreen from 'react-native-splash-screen'
 import { Provider as ReduxProvider } from 'react-redux'
 import Alert, { AlertRef } from '~/components/dialog/Alert'
@@ -15,12 +14,6 @@ import { getWaitNotificationsTotal } from './redux/user/HOC'
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()
-
-const theme = {
-  palette: {
-    primaryColor: $colors.main
-  },
-}
 
 function App() {
   const refs = {
@@ -80,17 +73,15 @@ function App() {
   }
 
   return (
-    <ThemeContext.Provider value={getTheme(theme)}>
-      <ReduxProvider store={store}>
-        <Drawer>
-          <AppNavigator onNavigationStateChange={navigationStateChange} ref={refs.appNavigator as any} />
-        </Drawer>
+    <ReduxProvider store={store}>
+      <Drawer>
+        <AppNavigator onNavigationStateChange={navigationStateChange} ref={refs.appNavigator as any} />
+      </Drawer>
 
-        <Alert getRef={refs.alert} />
-        <Confirm getRef={refs.confirm} />
-        <SnackBar getRef={refs.snackBar} />
-      </ReduxProvider>
-    </ThemeContext.Provider>
+      <Alert getRef={refs.alert} />
+      <Confirm getRef={refs.confirm} />
+      <SnackBar getRef={refs.snackBar} />
+    </ReduxProvider>
   )
 }
 

@@ -113,6 +113,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         return { config, callbackName }
       }
     }.toString()
+
     injectRequestUtil = `(${injectRequestUtil})();`
 
     const scriptTags = libScript.reduce((prev, next) => prev + `<script src="js/lib/${next}.js"></script>`, '')
@@ -226,7 +227,10 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         section: number
       }
       onTapImage: { name: string }
-      onTapBiliVideo: string
+      onTapBiliVideo: {
+        avId: string | number
+        page: string | number
+      }
     }
 
     const { type, data }: { type: keyof EventParamsMap, data: EventParamsMap[keyof EventParamsMap] } = JSON.parse(event.nativeEvent.data)
@@ -247,16 +251,17 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     })
     setEventHandler('request', data => {
       let { config, callbackName } = data
+
       request({
         baseURL: config.url,
         method: config.method,
         params: config.params
       }).then(data => {
         // 数据中的换行会导致解析json失败
-        injectScript(`window.${callbackName}(\`${JSON.stringify(data).replace(/\\n/g, '')}\`)`)
+        injectScript(`window['${callbackName}'](${JSON.stringify(data).replace(/\\n/g, '')})`)
       }).catch(e => {
         console.log(e)
-        injectScript(`window.${callbackName}('${JSON.stringify({ error: true })}')`)
+        injectScript(`window['${callbackName}']('${JSON.stringify({ error: true })}')`)
       })
       
     })

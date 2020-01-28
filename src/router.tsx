@@ -16,11 +16,11 @@ import comment, { RouteParams as CommentRP } from './views/comment'
 import reply, { RouteParams as ReplyRP } from './views/comment/Reply'
 import about, { RouteParams as AboutRP } from './views/About'
 import settings, { RouteParams as SettingsRP } from './views/settings'
-import imageViewer, { RouteParams as ImageViewerRP } from './components/articleView/ImageViewer'
+import imageViewer, { RouteParams as ImageViewerRP } from './views/imageViewer'
 import notifications, { RouteParams as NotificationsRP } from './views/notification'
 
 // 本来想在模态框中实现，因发现webView的全屏模式和模态框一起使用时发生了bug(全屏后白屏)，故这里用一个单独的路由来显示
-import biliPlayer, { RouteParams as BiliPlayerRP } from './components/articleView/BiliPlayer'
+import biliPlayer, { RouteParams as BiliPlayerRP } from './views/biliPlayer'
 import { TransitionProps } from 'react-navigation-stack/lib/typescript/types'
 
 const BottomTabNavigator = createBottomTabNavigator(

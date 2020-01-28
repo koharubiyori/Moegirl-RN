@@ -1,5 +1,7 @@
-import React, { useState, PropsWithChildren } from 'react'
-import BottomNavigation from 'react-native-material-ui/src/BottomNavigation'
+import React, { PropsWithChildren, useState } from 'react'
+import { StyleSheet, View, Text, TouchableNativeFeedback, Dimensions } from 'react-native'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { BorderShadow } from 'react-native-shadow'
 
 export interface Props {
 
@@ -16,27 +18,87 @@ function MyBottomNavigation(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <BottomNavigation active={active}>
-      <BottomNavigation.Action
-        key="home"
+    <BorderShadow setting={{
+      width: Dimensions.get('window').width,
+      border: 3,
+      style: styles.container,
+      opacity: 0.15,
+      side: 'top',
+      insert: true
+    }}>
+      <Item 
+        selected={active === 'home'}
         icon="book"
         label="首页"
         onPress={() => selectTab('home')}
-      />        
-      <BottomNavigation.Action
-        key="finds"
+      />
+      <Item 
+        selected={active === 'finds'}
         icon="stars"
         label="发现"
         onPress={() => selectTab('finds')}
-      />        
-      <BottomNavigation.Action
-        key="history"
+      />
+      <Item 
+        selected={active === 'history'}
         icon="history"
         label="历史"
         onPress={() => selectTab('history')}
-      />        
-    </BottomNavigation>
+      />
+    </BorderShadow>
+    // <BottomNavigation active={active}>
+    //   <BottomNavigation.Action
+    //     key="home"
+    //     icon="book"
+    //     label="首页"
+    //     onPress={() => selectTab('home')}
+    //   />        
+    //   <BottomNavigation.Action
+    //     key="finds"
+    //     icon="stars"
+    //     label="发现"
+    //     onPress={() => selectTab('finds')}
+    //   />        
+    //   <BottomNavigation.Action
+    //     key="history"
+    //     icon="history"
+    //     label="历史"
+    //     onPress={() => selectTab('history')}
+    //   />        
+    // </BottomNavigation>
   )
 }
 
 export default MyBottomNavigation
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    height: 55,
+    backgroundColor: 'white'
+  },
+
+  item: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1
+  }
+})
+
+export interface BottomNavigationItemProps {
+  icon: string
+  label: string
+  selected?: boolean
+  onPress (): void
+}
+
+function Item(props: BottomNavigationItemProps) {
+  return (
+    <TouchableNativeFeedback onPress={props.onPress}>
+      <View style={styles.item}>
+        <MaterialIcon name={props.icon} size={20} color={props.selected ? $colors.main : '#666'} />
+        <Text style={{ color: props.selected ? $colors.main : '#666' }}>{props.label}</Text>
+      </View>
+    </TouchableNativeFeedback>
+  )
+}

@@ -1,12 +1,14 @@
 rootProject.name = 'MoegirlViewer'
+include ':@koharubiyori_react-native-cookies'
+project(':@koharubiyori_react-native-cookies').projectDir = new File(rootProject.projectDir, '../node_modules/@koharubiyori/react-native-cookies/android')
 include ':react-native-reanimated'
 project(':react-native-reanimated').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-reanimated/android')
 include ':react-native-screens'
 project(':react-native-screens').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-screens/android')
 include ':react-native-gesture-handler'
 project(':react-native-gesture-handler').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-gesture-handler/android')
-include ':react-native-cookies'
-project(':react-native-cookies').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-cookies/android')
+include ':@koharubiyori_react-native-cookies'
+project(':@koharubiyori_react-native-cookies').projectDir = new File(rootProject.projectDir, '../node_modules/@koharubiyori/react-native-cookies/android')
 include ':@react-native-community_async-storage'
 project(':@react-native-community_async-storage').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/async-storage/android')
 include ':react-native-webview'
@@ -15,8 +17,10 @@ include ':react-native-vector-icons'
 project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')
 include ':react-native-splash-screen'   
 project(':react-native-splash-screen').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-splash-screen/android')
-include ':react-native-orientation', ':app'
-project(':react-native-orientation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-orientation/android')
+include ':@koharubiyori_react-native-orientation', ':app'
+project(':@koharubiyori_react-native-orientation').projectDir = new File(rootProject.projectDir, '../node_modules/@koharubiyori/react-native-orientation/android')
+include ':react-native-svg'
+project(':react-native-svg').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-svg/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 
