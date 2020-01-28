@@ -19,6 +19,7 @@ export interface ShowFnOptions {
   content?: string
   checkText?: string
   onTapCheck? (): void
+  onClose? (): void
 }
 
 export interface AlertRef {
@@ -34,7 +35,8 @@ function Alert(props: PropsWithChildren<FinalProps>) {
     title: '',
     content: '',
     checkText: '',
-    onTapCheck: () => {}
+    onTapCheck: () => {},
+    onClose: () => {}
   })
 
   if (props.getRef) props.getRef.current = { show, hide }
@@ -43,13 +45,15 @@ function Alert(props: PropsWithChildren<FinalProps>) {
     title = '提示',
     content = '',
     checkText = '确定',
-    onTapCheck = () => {}
+    onTapCheck = () => {},
+    onClose = () => {}
   }) {
     setVisible(true)
-    setParams({ title, content, checkText, onTapCheck: () => { onTapCheck(); hide() } })
+    setParams({ title, content, checkText, onClose, onTapCheck: () => { onTapCheck(); hide() } })
   }
 
   function hide() {
+    params.onClose()
     setVisible(false)
   }
 

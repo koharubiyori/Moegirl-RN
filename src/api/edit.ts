@@ -1,7 +1,7 @@
 import request from '~/utils/moeRequest'
 import { EditApiData } from './edit.d'
 
-function getCode(pageName: string, section: number) {
+function getCode(pageName: string, section: number | null) {
   return request<EditApiData.GetCode>({
     params: {
       action: 'parse',
@@ -49,7 +49,7 @@ function getToken() {
   })
 }
 
-function _editArticle(title: string, section: number, content: string, summary: string, timestamp: string, token: string) {
+function _editArticle(title: string, section: number | undefined, content: string, summary: string, timestamp: string | undefined, token: string) {
   return request<EditApiData.EditArticle>({
     method: 'post',
     params: {
@@ -59,16 +59,22 @@ function _editArticle(title: string, section: number, content: string, summary: 
       text: content,
       summary,
       minor: 1,
-      basetimestamp: timestamp,
+      ...(timestamp ? { basetimestamp: timestamp } : {}),
       token      
     }
   })
 }
 
-async function editArticle(title: string, section: number, content: string, summary: string) {
+let retryMark = false // 对所有请求执行一次失败后重试，以跳过所有警告
+async function editArticle(title: string, section: number | undefined, content: string, summary: string): Promise<void> {
   try {
     const timestampData = await getLastTimestamp(title)
-    const { timestamp } = Object.values(timestampData.query.pages)[0].revisions[0]
+    let timestamp: string | undefined
+
+    // 尝试获取不存在的页面的时间戳数据，里面没有revisions字段
+    if (Object.values(timestampData.query.pages)[0].revisions) {
+      timestamp = Object.values(timestampData.query.pages)[0].revisions[0].timestamp
+    }
 
     const tokenData = await getToken()
     const token = tokenData.query.tokens.csrftoken
@@ -76,11 +82,19 @@ async function editArticle(title: string, section: number, content: string, summ
     const result = await _editArticle(title, section, content, summary, timestamp, token)
 
     if ('error' in result) {
+      retryMark = false
       return Promise.reject(result.error!.code)
     } else {
-      return Promise.resolve()
+      if (!retryMark) {
+        retryMark = true
+        return editArticle(title, section, content, summary)
+      } else {
+        retryMark = false
+        return Promise.resolve()
+      }
     }
   } catch (e) {
+    
     return Promise.reject(e)
   }
 }

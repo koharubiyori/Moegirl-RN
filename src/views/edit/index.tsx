@@ -13,7 +13,8 @@ export interface Props {
 
 export interface RouteParams {
   title: string
-  section: number
+  section?: number
+  isCreate?: boolean
 }
 
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
@@ -29,18 +30,21 @@ function Edit(props: PropsWithChildren<FinalProps>) {
 
   const title = props.navigation.getParam('title')
   const section = props.navigation.getParam('section')
+  const isCreate = props.navigation.getParam('isCreate')
 
   // 监听stackNavigator的变化，如果离开时已编辑flag为true，且页面堆栈最后一个为article，则执行那个article页面实例上在params暴露的reload方法
   useEffect(() => {
-    const listener = DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) => {
-      let lastRoute = state.routes[state.routes.length - 1]
-      if (articleReloadFlag.current && lastRoute.routeName === 'article') {
-        articleReloadFlag.current = false
-        lastRoute.params!.reloadMethod()
-      }
-    })
-
-    return () => listener.remove()
+    if (!isCreate) {
+      const listener = DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) => {
+        let lastRoute = state.routes[state.routes.length - 1]
+        if (articleReloadFlag.current && lastRoute.routeName === 'article') {
+          articleReloadFlag.current = false
+          lastRoute.params!.reloadMethod()
+        }
+      })
+  
+      return () => listener.remove()
+    }
   })
 
   useEffect(() => {
@@ -67,14 +71,14 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   function navigationStateChange(prevState: NavigationState, state: NavigationState) {
     if (!state.routes[0].params) { return }
     const { status, content } = state.routes[0].params
-    const { refresh } = state.routes[1].params!
+    const { refresh } = state.routes[1].params! || {}
 
     setStatus(status)
     setContent(content)
     if (!prevState.routes[0].params && content) return refresh && refresh(content)
 
     // 如果内容不同，则标记为需要刷新
-    if ((prevState.routes[0].params!.content !== content) && state.index === 0) { essentialUpdate.current = true }
+    if ((!prevState.routes[0].params || prevState.routes[0].params.content !== content) && state.index === 0) { essentialUpdate.current = true }
     if (essentialUpdate.current && state.index === 1) {
       essentialUpdate.current = false
       refresh && refresh(content)
@@ -92,11 +96,13 @@ function Edit(props: PropsWithChildren<FinalProps>) {
           editApi.editArticle(title, section, content, text!.trim())
             .finally(toast.hide)
             .then(() => {
+              console.log(true)
               setTimeout(() => toast.show('编辑成功'))
               articleReloadFlag.current = true
               props.navigation.goBack()
             })
             .catch(code => {
+              console.log(code)
               if (code) {
                 const msg = (({
                   editconflict: '出现编辑冲突，请复制编辑的内容后再次进入编辑界面，并检查差异',
@@ -121,7 +127,7 @@ function Edit(props: PropsWithChildren<FinalProps>) {
       <StatusBar />
       <Header title={title} navigation={props.navigation} onTapDoneBtn={submit} />
       <TabNavigator 
-        screenProps={{ title, section, content }}
+        screenProps={{ title, section, isCreate, content }}
         onNavigationStateChange={navigationStateChange}
         ref={refs.tabNavigator}
       />
