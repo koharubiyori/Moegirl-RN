@@ -24,7 +24,6 @@ type NotificationList = {
 }
 
 export default function Notifications(props: PropsWithChildren<FinalProps>) {
-  // 未读通知超过50条也只能显示50条，太懒不想处理这部分了_(:з」∠)_
   const [notificationList, setNotificationList] = useState<NotificationList>({
     list: [],
     status: 1,

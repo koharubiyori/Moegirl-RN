@@ -1,4 +1,4 @@
-import CookieManager from 'react-native-cookies'
+import CookieManager from '@koharubiyori/react-native-cookies'
 import storage from '~/utils/storage'
 import setActionHandler from '~/utils/redux/setActionHandler'
 

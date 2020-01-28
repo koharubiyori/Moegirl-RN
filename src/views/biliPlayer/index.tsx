@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 import { View } from 'react-native'
-import Orientation from 'react-native-orientation'
+import Orientation from '@koharubiyori/react-native-orientation'
 import WebView from 'react-native-webview'
 import StatusBar from '~/components/StatusBar'
 
@@ -9,8 +9,8 @@ export interface Props {
 }
 
 export interface RouteParams {
-  avId: string
-  page: number
+  avId: number | string
+  page: number | string
 }
 
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>

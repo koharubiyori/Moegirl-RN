@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import qs from 'qs'
-import CookieManager from 'react-native-cookies'
+import CookieManager from '@koharubiyori/react-native-cookies'
 
 const domain = 'https://zh.moegirl.org'
 const api = `${domain}/api.php`

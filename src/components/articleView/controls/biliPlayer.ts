@@ -5,22 +5,9 @@ export default function() {
   viewBox.find('.wikitable.bilibili-video-container').each(function () {
     let avId = parseInt($(this).data('aid').toString().replace('av', ''))
     let page = $(this).data('page')
-    let isReload = window._appConfig.biliPlayerReload
-    let player = `<iframe src="https://player.bilibili.com/player.html?aid=${avId}&page=${$(this).data('page')}" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="width:100%; background-color:#ccc" class="bilibili-player"></iframe>`
 
     let title = $('<div class="bilibili-video-title">标题获取中...</div>')
-    // let container = $(this).data('collapsed', true)
     title.click(function() {
-      // if(container.data('collapsed')){
-      //   isReload && container.append(player)
-      //   container.find('.bilibili-player').slideDown(200)
-      //   container.data('collapsed', false)
-      // }else{
-      //   container.find('.bilibili-player').slideUp(200, function(){
-      //     isReload && $(this).remove()
-      //   })
-      //   container.data('collapsed', true)
-      // }
       window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapBiliVideo', data: { avId, page } }))
     })
 
@@ -42,7 +29,7 @@ export default function() {
           aid: avId
         }
       }, function(data) {
-        let res = JSON.parse(data)
+        let { data: res } = data
         if (res.code !== 0) {
           title.text(res.code === -404 ? '视频又挂了_(:з」∠)_' : '标题获取失败')
         } else {
@@ -59,6 +46,5 @@ export default function() {
     })
 
     $(this).append(title)
-    !isReload && $(this).append(player)
   })
 }

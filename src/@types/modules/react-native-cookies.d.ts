@@ -1,4 +1,4 @@
-declare module 'react-native-cookies' {
+declare module '@koharubiyori/react-native-cookies' {
   interface Cookies {
     get (domain: string): Promise<{ [key: string]: string }>
     clearAll (): void

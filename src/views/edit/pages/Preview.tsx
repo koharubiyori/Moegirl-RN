@@ -1,6 +1,5 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
-import { ActivityIndicator, View } from 'react-native'
-import { Button } from 'react-native-material-ui'
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native'
 import editApi from '~/api/edit'
 import ArticleView from '~/components/articleView'
 
@@ -33,7 +32,10 @@ function EditPreview(props: PropsWithChildren<FinalProps>) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {({
-        0: () => <Button primary text="重新加载" onPress={() => parseCodes()}></Button>,
+        0: () => 
+          <TouchableOpacity onPress={() => parseCodes()}>
+            <Text style={{ fontSize: 16, color: $colors.main }}>重新加载</Text>
+          </TouchableOpacity>,
         1: () => null,
         2: () => <ActivityIndicator color={$colors.main} size={50} />,
         3: () => <ArticleView disabledLink style={{ flex: 1 }} html={html} injectStyle={['article']} navigation={props.navigation} />
