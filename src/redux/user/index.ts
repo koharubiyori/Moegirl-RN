@@ -1,10 +1,12 @@
 import CookieManager from '@koharubiyori/react-native-cookies'
 import storage from '~/utils/storage'
 import setActionHandler from '~/utils/redux/setActionHandler'
+import { AccountApiData } from '~/api/account.d'
 
 export const SET_USERNAME = Symbol()
 export const CLEAR_USERNAME = Symbol()
 export const SET_WAIT_NOTIFICATIONS_TOTAL = Symbol()
+export const SET_USER_INFO = Symbol()
 
 export interface ActionTypes {
   [SET_USERNAME]: {
@@ -15,16 +17,21 @@ export interface ActionTypes {
   [SET_WAIT_NOTIFICATIONS_TOTAL]: {
     total: number
   }
+  [SET_USER_INFO]: {
+    info: AccountApiData.GetInfo
+  }
 }
 
 export interface State {
   name: string | null
   waitNotificationsTotal: number
+  info: AccountApiData.GetInfo | null
 }
 
 const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
   name: null,
-  waitNotificationsTotal: 0
+  waitNotificationsTotal: 0,
+  info: null
 }, action) => setActionHandler<ActionTypes, State>(action, {
   [SET_USERNAME]: action => {
     storage.set('userName', action.name)
@@ -49,6 +56,13 @@ const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
     return {
       ...state,
       waitNotificationsTotal: action.total
+    }
+  },
+
+  [SET_USER_INFO]: action => {
+    return {
+      ...state,
+      info: action.info
     }
   }
 }) || state
