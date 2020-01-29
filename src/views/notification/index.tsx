@@ -79,7 +79,7 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
         renderItem={item => <Item 
           key={item.index}
           notificationData={item.item}
-          onPress={() => props.navigation.push('article', { link: item.item.title.full })}
+          onPress={() => item.item.title && props.navigation.push('article', { link: item.item.title.full })}
         />}
 
         refreshControl={<RefreshControl 

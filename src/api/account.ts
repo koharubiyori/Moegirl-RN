@@ -44,5 +44,15 @@ function logout() {
   })
 }
 
-const accountApi = { getToken, login, logout }
+function getInfo() {
+  return request<AccountApiData.GetInfo>({
+    params: {
+      action: 'query',
+      meta: 'userinfo',
+      uiprop: 'implicitgroups'
+    }
+  })
+}
+
+const accountApi = { getToken, login, logout, getInfo }
 export default accountApi

@@ -15,4 +15,14 @@ export namespace AccountApiData {
       username?: string
     }
   }
+
+  interface GetInfo {
+    query: {
+      userinfo: {
+        id: number
+        name: string
+        implicitgroups: ('*' | 'user' | 'autoconfirmed')[]
+      }
+    }
+  }
 }

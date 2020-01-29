@@ -1,6 +1,4 @@
 rootProject.name = 'MoegirlViewer'
-include ':@koharubiyori_react-native-cookies'
-project(':@koharubiyori_react-native-cookies').projectDir = new File(rootProject.projectDir, '../node_modules/@koharubiyori/react-native-cookies/android')
 include ':react-native-reanimated'
 project(':react-native-reanimated').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-reanimated/android')
 include ':react-native-screens'

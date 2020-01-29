@@ -2,7 +2,7 @@ import store from './redux'
 import storage from './utils/storage'
 // import toast from './utils/toast'
 import { SET_USERNAME } from './redux/user'
-import { logout as userLogout, check as checkLoginStatus, getWaitNotificationsTotal } from './redux/user/HOC'
+import { logout as userLogout, check as checkLoginStatus, getWaitNotificationsTotal, getUserInfo } from './redux/user/HOC'
 
 import { set as setConfig, init as initConfig } from './redux/config/HOC'
 
@@ -14,6 +14,7 @@ storage.get('userName').then(name => {
   checkLoginStatus()
     .then(() => {
       getWaitNotificationsTotal()
+      getUserInfo()
     })
     .catch(() => {
       userLogout()

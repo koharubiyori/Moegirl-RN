@@ -12,6 +12,7 @@ import CommentButton, { CommentButtonRef } from './components/CommentButton'
 import Header, { ArticleHeaderRef } from './components/Header'
 import { ArticleApiData } from '~/api/article.d'
 import store from '~/redux'
+import { getUserInfo } from '~/redux/user/HOC'
 
 export interface Props {
 
@@ -178,10 +179,22 @@ function Article(props: PropsWithChildren<FinalProps>) {
   }
 
   function missingGoBack(link: string) {
-    const username = store.getState().user.name
-    if ('東東君/sandbox6' === link.split('User:')[1]) {
-      props.navigation.replace('edit', { title: link, isCreate: true })
-      toast.show('你的用户页不存在，请点击空白区域编辑并创建')
+    const userData = store.getState().user
+    if (userData.name === link.split('User:')[1]) {
+      getUserInfo()
+        .then(userInfoData => {
+          if (userInfoData.query.userinfo.implicitgroups.includes('autoconfirmed')) {
+            props.navigation.replace('edit', { title: link, isCreate: true })
+            toast.show('你的用户页不存在，请点击空白区域编辑并创建')
+          } else {
+            $dialog.alert.show({
+              title: '抱歉，暂不支持非自动确认用户编辑',
+              content: '请先通过网页端进行编辑10次以上，且注册时间超过24小时，即成为自动确认用户。',
+              onTapCheck: () => props.navigation.goBack(),
+              onClose: () => props.navigation.goBack()
+            })
+          }
+        })
     } else {
       $dialog.alert.show({
         content: '该条目还未创建',
@@ -217,7 +230,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
       <ArticleView autoPaddingTopForHeader
         style={{ flex: 1 }} 
         navigation={props.navigation}
-        link={'User:東東君/sandbox6'} 
+        link={link} 
         injectStyle={['article']}
         injectJs={articleViewInjectJs}
         onMessages={{ changeHeaderVisible: setVisibleHeader }}
