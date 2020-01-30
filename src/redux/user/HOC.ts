@@ -1,4 +1,4 @@
-import { SET_USERNAME, CLEAR_USERNAME, State, SET_WAIT_NOTIFICATIONS_TOTAL, SET_USER_INFO } from './index'
+import { SET_USERNAME, CLEAR, State, SET_WAIT_NOTIFICATIONS_TOTAL, SET_USER_INFO } from './index'
 import store from '~/redux'
 import accountApi from '~/api/account'
 import editApi from '~/api/edit'
@@ -18,7 +18,7 @@ export const login = (userName: string, password: string): Promise<string> => ne
 })
 
 export const logout = () => {
-  dispatch({ type: CLEAR_USERNAME })
+  dispatch({ type: CLEAR })
   accountApi.logout()
 }
 
@@ -64,6 +64,7 @@ export const getUserInfo = (): Promise<AccountApiData.GetInfo> => {
     accountApi.getInfo()
       .then(data => {
         dispatch({ type: SET_USER_INFO, info: data })
+        resolve(data)
       })
       .catch(reject)
   })

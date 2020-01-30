@@ -4,7 +4,7 @@ import setActionHandler from '~/utils/redux/setActionHandler'
 import { AccountApiData } from '~/api/account.d'
 
 export const SET_USERNAME = Symbol()
-export const CLEAR_USERNAME = Symbol()
+export const CLEAR = Symbol()
 export const SET_WAIT_NOTIFICATIONS_TOTAL = Symbol()
 export const SET_USER_INFO = Symbol()
 
@@ -13,7 +13,7 @@ export interface ActionTypes {
     name: string
   }
 
-  [CLEAR_USERNAME]: null
+  [CLEAR]: null
   [SET_WAIT_NOTIFICATIONS_TOTAL]: {
     total: number
   }
@@ -42,13 +42,15 @@ const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
     }
   },
 
-  [CLEAR_USERNAME]: action => {
+  [CLEAR]: action => {
     storage.remove('userName')
     CookieManager.clearAll()
 
     return {
       ...state,
-      name: null
+      name: null,
+      waitNotificationsTotal: 0,
+      info: null
     }
   },
 
