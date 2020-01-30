@@ -62,7 +62,7 @@ export default jss.createStyleSheet({
     ul: {
       paddingLeft: '1em',
 
-      '@global li': {
+      '& li': {
         listStyle: `url(${listPointImg})`
       }
     },
@@ -99,7 +99,7 @@ export default jss.createStyleSheet({
     '.section-heading': {
       fontSize: '140%',
 
-      '@global span': {
+      '& span': {
         marginLeft: 5
       }
     },
@@ -107,7 +107,7 @@ export default jss.createStyleSheet({
     '.thumb': {
       margin: '5px 0',
 
-      '@global img': {
+      '& img': {
         objectFit: 'cover'
       }
     },
@@ -138,7 +138,7 @@ export default jss.createStyleSheet({
       margin: '1em 0',
       borderCollapse: 'collapse',
 
-      [`@global 
+      [`& 
         > tr > th,
         * > tr > th
       `]: {
@@ -146,7 +146,7 @@ export default jss.createStyleSheet({
         textAlign: 'center'
       },
 
-      [`@global 
+      [`& 
         tr > th,
         > tr > td,
         * > tr > th,
@@ -162,7 +162,7 @@ export default jss.createStyleSheet({
       overflowY: 'hidden',
       width: '100%',
 
-      '@global table': {
+      '& table': {
         width: 'max-content'
       }
     },
@@ -173,7 +173,7 @@ export default jss.createStyleSheet({
       textAlign: 'center',
       fontSize: 0,
 
-      '@global li': {
+      '& li': {
         listStyle: 'none',
         display: 'inline-block',
         verticalAlign: 'top',
@@ -185,12 +185,12 @@ export default jss.createStyleSheet({
           display: 'none'
         },
 
-        '@global img': {
+        '& img': {
           width: '100%',
           boxShadow: '0 0 3px #666'
         },
 
-        '@global p': {
+        '& p': {
           margin: 0,
           textAlign: 'center'
         }
@@ -205,30 +205,31 @@ export default jss.createStyleSheet({
         display: 'none'
       },
 
-      '&.collapseBtn': {
+      '& .collapseBtn': {
         float: 'right',
         cursor: 'pointer',
         color: '#0b0080'
       },
     },
 
-    '.navbox': {
+    'table.navbox': {
       border: '1px #aaa solid',
       padding: 1,
       textAlign: 'center',
       width: '100%',
       fontSize: '90%',
+      margin: '10px 0 !important',
 
       // image模板适应
-      '@global li': {
+      '& li': {
         listStyle: 'none'
       },
 
-      '@global .mw-collapsible': {
+      '& .mw-collapsible': {
         margin: '0 !important'
       },
 
-      '@global .navbar .navbox-list': {
+      '& .navbar, .navbox-list': {
         display: 'none',
 
         '&[colspan="2"]': {
@@ -236,77 +237,95 @@ export default jss.createStyleSheet({
         }
       },
 
-      '@global tr.group-spread': {
+      '& tr.group-spread': {
         width: 'calc(100% - 5px)',
         display: 'table',
         borderLeftWidth: 15,
         borderLeftStyle: 'solid',
         boxSizing: 'border-box',
 
-        '@global > .navbox-list': {
+        '& > .navbox-list': {
           display: 'table-row'
         }
       },
 
-      '@global .navbox-group > div': {
+      '& .navbox-group > div': {
         display: 'inline-block'
       },
 
-      '@global .navbox-group:first-child': {
+      '& .navbox-group:first-child': {
         textAlign: 'center',
         whiteSpace: 'nowrap',
 
-        '@global .navbox-collapse-btn': {
+        '& .navbox-collapse-btn': {
           float: 'none'
         }
       },
       
       // 取消查论编块的占位
-      '@global div[style="float:left; width:6em;text-align:left;"]': {
+      '& div[style="float:left; width:6em;text-align:left;"], .noprint.plainlinks.hlist.navbar.nomobile': {
         display: 'none'
       },
 
       // 嵌套大家族模板显示
-      '@global > tbody > tr > td > table > tbody > tr:not([style="display: inline-table; margin: 5px;"]) > td': {
+      '& > tbody > tr > td > table > tbody > tr:not([style="display: inline-table; margin: 5px;"]) > td': {
         display: 'block'
       },
 
-      '@global div[style="text-align:center; line-height:10pt"]': {
+      '& div[style="text-align:center; line-height:10pt"]': {
         lineHeight: 'inherit !important',
       },
 
-      '@global .mw-collapsible.mw-collapsed tr': {
+      '& .mw-collapsible.mw-collapsed tr': {
         opacity: 1
       },
 
-      '@global .contentBlock': {
+      '& .contentBlock': {
         margin: 5,
         display: 'inline-table',
         borderLeft: 'none',
         boxSizing: 'initial',
 
-        '@global > .navbox-list': {
+        '& > .navbox-list': {
           display: 'none'
         }
       },
 
-      '@global .group-spread .navbox-collapse-btn': {
+      '& .group-spread .navbox-collapse-btn': {
         float: 'right !important' as any
       },
 
-      '@global div[style="word-spacing: 100px;"]': {
+      '& div[style="word-spacing: 100px;"]': {
         wordSpacing: 'initial !important',
 
-        '@global > small a:nth-child(2)': {
+        '& > small a:nth-child(2)': {
           margin: '0 20px'
         },
 
-        '@global .navbox-title::before': {
+        '& .navbox-title::before': {
           content: '""',
           display: 'inline-block',
           width: '3em'
         }
-      } 
+      },
+
+      '& .mw-collapsible.navbox-subgroup': {
+        backgroundColor: 'white',
+
+        '& .navbox-title': {
+          padding: 5,
+          position: 'relative',
+
+          '& .collapseBtn': {
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            right: 5,
+            display: 'flex',
+            alignItems: 'center'
+          },
+        }
+      }
     },
 
     '.navbox-title, table.navbox th': {
@@ -346,7 +365,7 @@ export default jss.createStyleSheet({
       color: 'black',
       transition: 'all 0.3s',
 
-      '@global a': {
+      '& a': {
         color: 'black',
         transition: 'inherit'
       }
@@ -361,10 +380,10 @@ export default jss.createStyleSheet({
       margin: '10px 0',
       overflow: 'hidden',
 
-      '@global .infoBoxIcon': {
+      '& .infoBoxIcon': {
         float: 'left',
 
-        '@global > img': {
+        '& > img': {
           width: '70px !important',
           height: 'auto !important'
         }
@@ -382,11 +401,11 @@ export default jss.createStyleSheet({
     '.bilibili-video-container': {
       border: 'none !important',
 
-      '@global .bilibili-title': {
+      '& .bilibili-title': {
         display: 'none'
       },
 
-      '@global .bilibili-video-title': {
+      '& .bilibili-video-title': {
         padding: 5,
         fontSize: 18,
         textAlign: 'center',
@@ -397,7 +416,7 @@ export default jss.createStyleSheet({
         userSelect: 'none'
       },
 
-      '@global .bilibili-player': {
+      '& .bilibili-player': {
         width: '100%'
       }
     },
