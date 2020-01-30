@@ -6,11 +6,15 @@ import { check as checkLoginStatus, getUserInfo, getWaitNotificationsTotal, logo
 import storage from './utils/storage'
 
 storage.get('userName').then(name => {
-  if (!name) return count.increment()
+  if (!name) {
+    !__DEV__ && count.increment()
+    return
+  }
+
   store.dispatch({ type: SET_USERNAME, name })
 
   // 统计使用量排除自己
-  name !== '東東君' && count.increment(name)
+  name !== '東東君' && !__DEV__ && count.increment(name)
 
   // 获取一次编辑令牌，判断登录状态是否有效
   checkLoginStatus()
