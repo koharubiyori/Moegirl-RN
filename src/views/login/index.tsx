@@ -24,8 +24,8 @@ function Login(props: PropsWithChildren<FinalProps>) {
     containerStyle: { width: 250 },
     fontSize: 18,
     textColor: '#666',
-    baseColor: $colors.sub,
-    tintColor: $colors.sub
+    baseColor: $colors.primary,
+    tintColor: $colors.primary
   }
 
   useEffect(() => {
@@ -51,7 +51,7 @@ function Login(props: PropsWithChildren<FinalProps>) {
     <View style={{ flex: 1, alignItems: 'center' }}>
       <StatusBar translucent={false} blackText color="white" />
       <Image source={require('~/assets/images/moemoji.png')} style={{ width: 70, height: 80, marginTop: 20, marginLeft: -10 }} resizeMode="cover" />
-      <Text style={{ color: $colors.main, fontSize: 17, marginTop: 20 }}>萌娘百科，万物皆可萌的百科全书！</Text>
+      <Text style={{ color: $colors.primary, fontSize: 17, marginTop: 20 }}>萌娘百科，万物皆可萌的百科全书！</Text>
       <TextField label="用户名" {...textFieldStyle} value={userName} onChangeText={setUserName} />
       <TextField label="密码" {...textFieldStyle} value={password} secureTextEntry onChangeText={setPassword} />
       <Button contentContainerStyle={styles.submitBtn} noLimit={false} onPress={submit}>
@@ -60,7 +60,7 @@ function Login(props: PropsWithChildren<FinalProps>) {
 
       <View style={{ flex: 1 }}></View>
       <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => Linking.openURL('https://mzh.moegirl.org/index.php?title=Special:创建账户')}>
-        <Text style={{ color: $colors.sub, textDecorationLine: 'underline', fontSize: 16 }}>还没有萌百帐号？点击前往官网进行注册</Text>
+        <Text style={{ color: $colors.primary, textDecorationLine: 'underline', fontSize: 16 }}>还没有萌百帐号？点击前往官网进行注册</Text>
       </TouchableOpacity>
     </View>
   )
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     height: 40, 
     justifyContent: 'center', 
     alignItems: 'center', 
-    backgroundColor: $colors.sub, 
+    backgroundColor: $colors.primary, 
     borderRadius: 3,
     marginTop: 20,
     elevation: 1

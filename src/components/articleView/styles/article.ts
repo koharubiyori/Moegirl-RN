@@ -335,7 +335,6 @@ export default jss.createStyleSheet({
 
     [`.navbox-abovebelow,
       .navbox-group,
-      .navbox-subgroup,
       .navbox-title
     `]: {
       backgroundColor: '#c0ecc0'

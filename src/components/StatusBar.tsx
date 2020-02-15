@@ -13,7 +13,7 @@ export interface Props {
   animated: true,
   hidden: false,
   translucent: true,
-  color: $colors.dark || '#318D32',
+  color: $colors.dark,
   blackText: false
 }
 

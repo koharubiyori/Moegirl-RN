@@ -83,7 +83,7 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
         />}
 
         refreshControl={<RefreshControl 
-          colors={[$colors.main]} 
+          colors={[$colors.primary]} 
           onRefresh={() => load(true)} 
           refreshing={false} 
         />}
@@ -95,7 +95,7 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
                 <Text>加载失败，点击重试</Text>
               </View>
             </TouchableOpacity>,
-          2: () => <ActivityIndicator color={$colors.main} size={50} style={{ marginVertical: 10 }} />,
+          2: () => <ActivityIndicator color={$colors.primary} size={50} style={{ marginVertical: 10 }} />,
           4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
         } as { [status: number]: () => JSX.Element | null })[notificationList.status] || (() => {}))()}
       />

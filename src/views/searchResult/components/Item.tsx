@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
   content: {
     paddingVertical: 5,
     marginTop: 5,
-    borderTopColor: $colors.main,
-    borderBottomColor: $colors.main,
+    borderTopColor: $colors.primary,
+    borderBottomColor: $colors.primary,
     borderTopWidth: 2,
     borderBottomWidth: 2
   },

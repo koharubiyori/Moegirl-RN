@@ -1,7 +1,8 @@
 // 全局变量
-declare namespace NodeJS {
+
+declare namespace NodeJS { 
   interface Global extends __ReactNative.Global {
-    $colors: { [Name in 'main' | 'dark' | 'light' | 'sub']: string }
+    $colors: { [Name in 'primary' | 'dark' | 'light' | 'accent' | 'text' | 'subtext' | 'black']: string }
     $avatarUrl: string
     $isVisibleLoading: boolean
     $drawer: {

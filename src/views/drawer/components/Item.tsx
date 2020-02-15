@@ -25,11 +25,11 @@ function DrawerItem(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <Button onPress={onPress} contentContainerStyle={null} rippleColor={$colors.main} noLimit={false}>
+    <Button onPress={onPress} contentContainerStyle={null} rippleColor={$colors.primary} noLimit={false}>
       <View style={{ height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
         <View style={{ flex: 1, flexDirection: 'row' }}>
           {typeof props.icon === 'string'
-            ? <Icon name={props.icon} size={iconSize} color={$colors.main} />
+            ? <Icon name={props.icon} size={iconSize} color={$colors.primary} />
             : <Image source={props.icon} style={{ width: iconSize, height: iconSize }} /> 
           }
           

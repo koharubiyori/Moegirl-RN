@@ -172,9 +172,9 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
           onPress={toggleLike}
         >
           {likeNum === 0 ? <AntDesignIcon name="like2" color="#ccc" size={iconSize} /> : null}
-          {likeNum > 0 && !isLiked ? <AntDesignIcon name="like2" color={$colors.sub} size={iconSize} /> : null}
-          {isLiked ? <AntDesignIcon name="like1" color={$colors.sub} size={iconSize} /> : null}
-          {likeNum > 0 ? <Text style={{ color: $colors.sub, marginLeft: 5 }}>{likeNum}</Text> : null}
+          {likeNum > 0 && !isLiked ? <AntDesignIcon name="like2" color={$colors.accent} size={iconSize} /> : null}
+          {isLiked ? <AntDesignIcon name="like1" color={$colors.accent} size={iconSize} /> : null}
+          {likeNum > 0 ? <Text style={{ color: $colors.accent, marginLeft: 5 }}>{likeNum}</Text> : null}
         </TouchableOpacity>
 
         {props.visibleReplyBtn ? <>
@@ -184,8 +184,8 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
             {!props.visibleReplyNum || data.children.length === 0 
               ? <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />
               : <>
-                <FontAwesomeIcon name="comment" color={$colors.sub} size={iconSize} />
-                <Text style={{ color: $colors.sub, marginLeft: 5 }}>{data.children.length}</Text>
+                <FontAwesomeIcon name="comment" color={$colors.accent} size={iconSize} />
+                <Text style={{ color: $colors.accent, marginLeft: 5 }}>{data.children.length}</Text>
               </>
             }
           </TouchableOpacity>

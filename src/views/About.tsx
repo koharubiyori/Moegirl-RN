@@ -37,7 +37,7 @@ function About(props: PropsWithChildren<FinalProps>) {
         <Image source={require('~/assets/images/moegirl.png')} style={{ width: 105, height: 130, marginTop: 50 }} />
 
         <View style={{ borderBottomColor: '#ccc', borderBottomWidth: 1, marginTop: 30, paddingHorizontal: 20 }}>
-          <Text style={{ fontSize: 18, color: $colors.main, marginBottom: 10 }}>万物皆可萌的百科全书</Text>
+          <Text style={{ fontSize: 18, color: $colors.primary, marginBottom: 10 }}>万物皆可萌的百科全书</Text>
         </View>
         
         <View style={{ marginTop: 20 }}>
@@ -47,7 +47,7 @@ function About(props: PropsWithChildren<FinalProps>) {
           <View style={styles.item}>
             <Text style={styles.itemText}>开发</Text>
             <TouchableOpacity onPress={() => props.navigation.push('article', { link: 'User:東東君' })}>
-              <Text style={{ color: $colors.sub, fontSize: 16, textDecorationLine: 'underline' }}>東東君</Text>
+              <Text style={{ color: $colors.accent, fontSize: 16, textDecorationLine: 'underline' }}>東東君</Text>
             </TouchableOpacity>
           </View>
         </View>

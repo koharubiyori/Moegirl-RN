@@ -64,7 +64,7 @@ function Alert(props: PropsWithChildren<FinalProps>) {
     >
       <Dialog.Title>{params.title}</Dialog.Title>
       <Dialog.Description>{params.content}</Dialog.Description>
-      <Dialog.Button label={params.checkText} onPress={params.onTapCheck} style={{ color: $colors.main }} />
+      <Dialog.Button label={params.checkText} onPress={params.onTapCheck} style={{ color: $colors.primary }} />
     </Dialog.Container>
   )
 }

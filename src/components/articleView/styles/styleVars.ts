@@ -1,7 +1,4 @@
-const colors = {
-  main: '#3CAD3D',
-  light: '#0DBC79'
-}
+import { colors } from '~/global'
 
 export default {
   ...colors,

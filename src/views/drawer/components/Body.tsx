@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: $colors.main,
+    backgroundColor: $colors.primary,
     elevation: 5,
   },
 
