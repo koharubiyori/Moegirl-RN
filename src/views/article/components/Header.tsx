@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types'
 import React, { MutableRefObject, PropsWithChildren, useRef, useState } from 'react'
-import { Animated, Clipboard, Dimensions, StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { Animated, Clipboard, Dimensions, NativeModules, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import Toolbar from '~/components/Toolbar'
-import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
+import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
+import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
 import toast from '~/utils/toast'
+import color from 'color'
 
 ArticleHeader.propTypes = {
   title: PropTypes.string,
@@ -30,11 +32,11 @@ export interface ArticleHeaderRef {
   hide (): void
 }
 
-type FinalProps = Props & UserConnectedProps
+type FinalProps = Props & UserConnectedProps & ConfigConnectedProps
 
 function ArticleHeader(props: PropsWithChildren<FinalProps>) {
   const [visible, setVisible] = useState(true)
-  const [transitionTranslateY] = useState(new Animated.Value(0))
+  const [transitionValue] = useState(new Animated.Value(0))
   const animateLock = useRef(false)
 
   if (props.getRef) props.getRef.current = { show, hide }
@@ -43,10 +45,9 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
     if (animateLock.current || !visible) { return }
     animateLock.current = true
 
-    Animated.timing(transitionTranslateY, {
-      toValue: -56,
+    Animated.timing(transitionValue, {
+      toValue: 1,
       duration: 200,
-      useNativeDriver: true
     }).start(() => {
       setVisible(false)
       animateLock.current = false
@@ -57,10 +58,9 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
     if (animateLock.current || visible) { return }
     animateLock.current = true
     setVisible(true)
-    Animated.timing(transitionTranslateY, {
+    Animated.timing(transitionValue, {
       toValue: 0,
       duration: 200,
-      useNativeDriver: true
     }).start(() => animateLock.current = false)
   }
 
@@ -98,9 +98,29 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
     }
   }
 
+  const backgroundColor = transitionValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [color($colors.primary).rgb().string(), 'rgb(255, 255, 255)']
+  })
+  const translateY = transitionValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -56]
+  })
+  const elevation = transitionValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 5]
+  })
   return (
-    <Animated.View style={{ ...styles.body, ...(props.style as any), transform: [{ translateY: transitionTranslateY }] }}>
+    <Animated.View 
+      style={{ 
+        ...styles.body, 
+        ...(props.style as any), 
+        transform: [{ translateY }],
+        backgroundColor,
+        ...(props.state.config.immersionMode ? {} : { elevation })
+      }}>
       <Toolbar 
+        style={{ backgroundColor: 'transparent' }}
         title={props.title}
         leftIcon="home"
         rightIcon="search"
@@ -118,7 +138,7 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default userHOC(ArticleHeader)
+export default configHOC(userHOC(ArticleHeader))
 
 const styles = StyleSheet.create({
   body: {

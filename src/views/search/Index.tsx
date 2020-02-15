@@ -69,7 +69,7 @@ function Search(props: PropsWithChildren<FinalProps>) {
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <StatusBar blackText color="white" />
+      <StatusBar blackText />
       <Header value={searchWord} 
         onChangeText={changeText} 
         onSubmit={() => toSearchResultView()}

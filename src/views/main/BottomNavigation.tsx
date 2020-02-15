@@ -22,7 +22,7 @@ function MyBottomNavigation(props: PropsWithChildren<FinalProps>) {
       width: Dimensions.get('window').width,
       border: 3,
       style: styles.container,
-      opacity: 0.15,
+      opacity: 0,
       side: 'top',
       insert: true
     }}>
@@ -45,26 +45,6 @@ function MyBottomNavigation(props: PropsWithChildren<FinalProps>) {
         onPress={() => selectTab('history')}
       />
     </BorderShadow>
-    // <BottomNavigation active={active}>
-    //   <BottomNavigation.Action
-    //     key="home"
-    //     icon="book"
-    //     label="首页"
-    //     onPress={() => selectTab('home')}
-    //   />        
-    //   <BottomNavigation.Action
-    //     key="finds"
-    //     icon="stars"
-    //     label="发现"
-    //     onPress={() => selectTab('finds')}
-    //   />        
-    //   <BottomNavigation.Action
-    //     key="history"
-    //     icon="history"
-    //     label="历史"
-    //     onPress={() => selectTab('history')}
-    //   />        
-    // </BottomNavigation>
   )
 }
 
@@ -74,7 +54,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     height: 55,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    borderTopColor: '#eee',
+    borderTopWidth: 0.8
   },
 
   item: {

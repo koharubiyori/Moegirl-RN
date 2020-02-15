@@ -218,7 +218,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
       onTapTitle={articleViewIntoAnchor} 
       getRef={refs.catalog}
     >
-      <StatusBar hidden={config.immersionMode} color={visibleHeader ? $colors.dark : 'white'} blackText={!visibleHeader} />
+      <StatusBar hidden={config.immersionMode} color="transparent" blackText={!visibleHeader} />
       <Header style={{ ...styles.header, top: config.immersionMode ? -statusBarHeight : 0 }} 
         navigation={props.navigation} 
         title={loadedPageInfo.pageName} 
