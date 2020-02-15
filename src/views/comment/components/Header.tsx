@@ -5,7 +5,7 @@ import Toolbar from '~/components/Toolbar'
 export interface Props {
   title: string
   navigation: __Navigation.Navigation
-  onTapAddComment (): void
+  onPressAddComment (): void
 }
 
 type FinalProps = Props
@@ -17,7 +17,7 @@ export default function CommentHeader(props: PropsWithChildren<FinalProps>) {
       leftIcon="keyboard-backspace"
       rightIcon="add"
       onPressLeftIcon={props.navigation.goBack}
-      onPressRightIcon={props.onTapAddComment}
+      onPressRightIcon={props.onPressAddComment}
     />
   )
 }

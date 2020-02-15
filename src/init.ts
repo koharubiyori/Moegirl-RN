@@ -26,7 +26,7 @@ storage.get('userName').then(name => {
       userLogout()
       $dialog.confirm.show({
         content: '登录状态貌似失效了，要前往登录吗？',
-        onTapCheck: () => {
+        onPressCheck: () => {
           $appNavigator.push('login')
         }
       })

@@ -1,13 +1,5 @@
-import PropTypes from 'prop-types'
 import React, { PropsWithChildren } from 'react'
 import { StyleSheet, Switch, Text, TouchableNativeFeedback, View } from 'react-native'
-
-SettingItem.propTypes = {
-  title: PropTypes.string,
-  subtext: PropTypes.string,
-  value: PropTypes.bool,
-  onChange: PropTypes.func,
-}
 
 export interface Props {
   title: string

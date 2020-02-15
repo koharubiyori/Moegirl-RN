@@ -1,19 +1,13 @@
 import React, { PropsWithChildren } from 'react'
-import PropTypes from 'prop-types'
 import { 
   View, Text, ScrollView,
   StyleSheet
 } from 'react-native'
 import Button from '~/components/Button'
 
-SearchHint.propTypes = {
-  titles: PropTypes.array,
-  onTapTitle: PropTypes.func
-}
-
 export interface Props {
   titles: string[] | null
-  onTapTitle (title: string): void
+  onPressTitle (title: string): void
 }
 
 type FinalProps = Props
@@ -24,7 +18,7 @@ export default function SearchHint(props: PropsWithChildren<FinalProps>) {
       {props.titles ? <>
         <ScrollView removeClippedSubviews keyboardShouldPersistTaps="always">{props.titles.map(title =>
           <Button contentContainerStyle={{}} rippleColor="#ccc" noLimit={false} 
-            onPress={() => props.onTapTitle(title)}
+            onPress={() => props.onPressTitle(title)}
             key={title}
           >
             <View style={styles.title}>

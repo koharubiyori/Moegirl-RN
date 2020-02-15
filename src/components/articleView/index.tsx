@@ -208,7 +208,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     type EventParamsMap = {
       print: string
       error: string
-      onTapNote: { content: string }
+      onPressNote: { content: string }
       request: {
         config: {
           url: string
@@ -217,17 +217,17 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         }
         callbackName: string
       }
-      onTapLink: {
+      onPressLink: {
         type: 'inner' | 'outer' | 'notExists'
         link: string
       }
       openApp: { url: string }
-      onTapEdit: {
+      onPressEdit: {
         page: string
         section: number
       }
-      onTapImage: { name: string }
-      onTapBiliVideo: {
+      onPressImage: { name: string }
+      onPressBiliVideo: {
         avId: string | number
         page: string | number
       }
@@ -242,7 +242,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
     setEventHandler('print', msg => console.log('=== print ===', msg))
     setEventHandler('error', msg => console.log('--- WebViewError ---', msg))
-    setEventHandler('onTapNote', data => {
+    setEventHandler('onPressNote', data => {
       $dialog.alert.show({
         title: '注释',
         content: data.content,
@@ -268,7 +268,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
     if (props.disabledLink) { return }
     
-    setEventHandler('onTapLink', data => {
+    setEventHandler('onPressLink', data => {
       ;({
         inner: () => {
           let [link, anchor] = data.link.split('#')
@@ -285,7 +285,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
       })[data.type]()
     })
     setEventHandler('openApp', data => Linking.openURL(data.url))
-    setEventHandler('onTapEdit', data => {
+    setEventHandler('onPressEdit', data => {
       if (props.state.user.name) {
         props.$user.getUserInfo()
           .then(userInfoData => {
@@ -301,11 +301,11 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
       } else {
         $dialog.confirm.show({
           content: '登录后才可以进行编辑，要前往登录界面吗？',
-          onTapCheck: () => props.navigation.push('login')
+          onPressCheck: () => props.navigation.push('login')
         })
       }
     })
-    setEventHandler('onTapImage', data => {
+    setEventHandler('onPressImage', data => {
       toast.showLoading('获取链接中')
       articleApi.getImageUrl(data.name)
         .finally(toast.hide)
@@ -317,7 +317,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           setTimeout(() => toast.show('获取链接失败'))
         })
     })
-    setEventHandler('onTapBiliVideo', data => props.navigation.push('biliPlayer', data))
+    setEventHandler('onPressBiliVideo', data => props.navigation.push('biliPlayer', data))
 
     if (props.onMessages) {
       ;(props.onMessages[type] || (() => {}))(data)

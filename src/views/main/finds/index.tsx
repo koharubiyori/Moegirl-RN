@@ -1,5 +1,4 @@
 import React, { useState, useRef, PropsWithChildren } from 'react'
-import PropTypes from 'prop-types'
 import {
   View, Text, ScrollView, RefreshControl,
   StyleSheet

@@ -1,22 +1,17 @@
-import PropTypes from 'prop-types'
-import React, { MutableRefObject, PropsWithChildren, useLayoutEffect, useRef, useState, FC } from 'react'
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { FC, MutableRefObject, PropsWithChildren, useLayoutEffect, useRef, useState } from 'react'
+import { Animated, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { withNavigation } from 'react-navigation'
-import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
+import { CommentConnectedProps, commentHOC } from '~/redux/comment/HOC'
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 const size = 60
 
-CommentButton.propTypes = {
-  id: PropTypes.number,
-  onTap: PropTypes.func,
-  getRef: PropTypes.object
-}
-
 export interface Props {
   id: number
-  onTap (): void
+  backgroundColor?: string
+  textColor?: string
+  onPress (): void
   getRef: MutableRefObject<any>
 }
 
@@ -72,17 +67,17 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
   function tap() {
     let state = props.$comment.getActiveData()
     if (state.status === 0) props.$comment.load()
-    props.onTap()
+    props.onPress()
   }
 
   const state = props.$comment.getActiveData()
   return (
     visible ? <>
       <AnimatedTouchableOpacity onPress={tap} style={{ ...styles.container, bottom: transitionBottom }}>
-        <View style={{ ...styles.main }}>
+        <View style={{ ...styles.main, backgroundColor: props.backgroundColor || $colors.primary }}>
           <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
-            <Icon name="comment" size={30} color="white" style={{ position: 'relative', top: -4 }} />
-            <Text style={{ position: 'absolute', bottom: 6, color: 'white' }}>
+            <Icon name="comment" size={30} color={props.textColor || 'white'} style={{ position: 'relative', top: -4 }} />
+            <Text style={{ position: 'absolute', bottom: 6, color: props.textColor || 'white' }}>
               {({ 0: '×', 1: '...', 2: '...' } as { [status: number]: string })[state ? state.status : 1] || state.data.count}
             </Text>
           </View>

@@ -8,7 +8,7 @@ export default function() {
 
     let title = $('<div class="bilibili-video-title">标题获取中...</div>')
     title.click(function() {
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapBiliVideo', data: { avId, page } }))
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressBiliVideo', data: { avId, page } }))
     })
 
     let titlePhoneEvent = new Hammer(title[0])

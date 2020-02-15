@@ -48,7 +48,7 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
       if (inputText) {
         $dialog.confirm.show({
           content: '关闭后当前编辑的评论内容将不会保存，是否关闭？',
-          onTapCheck: hide
+          onPressCheck: hide
         })
       } else {
         hide()

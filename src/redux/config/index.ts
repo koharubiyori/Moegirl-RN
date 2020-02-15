@@ -16,12 +16,14 @@ export interface State {
   heimu: boolean
   biliPlayerReload: boolean
   immersionMode: boolean
+  changeThemeColorByArticleMainColor: boolean
 }
 
 const init = () => ({
   heimu: true,
   biliPlayerReload: false,
   immersionMode: false,
+  changeThemeColorByArticleMainColor: false
 })
 
 const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = init(), action) => setActionHandler<ActionTypes, State>(action, {

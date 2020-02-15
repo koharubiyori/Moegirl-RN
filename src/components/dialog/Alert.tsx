@@ -1,14 +1,9 @@
 import React, { useState, MutableRefObject, PropsWithChildren } from 'react'
-import PropTypes from 'prop-types'
 import {
   View, Text,
   StyleSheet
 } from 'react-native'
 import Dialog from 'react-native-dialog'
-
-Alert.propTypes = {
-  getRef: PropTypes.object
-}
 
 export interface Props {
   getRef: MutableRefObject<any>
@@ -18,7 +13,7 @@ export interface ShowFnOptions {
   title?: string
   content?: string
   checkText?: string
-  onTapCheck? (): void
+  onPressCheck? (): void
   onClose? (): void
 }
 
@@ -35,7 +30,7 @@ function Alert(props: PropsWithChildren<FinalProps>) {
     title: '',
     content: '',
     checkText: '',
-    onTapCheck: () => {},
+    onPressCheck: () => {},
     onClose: () => {}
   })
 
@@ -45,11 +40,11 @@ function Alert(props: PropsWithChildren<FinalProps>) {
     title = '提示',
     content = '',
     checkText = '确定',
-    onTapCheck = () => {},
+    onPressCheck = () => {},
     onClose = () => {}
   }) {
     setVisible(true)
-    setParams({ title, content, checkText, onClose, onTapCheck: () => { onTapCheck(); hide() } })
+    setParams({ title, content, checkText, onClose, onPressCheck: () => { onPressCheck(); hide() } })
   }
 
   function hide() {
@@ -64,7 +59,7 @@ function Alert(props: PropsWithChildren<FinalProps>) {
     >
       <Dialog.Title>{params.title}</Dialog.Title>
       <Dialog.Description>{params.content}</Dialog.Description>
-      <Dialog.Button label={params.checkText} onPress={params.onTapCheck} style={{ color: $colors.primary }} />
+      <Dialog.Button label={params.checkText} onPress={params.onPressCheck} style={{ color: $colors.primary }} />
     </Dialog.Container>
   )
 }

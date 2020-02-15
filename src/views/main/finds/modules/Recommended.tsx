@@ -101,7 +101,7 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
       articles={data}
       navigation={props.navigation}
       status={status}
-      onTapReload={reload}
+      onPressReload={reload}
     />
   )
 }

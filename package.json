@@ -81,7 +81,6 @@
     "jetifier": "^1.6.4",
     "metro-react-native-babel-preset": "^0.56.0",
     "prettier": "^1.19.1",
-    "prop-types": "^15.7.2",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "16.8.6",
     "source-map": "^0.7.3",

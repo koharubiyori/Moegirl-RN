@@ -56,7 +56,7 @@ function Edit(props: PropsWithChildren<FinalProps>) {
         if (params && params.isContentChanged) {
           $dialog.confirm.show({
             content: '编辑还未保存，确定要放弃编辑的内容？',
-            onTapCheck: () => props.navigation.goBack()
+            onPressCheck: () => props.navigation.goBack()
           })
     
           return true
@@ -91,7 +91,7 @@ function Edit(props: PropsWithChildren<FinalProps>) {
       $dialog.confirm.show({
         hasInput: true,
         inputPlaceholder: '请输入编辑摘要',
-        onTapCheck: text => {
+        onPressCheck: text => {
           toast.showLoading('提交中')
           editApi.editArticle(title, section, content, text!.trim())
             .finally(toast.hide)
@@ -125,7 +125,7 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar />
-      <Header title={title} navigation={props.navigation} onTapDoneBtn={submit} />
+      <Header title={title} navigation={props.navigation} onPressDoneBtn={submit} />
       <TabNavigator 
         screenProps={{ title, section, isCreate, content }}
         onNavigationStateChange={navigationStateChange}

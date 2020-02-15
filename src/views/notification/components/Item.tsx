@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef, PropsWithChildren, FC } from 'react'
-import { View, Text, StyleSheet, Image, TouchableNativeFeedback } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity } from 'react-native'
 import { NotificationData } from '~/api/notification.d'
 import format from '~/views/comment/utils/format'
 
 export interface Props {
   notificationData: NotificationData
-  onPress (): void
+  onPress?(): void
+  onPressAvatar?(username: string): void
 }
 
 type FinalProps = Props
@@ -78,7 +79,9 @@ function NotificationItem(props: PropsWithChildren<FinalProps>) {
         <View style={{ flexDirection: 'row', alignItems: 'center', }}>
           {!props.notificationData.read ? <View style={styles.badge} /> : null} 
 
-          <Image source={{ uri: $avatarUrl + props.notificationData.agent.name }} style={styles.avatar} />
+          <TouchableOpacity onPress={() => props.onPressAvatar && props.onPressAvatar(props.notificationData.agent.name)}>
+            <Image source={{ uri: $avatarUrl + props.notificationData.agent.name }} style={styles.avatar} />
+          </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Text numberOfLines={1}>{strongTagToRnBoldText(props.notificationData['*'].header)}</Text>
             <Text style={{ fontSize: 13, marginTop: 5, color: '#ABABAB' }} numberOfLines={2}>{props.notificationData['*'].body || props.notificationData['*'].compactHeader}</Text>

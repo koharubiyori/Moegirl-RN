@@ -1,19 +1,11 @@
-import PropTypes from 'prop-types'
 import React, { MutableRefObject, PropsWithChildren, useEffect, useRef } from 'react'
 import { BackHandler, Dimensions, DrawerLayoutAndroid } from 'react-native'
 import CatalogBody from './Body'
 
-catalogTriggerView.propTypes = {
-  immersionMode: PropTypes.bool,
-  items: PropTypes.array,
-  onTapTitle: PropTypes.func,
-  getRef: PropTypes.object
-}
-
 export interface Props {
   immersionMode: boolean
   items: any[]
-  onTapTitle (anchor: string): void
+  onPressTitle (anchor: string): void
   getRef: MutableRefObject<any>
 }
 
@@ -57,7 +49,7 @@ function catalogTriggerView(props: PropsWithChildren<FinalProps>) {
         <CatalogBody 
           immersionMode={props.immersionMode}
           items={props.items} 
-          onTapTitle={props.onTapTitle} 
+          onPressTitle={props.onPressTitle} 
           onClose={close} 
         />
       }

@@ -7,7 +7,7 @@ export interface Props {
   immersionMode: boolean
   items: any[]
   onClose (): void
-  onTapTitle (anchor: string): void
+  onPressTitle (anchor: string): void
 }
 
 type FinalProps = Props
@@ -28,7 +28,7 @@ function CatalogBody(props: PropsWithChildren<FinalProps>) {
         contentContainerStyle={styles.titles}
       >{
           props.items.filter(item => parseInt(item.level) < 5 && item.level !== '1').map((item, index) => 
-            <Button onPress={() => props.onTapTitle(item.anchor)}
+            <Button onPress={() => props.onPressTitle(item.anchor)}
               rippleColor="#ccc"
               noLimit={false}
               key={index}

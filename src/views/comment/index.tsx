@@ -42,7 +42,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
     if (!signedName) {
       return $dialog.confirm.show({
         content: '需要先登录才能发表评论，是否前往登录界面？',
-        onTapCheck: () => props.navigation.push('login')
+        onPressCheck: () => props.navigation.push('login')
       })
     }
 
@@ -60,7 +60,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
   return (
     <View style={{ flex: 1, backgroundColor: '#eee' }}>
       <StatusBar />
-      <Header title={'评论：' + title} onTapAddComment={addComment} navigation={props.navigation} />
+      <Header title={'评论：' + title} onPressAddComment={addComment} navigation={props.navigation} />
       <Editor getRef={refs.editor} pageId={state.pageId} onPosted={props.$comment.incrementLoad} />
     
       <FlatList removeClippedSubviews data={state.tree.tree} 
@@ -73,7 +73,8 @@ function Comment(props: PropsWithChildren<FinalProps>) {
           navigation={props.navigation}
           signedName={signedName}
           onDel={props.$comment.del}
-          onTapReply={toReply}
+          onPressReply={toReply}
+          onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
         />}
         
         ListHeaderComponent={state.data.popular.length !== 0 ? <>
@@ -87,6 +88,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
                 visibleReplyBtn={false} 
                 signedName={signedName}
                 onDel={props.$comment.del} 
+                onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
               />  
             )}
             <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginTop: 10 }}>全部评论</Text>
