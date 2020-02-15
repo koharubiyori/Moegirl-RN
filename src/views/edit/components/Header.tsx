@@ -1,18 +1,11 @@
-import PropTypes from 'prop-types'
 import React, { PropsWithChildren } from 'react'
 import { StyleSheet } from 'react-native'
 import Toolbar from '~/components/Toolbar'
 
-EditHeader.propTypes = {
-  title: PropTypes.string,
-  navigation: PropTypes.object,
-  onTapDoneBtn: PropTypes.func
-}
-
 export interface Props {
   title: string
   navigation: __Navigation.Navigation
-  onTapDoneBtn (): void
+  onPressDoneBtn (): void
 }
 
 type FinalProps = Props
@@ -30,7 +23,7 @@ export default function EditHeader(props: PropsWithChildren<FinalProps>) {
       leftIcon="keyboard-backspace"
       rightIcon="done"
       onPressLeftIcon={props.navigation.goBack}
-      onPressRightIcon={props.onTapDoneBtn}
+      onPressRightIcon={props.onPressDoneBtn}
     />
   )
 }

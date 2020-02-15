@@ -1,5 +1,4 @@
 import React, { useState, MutableRefObject, PropsWithChildren } from 'react'
-import PropTypes from 'prop-types'
 import {
   View, Text, Animated, 
   StyleSheet, 

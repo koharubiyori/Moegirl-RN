@@ -13,6 +13,7 @@ import Header, { ArticleHeaderRef } from './components/Header'
 import { ArticleApiData } from '~/api/article.d'
 import store from '~/redux'
 import { getUserInfo } from '~/redux/user/HOC'
+import color from 'color'
 
 export interface Props {
 
@@ -37,6 +38,8 @@ function Article(props: PropsWithChildren<FinalProps>) {
     id: 0
   })
   const [visibleHeader, setVisibleHeader] = useState(true)
+  const [disabledMoreBtn, setDisabledMoreBtn] = useState(true)
+  const [themeColor, setThemeColor] = useState({ backgroundColor: $colors.primary, blackText: false })
   const prevProps = useRef(props)
   const refs = {
     header: useRef<ArticleHeaderRef>(),
@@ -47,8 +50,10 @@ function Article(props: PropsWithChildren<FinalProps>) {
   const link = props.navigation.getParam('link')
   const anchor = props.navigation.getParam('anchor')
 
+  // 注入webview的js
   const articleViewInjectJs = (function() {
     let codeStr = function() {
+      // 监听滚动条变化用于响应头栏显隐
       let lastPosition = 0
       let activeDistance = 0 // 用于判断上划一定距离后再显示头栏和评论按钮
       let postMessageFlag = false // 设置一个标记，防止和webview通信过频降低性能
@@ -80,6 +85,14 @@ function Article(props: PropsWithChildren<FinalProps>) {
         
         lastPosition = window.scrollY
       })
+
+      // 注入一个主题色获取器
+      if (!window._appConfig.changeThemeColorByArticleMainColor) { return }
+      const firstInfobox = document.querySelector('table.infobox[align="right"] > tbody > tr > td')
+      if (firstInfobox) {
+        const { backgroundColor, color } = window.getComputedStyle(firstInfobox)
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'getArticleMainColor', data: { backgroundColor, color } }))
+      }
     }.toString()
 
     return `(${codeStr})();`
@@ -130,6 +143,8 @@ function Article(props: PropsWithChildren<FinalProps>) {
   }
 
   function contentLoaded(data: ArticleApiData.GetContent) {
+    setDisabledMoreBtn(false)
+    
     let title = loadedPageInfo.pageName.replace(/_/g, ' ')
     let trueTitle = data.parse.title
 
@@ -190,7 +205,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
             $dialog.alert.show({
               title: '抱歉，暂不支持非自动确认用户编辑',
               content: '请先通过网页端进行编辑10次以上，且注册时间超过24小时，即成为自动确认用户。',
-              onTapCheck: () => props.navigation.goBack(),
+              onPressCheck: () => props.navigation.goBack(),
               onClose: () => props.navigation.goBack()
             })
           }
@@ -198,10 +213,19 @@ function Article(props: PropsWithChildren<FinalProps>) {
     } else {
       $dialog.alert.show({
         content: '该条目还未创建',
-        onTapCheck: () => props.navigation.goBack(),
+        onPressCheck: () => props.navigation.goBack(),
         onClose: () => props.navigation.goBack()
       })
     }
+  }
+  
+  interface ArticleMainColor {
+    backgroundColor: string
+    color: string
+  }
+  function setThemeByArticleMainColor(mainColor: ArticleMainColor) {
+    const blackText = color(mainColor.color).isDark()
+    setThemeColor({ backgroundColor: mainColor.backgroundColor, blackText })
   }
 
   function isVisibleComment() {
@@ -215,15 +239,22 @@ function Article(props: PropsWithChildren<FinalProps>) {
     <CatalogTriggerView 
       immersionMode={config.immersionMode}
       items={loadedPageInfo.catalogItems} 
-      onTapTitle={articleViewIntoAnchor} 
+      onPressTitle={articleViewIntoAnchor} 
       getRef={refs.catalog}
     >
-      <StatusBar hidden={config.immersionMode} color="transparent" blackText={!visibleHeader} />
-      <Header style={{ ...styles.header, top: config.immersionMode ? -statusBarHeight : 0 }} 
+      <StatusBar hidden={config.immersionMode} color="transparent" blackText={visibleHeader ? themeColor.blackText : true} />
+      <Header 
+        style={{ 
+          ...styles.header, 
+          top: config.immersionMode ? -statusBarHeight : 0
+        }} 
+        backgroundColor={themeColor.backgroundColor}
+        textColor={themeColor.blackText ? '#666' : 'white'}
         navigation={props.navigation} 
         title={loadedPageInfo.pageName} 
-        onTapRefreshBtn={() => refs.articleView.current!.loadContent(true)}
-        onTapOpenCatalog={() => refs.catalog.current!.open()}
+        disabledMoreBtn={disabledMoreBtn}
+        onPressRefreshBtn={() => refs.articleView.current!.loadContent(true)}
+        onPressOpenCatalog={() => refs.catalog.current!.open()}
         getRef={refs.header} 
       />
 
@@ -233,7 +264,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
         link={link} 
         injectStyle={['article']}
         injectJs={articleViewInjectJs}
-        onMessages={{ changeHeaderVisible: setVisibleHeader }}
+        onMessages={{ changeHeaderVisible: setVisibleHeader, getArticleMainColor: setThemeByArticleMainColor }}
         onLoaded={contentLoaded}
         onMissing={missingGoBack}
         getRef={refs.articleView}
@@ -241,7 +272,9 @@ function Article(props: PropsWithChildren<FinalProps>) {
 
       {loadedPageInfo.id && isVisibleComment() ? <CommentButton 
         id={loadedPageInfo.id}
-        onTap={toComment}
+        backgroundColor={themeColor.backgroundColor}
+        textColor={themeColor.blackText ? '#666' : 'white'}
+        onPress={toComment}
         getRef={refs.commentButton}
       /> : null } 
     </CatalogTriggerView>

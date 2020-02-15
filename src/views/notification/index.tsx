@@ -80,6 +80,7 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
           key={item.index}
           notificationData={item.item}
           onPress={() => item.item.title && props.navigation.push('article', { link: item.item.title.full })}
+          onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
         />}
 
         refreshControl={<RefreshControl 

@@ -14,7 +14,7 @@ export interface Props {
   style?: StyleProp<ViewStyle>
   navigation: __Navigation.Navigation
   status: number
-  onTapReload (): void
+  onPressReload (): void
 }
 
 type FinalProps = Props
@@ -53,7 +53,7 @@ export default function ArticleGroup(props: PropsWithChildren<FinalProps>) {
       {props.status === 4 ? <Text style={{ marginVertical: 20, color: '#ABABAB', textAlign: 'center' }}>暂无相关条目</Text> : null}
 
       {props.status === 0 ? <>
-        <TouchableOpacity onPress={props.onTapReload}>
+        <TouchableOpacity onPress={props.onPressReload}>
           <Text style={{ marginVertical: 20, color: $colors.primary, textAlign: 'center' }}>重新加载</Text>
         </TouchableOpacity>  
       </> : null}

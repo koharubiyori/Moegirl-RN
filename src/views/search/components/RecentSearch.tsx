@@ -4,8 +4,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 
 export interface Props {
-  onTapTitle (title: string): void
-  onTapDelete (): void
+  onPressTitle (title: string): void
+  onPressDelete (): void
   titles: string[]
 }
 
@@ -17,14 +17,14 @@ export default function RecentSearch(props: PropsWithChildren<FinalProps>) {
       {props.titles && props.titles.length ? <>
         <View style={styles.header}>
           <Text style={{ color: '#666' }}>最近搜索</Text>
-          <Button onPress={props.onTapDelete} rippleColor="#ccc">
+          <Button onPress={props.onPressDelete} rippleColor="#ccc">
             <Icon name="delete" size={20} color="#666" />
           </Button>
         </View>
 
         <ScrollView keyboardShouldPersistTaps="always">{props.titles.map(title => 
           <Button rippleColor="#ccc" noLimit={false} contentContainerStyle={{ paddingHorizontal: 5 }}
-            onPress={() => props.onTapTitle(title)}
+            onPress={() => props.onPressTitle(title)}
             key={title}
           >
             <View style={styles.title}>

@@ -1,5 +1,4 @@
 import React, { PropsWithChildren } from 'react'
-import PropTypes from 'prop-types'
 import {
   View, Text, Image, TouchableOpacity,
   StyleSheet

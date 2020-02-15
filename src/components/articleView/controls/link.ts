@@ -26,14 +26,14 @@ export default function() {
         section = parseInt(this.href.match(/&section=(.+?)(&|$)/)[1])
       }
 
-      return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapEdit', data: { page, section } }))
+      return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressEdit', data: { page, section } }))
     }
 
     // 一般链接导向
     let link = ($(e.target).attr('href') || $(e.target).parent('a').attr('href'))!
     let type = 'inner'
     if (/^\/File:/.test(link)) {
-      return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapImage', data: { name: decodeURIComponent(link.replace(/^\/File:/, '')) } }))
+      return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressImage', data: { name: decodeURIComponent(link.replace(/^\/File:/, '')) } }))
     } else if (/^#cite_note-/.test(link)) {
       console.log($(link).text())
       let content = $(link).text().replace(/^\[跳转至目标\]/, '').trim()
@@ -41,7 +41,7 @@ export default function() {
         document.querySelector(link)!.scrollIntoView()
         return window.scrollTo(0, window.scrollY - 60)
       } else {
-        return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapNote', data: { anchor: link, content } }))
+        return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressNote', data: { anchor: link, content } }))
       }
     } else if (/^#/.test(link)) {
       document.querySelector(link)!.scrollIntoView()
@@ -54,6 +54,6 @@ export default function() {
       type = 'outer'
     }
 
-    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onTapLink', data: { link, type } }))
+    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressLink', data: { link, type } }))
   })
 }

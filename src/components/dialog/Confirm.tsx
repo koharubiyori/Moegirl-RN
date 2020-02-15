@@ -1,11 +1,6 @@
-import PropTypes from 'prop-types'
 import React, { MutableRefObject, PropsWithChildren, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
-
-Confirm.propTypes = {
-  getRef: PropTypes.object
-}
 
 export interface Props {
   getRef: MutableRefObject<any>
@@ -21,8 +16,8 @@ export interface ShowFnOptions {
   content?: string
   checkText?: string
   closeText?: string
-  onTapCheck?: (inputVal?: string) => void
-  onTapClose?: () => void
+  onPressCheck?: (inputVal?: string) => void
+  onPressClose?: () => void
   inputPlaceholder?: string
   hasInput?: boolean
 }
@@ -36,8 +31,8 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
     content: '',
     checkText: '',
     closeText: '',
-    onTapCheck: () => {},
-    onTapClose: () => {},
+    onPressCheck: () => {},
+    onPressClose: () => {},
     inputPlaceholder: '',
     hasInput: false,
   })
@@ -50,8 +45,8 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
     content = '',
     checkText = '确定',
     closeText = '取消',
-    onTapCheck = () => {},
-    onTapClose = () => {},
+    onPressCheck = () => {},
+    onPressClose = () => {},
     hasInput = false,
     inputPlaceholder,
   }: ShowFnOptions) {
@@ -60,9 +55,9 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
       title, 
       content, 
       checkText, 
-      onTapCheck: inputVal => { onTapCheck(inputVal); hide() }, 
+      onPressCheck: inputVal => { onPressCheck(inputVal); hide() }, 
       closeText, 
-      onTapClose: () => { onTapClose(); hide() },
+      onPressClose: () => { onPressClose(); hide() },
       hasInput, 
       inputPlaceholder
     })
@@ -72,7 +67,7 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
     setVisible(false)
   }
 
-  const { title, content, checkText, closeText, onTapCheck, onTapClose, hasInput, inputPlaceholder } = params
+  const { title, content, checkText, closeText, onPressCheck, onPressClose, hasInput, inputPlaceholder } = params
   return (
     <Dialog.Container visible={visible} 
       onBackButtonPress={hide}
@@ -86,8 +81,8 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
           wrapperStyle={styles.input}
         />
       </> : null}
-      <Dialog.Button label={closeText!} onPress={onTapClose!} style={{ marginRight: 10, color: '#ABABAB' }} />
-      <Dialog.Button label={checkText!} onPress={() => onTapCheck!(inputVal)} style={{ color: $colors.primary }} />
+      <Dialog.Button label={closeText!} onPress={onPressClose!} style={{ marginRight: 10, color: '#ABABAB' }} />
+      <Dialog.Button label={checkText!} onPress={() => onPressCheck!(inputVal)} style={{ color: $colors.primary }} />
     </Dialog.Container>
   )
 }

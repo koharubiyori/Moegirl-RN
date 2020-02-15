@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import React, { PropsWithChildren, useRef, FC } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
@@ -8,20 +7,7 @@ import * as commentApi from '~/api/comment'
 import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
 import toast from '~/utils/toast'
 import format from '../utils/format'
-
-CommentItem.propTypes = {
-  data: PropTypes.object,
-  isReply: PropTypes.bool,
-  visibleReply: PropTypes.bool,
-  visibleReplyBtn: PropTypes.bool,
-  visibleReplyNum: PropTypes.bool,
-  visibleDelBtn: PropTypes.bool,
-  navigation: PropTypes.object,
-  signedName: PropTypes.bool,
-  onDel: PropTypes.func,
-  onPress: PropTypes.func,
-  onTapReply: PropTypes.func
-}
+import { CommentData } from '~/api/comment.d'
 
 export interface Props {
   data: any
@@ -32,8 +18,9 @@ export interface Props {
   visibleDelBtn?: boolean
   navigation: __Navigation.Navigation
   signedName: string | null
-  onDel? (commentId: string): void
-  onTapReply? (commentId: string): void
+  onDel?(commentId: string): void
+  onPressAvatar?(username: string): void
+  onPressReply?(commentId: string): void
 }
 
 (CommentItem as DefaultProps<Props>).defaultProps = {
@@ -53,7 +40,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
     if (!props.signedName) {
       return $dialog.confirm.show({
         content: '未登录无法进行点赞，是否要前往登录界面？',
-        onTapCheck: () => props.navigation.push('login')
+        onPressCheck: () => props.navigation.push('login')
       })
     }
     
@@ -75,7 +62,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
     
     $dialog.confirm.show({ 
       content: `确定要举报这条${props.isReply ? '回复' : '评论'}吗？`,
-      onTapCheck: () => {
+      onPressCheck: () => {
         toast.showLoading()
         commentApi.report(props.data.id)
           .finally(() => toast.hide())
@@ -92,7 +79,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
   function del() {
     $dialog.confirm.show({
       content: `确定要删除自己的这条${props.isReply ? '回复' : '评论'}吗？`,
-      onTapCheck: () => {
+      onPressCheck: () => {
         toast.showLoading()
         commentApi.delComment(props.data.id)
           .finally(() => toast.hide())
@@ -117,7 +104,9 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
       <View style={styles.header}>
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-            <Image source={{ uri: $avatarUrl + data.username }} style={styles.avatar} />
+            <TouchableOpacity onPress={() => props.onPressAvatar && props.onPressAvatar(data.username)}>
+              <Image source={{ uri: $avatarUrl + data.username }} style={styles.avatar} />
+            </TouchableOpacity>
             <View>
               <Text>{data.username}</Text>
               <Text style={{ color: '#ABABAB', marginTop: 3 }}>{format.date(data.timestamp)}</Text>
@@ -160,7 +149,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
           )}
 
           {formattedChildren.length > 3
-            ? <TouchableOpacity onPress={() => props.onTapReply && props.onTapReply(data.id)}>
+            ? <TouchableOpacity onPress={() => props.onPressReply && props.onPressReply(data.id)}>
               <Text style={{ color: '#666', textAlign: 'center', marginTop: 10 }}>查看更多</Text>
             </TouchableOpacity>
             : null}
@@ -179,7 +168,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
 
         {props.visibleReplyBtn ? <>
           <TouchableOpacity style={styles.footerItem}
-            onPress={() => props.onTapReply && props.onTapReply(data.id)}
+            onPress={() => props.onPressReply && props.onPressReply(data.id)}
           >
             {!props.visibleReplyNum || data.children.length === 0 
               ? <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />

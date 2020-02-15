@@ -27,7 +27,7 @@ declare interface Window {
   ReactNativeWebView: { postMessage: (msg: string) => void }
   _request (config: object, callback: (data: any) => void): void
   _request_id: number
-  _appConfig: any
+  _appConfig: __AppUserConfig.__
   _colors: NodeJS.Global['$colors']
 }
 

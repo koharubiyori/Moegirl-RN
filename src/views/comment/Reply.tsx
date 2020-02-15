@@ -28,7 +28,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
     if (!signedName) {
       return $dialog.confirm.show({
         content: '需要先登录才能回复，是否前往登录界面？',
-        onTapCheck: () => props.navigation.push('login')
+        onPressCheck: () => props.navigation.push('login')
       })
     }
     
@@ -49,7 +49,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
   return (
     <View style={{ flex: 1, backgroundColor: '#eee' }}>
       <StatusBar />
-      <Header title={'回复：' + activeComment.username} onTapAddComment={addReply} navigation={props.navigation} />
+      <Header title={'回复：' + activeComment.username} onPressAddComment={addReply} navigation={props.navigation} />
       <Editor getRef={refs.editor}
         pageId={state.pageId}
         targetId={replyId || state.activeId}  
@@ -76,7 +76,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
           navigation={props.navigation}
           onDel={delCommentData}
           signedName={signedName} 
-          onTapReply={() => addReply(item.id)}
+          onPressReply={() => addReply(item.id)}
         />)}
 
         <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>

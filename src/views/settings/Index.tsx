@@ -23,7 +23,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
   function clearArticleCache() {
     $dialog.confirm.show({
       content: '确定要清空条目缓存吗？',
-      onTapCheck () {
+      onPressCheck () {
         storage.remove('articleCache')
         storage.remove('articleRedirectMap')
         toast.show('已清除所有条目缓存')
@@ -34,7 +34,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
   function clearHistory () {
     $dialog.confirm.show({
       content: '确定要清空浏览历史吗？',
-      onTapCheck () {
+      onPressCheck () {
         storage.remove('browsingHistory')
         DeviceEventEmitter.emit('clearHistory')
         toast.show('已清除所有浏览历史')
@@ -45,7 +45,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
   function logout() {
     $dialog.confirm.show({
       content: '确定要登出吗？',
-      onTapCheck () {
+      onPressCheck () {
         props.$user.logout()
         toast.show('已登出')
       }
@@ -77,6 +77,12 @@ function Settings(props: PropsWithChildren<FinalProps>) {
           subtext="浏览条目时将隐藏状态栏" 
           value={config.immersionMode}
           onChange={val => setConfig({ immersionMode: val })}
+        />
+
+        <SwitchItem title="动态主题" 
+          subtext="条目界面的配色随条目本身的主题色切换" 
+          value={config.changeThemeColorByArticleMainColor}
+          onChange={val => setConfig({ changeThemeColorByArticleMainColor: val })}
         />
 
         <Title>缓存</Title>

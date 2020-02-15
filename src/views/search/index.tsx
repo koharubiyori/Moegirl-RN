@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, PropsWithChildren } from 'react'
-import PropTypes from 'prop-types'
 import {
   View, Text, 
   StyleSheet
@@ -59,7 +58,7 @@ function Search(props: PropsWithChildren<FinalProps>) {
   function clearSearchHistory () {
     $dialog.confirm.show({
       content: '确定要删除所有搜索记录吗？',
-      onTapCheck: () => {
+      onPressCheck: () => {
         storage.remove('searchHistory')
         setSearchHistory([])
         toast.show('操作成功')
@@ -75,11 +74,11 @@ function Search(props: PropsWithChildren<FinalProps>) {
         onSubmit={() => toSearchResultView()}
       />
       {searchWord 
-        ? <SearchHint titles={searchHint} onTapTitle={toSearchResultView} />
+        ? <SearchHint titles={searchHint} onPressTitle={toSearchResultView} />
         : <RecentSearch 
           titles={searchHistory}
-          onTapDelete={clearSearchHistory}
-          onTapTitle={toSearchResultView}
+          onPressDelete={clearSearchHistory}
+          onPressTitle={toSearchResultView}
         />
       }
     </View>

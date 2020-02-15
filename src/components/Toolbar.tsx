@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types'
-import React, { useRef, PropsWithChildren, FC } from 'react'
-import { NativeModules, StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native'
+import React, { FC, PropsWithChildren, useRef } from 'react'
+import { Animated, NativeModules, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import Menu, { DefaultMenuRef } from 'react-native-default-menu'
+import { IconProps } from 'react-native-vector-icons/Icon'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
-import { IconProps } from 'react-native-vector-icons/Icon'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
 
 export interface Props {
   title: string
   style?: StyleProp<ViewStyle>
+  contentContainerStyle?: StyleProp<ViewStyle> // 这个属性主要是为了支持文章节目的头栏动画
   textColor?: string
   leftIcon?: string
   rightIcon?: string
@@ -18,6 +18,7 @@ export interface Props {
   rightIconProps?: IconProps
   actions?: string[]
   moreIconProps?: IconProps
+  disabledMoreBtn?: boolean
   onPressLeftIcon? (): void
   onPressRightIcon? (): void
   onPressActions? (eventName: string, index: number): void
@@ -37,36 +38,38 @@ function MyToolbar(props: PropsWithChildren<FinalProps>) {
 
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
   return (
-    <View style={{
+    <Animated.View style={{
       ...styles.body,
       ...(props.style as object),
       height: 56 + statusBarHeight,
       paddingTop: statusBarHeight
     }}>
-      <View style={{ flexDirection: 'row', flex: 1 }}>
-        <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressLeftIcon && props.onPressLeftIcon()}>
-          <MaterialIcon name={props.leftIcon!} size={28} color={props.textColor} {...props.leftIconProps} />
-          {props.state.user.waitNotificationsTotal !== 0 && props.badge ? <View style={styles.badge} /> : null} 
-        </Button>
-        <Text style={{ ...styles.title, color: props.textColor }} numberOfLines={1}>{props.title}</Text>
-      </View>
-
-      <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-        {props.rightIcon ? <>
-          <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressRightIcon && props.onPressRightIcon()}>
-            <MaterialIcon name={props.rightIcon} size={28} color={props.textColor} {...props.rightIconProps} style={{ position: 'relative', top: 1 }} />
+      <Animated.View style={{ ...(props.contentContainerStyle as any), flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row', flex: 1 }}>
+          <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressLeftIcon && props.onPressLeftIcon()}>
+            <MaterialIcon name={props.leftIcon!} size={28} color={props.textColor} {...props.leftIconProps} />
+            {props.state.user.waitNotificationsTotal !== 0 && props.badge ? <View style={styles.badge} /> : null} 
           </Button>
-        </> : null}
+          <Text style={{ ...styles.title, color: props.textColor }} numberOfLines={1}>{props.title}</Text>
+        </View>
 
-        {props.actions ? <>
-          <Menu options={props.actions} onPress={props.onPressActions} ref={refs.menu}>
-            <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => refs.menu.current!.showPopupMenu()}>
-              <MaterialIcon name="more-vert" size={28} color={props.textColor} {...props.moreIconProps} style={{ position: 'relative', top: 1 }} />
+        <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+          {props.rightIcon ? <>
+            <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressRightIcon && props.onPressRightIcon()}>
+              <MaterialIcon name={props.rightIcon} size={28} color={props.textColor} {...props.rightIconProps} style={{ position: 'relative', top: 1 }} />
             </Button>
-          </Menu>
-        </> : null}
-      </View>
-    </View>
+          </> : null}
+
+          {props.actions ? <>
+            <Menu options={props.actions} onPress={props.onPressActions} ref={refs.menu}>
+              <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => !props.disabledMoreBtn && refs.menu.current!.showPopupMenu()}>
+                <MaterialIcon name="more-vert" size={28} color={props.textColor} {...props.moreIconProps} style={{ position: 'relative', top: 1 }} />
+              </Button>
+            </Menu>
+          </> : null}
+        </View>
+      </Animated.View>
+    </Animated.View>
   )
 }
 
