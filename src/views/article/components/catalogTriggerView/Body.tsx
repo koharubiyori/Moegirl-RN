@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: $colors.main
+    backgroundColor: $colors.primary
   },
 
   headerText: {
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 16,
-    color: $colors.main
+    color: $colors.primary
   },
 
   subTitle: {

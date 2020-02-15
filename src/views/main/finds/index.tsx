@@ -41,7 +41,7 @@ function Finds(props: PropsWithChildren<FinalProps>) {
       <Header title="发现" />
 
       <ScrollView
-        refreshControl={<RefreshControl colors={[$colors.main]} onRefresh={reload} refreshing={visibleRefreshControl} />}
+        refreshControl={<RefreshControl colors={[$colors.primary]} onRefresh={reload} refreshing={visibleRefreshControl} />}
       >
         {/* <Text style={{ marginVertical: 20, marginLeft: 20, fontSize: 16 }}>{dateStr()}</Text> */}
         <Trend navigation={props.navigation} getRef={refs.trend} />

@@ -110,7 +110,7 @@ export default configHOC(userHOC(Settings))
 
 const styles = StyleSheet.create({
   title: {
-    color: $colors.main,
+    color: $colors.primary,
     marginTop: 20,
     marginBottom: 5,
     marginLeft: 10
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
 function Title(props: PropsWithChildren<{}>) {
   return (
     <View style={styles.title}>
-      <Text style={{ color: $colors.main, fontSize: 15 }}>{props.children}</Text>
+      <Text style={{ color: $colors.primary, fontSize: 15 }}>{props.children}</Text>
     </View>
   )
 }

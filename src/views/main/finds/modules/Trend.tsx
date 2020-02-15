@@ -72,7 +72,7 @@ function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
   return (
     <ArticleGroup
       title="趋势"
-      icon={<MaterialCommunityIcon name="flash-circle" color={$colors.sub} size={26} />}
+      icon={<MaterialCommunityIcon name="flash-circle" color={$colors.accent} size={26} />}
       articles={data}
       navigation={props.navigation}
       status={status}

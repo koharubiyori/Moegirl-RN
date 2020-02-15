@@ -101,7 +101,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
               </View>
             </TouchableOpacity>,
 
-          2: () => <ActivityIndicator color={$colors.main} size={50} style={{ marginVertical: 10 }} />,
+          2: () => <ActivityIndicator color={$colors.primary} size={50} style={{ marginVertical: 10 }} />,
           4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
           5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>还没有评论哦</Text>
         } as { [status: number]: () => JSX.Element | null })[state.status] || (() => {}))()}

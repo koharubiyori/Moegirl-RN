@@ -34,10 +34,10 @@ function EditPreview(props: PropsWithChildren<FinalProps>) {
       {({
         0: () => 
           <TouchableOpacity onPress={() => parseCodes()}>
-            <Text style={{ fontSize: 16, color: $colors.main }}>重新加载</Text>
+            <Text style={{ fontSize: 16, color: $colors.primary }}>重新加载</Text>
           </TouchableOpacity>,
         1: () => null,
-        2: () => <ActivityIndicator color={$colors.main} size={50} />,
+        2: () => <ActivityIndicator color={$colors.primary} size={50} />,
         3: () => <ArticleView disabledLink style={{ flex: 1 }} html={html} injectStyle={['article']} navigation={props.navigation} />
       } as { [status: number]: () => JSX.Element | null })[status]()}
     </View>

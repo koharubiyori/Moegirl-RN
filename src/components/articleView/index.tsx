@@ -329,12 +329,12 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
       {({
         0: () => 
           <TouchableOpacity onPress={() => loadContent(true)}>
-            <Text style={{ fontSize: 18, color: $colors.main }}>重新加载</Text>
+            <Text style={{ fontSize: 18, color: $colors.primary }}>重新加载</Text>
           </TouchableOpacity>,
         1: () => null,
-        2: () => <ActivityIndicator color={$colors.main} size={50} />,
+        2: () => <ActivityIndicator color={$colors.primary} size={50} />,
         3: () => 
-          <WebView allowFileAccess
+          <WebView allowFileAccess domStorageEnabled
             scalesPageToFit={false}
             source={{ html, baseUrl }}
             originWhitelist={['*']}

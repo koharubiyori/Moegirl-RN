@@ -96,8 +96,8 @@ function Item(props: BottomNavigationItemProps) {
   return (
     <TouchableNativeFeedback onPress={props.onPress}>
       <View style={styles.item}>
-        <MaterialIcon name={props.icon} size={20} color={props.selected ? $colors.main : '#666'} />
-        <Text style={{ color: props.selected ? $colors.main : '#666' }}>{props.label}</Text>
+        <MaterialIcon name={props.icon} size={20} color={props.selected ? $colors.primary : '#666'} />
+        <Text style={{ color: props.selected ? $colors.primary : '#666' }}>{props.label}</Text>
       </View>
     </TouchableNativeFeedback>
   )

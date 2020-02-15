@@ -97,7 +97,7 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
     <ArticleGroup
       title="推荐"
       subtitle={searchTitle && (status === 3 || status === 4) ? `因为您阅读了“${searchTitle}”` : undefined}
-      icon={<MaterialCommunityIcons name="star-box" color={$colors.sub} size={26} />}
+      icon={<MaterialCommunityIcons name="star-box" color={$colors.accent} size={26} />}
       articles={data}
       navigation={props.navigation}
       status={status}

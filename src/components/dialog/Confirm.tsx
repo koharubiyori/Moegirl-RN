@@ -87,7 +87,7 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
         />
       </> : null}
       <Dialog.Button label={closeText!} onPress={onTapClose!} style={{ marginRight: 10, color: '#ABABAB' }} />
-      <Dialog.Button label={checkText!} onPress={() => onTapCheck!(inputVal)} style={{ color: $colors.main }} />
+      <Dialog.Button label={checkText!} onPress={() => onTapCheck!(inputVal)} style={{ color: $colors.primary }} />
     </Dialog.Container>
   )
 }
@@ -97,7 +97,7 @@ export default Confirm
 const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
-    borderColor: $colors.main,
+    borderColor: $colors.primary,
     borderRadius: 5,
     paddingVertical: 0,
     paddingLeft: 5

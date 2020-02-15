@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
 
   main: {
-    backgroundColor: $colors.main,
+    backgroundColor: $colors.primary,
     elevation: 10,
     width: size,
     height: size,

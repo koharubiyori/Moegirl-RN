@@ -52,7 +52,7 @@ export default jss.createStyleSheet({
 
     '.mainpage-title': {
       lineHeight: '30px',
-      background: styleVars.main,
+      background: styleVars.primary,
       color: 'white',
       fontSize: 20,
       textAlign: 'center',

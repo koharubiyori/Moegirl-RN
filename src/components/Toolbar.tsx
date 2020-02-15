@@ -75,7 +75,7 @@ export default userHOC(MyToolbar) as FC<Props>
 const styles = StyleSheet.create({
   body: {
     height: 56,
-    backgroundColor: $colors.main,
+    backgroundColor: $colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

@@ -36,7 +36,7 @@ export default function SettingItem(props: PropsWithChildren<FinalProps>) {
 
         {!props.hideSwitch ? <>
           <Switch 
-            thumbColor={props.value ? $colors.main : '#eee'}
+            thumbColor={props.value ? $colors.primary : '#eee'}
             value={props.value} 
             onValueChange={props.onChange}
           />

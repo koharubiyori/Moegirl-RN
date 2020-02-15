@@ -10,7 +10,7 @@ const TopTabNavigator = createMaterialTopTabNavigator({
   swipeEnabled: false,
   tabBarOptions: {
     tabStyle: {
-      backgroundColor: $colors.main,
+      backgroundColor: $colors.primary,
     }
   }
 })
