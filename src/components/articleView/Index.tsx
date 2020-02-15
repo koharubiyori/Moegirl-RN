@@ -280,7 +280,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         },
 
         notExists () {
-          $dialog.alert.show({ content: '该条目还未创建' })
+          $dialog.alert.show({ content: '该条目或用户页还未创建' })
         }
       })[data.type]()
     })
