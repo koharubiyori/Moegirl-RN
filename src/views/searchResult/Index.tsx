@@ -61,7 +61,7 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar blackText color="white" />
+      <StatusBar blackText />
       <View style={{ ...styles.header, height: 56 + statusBarHeight, paddingTop: statusBarHeight }}>
         <Button onPress={() => props.navigation.goBack()} rippleColor={$colors.light}>
           <Icon name="keyboard-backspace" size={25} color="#666" />
