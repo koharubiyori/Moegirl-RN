@@ -50,6 +50,8 @@ type FinalProps = Props & UserConnectedProps & ArticleViewConnectedProps
 
 function ArticleView(props: PropsWithChildren<FinalProps>) {
   const [html, setHtml] = useState('')
+  const [originalImgUrls, setOriginalImgUrls] = useState<{ name: string, url: string }[]>()
+  const [articleData, setArticleData] = useState<ArticleApiData.GetContent>()
   const [status, setStatus] = useState(1)
   const config = useRef(store.getState().config)
   const refs = {
@@ -164,6 +166,15 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     `
   }
 
+  function loadOriginalImgUrls(imgs: string[]) {
+    return Promise.all(
+      // 无法显示svg，这里过滤掉
+      imgs.filter(img => !/\.svg$/.test(img)).map(articleApi.getImageUrl)
+    )
+      .then(urls => setOriginalImgUrls(urls.map((url, index) => ({ url, name: imgs[index] }))))
+      .catch(console.log)
+  }
+
   function loadContent(forceLoad = false) {
     if (status === 2) { return }
     setStatus(2)
@@ -173,6 +184,8 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         setHtml(createDocument(html))
         setStatus(3)
         props.onLoaded && props.onLoaded(data)
+        loadOriginalImgUrls(data.parse.images)
+        setArticleData(data)
       })
       .catch(async e => {
         console.log(e)
@@ -189,6 +202,8 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
             $dialog.snackBar.show('因读取失败，载入条目缓存')
             setStatus(3)
             props.onLoaded && props.onLoaded(data)
+            loadOriginalImgUrls(data.parse.images)
+            setArticleData(data)
           } else {
             throw new Error()
           }
@@ -306,16 +321,25 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
       }
     })
     setEventHandler('onPressImage', data => {
-      toast.showLoading('获取链接中')
-      articleApi.getImageUrl(data.name)
-        .finally(toast.hide)
-        .then(url => {
-          props.navigation.push('imageViewer', { imgs: [{ url }] })
+      if (originalImgUrls) {
+        toImageViewer(originalImgUrls)
+      } else {
+        toast.showLoading('获取链接中')
+        loadOriginalImgUrls(articleData!.parse.images)
+          .finally(toast.hide)
+          .then(() => setTimeout(() => toImageViewer(originalImgUrls!)))
+          .catch(e => {
+            console.log(e)
+            setTimeout(() => toast.show('获取链接失败'))
+          })
+      }
+
+      function toImageViewer(originalImgUrls: { name: string, url: string }[]) {
+        props.navigation.push('imageViewer', { 
+          imgs: originalImgUrls.map(img => ({ url: img.url })),
+          index: originalImgUrls.findIndex(img => img.name === data.name) 
         })
-        .catch(e => {
-          console.log(e)
-          setTimeout(() => toast.show('获取链接失败'))
-        })
+      }
     })
     setEventHandler('onPressBiliVideo', data => props.navigation.push('biliPlayer', data))
 
