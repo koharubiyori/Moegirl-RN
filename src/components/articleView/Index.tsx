@@ -166,13 +166,16 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     `
   }
 
-  function loadOriginalImgUrls(imgs: string[]) {
+  function loadOriginalImgUrls(imgs: string[]): Promise<{ url: string, name: string }[]> {
     return Promise.all(
       // 无法显示svg，这里过滤掉
       imgs.filter(img => !/\.svg$/.test(img)).map(articleApi.getImageUrl)
     )
-      .then(urls => setOriginalImgUrls(urls.map((url, index) => ({ url, name: imgs[index] }))))
-      .catch(console.log)
+      .then((urls: string[]) => {
+        const imgUrls = urls.map((url, index) => ({ url, name: imgs[index] }))
+        setOriginalImgUrls(imgUrls)
+        return imgUrls
+      })
   }
 
   function loadContent(forceLoad = false) {
@@ -322,23 +325,17 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     })
     setEventHandler('onPressImage', data => {
       if (originalImgUrls) {
-        toImageViewer(originalImgUrls)
-      } else {
-        toast.showLoading('获取链接中')
-        loadOriginalImgUrls(articleData!.parse.images)
-          .finally(toast.hide)
-          .then(() => setTimeout(() => toImageViewer(originalImgUrls!)))
-          .catch(e => {
-            console.log(e)
-            setTimeout(() => toast.show('获取链接失败'))
-          })
-      }
-
-      function toImageViewer(originalImgUrls: { name: string, url: string }[]) {
         props.navigation.push('imageViewer', { 
           imgs: originalImgUrls.map(img => ({ url: img.url })),
           index: originalImgUrls.findIndex(img => img.name === data.name) 
         })
+      } else {
+        toast.showLoading('获取链接中')
+        articleApi.getImageUrl(data.name)
+          .finally(toast.hide)
+          .then(url => {
+            props.navigation.push('imageViewer', { imgs: [{ url }], index: 0 })
+          })
       }
     })
     setEventHandler('onPressBiliVideo', data => props.navigation.push('biliPlayer', data))
