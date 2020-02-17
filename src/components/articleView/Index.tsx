@@ -168,8 +168,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
   function loadOriginalImgUrls(imgs: string[]): Promise<{ url: string, name: string }[]> {
     return Promise.all(
-      // 无法显示svg，这里过滤掉
-      imgs.filter(img => !/\.svg$/.test(img)).map(articleApi.getImageUrl)
+      imgs.map(articleApi.getImageUrl)
     )
       .then((urls: string[]) => {
         const imgUrls = urls.map((url, index) => ({ url, name: imgs[index] }))
@@ -187,7 +186,8 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         setHtml(createDocument(html))
         setStatus(3)
         props.onLoaded && props.onLoaded(data)
-        loadOriginalImgUrls(data.parse.images)
+        // 无法显示svg，这里过滤掉
+        loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
         setArticleData(data)
       })
       .catch(async e => {
@@ -205,7 +205,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
             $dialog.snackBar.show('因读取失败，载入条目缓存')
             setStatus(3)
             props.onLoaded && props.onLoaded(data)
-            loadOriginalImgUrls(data.parse.images)
+            loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
             setArticleData(data)
           } else {
             throw new Error()
@@ -327,7 +327,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
       if (originalImgUrls) {
         props.navigation.push('imageViewer', { 
           imgs: originalImgUrls.map(img => ({ url: img.url })),
-          index: originalImgUrls.findIndex(img => img.name === data.name) 
+          index: originalImgUrls.findIndex(img => img.name === data.name)
         })
       } else {
         toast.showLoading('获取链接中')
