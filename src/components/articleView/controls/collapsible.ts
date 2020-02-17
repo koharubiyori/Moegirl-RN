@@ -1,6 +1,6 @@
 // collapsible实现
 export default function() {
-  let viewBox = $('#webViewContainer')
+  let viewBox = $('#articleContentContainer')
 
   viewBox.find('.mw-collapsible').each(function () {
     let btnText = this.classList.contains('mw-uncollapsed') ? '[折叠]' : '[展开]'

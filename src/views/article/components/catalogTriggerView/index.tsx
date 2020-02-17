@@ -5,6 +5,8 @@ import CatalogBody from './Body'
 export interface Props {
   immersionMode: boolean
   items: any[]
+  backgroundColor: string
+  textColor: string
   onPressTitle (anchor: string): void
   getRef: MutableRefObject<any>
 }
@@ -47,6 +49,8 @@ function catalogTriggerView(props: PropsWithChildren<FinalProps>) {
     <DrawerLayoutAndroid
       renderNavigationView={() => 
         <CatalogBody 
+          backgroundColor={props.backgroundColor}
+          textColor={props.textColor}
           immersionMode={props.immersionMode}
           items={props.items} 
           onPressTitle={props.onPressTitle} 

@@ -1,6 +1,6 @@
 // b站播放器
 export default function() {
-  let viewBox = $('#webViewContainer')
+  let viewBox = $('#articleContentContainer')
 
   viewBox.find('.wikitable.bilibili-video-container').each(function () {
     let avId = parseInt($(this).data('aid').toString().replace('av', ''))
@@ -13,7 +13,7 @@ export default function() {
 
     let titlePhoneEvent = new Hammer(title[0])
     titlePhoneEvent.on('press', function() {
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'openApp', data: { url: 'bilibili://video/' + avId } }))
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'openApp', data: { url: 'https://www.bilibili.com/video/' + avId } }))
     })
 
     let titleText = $(this).data('title')

@@ -1,6 +1,6 @@
 // navbox适应
 export default function() {
-  let viewBox = $('#webViewContainer')
+  let viewBox = $('#articleContentContainer')
 
   viewBox.find('.navbox').each(parse)
   function parse (this: HTMLElement) {

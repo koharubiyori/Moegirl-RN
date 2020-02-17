@@ -1,5 +1,5 @@
 export default function() {
-  let viewBox = $('#webViewContainer')
+  let viewBox = $('#articleContentContainer')
 
   viewBox.find('.music163').each(function(e) {
     function createLink(params: object) {

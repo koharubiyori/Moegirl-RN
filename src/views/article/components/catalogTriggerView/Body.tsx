@@ -6,6 +6,8 @@ import Button from '~/components/Button'
 export interface Props {
   immersionMode: boolean
   items: any[]
+  backgroundColor: string
+  textColor: string
   onClose (): void
   onPressTitle (anchor: string): void
 }
@@ -18,8 +20,8 @@ function CatalogBody(props: PropsWithChildren<FinalProps>) {
 
   return (
     <View style={{ ...styles.container, height: Dimensions.get('window').height }}>
-      <View style={{ ...styles.header, ...titleHeight }}>
-        <Text style={styles.headerText}>目录</Text>
+      <View style={{ ...styles.header, ...titleHeight, backgroundColor: props.backgroundColor }}>
+        <Text style={{ ...styles.headerText, color: props.textColor }}>目录</Text>
         <MaterialIcon name="chevron-right" size={40} color="white" style={{ marginRight: 10 }} onPress={props.onClose} />
       </View>
 
@@ -36,7 +38,7 @@ function CatalogBody(props: PropsWithChildren<FinalProps>) {
               <Text 
                 numberOfLines={1}
                 style={{ 
-                  ...(parseInt(item.level) < 3 ? styles.title : styles.subTitle),
+                  ...(parseInt(item.level) < 3 ? { ...styles.title } : styles.subTitle),
                   paddingLeft: (parseInt(item.level) - 2) * 5
                 }}
               >{(parseInt(item.level) > 2 ? '- ' : '') + item.line}</Text>
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 16,
-    color: $colors.primary
+    color: '#666'
   },
 
   subTitle: {

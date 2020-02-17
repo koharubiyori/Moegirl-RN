@@ -1,6 +1,6 @@
 // tabs实现
 export default function() {
-  let viewBox = $('#webViewContainer')
+  let viewBox = $('#articleContentContainer')
 
   viewBox.find('.Tabs').each(function () {
     let titles: string[] = []

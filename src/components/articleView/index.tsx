@@ -151,7 +151,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         <style>${props.injectCss || ''}</style>
       </head>
       <body>
-        <div id="webViewContainer" style="padding:0 5px; box-sizing:border-box;">${content}</div>
+        <div id="articleContentContainer" style="padding:0 5px; box-sizing:border-box;">${content}</div>
         ${scriptTags}
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
@@ -295,7 +295,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         },
 
         notExists () {
-          $dialog.alert.show({ content: '该条目或用户页还未创建' })
+          $dialog.alert.show({ content: '该条目还未创建' })
         }
       })[data.type]()
     })

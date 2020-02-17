@@ -1,5 +1,5 @@
 export default function() {
-  let viewBox = $('#webViewContainer')
+  let viewBox = $('#articleContentContainer')
 
   let clientWidth = document.body.clientWidth
   // 防止图片越界
@@ -47,5 +47,5 @@ export default function() {
     parent.after(thumbBlock)
   })
 
-  viewBox.find('a[href^="#cite_ref"]').text('[跳转至目标]').css('color', window._colors.sub)
+  viewBox.find('a[href^="#cite_ref"]').text('[跳转至目标]').css('color', window._colors.accent)
 }

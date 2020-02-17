@@ -1,5 +1,5 @@
 export default function() {
-  let viewBox = $('#webViewContainer')
+  let viewBox = $('#articleContentContainer')
 
   viewBox.find('a').each(function (e) {
     // 编辑按钮替换图片
