@@ -88,7 +88,8 @@ function Article(props: PropsWithChildren<FinalProps>) {
 
       // 注入一个主题色获取器
       if (!window._appConfig.changeThemeColorByArticleMainColor) { return }
-      const firstInfobox = document.querySelector('table.infobox[align="right"] > tbody > tr > td')
+      const firstInfobox = document.querySelector('table.infobox[align="right"] > tbody > tr > td') ||
+        document.querySelector('table.navbox > tbody > tr > td > table > tbody > tr > th')
       if (firstInfobox) {
         const { backgroundColor, color } = window.getComputedStyle(firstInfobox)
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'getArticleMainColor', data: { backgroundColor, color } }))
@@ -212,7 +213,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
         })
     } else {
       $dialog.alert.show({
-        content: '该条目还未创建',
+        content: '该条目或用户页还未创建',
         onPressCheck: () => props.navigation.goBack(),
         onClose: () => props.navigation.goBack()
       })
@@ -234,9 +235,13 @@ function Article(props: PropsWithChildren<FinalProps>) {
 
   const { config } = props.state
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
-
+  const themeColorProps = {
+    backgroundColor: themeColor.backgroundColor,
+    textColor: themeColor.blackText ? 'black' : 'white'
+  }
   return (
     <CatalogTriggerView 
+      {...themeColorProps}
       immersionMode={config.immersionMode}
       items={loadedPageInfo.catalogItems} 
       onPressTitle={articleViewIntoAnchor} 
@@ -248,8 +253,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
           ...styles.header, 
           top: config.immersionMode ? -statusBarHeight : 0
         }} 
-        backgroundColor={themeColor.backgroundColor}
-        textColor={themeColor.blackText ? '#666' : 'white'}
+        {...themeColorProps}
         navigation={props.navigation} 
         title={loadedPageInfo.pageName} 
         disabledMoreBtn={disabledMoreBtn}
@@ -272,8 +276,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
 
       {loadedPageInfo.id && isVisibleComment() ? <CommentButton 
         id={loadedPageInfo.id}
-        backgroundColor={themeColor.backgroundColor}
-        textColor={themeColor.blackText ? '#666' : 'white'}
+        {...themeColorProps}
         onPress={toComment}
         getRef={refs.commentButton}
       /> : null } 

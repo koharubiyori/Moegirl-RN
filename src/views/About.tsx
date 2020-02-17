@@ -21,7 +21,7 @@ function About(props: PropsWithChildren<FinalProps>) {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar blackText color="white" />    
+      <StatusBar blackText />    
       <Toolbar
         title="关于"
         style={{ 

@@ -1,5 +1,5 @@
 export default function() {
-  let viewBox = $('#webViewContainer')
+  let viewBox = $('#articleContentContainer')
 
   viewBox.find('.heimu').each(function () {
     if (window._appConfig.heimu) {

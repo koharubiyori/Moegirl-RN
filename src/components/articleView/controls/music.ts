@@ -1,5 +1,5 @@
 export default function() {
-  let viewBox = $('#webViewContainer')
+  let viewBox = $('#articleContentContainer')
 
   viewBox.find('.sm2-loading-stub + div[data-bind]').each(function() {
     let data = JSON.parse(this.dataset.bind!)
