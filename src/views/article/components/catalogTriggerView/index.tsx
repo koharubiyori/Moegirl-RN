@@ -57,7 +57,7 @@ function catalogTriggerView(props: PropsWithChildren<FinalProps>) {
           onClose={close} 
         />
       }
-      drawerWidth={Dimensions.get('window').width * 0.5}
+      drawerWidth={Dimensions.get('window').width * 0.55}
       drawerPosition={(DrawerLayoutAndroid as any).positions.Right}
       onDrawerOpen={() => visible.current = true}
       onDrawerClose={() => visible.current = false}

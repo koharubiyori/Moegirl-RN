@@ -21,7 +21,7 @@ function search(searchWord: string, offset: number) {
       srsearch: searchWord,
       continue: '-||',
       sroffset: offset,
-      srprop: 'timestamp|redirecttitle|snippet|categoriesnippet|sectiontitle',
+      srprop: 'timestamp|redirecttitle|snippet|categoriesnippet|sectiontitle|pageimages',
       srenablerewrites: 1      
     }
   })

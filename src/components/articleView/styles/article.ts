@@ -15,9 +15,69 @@ export default jss.createStyleSheet({
       position: 'relative'
     },
 
-    // 隐藏默认目录
-    '#toc, .tochide': {
+    // 渲染模板Template:kiraraf角色卡片列表时添加的收起按钮无效
+    '#mw-customcollapsible-kirarafCharaList .collapseBtn': {
       display: 'none'
+    },
+
+    // 隐藏目录，表单元素，提问求助区讨论存档入口，mouse-ripple模板
+    [`#toc,
+      .tochide,
+      .linkBox,
+      .mw-inputbox-centered,
+      .mouse-ripple
+    `]: {
+      display: 'none'
+    },
+
+    // 优化提问求助区头部显示
+    '#commonTalkBox': {
+      '& > div': {
+        display: 'block',
+        width: 'auto',
+      },
+
+      '& #commonTalkBoxCaption': {
+        width: '100%',
+        height: 50,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottom: 0
+      },
+
+      '& #commonTalkBoxLeft': {
+        '& > ul': {
+          margin: 0,
+          padding: '10px 20px'
+        },
+
+        '&::after': {
+          content: '""',
+          display: 'block',
+          height: 2,
+          backgroundColor: 'white',
+        }
+      },
+
+      '& #commonTalkBoxRight': {
+        '& > div:first-child': {
+          width: 'auto',
+          border: 'none',
+          marginLeft: 0,
+
+          '& > ul': {
+            margin: 0,
+            padding: '10px 20px'  
+          }
+        }
+      }
+    },
+
+    '.image-box': {
+      '& .thumbcaption': {
+        display: 'none'
+      }
     },
 
     'html, body': {
@@ -85,15 +145,17 @@ export default jss.createStyleSheet({
       margin: '0 auto !important',
       float: 'none !important' as any,
 
+      // 作品基本信息模板
       '&.infobox': {
         width: '100% !important',
-        ...styleVars.baseShadow,
-        marginBottom: '10px !important'
+        backgroundColor: 'transparent !important',
       },
     },
 
+    // 人物基本信息模板
     '.infotemplatebox': {
-      ...styleVars.baseShadow
+      border: '1px #eee solid',
+      padding: 5
     },
 
     '.section-heading': {
@@ -113,7 +175,7 @@ export default jss.createStyleSheet({
     },
 
     '.thumbinner': {
-      ...styleVars.baseShadow,
+      outline: '1px #ccc solid',
       margin: '0 auto'
     },
 
@@ -157,6 +219,7 @@ export default jss.createStyleSheet({
       }
     },
 
+    // 由controls/trim生成的类，用于宽表格适应
     '.wide-table-wrapper': {
       overflowX: 'auto',
       overflowY: 'hidden',
@@ -187,7 +250,6 @@ export default jss.createStyleSheet({
 
         '& img': {
           width: '100%',
-          boxShadow: '0 0 3px #666'
         },
 
         '& p': {
@@ -200,6 +262,10 @@ export default jss.createStyleSheet({
     '.mw-collapsible': {
       margin: '5px 0 !important',
 
+      '&.mw-uncollapsed': {
+        maxWidth: '100%'
+      },
+
       '&:not(.mw-uncollapsed) > tbody > tr:not(:first-child)': {
         opacity: 0,
         display: 'none'
@@ -207,8 +273,8 @@ export default jss.createStyleSheet({
 
       '& .collapseBtn': {
         float: 'right',
-        cursor: 'pointer',
-        color: '#0b0080'
+        color: '#0b0080',
+        marginLeft: 5
       },
     },
 
@@ -370,23 +436,25 @@ export default jss.createStyleSheet({
       }
     },
 
+    // 上方提示框的class叫 infoBox，而信息模板是 infobox
     '.infoBox': {
-      width: '100% !important',
-      boxSizing: 'border-box',
-      boxShadow: '0 0 5px #ccc',
-      padding: 5,
-      borderRadius: 5,
-      margin: '10px 0',
-      overflow: 'hidden',
+      display: 'none'
+      // width: '100% !important',
+      // boxSizing: 'border-box',
+      // boxShadow: '0 0 5px #ccc',
+      // padding: 5,
+      // borderRadius: 5,
+      // margin: '10px 0',
+      // overflow: 'hidden',
 
-      '& .infoBoxIcon': {
-        float: 'left',
+      // '& .infoBoxIcon': {
+      //   float: 'left',
 
-        '& > img': {
-          width: '70px !important',
-          height: 'auto !important'
-        }
-      }
+      //   '& > img': {
+      //     width: '70px !important',
+      //     height: 'auto !important'
+      //   }
+      // }
     },
 
     '.navbox-collapse-btn': {
@@ -437,12 +505,14 @@ export default jss.createStyleSheet({
       backgroundSize: '100%'
     },
 
+    // 用来给编辑按钮提供定位父元素
     'h2, h3, h4': {
       position: 'relative',
       boxSizing: 'border-box',
       paddingRight: 60
     },
 
+    // 编辑按钮容器
     '.mw-editsection': {
       position: 'absolute',
       right: 10,

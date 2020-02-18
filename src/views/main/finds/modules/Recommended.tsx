@@ -45,6 +45,8 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
         if (cache) {
           // 拿到缓存中所有标题
           let data = Object.values(cache).map(item => item.parse.title)
+            // 排除分类页面
+            .filter(item => !(/^([Cc]ategory|分类):/.test(item)))
           if (data.length <= 5) {
             var lastPages = data
           } else {

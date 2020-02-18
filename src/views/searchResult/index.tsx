@@ -20,7 +20,7 @@ type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 function SearchResult(props: PropsWithChildren<FinalProps>) {
   const [list, setList] = useState<SearchData[]>([])
   const [total, setTotal] = useState(0)
-  const [status, setStatus] = useState(1) // 1：初始值，2：加载中，3：加载成功，0：加载失败，4：全部加载完成，5：已加载，但结果为空
+  const [status, setStatus] = useState<0 | 1 | 2 | 3 | 4 | 5>(1) // 1：初始值，2：加载中，3：加载成功，0：加载失败，4：全部加载完成，5：已加载，但结果为空
   let searchWord = props.navigation.getParam('searchWord')
 
   useEffect(() => {
@@ -43,15 +43,15 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
           return
         }
 
-        let status = 3
+        let nextStatus = 3
 
         if (query.searchinfo.totalhits === list.length + query.search.length) {
-          status = 4
+          nextStatus = 4
         }
 
         setTotal(query.searchinfo.totalhits)
         setList(list.concat(query.search))
-        setStatus(status)
+        setStatus(nextStatus as any)
       }).catch(e => {
         console.log(e)
         setStatus(0)
@@ -70,12 +70,6 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
         <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>搜索：{searchWord}</Text>
       </View>
 
-      {/* {this.state.total ?
-        <View style={styles.totalHint}>
-          <Text style={{ color: '#666' }}>共搜索到{this.state.total}结果</Text>
-        </View>
-      : null} */}
-
       {status !== 5 ? <>
         <FlatList data={list} 
           onEndReachedThreshold={1}
@@ -83,22 +77,30 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
           style={{ flex: 1 }}
           // textBreakStrategy="balanced"
           renderItem={item => <Item 
-            // key={item.item.id}
+            key={item.item.title}
             data={item.item}
             searchWord={searchWord} 
             onPress={link => props.navigation.push('article', { link })}
           />}
 
-          ListFooterComponent={(({
+          ListHeaderComponent={
+            <View style={styles.totalHint}>
+              <Text style={{ color: '#666' }}>共搜索到{total}结果。</Text>
+            </View>
+          }
+
+          ListFooterComponent={({
             0: () => 
               <TouchableOpacity onPress={loadList}>
                 <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
                   <Text>加载失败，点击重试</Text>
                 </View>
               </TouchableOpacity>,
+            1: () => null,
             2: () => <ActivityIndicator color={$colors.primary} size={50} style={{ marginVertical: 10 }} />,
+            3: () => null,
             4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
-          } as { [status: number]: () => JSX.Element | null })[status] || (() => {}))()}
+          }[status])()}
         />
       </> : <>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', position: 'relative', top: -40 }}>
@@ -127,4 +129,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 10,
   },
+
+  totalHint: {
+    marginTop: 10,
+    left: 10
+  }
 })

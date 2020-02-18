@@ -41,7 +41,7 @@ export default jss.createStyleSheet({
   
       '@global img': {
         width: '100%',
-        boxShadow: '0 0 3px #666',
+        borderRadius: 3
       },
 
       '@global p': {
@@ -60,9 +60,9 @@ export default jss.createStyleSheet({
     },
 
     '.mainpage-box': {
-      ...styleVars.baseShadow,
       padding: 5,
-      marginBottom: 10
+      marginBottom: 10,
+      boxShadow: '0 0 2px #eee, 0 2px 5px #ccc'
     },
 
     '#mainpage > .mainpage-title, #mainpage > .mainpage-content': {

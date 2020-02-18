@@ -13,7 +13,7 @@ export default function() {
       }
       body.toggleClass('mw-uncollapsed')
     })
-    let addTarget = $(this).find('tr:first-child > th:first-child')
+    let addTarget = $(this).find('tr:first-child > th:first-child, tr:first-child > td:first-child')
     addTarget[0] && addTarget.eq(0).append(collapseBtn)
   })
 }

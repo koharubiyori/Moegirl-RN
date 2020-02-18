@@ -92,6 +92,8 @@ function Article(props: PropsWithChildren<FinalProps>) {
         document.querySelector('table.navbox > tbody > tr > td > table > tbody > tr > th')
       if (firstInfobox) {
         const { backgroundColor, color } = window.getComputedStyle(firstInfobox)
+        // 获取到默认颜色则不进行变色
+        if (backgroundColor === 'rgb(38, 202, 155)' || backgroundColor === 'rgb(165, 228, 165)') { return }
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'getArticleMainColor', data: { backgroundColor, color } }))
       }
     }.toString()
@@ -230,7 +232,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
   }
 
   function isVisibleComment() {
-    return !/^([Tt]alk|讨论|[Tt]emplate( talk|)|模板(讨论|)|[Mm]odule( talk|)|模块(讨论|)|[Cc]ategory( talk|)|分类(讨论|)):/.test(loadedPageInfo.pageName)
+    return !(/^([Tt]alk|讨论|[Tt]emplate( talk|)|模板(讨论|)|[Mm]odule( talk|)|模块(讨论|)|[Cc]ategory( talk|)|分类(讨论|)):/.test(loadedPageInfo.pageName))
   }
 
   const { config } = props.state

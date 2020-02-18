@@ -12,6 +12,7 @@ import { controlsCodeString } from './controls/index'
 import { ArticleApiData } from '~/api/article.d'
 import homeStyleSheet from './styles/home'
 import articleStyleSheet from './styles/article'
+import { DOMParser } from 'react-native-html-parser'
 
 const styleSheets = {
   home: homeStyleSheet,
@@ -183,6 +184,15 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     props.$articleView.getContent(props.link!, forceLoad)
       .then(data => {
         let html = data.parse.text['*']
+        if (/^([Cc]ategory|分类):/.test(props.link!)) {
+          const htmlDoc = new DOMParser().parseFromString(html, 'text/html')
+          let categoryBranchContainer = htmlDoc.getElementById('topicpath')
+          if (!categoryBranchContainer) return props.navigation.push('category', { title: props.link!.split(':')[1] })
+
+          let categoryBranch = Array.from(categoryBranchContainer.getElementsByTagName('a')).map(item => item.textContent!)
+          return props.navigation.replace('category', { title: props.link!.split(':')[1], branch: categoryBranch })
+        }
+        
         setHtml(createDocument(html))
         setStatus(3)
         props.onLoaded && props.onLoaded(data)
