@@ -1,11 +1,9 @@
 export default function() {
   let viewBox = $('#articleContentContainer')
 
-  viewBox.find('a').each(function (e) {
+  viewBox.find('.mw-editsection > a').each(function (e) {
     // 编辑按钮替换图片
-    if ($(this).text() === '编辑') {
-      $(this).addClass('page-editBtn').html('<div class="edit-btn page-editBtn">')
-    }
+    $(this).addClass('page-editBtn').html('<div class="edit-btn page-editBtn">')
   })
 
   // 拦截点击链接

@@ -6424,6 +6424,11 @@ react-native-gesture-handler@1.4.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-html-parser@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npm.taobao.org/react-native-html-parser/download/react-native-html-parser-0.1.0.tgz#c35de1dc325562da26e68befa423bac34505ba48"
+  integrity sha1-w13h3DJVYtom5ovvpCO6w0UFukg=
+
 react-native-image-pan-zoom@^2.1.9:
   version "2.1.11"
   resolved "https://registry.npm.taobao.org/react-native-image-pan-zoom/download/react-native-image-pan-zoom-2.1.11.tgz#61bcb69219d95e76a9797d23e4a2e8e0bd654ae9"

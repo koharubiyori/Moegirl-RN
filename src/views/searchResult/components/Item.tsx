@@ -15,7 +15,7 @@ export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
     if (content.trim() === '') return null
 
     return content.split('<span class="searchmatch">').map((section, index) => {
-      if (index === 0) return <Text>{section}</Text>
+      if (index === 0) return <Text key={index}>{section}</Text>
       
       var [strong, plain] = section.split('</span>')
       return <Text key={index}>
@@ -35,7 +35,7 @@ export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
       text = `匹配自页面分类：${props.data.categoriesnippet}`
     }
 
-    return <Text style={{ fontStyle: 'italic', color: $colors.light }}>{text}</Text>
+    return <Text style={{ fontStyle: 'italic', color: $colors.accent }}>{text}</Text>
   }
 
   const content = contentFormat(props.data.snippet)

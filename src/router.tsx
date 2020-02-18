@@ -18,6 +18,7 @@ import about, { RouteParams as AboutRP } from './views/About'
 import settings, { RouteParams as SettingsRP } from './views/settings'
 import imageViewer, { RouteParams as ImageViewerRP } from './views/imageViewer'
 import notifications, { RouteParams as NotificationsRP } from './views/notification'
+import category, { RouteParams as CategoryRP } from './views/category'
 
 // 本来想在模态框中实现，因发现webView的全屏模式和模态框一起使用时发生了bug(全屏后白屏)，故这里用一个单独的路由来显示
 import biliPlayer, { RouteParams as BiliPlayerRP } from './views/biliPlayer'
@@ -39,16 +40,16 @@ export type RoutesParams = {
   login: LoginRP
   about: AboutRP
   imageViewer: ImageViewerRP
-  
   settings: SettingsRP
   edit: EditRP
   comment: CommentRP
   reply: ReplyRP
   notifications: NotificationsRP
   biliPlayer: BiliPlayerRP
+  category: CategoryRP
 }
 
-const routes = { 
+const routes: { [RouteName in keyof (RoutesParams & { BottomTabNavigator: any })]: any } = { 
   BottomTabNavigator,
   article,
   search,
@@ -56,6 +57,7 @@ const routes = {
   login,
   about,
   imageViewer,
+  category,
 
   ...systemViews({
     settings,
@@ -78,10 +80,12 @@ const StackNavigator = createStackNavigator(routes, {
   }) as any
 })
 
-function systemViews(
-  routes: { [routerName: string]: FC<any> },
+function systemViews<
+  Routes extends { [RouterName in keyof RoutesParams]?: FC<any> }
+>(
+  routes: Routes,
   transitionType: keyof typeof StackViewStyleInterpolator = 'forHorizontal'
-): { [routerName: string]: { screen: FC<any>, params: any } } {
+): { [RouterName in keyof Routes]: { screen: FC<any>, params: any } } {
   let forHorizontalRoutes: any = {}
   
   for (let routeName in routes) {

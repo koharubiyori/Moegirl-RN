@@ -9,6 +9,9 @@ export default function() {
     }
   })
 
+  // .image-box为image模板的类，不能对image模板中的图片做限制
+  viewBox.find('.image-box img').removeAttr('width')
+
   // 防止thumb越界
   viewBox.find('.thumbinner').each(function () {
     if (parseInt($(this).css('width')! || '0') > clientWidth - 20) {

@@ -39,7 +39,7 @@ function CatalogBody(props: PropsWithChildren<FinalProps>) {
                 numberOfLines={1}
                 style={{ 
                   ...(parseInt(item.level) < 3 ? { ...styles.title } : styles.subTitle),
-                  paddingLeft: (parseInt(item.level) - 2) * 5
+                  paddingLeft: (parseInt(item.level) - 2) * 10
                 }}
               >{(parseInt(item.level) > 2 ? '- ' : '') + item.line}</Text>
             </Button>

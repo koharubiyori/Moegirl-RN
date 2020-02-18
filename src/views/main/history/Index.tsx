@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
-import { DeviceEventEmitter, ScrollView, Text, View } from 'react-native'
+import { DeviceEventEmitter, ScrollView, Text, View, ActivityIndicator } from 'react-native'
 import { BrowsingHistory } from '~/utils/saveHistory'
 import storage from '~/utils/storage'
 import Header from '../components/Header'
@@ -43,6 +43,7 @@ function Finds(props: PropsWithChildren<FinalProps>) {
   })
 
   const [lists, setLists] = useState(initLists())
+  const [status, setStatus] = useState<0 | 1 | 2 | 3>(1)
 
   useEffect(() => {
     refresh()
@@ -56,8 +57,9 @@ function Finds(props: PropsWithChildren<FinalProps>) {
   }, [])
 
   async function refresh () {
+    setStatus(2)
     let list = await storage.get('browsingHistory')
-    if (!list) { return }
+    if (!list) return setStatus(0)
 
     let lists: HistoryRecordLists = {
       all: list as BrowsingHistoryWithViewDate[],
@@ -85,36 +87,42 @@ function Finds(props: PropsWithChildren<FinalProps>) {
     })
 
     setLists(lists)
+    setStatus(3)
   }
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <Header title="浏览历史" />
+      {{
+        0: () => 
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#eee' }}>
+            <Text style={{ color: '#666', fontSize: 18 }}>暂无记录</Text>
+          </View>,
+        1: () => null,
+        2: () => 
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#eee' }}>
+            <ActivityIndicator color={$colors.primary} size={50} />
+          </View>,
+        3: () =>
+          <ScrollView style={{ paddingVertical: 5 }}>
+            {lists.today.length ? <Title text="今天" style={{ marginTop: 10 }} /> : null }
+            {lists.today.map(item =>
+              <Item data={item} key={item.title} onPress={link => props.navigation.push('article', { link })} />  
+            )}
 
-      {!lists.all.length ? <>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#eee' }}>
-          <Text style={{ color: '#666', fontSize: 18 }}>暂无记录</Text>
-        </View>
-      </> : <>
-        <ScrollView style={{ paddingVertical: 5 }}>
-          {lists.today.length ? <Title text="今天" style={{ marginTop: 10 }} /> : null }
-          {lists.today.map(item =>
-            <Item data={item} key={item.title} onPress={link => props.navigation.push('article', { link })} />  
-          )}
+            {lists.yesterday.length ? <Title text="昨天" style={{ marginTop: 10 }} /> : null }
+            {lists.yesterday.map(item =>
+              <Item data={item} key={item.title} onPress={link => props.navigation.push('article', { link })} />  
+            )}
 
-          {lists.yesterday.length ? <Title text="昨天" style={{ marginTop: 10 }} /> : null }
-          {lists.yesterday.map(item =>
-            <Item data={item} key={item.title} onPress={link => props.navigation.push('article', { link })} />  
-          )}
+            {lists.ago.length ? <Title text="更早" style={{ marginTop: 10 }} /> : null }
+            {lists.ago.map(item =>
+              <Item data={item} key={item.title} onPress={link => props.navigation.push('article', { link })} />  
+            )}
 
-          {lists.ago.length ? <Title text="更早" style={{ marginTop: 10 }} /> : null }
-          {lists.ago.map(item =>
-            <Item data={item} key={item.title} onPress={link => props.navigation.push('article', { link })} />  
-          )}
-
-          <View style={{ height: 10 }} />
-        </ScrollView>
-      </>}
+            <View style={{ height: 10 }} />
+          </ScrollView>
+      }[status]()}
     </View>
   )
 }

@@ -1,7 +1,6 @@
 import React, { PropsWithChildren, useState } from 'react'
 import { StyleSheet, View, Text, TouchableNativeFeedback, Dimensions } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { BorderShadow } from 'react-native-shadow'
 
 export interface Props {
 
@@ -18,14 +17,7 @@ function MyBottomNavigation(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <BorderShadow setting={{
-      width: Dimensions.get('window').width,
-      border: 3,
-      style: styles.container,
-      opacity: 0,
-      side: 'top',
-      insert: true
-    }}>
+    <View style={styles.container}>
       <Item 
         selected={active === 'home'}
         icon="book"
@@ -44,7 +36,7 @@ function MyBottomNavigation(props: PropsWithChildren<FinalProps>) {
         label="历史"
         onPress={() => selectTab('history')}
       />
-    </BorderShadow>
+    </View>
   )
 }
 
