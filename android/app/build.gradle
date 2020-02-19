@@ -131,8 +131,8 @@ android {
         applicationId "com.moegirlviewer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 18
-        versionName "1.2.2"
+        versionCode 19
+        versionName "1.2.5"
     }
     splits {
         abi {
@@ -196,6 +196,13 @@ android {
 }
 
 dependencies {
+    // 如果你需要支持GIF动图
+    implementation 'com.facebook.fresco:animated-gif:2.0.0'
+
+    // 如果你需要支持WebP格式，包括WebP动图
+    implementation 'com.facebook.fresco:animated-webp:2.1.0'
+    implementation 'com.facebook.fresco:webpsupport:2.0.0'
+
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
     implementation project(':react-native-reanimated')
@@ -207,7 +214,6 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-splash-screen')
     implementation project(':@koharubiyori_react-native-orientation')
-    implementation project(':react-native-svg')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 

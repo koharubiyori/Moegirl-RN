@@ -27,5 +27,26 @@ function search(searchWord: string, offset: number) {
   })
 }
 
-const searchApi = { getHint, search }
+function searchByCategory (category: string, thumbSize: number, nextKey?: string) {
+  return request<SearchApiData.SearchByCategory>({
+    params: {
+      action: 'query',
+      format: 'json',
+      prop: 'categoryinfo|pageimages',
+      generator: 'categorymembers',
+      pilimit: '50',
+      gcmtitle: 'Category:' + category,
+      gcmprop: 'sortkey|sortkeyprefix',
+      gcmnamespace: '0',
+      ...(nextKey ? { 
+        gcmcontinue: nextKey,
+        continue: 'gcmcontinue||' 
+      } : {}),
+      gcmlimit: '50',
+      pithumbsize: thumbSize
+    }
+  })
+}
+
+const searchApi = { getHint, search, searchByCategory }
 export default searchApi

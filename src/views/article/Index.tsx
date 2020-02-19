@@ -93,7 +93,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
       if (firstInfobox) {
         const { backgroundColor, color } = window.getComputedStyle(firstInfobox)
         // 获取到默认颜色则不进行变色
-        if (backgroundColor === 'rgb(38, 202, 155)' || backgroundColor === 'rgb(165, 228, 165)') { return }
+        if (['rgb(38, 202, 155)', 'rgb(165, 228, 165)', 'rgb(255, 255, 255)'].includes(backgroundColor)) { return }
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'getArticleMainColor', data: { backgroundColor, color } }))
       }
     }.toString()
