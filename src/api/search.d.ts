@@ -16,6 +16,18 @@ export interface SearchData {
   timestamp: string
 }
 
+export interface SearchByCategoryData {
+  pageid: number
+  ns: number
+  title: string
+  thumbnail: {
+    source: string
+    width: number
+    height: number
+  }
+  pageimage: string
+}
+
 export namespace SearchApiData {
   interface GetHint {
     continue: {
@@ -46,6 +58,17 @@ export namespace SearchApiData {
     query: {
       searchinfo: { totalhits: number }
       search: SearchHintData[]
+    }
+  }
+
+  interface SearchByCategory {
+    continue?: {
+      gcmcontinue: string
+      continue: string
+    }
+
+    query: {
+      pages: { [pageId: number]: SearchByCategoryData }
     }
   }
 }

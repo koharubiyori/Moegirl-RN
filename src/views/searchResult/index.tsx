@@ -84,9 +84,11 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
           />}
 
           ListHeaderComponent={
-            <View style={styles.totalHint}>
-              <Text style={{ color: '#666' }}>共搜索到{total}结果。</Text>
-            </View>
+            status === 3 || status === 4 ? <>
+              <View style={styles.totalHint}>
+                <Text style={{ color: '#666' }}>共搜索到{total}条结果。</Text>
+              </View>
+            </> : null
           }
 
           ListFooterComponent={({

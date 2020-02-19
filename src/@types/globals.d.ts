@@ -29,6 +29,7 @@ declare interface Window {
   _request_id: number
   _appConfig: __AppUserConfig.__
   _colors: NodeJS.Global['$colors']
+  _categories: string[]
 }
 
 declare interface DefaultProps<Props> extends Function {

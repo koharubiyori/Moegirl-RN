@@ -9,6 +9,7 @@ import request from '~/utils/request'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import { controlsCodeString } from './controls/index'
+import { scriptCodeString } from './scripts'
 import { ArticleApiData } from '~/api/article.d'
 import homeStyleSheet from './styles/home'
 import articleStyleSheet from './styles/article'
@@ -101,7 +102,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     }
   }, [])
 
-  function createDocument(content: string) {
+  function createDocument(content: string, categories?: string[]) {
     let injectRequestUtil = function() {
       // 注入一个请求器，用于通信
       window._request = function(config, callback) {
@@ -124,6 +125,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     let injectJsCodes = `
       ${global.__DEV__ ? 'try{' : ''}
         ${injectRequestUtil};
+        ${scriptCodeString};
         ${controlsCodeString};
         ${props.injectJs || ''}
       ${global.__DEV__ ? `
@@ -146,6 +148,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           <style>
             body {
               padding-top: ${store.getState().config.immersionMode ? 55 : 55 + NativeModules.StatusBarManager.HEIGHT}px;
+              padding-bottom: 70px;
             }
           </style>
         ` : ''}
@@ -158,6 +161,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           window._appConfig = ${JSON.stringify(config.current || {})}
           window._colors = ${JSON.stringify($colors)}
+          window._categories = ${JSON.stringify(categories)}
           $(function(){ 
             ${injectJsCodes};
           })
@@ -184,16 +188,30 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     props.$articleView.getContent(props.link!, forceLoad)
       .then(data => {
         let html = data.parse.text['*']
+        // 如果为分类页，则从html字符串中抽取数据，然后交给category界面处理
         if (/^([Cc]ategory|分类):/.test(props.link!)) {
           const htmlDoc = new DOMParser().parseFromString(html, 'text/html')
           let categoryBranchContainer = htmlDoc.getElementById('topicpath')
-          if (!categoryBranchContainer) return props.navigation.push('category', { title: props.link!.split(':')[1] })
+          let descContainer = htmlDoc.getElementById('catmore')
+          let categoryBranch: string[] | null = null
+          let articleTitle: string | null = null
 
-          let categoryBranch = Array.from(categoryBranchContainer.getElementsByTagName('a')).map(item => item.textContent!)
-          return props.navigation.replace('category', { title: props.link!.split(':')[1], branch: categoryBranch })
+          if (categoryBranchContainer) {
+            categoryBranch = Array.from(categoryBranchContainer.getElementsByTagName('a')).map(item => item.textContent!)
+          }
+          if (descContainer) {
+            articleTitle = descContainer.getElementsByTagName('a')[0].getAttribute('title')
+          }
+
+          return props.navigation.replace('category', { 
+            title: props.link!.split(':')[1], 
+            branch: categoryBranch,
+            articleTitle 
+          })
         }
         
-        setHtml(createDocument(html))
+        console.log(data)
+        setHtml(createDocument(html, data.parse.categories.map(item => item['*'])))
         setStatus(3)
         props.onLoaded && props.onLoaded(data)
         // 无法显示svg，这里过滤掉
@@ -211,7 +229,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           const data = articleCache[link!]
           if (data) {
             let html = data.parse.text['*']
-            setHtml(createDocument(html))
+            setHtml(createDocument(html, data.parse.categories.map(item => item['*'])))
             $dialog.snackBar.show('因读取失败，载入条目缓存')
             setStatus(3)
             props.onLoaded && props.onLoaded(data)

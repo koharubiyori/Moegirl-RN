@@ -17,8 +17,6 @@ include ':react-native-splash-screen'
 project(':react-native-splash-screen').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-splash-screen/android')
 include ':@koharubiyori_react-native-orientation', ':app'
 project(':@koharubiyori_react-native-orientation').projectDir = new File(rootProject.projectDir, '../node_modules/@koharubiyori/react-native-orientation/android')
-include ':react-native-svg'
-project(':react-native-svg').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-svg/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 
