@@ -6,6 +6,7 @@ import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import Item from './components/Item'
 import { SearchData } from '~/api/search.d'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   
@@ -18,6 +19,7 @@ export interface RouteParams {
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 
 function SearchResult(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [list, setList] = useState<SearchData[]>([])
   const [total, setTotal] = useState(0)
   const [status, setStatus] = useState<0 | 1 | 2 | 3 | 4 | 5>(1) // 1：初始值，2：加载中，3：加载成功，0：加载失败，4：全部加载完成，5：已加载，但结果为空
@@ -63,7 +65,7 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
     <View style={{ flex: 1 }}>
       <StatusBar blackText />
       <View style={{ ...styles.header, height: 56 + statusBarHeight, paddingTop: statusBarHeight }}>
-        <Button onPress={() => props.navigation.goBack()} rippleColor={$colors.light}>
+        <Button onPress={() => props.navigation.goBack()} rippleColor="#ccc">
           <Icon name="keyboard-backspace" size={25} color="#666" />
         </Button>
 
@@ -99,7 +101,7 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
                 </View>
               </TouchableOpacity>,
             1: () => null,
-            2: () => <ActivityIndicator color={$colors.primary} size={50} style={{ marginVertical: 10 }} />,
+            2: () => <ActivityIndicator color={theme.colors.primary} size={50} style={{ marginVertical: 10 }} />,
             3: () => null,
             4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
           }[status])()}

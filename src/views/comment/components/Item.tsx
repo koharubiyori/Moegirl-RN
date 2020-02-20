@@ -8,6 +8,7 @@ import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
 import toast from '~/utils/toast'
 import format from '../utils/format'
 import { CommentData } from '~/api/comment.d'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   data: any
@@ -34,6 +35,7 @@ export interface Props {
 type FinalProps = Props & CommentConnectedProps
 
 function CommentItem(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const isReported = useRef(false)
 
   function toggleLike() {
@@ -161,9 +163,9 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
           onPress={toggleLike}
         >
           {likeNum === 0 ? <AntDesignIcon name="like2" color="#ccc" size={iconSize} /> : null}
-          {likeNum > 0 && !isLiked ? <AntDesignIcon name="like2" color={$colors.accent} size={iconSize} /> : null}
-          {isLiked ? <AntDesignIcon name="like1" color={$colors.accent} size={iconSize} /> : null}
-          {likeNum > 0 ? <Text style={{ color: $colors.accent, marginLeft: 5 }}>{likeNum}</Text> : null}
+          {likeNum > 0 && !isLiked ? <AntDesignIcon name="like2" color={theme.colors.accent} size={iconSize} /> : null}
+          {isLiked ? <AntDesignIcon name="like1" color={theme.colors.accent} size={iconSize} /> : null}
+          {likeNum > 0 ? <Text style={{ color: theme.colors.accent, marginLeft: 5 }}>{likeNum}</Text> : null}
         </TouchableOpacity>
 
         {props.visibleReplyBtn ? <>
@@ -173,8 +175,8 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
             {!props.visibleReplyNum || data.children.length === 0 
               ? <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />
               : <>
-                <FontAwesomeIcon name="comment" color={$colors.accent} size={iconSize} />
-                <Text style={{ color: $colors.accent, marginLeft: 5 }}>{data.children.length}</Text>
+                <FontAwesomeIcon name="comment" color={theme.colors.accent} size={iconSize} />
+                <Text style={{ color: theme.colors.accent, marginLeft: 5 }}>{data.children.length}</Text>
               </>
             }
           </TouchableOpacity>

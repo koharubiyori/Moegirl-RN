@@ -50,14 +50,6 @@ function Alert(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    // <Dialog.Container visible={visible}
-    //   onBackButtonPress={hide}
-    //   onBackdropPress={hide}
-    // >
-    //   <Dialog.Title>{params.title}</Dialog.Title>
-    //   <Dialog.Description>{params.content}</Dialog.Description>
-    //   <Dialog.Button label={params.checkText} onPress={params.onPressCheck} style={{ color: $colors.primary }} />
-    // </Dialog.Container>
     <Dialog
       visible={visible}
       onDismiss={hide}

@@ -4,6 +4,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import Item from './Item'
+import { colors } from '~/theme'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   immersionMode: boolean
@@ -12,6 +14,7 @@ export interface Props {
 type FinalProps = Props & UserConnectedProps
 
 function DrawerBody(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
 
   function tap(handler: (navigation: __Navigation.Navigation) => void) {
     return () => {
@@ -38,7 +41,12 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
       <Image source={require('~/assets/images/drawer_bg.png')} resizeMode="cover" 
         style={{ ...styles.bgImage, width: Dimensions.get('window').width * 0.6, height: Dimensions.get('window').height - 160 }}
       />
-      <View style={{ ...styles.header, ...(props.immersionMode ? { height: 150 } : { height: 150 + statusBarHeight, paddingTop: statusBarHeight }) }}>
+      <View 
+        style={{ 
+          ...styles.header, 
+          ...(props.immersionMode ? { height: 150 } : { height: 150 + statusBarHeight, paddingTop: statusBarHeight }),
+          backgroundColor: theme.colors.primary
+        }}>
         {props.state.user.name !== null ? <>
           <Button style={{ ...styles.headerIcon, top: (props.immersionMode ? 0 : statusBarHeight) + 10 }}
             onPress={() => { $appNavigator.navigate('notifications'); $drawer.close() }}
@@ -117,7 +125,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: $colors.primary,
+    backgroundColor: colors.green.primary,
   },
 
   headerIcon: {

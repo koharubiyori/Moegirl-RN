@@ -5,7 +5,8 @@ import editApi from '~/api/edit'
 import StatusBar from '~/components/StatusBar'
 import toast from '~/utils/toast'
 import Header from './components/Header'
-import TabNavigator from './TabNavigator'
+import TabNavigator from './components/TabNavigator'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -20,6 +21,7 @@ export interface RouteParams {
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 
 function Edit(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [status, setStatus] = useState(1)
   const [content, setContent] = useState('')
   const essentialUpdate = useRef(false)
@@ -31,6 +33,10 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   const title = props.navigation.getParam('title')
   const section = props.navigation.getParam('section')
   const isCreate = props.navigation.getParam('isCreate')
+
+  useEffect(() => {
+    console.log(refs.tabNavigator)
+  }, [])
 
   // 监听stackNavigator的变化，如果离开时已编辑flag为true，且页面堆栈最后一个为article，则执行那个article页面实例上在params暴露的reload方法
   useEffect(() => {

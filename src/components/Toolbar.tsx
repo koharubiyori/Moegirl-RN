@@ -5,6 +5,7 @@ import { IconProps } from 'react-native-vector-icons/Icon'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   title: string
@@ -32,6 +33,7 @@ export interface Props {
 type FinalProps = Props & UserConnectedProps
 
 function MyToolbar(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const refs = {
     menu: useRef<DefaultMenuRef>()
   }
@@ -40,6 +42,7 @@ function MyToolbar(props: PropsWithChildren<FinalProps>) {
   return (
     <Animated.View style={{
       ...styles.body,
+      backgroundColor: theme.colors.primary,
       ...(props.style as object),
       height: 56 + statusBarHeight,
       paddingTop: statusBarHeight
@@ -78,7 +81,6 @@ export default userHOC(MyToolbar) as FC<Props>
 const styles = StyleSheet.create({
   body: {
     height: 56,
-    backgroundColor: $colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

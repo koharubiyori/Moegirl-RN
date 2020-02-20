@@ -7,6 +7,7 @@ import { SearchByCategoryData } from '~/api/search.d'
 import Toolbar from '~/components/Toolbar'
 import Item from './components/Item'
 import StatusBar from '~/components/StatusBar'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   
@@ -31,6 +32,7 @@ const initCategoryData = (): {
 })
 
 function Category(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const title = props.navigation.getParam('title')
   const branch = props.navigation.getParam('branch')
   const articleTitle = props.navigation.getParam('articleTitle')
@@ -117,9 +119,9 @@ function Category(props: PropsWithChildren<FinalProps>) {
         ListHeaderComponent={
           articleTitle ? <>
             <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
-              <Text style={{ fontSize: 16, color: $colors.subtext }}>这个分类对应的条目为：</Text>
+              <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>这个分类对应的条目为：</Text>
               <TouchableOpacity onPress={() => props.navigation.push('article', { link: articleTitle })}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold', color: $colors.primary }}>{articleTitle}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: theme.colors.primary }}>{articleTitle}</Text>
               </TouchableOpacity>
             </View>
           </> : null
@@ -133,7 +135,7 @@ function Category(props: PropsWithChildren<FinalProps>) {
               </View>
             </TouchableOpacity>,
           1: () => null,
-          2: () => <ActivityIndicator color={$colors.primary} size={50} style={{ marginVertical: 10 }} />,
+          2: () => <ActivityIndicator color={theme.colors.primary} size={50} style={{ marginVertical: 10 }} />,
           3: () => null,
           4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
           5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>该分类下没有条目</Text>
@@ -146,32 +148,25 @@ function Category(props: PropsWithChildren<FinalProps>) {
 export default Category
 
 const styles = StyleSheet.create({
-  title: {
-    color: $colors.primary,
-    fontSize: 18,
-    margin: 10
-  },
-
   categoryBtn: {
     paddingVertical: 5, 
     paddingHorizontal: 10, 
     marginTop: 3,
-    backgroundColor: $colors.primary,
     borderRadius: 20,
   },
 })
 
-interface TitleProps {
-  children: string
-}
-function Title(props: TitleProps) {
-  return (
-    <View style={{ margin: 10 }}>
-      <Text style={{ fontSize: 18, color: $colors.primary }}>{props.children}</Text>
-      <View style={{ height: 2, backgroundColor: $colors.primary }} />
-    </View>
-  )
-}
+// interface TitleProps {
+//   children: string
+// }
+// function Title(props: TitleProps) {
+//   return (
+//     <View style={{ margin: 10 }}>
+//       <Text style={{ fontSize: 18, color: theme.colors.primary }}>{props.children}</Text>
+//       <View style={{ height: 2, backgroundColor: theme.colors.primary }} />
+//     </View>
+//   )
+// }
 
 interface CategoryBtnProps {
   isCurrent: boolean
@@ -179,9 +174,11 @@ interface CategoryBtnProps {
   onPress (): void
 }
 function CategoryBtn(props: CategoryBtnProps) {
+  const theme = useTheme()
+  
   return (
     <TouchableOpacity onPress={props.onPress}>
-      <View style={{ ...styles.categoryBtn, backgroundColor: props.isCurrent ? $colors.accent : $colors.primary }}>
+      <View style={{ ...styles.categoryBtn, backgroundColor: props.isCurrent ? theme.colors.accent : theme.colors.primary }}>
         <Text style={{ fontSize: 16, color: 'white' }}>{props.children}</Text>
       </View>
     </TouchableOpacity>

@@ -1,7 +1,7 @@
-import { colors } from '~/global'
+import { colors } from '~/theme'
 
 export default {
-  ...colors,
+  ...colors.green,
   baseShadow: {
     
   }

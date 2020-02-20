@@ -6,6 +6,7 @@ import queryApi from '~/api/query'
 import searchApi from '~/api/search'
 import storage from '~/utils/storage'
 import ArticleGroup from './components/ArticleGroup'
+import { useTheme } from 'react-native-paper'
 
 const random = (max = 1, min = 0) => Math.floor((Math.random() * max - min) + min)
 
@@ -22,6 +23,7 @@ export interface FindsModuleRecommendedRef {
 type FinalProps = Props
 
 function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [data, setData] = useState<{ title: string, image: string | null }[]>([])
   const [status, setStatus] = useState(2)
   const [searchTitle, setSearchTitle] = useState('')
@@ -99,7 +101,7 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
     <ArticleGroup
       title="推荐"
       subtitle={searchTitle && (status === 3 || status === 4) ? `因为您阅读了“${searchTitle}”` : undefined}
-      icon={<MaterialCommunityIcons name="star-box" color={$colors.accent} size={26} />}
+      icon={<MaterialCommunityIcons name="star-box" color={theme.colors.accent} size={26} />}
       articles={data}
       navigation={props.navigation}
       status={status}
