@@ -69,7 +69,6 @@ export interface BottomNavigationItemProps {
 
 function Item(props: BottomNavigationItemProps) {
   const theme = useTheme()
-  console.log(theme)
   
   return (
     <TouchableNativeFeedback onPress={props.onPress}>
