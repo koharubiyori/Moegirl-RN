@@ -42,7 +42,6 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
   })
 
   function load(force = false) {
-    console.log(force)
     if ([2, 4, 5].includes(notificationList.status) && !force) return Promise.resolve()
     setNotificationList(prevVal => force ? { list: [], status: 2, continue: null } : { ...prevVal, status: 2 })
     

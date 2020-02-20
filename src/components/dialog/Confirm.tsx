@@ -1,6 +1,6 @@
 import React, { MutableRefObject, PropsWithChildren, useState } from 'react'
-import { StyleSheet } from 'react-native'
-import Dialog from 'react-native-dialog'
+import { StyleSheet, Text, View } from 'react-native'
+import { Button, Dialog, TextInput } from 'react-native-paper'
 
 export interface Props {
   getRef: MutableRefObject<any>
@@ -69,21 +69,45 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
 
   const { title, content, checkText, closeText, onPressCheck, onPressClose, hasInput, inputPlaceholder } = params
   return (
-    <Dialog.Container visible={visible} 
-      onBackButtonPress={hide}
-      onBackdropPress={hide}
+    // <Dialog.Container visible={visible} 
+    //   onBackButtonPress={hide}
+    //   onBackdropPress={hide}
+    // >
+    //   <Dialog.Title>{title!}</Dialog.Title>
+    //   {content ? <Dialog.Description>{content}</Dialog.Description> : null}
+    //   {hasInput ? <>
+    //     <Dialog.Input autoFocus placeholder={inputPlaceholder} value={inputVal} 
+    //       onChangeText={setInputVal}
+    //       wrapperStyle={styles.input}
+    //     />
+    //   </> : null}
+    //   <Dialog.Button label={closeText!} onPress={onPressClose!} style={{ marginRight: 10, color: '#ABABAB' }} />
+    //   <Dialog.Button label={checkText!} onPress={() => onPressCheck!(inputVal)} style={{ color: $colors.primary }} />
+    // </Dialog.Container>
+    <Dialog
+      visible={visible}
+      onDismiss={hide}
     >
-      <Dialog.Title>{title!}</Dialog.Title>
-      {content ? <Dialog.Description>{content}</Dialog.Description> : null}
-      {hasInput ? <>
-        <Dialog.Input autoFocus placeholder={inputPlaceholder} value={inputVal} 
-          onChangeText={setInputVal}
-          wrapperStyle={styles.input}
-        />
-      </> : null}
-      <Dialog.Button label={closeText!} onPress={onPressClose!} style={{ marginRight: 10, color: '#ABABAB' }} />
-      <Dialog.Button label={checkText!} onPress={() => onPressCheck!(inputVal)} style={{ color: $colors.primary }} />
-    </Dialog.Container>
+      <Dialog.Title>{params.title}</Dialog.Title>
+      <Dialog.Content>
+        {params.content ? <>
+          <Text style={{ fontSize: 15 }}>{params.content}</Text>
+        </> : null}
+
+        {params.hasInput ? <>
+          <TextInput autoFocus
+            value={inputVal} 
+            placeholder={params.inputPlaceholder} 
+            onChangeText={setInputVal}
+            style={styles.input}
+          />
+        </> : null}
+      </Dialog.Content>
+      <Dialog.Actions>
+        <Button onPress={params.onPressClose} style={{ marginRight: 10 }} color="#ccc">{params.closeText}</Button>
+        <Button onPress={params.onPressCheck}>{params.checkText}</Button>
+      </Dialog.Actions>
+    </Dialog>
   )
 }
 
@@ -91,10 +115,6 @@ export default Confirm
 
 const styles = StyleSheet.create({
   input: {
-    borderWidth: 1,
-    borderColor: $colors.primary,
-    borderRadius: 5,
-    paddingVertical: 0,
-    paddingLeft: 5
+    backgroundColor: 'white'
   }
 })
