@@ -210,7 +210,6 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           })
         }
         
-        console.log(data)
         setHtml(createDocument(html, data.parse.categories.map(item => item['*'])))
         setStatus(3)
         props.onLoaded && props.onLoaded(data)

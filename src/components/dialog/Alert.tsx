@@ -1,9 +1,6 @@
-import React, { useState, MutableRefObject, PropsWithChildren } from 'react'
-import {
-  View, Text,
-  StyleSheet
-} from 'react-native'
-import Dialog from 'react-native-dialog'
+import React, { MutableRefObject, PropsWithChildren, useState } from 'react'
+import { Text } from 'react-native'
+import { Button, Dialog } from 'react-native-paper'
 
 export interface Props {
   getRef: MutableRefObject<any>
@@ -53,14 +50,27 @@ function Alert(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <Dialog.Container visible={visible}
-      onBackButtonPress={hide}
-      onBackdropPress={hide}
+    // <Dialog.Container visible={visible}
+    //   onBackButtonPress={hide}
+    //   onBackdropPress={hide}
+    // >
+    //   <Dialog.Title>{params.title}</Dialog.Title>
+    //   <Dialog.Description>{params.content}</Dialog.Description>
+    //   <Dialog.Button label={params.checkText} onPress={params.onPressCheck} style={{ color: $colors.primary }} />
+    // </Dialog.Container>
+    <Dialog
+      visible={visible}
+      onDismiss={hide}
+      style={{ marginHorizontal: 40 }}
     >
       <Dialog.Title>{params.title}</Dialog.Title>
-      <Dialog.Description>{params.content}</Dialog.Description>
-      <Dialog.Button label={params.checkText} onPress={params.onPressCheck} style={{ color: $colors.primary }} />
-    </Dialog.Container>
+      <Dialog.Content>
+        <Text style={{ fontSize: 15 }}>{params.content}</Text>
+      </Dialog.Content>
+      <Dialog.Actions>
+        <Button onPress={params.onPressCheck}>{params.checkText}</Button>
+      </Dialog.Actions>
+    </Dialog>
   )
 }
 

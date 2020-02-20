@@ -5,6 +5,8 @@ export default function<ResponseData = any>(config: AxiosRequestConfig): Promise
   // 为所有萌百请求默认添加format: 'json'
   if (!config.params) config.params = {}
   config.params.format = 'json'
+  config.params.variant = 'zh-hant'
+  config.params.uselang = 'zh-hant'
 
   return new Promise((resolve, reject) => {
     request(config)

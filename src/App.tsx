@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { BackHandler, DeviceEventEmitter } from 'react-native'
 import SplashScreen from 'react-native-splash-screen'
 import { Provider as ReduxProvider } from 'react-redux'
@@ -11,11 +11,23 @@ import AppNavigator from './router'
 import toast from './utils/toast'
 import { NavigationState } from 'react-navigation'
 import { getWaitNotificationsTotal } from './redux/user/HOC'
+import { Provider as PaperProvider, DefaultTheme, Theme } from 'react-native-paper'
+import { green } from './theme'
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()
 
+const initialTheme: Theme = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    ...green
+  }
+}
+
 function App() {
+  const [theme, setTheme] = useState(initialTheme)
   const refs = {
     alert: useRef<AlertRef>(),
     confirm: useRef<ConfirmRef>(),
@@ -74,13 +86,15 @@ function App() {
 
   return (
     <ReduxProvider store={store}>
-      <Drawer>
-        <AppNavigator onNavigationStateChange={navigationStateChange} ref={refs.appNavigator as any} />
-      </Drawer>
+      <PaperProvider theme={theme}>
+        <Drawer>
+          <AppNavigator onNavigationStateChange={navigationStateChange} ref={refs.appNavigator as any} />
+        </Drawer>
 
-      <Alert getRef={refs.alert} />
-      <Confirm getRef={refs.confirm} />
-      <SnackBar getRef={refs.snackBar} />
+        <Alert getRef={refs.alert} />
+        <Confirm getRef={refs.confirm} />
+        <SnackBar getRef={refs.snackBar} />
+      </PaperProvider>
     </ReduxProvider>
   )
 }

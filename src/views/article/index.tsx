@@ -147,7 +147,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
 
   function contentLoaded(data: ArticleApiData.GetContent) {
     setDisabledMoreBtn(false)
-    
+    console.log(data)
     let title = loadedPageInfo.pageName.replace(/_/g, ' ')
     let trueTitle = data.parse.title
 

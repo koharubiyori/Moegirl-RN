@@ -1,5 +1,6 @@
 import storage from '~/utils/storage'
 import setActionHandler from '~/utils/redux/setActionHandler'
+import { ThemeType } from '~/theme'
 
 export const SET = Symbol()
 export const INIT = Symbol()
@@ -12,18 +13,27 @@ export interface ActionTypes {
   [INIT]: null
 }
 
-export interface State {
-  heimu: boolean
-  biliPlayerReload: boolean
-  immersionMode: boolean
-  changeThemeColorByArticleMainColor: boolean
+export const siteMaps = {
+  moegirl: 'https://zh.moegirl.org',
+  hmoe: 'https://www.hmoegirl.com'
 }
 
-const init = () => ({
+export interface State {
+  heimu: boolean
+  immersionMode: boolean
+  changeThemeColorByArticleMainColor: boolean
+  showSiteSelector: boolean
+  currentSite: keyof typeof siteMaps
+  theme: ThemeType
+}
+
+const init = (): State => ({
   heimu: true,
-  biliPlayerReload: false,
   immersionMode: false,
-  changeThemeColorByArticleMainColor: false
+  changeThemeColorByArticleMainColor: false,
+  showSiteSelector: false,
+  currentSite: 'moegirl',
+  theme: 'green'
 })
 
 const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = init(), action) => setActionHandler<ActionTypes, State>(action, {

@@ -1,5 +1,7 @@
 // 添加分类在条目底部
+
 export default function() {
+  if (window._categories.length === 0) { return }
   let viewBox = $('#articleContentContainer')
 
   let title = $('<h2>分类</h2>')

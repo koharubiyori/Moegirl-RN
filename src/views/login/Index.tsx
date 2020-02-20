@@ -1,10 +1,12 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react'
+import React, { PropsWithChildren, useEffect, useState, useRef } from 'react'
 import { BackHandler, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { TextField } from 'react-native-material-textfield'
 import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import toast from '~/utils/toast'
+import { TextInput, useTheme } from 'react-native-paper'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 export interface Props {
 
@@ -19,14 +21,6 @@ type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & UserCon
 function Login(props: PropsWithChildren<FinalProps>) {
   const [userName, setUserName] = useState('')
   const [password, setPassword] = useState('')
-
-  const textFieldStyle = {
-    containerStyle: { width: 250 },
-    fontSize: 18,
-    textColor: '#666',
-    baseColor: $colors.primary,
-    tintColor: $colors.primary
-  }
 
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => global.$isVisibleLoading)
@@ -52,8 +46,10 @@ function Login(props: PropsWithChildren<FinalProps>) {
       <StatusBar translucent={false} blackText />
       <Image source={require('~/assets/images/moemoji.png')} style={{ width: 70, height: 80, marginTop: 20, marginLeft: -10 }} resizeMode="cover" />
       <Text style={{ color: $colors.primary, fontSize: 17, marginTop: 20 }}>萌娘百科，万物皆可萌的百科全书！</Text>
-      <TextField label="用户名" {...textFieldStyle} value={userName} onChangeText={setUserName} />
-      <TextField label="密码" {...textFieldStyle} value={password} secureTextEntry onChangeText={setPassword} />
+
+      <InputItem icon="account-circle" placeholder="用户名" value={userName} onChangeText={setUserName} />
+      <InputItem secureTextEntry icon="lock" placeholder="密码" value={password} onChangeText={setPassword} />
+
       <Button contentContainerStyle={styles.submitBtn} noLimit={false} onPress={submit}>
         <Text style={{ color: 'white', fontSize: 18 }}>登录</Text>
       </Button>
@@ -78,5 +74,40 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginTop: 20,
     // elevation: 1
+  },
+
+  textInput: {
+    width: 250,
+    height: 50,
+    backgroundColor: 'white',
+    paddingLeft: 25,
   }
 })
+
+interface InputItemProps {
+  placeholder: string
+  icon: string
+  value: string
+  secureTextEntry?: boolean
+  onChangeText (text: string): void
+}
+function InputItem(props: InputItemProps) {
+  const theme = useTheme()
+  const textInputRef = useRef<any>()
+  
+  return (
+    <TouchableWithoutFeedback onPress={() => textInputRef.current.focus()}>
+      <View style={{ marginVertical: 10 }}>
+        <MaterialIcon name={props.icon} color={theme.colors.primary} size={28} style={{ position: 'absolute', zIndex: 1, top: 12 }} />
+        <TextInput 
+          style={styles.textInput}
+          secureTextEntry={props.secureTextEntry} 
+          placeholder={props.placeholder} 
+          value={props.value} 
+          onChangeText={props.onChangeText} 
+          ref={textInputRef}
+        />
+      </View>
+    </TouchableWithoutFeedback>
+  )
+}
