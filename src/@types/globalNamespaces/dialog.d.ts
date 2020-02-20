@@ -1,6 +1,7 @@
 import { AlertRef } from '~/components/dialog/Alert'
 import { ConfirmRef } from '~/components/dialog/Confirm'
 import { SnackBarRef } from '~/components/dialog/SnackBar'
+import { OptionsSheetRef } from '~/components/dialog/OptionsSheet'
 
 export = Dialog
 
@@ -11,5 +12,6 @@ declare namespace Dialog {
     alert: AlertRef
     confirm: ConfirmRef
     snackBar: SnackBarRef
+    optionsSheet: OptionsSheetRef
   }
 }

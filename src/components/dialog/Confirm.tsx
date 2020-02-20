@@ -88,8 +88,13 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
         </> : null}
       </Dialog.Content>
       <Dialog.Actions>
-        <Button onPress={params.onPressClose} style={{ marginRight: 10 }} color="#ccc">{params.closeText}</Button>
-        <Button onPress={params.onPressCheck}>{params.checkText}</Button>
+        <Button onPress={params.onPressClose} style={{ marginRight: 10 }} color="#ccc">
+          <Text style={{ fontSize: 16 }}>{params.closeText}</Text>
+        </Button>
+        
+        <Button onPress={params.onPressCheck}>
+          <Text style={{ fontSize: 16 }}>{params.checkText}</Text>
+        </Button>
       </Dialog.Actions>
     </Dialog>
   )

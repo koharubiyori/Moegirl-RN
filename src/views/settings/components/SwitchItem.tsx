@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 import { StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native'
-import { Switch } from 'react-native-paper'
+import { Switch, useTheme } from 'react-native-paper'
 
 export interface Props {
   title: string
@@ -19,6 +19,8 @@ export interface Props {
 type FinalProps = Props
 
 export default function SettingItem(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
+  
   return (
     <TouchableNativeFeedback onPress={() => { props.onChange && props.onChange(!props.value); props.onPress && props.onPress() }}>
       <View style={styles.container}>
@@ -29,6 +31,7 @@ export default function SettingItem(props: PropsWithChildren<FinalProps>) {
 
         {!props.hideSwitch ? <>
           <Switch 
+            color={theme.colors.primary}
             value={props.value} 
             onValueChange={props.onChange}
           />

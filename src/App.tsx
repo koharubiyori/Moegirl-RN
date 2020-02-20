@@ -13,6 +13,7 @@ import { NavigationState } from 'react-navigation'
 import { getWaitNotificationsTotal } from './redux/user/HOC'
 import { Provider as PaperProvider, DefaultTheme, Theme } from 'react-native-paper'
 import { colors, initSetThemeStateMethod } from './theme'
+import OptionsSheet, { OptionsSheetRef } from './components/dialog/OptionsSheet'
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()
@@ -32,7 +33,8 @@ function App() {
     alert: useRef<AlertRef>(),
     confirm: useRef<ConfirmRef>(),
     snackBar: useRef<SnackBarRef>(),
-    appNavigator: useRef<{ _navigation: __Navigation.Navigation }>()
+    appNavigator: useRef<{ _navigation: __Navigation.Navigation }>(),
+    optionsSheet: useRef<OptionsSheetRef>()
   }
 
   initSetThemeStateMethod(setTheme)
@@ -96,6 +98,7 @@ function App() {
         <Alert getRef={refs.alert} />
         <Confirm getRef={refs.confirm} />
         <SnackBar getRef={refs.snackBar} />
+        <OptionsSheet getRef={refs.optionsSheet} />
       </PaperProvider>
     </ReduxProvider>
   )

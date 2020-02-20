@@ -34,10 +34,6 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   const section = props.navigation.getParam('section')
   const isCreate = props.navigation.getParam('isCreate')
 
-  useEffect(() => {
-    console.log(refs.tabNavigator)
-  }, [])
-
   // 监听stackNavigator的变化，如果离开时已编辑flag为true，且页面堆栈最后一个为article，则执行那个article页面实例上在params暴露的reload方法
   useEffect(() => {
     if (!isCreate) {

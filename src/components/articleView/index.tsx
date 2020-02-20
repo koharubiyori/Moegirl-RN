@@ -99,6 +99,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     if (props.link) {
       loadContent()
     } else {
+      console.log(createDocument(props.html!))
       setHtml(createDocument(props.html!))
       setStatus(3)
     }
@@ -163,7 +164,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           window._appConfig = ${JSON.stringify(config.current || {})}
           window._colors = ${JSON.stringify(theme.colors)}
-          window._categories = ${JSON.stringify(categories)}
+          ${categories ? ('window._categories = ' + JSON.stringify(categories)) : ''}
           $(function(){ 
             ${injectJsCodes};
           })

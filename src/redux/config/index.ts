@@ -1,6 +1,6 @@
 import storage from '~/utils/storage'
 import setActionHandler from '~/utils/redux/setActionHandler'
-import { ThemeType } from '~/theme'
+import { ThemeColorType } from '~/theme'
 
 export const SET = Symbol()
 export const INIT = Symbol()
@@ -24,7 +24,7 @@ export interface State {
   changeThemeColorByArticleMainColor: boolean
   showSiteSelector: boolean
   currentSite: keyof typeof siteMaps
-  theme: ThemeType
+  theme: ThemeColorType
 }
 
 const init = (): State => ({
