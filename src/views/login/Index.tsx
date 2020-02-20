@@ -4,7 +4,7 @@ import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import toast from '~/utils/toast'
-import { TextInput, useTheme } from 'react-native-paper'
+import { TextInput, useTheme, DefaultTheme } from 'react-native-paper'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { colors } from '~/theme'
@@ -100,6 +100,7 @@ function InputItem(props: InputItemProps) {
       <View style={{ marginVertical: 10 }}>
         <MaterialIcon name={props.icon} color={colors.green.primary} size={28} style={{ position: 'absolute', zIndex: 1, top: 12 }} />
         <TextInput 
+          theme={{ ...DefaultTheme, colors: colors.green }}
           style={styles.textInput}
           secureTextEntry={props.secureTextEntry} 
           placeholder={props.placeholder} 

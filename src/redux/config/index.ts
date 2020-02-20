@@ -1,6 +1,7 @@
 import storage from '~/utils/storage'
 import setActionHandler from '~/utils/redux/setActionHandler'
 import { ThemeColorType } from '~/theme'
+import { siteMaps } from '~/utils/moeRequest'
 
 export const SET = Symbol()
 export const INIT = Symbol()
@@ -11,11 +12,6 @@ export interface ActionTypes {
   }
 
   [INIT]: null
-}
-
-export const siteMaps = {
-  moegirl: 'https://zh.moegirl.org',
-  hmoe: 'https://www.hmoegirl.com'
 }
 
 export interface State {

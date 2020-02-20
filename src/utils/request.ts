@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import qs from 'qs'
 import CookieManager from '@koharubiyori/react-native-cookies'
 
-const domain = 'https://zh.moegirl.org'
+const domain = 'https://www.hmoegirl.com'
 const api = `${domain}/api.php`
 
 const config = {
