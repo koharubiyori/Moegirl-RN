@@ -1,10 +1,10 @@
-import { Theme, DefaultTheme } from 'react-native-paper'
+import { Theme, DefaultTheme, MyTheme } from 'react-native-paper'
 
 let setThemeState: React.Dispatch<React.SetStateAction<Theme>> = null as any
 
 export type ThemeColorType = 'green' | 'pink'
 
-export const colors: { [ThemeColorName in ThemeColorType]: Theme['colors'] } = {
+export const colors: { [ThemeColorName in ThemeColorType]: MyTheme['colors'] } = {
   green: {
     ...DefaultTheme.colors,
     primary: '#4CAF50',
@@ -12,17 +12,21 @@ export const colors: { [ThemeColorName in ThemeColorType]: Theme['colors'] } = {
     text: '#212121',
     disabled: '#BDBDBD',
     placeholder: '#757575',
-    surface: '#96D881',
+
+    dark: '#388E3C',
+    light: '#4CAF50'
   },
 
   pink: {
     ...DefaultTheme.colors,
     primary: '#E91E63',
-    accent: '#C7018F',
+    accent: '#F44336',
     text: '#212121',
     disabled: '#BDBDBD',
     placeholder: '#757575',
-    surface: '#F8BBD0',
+    
+    dark: '#C2185B',
+    light: '#F8BBD0'
   }
 }
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, PropsWithChildren, FC } from 'react
 import { View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity } from 'react-native'
 import { NotificationData } from '~/api/notification.d'
 import format from '~/views/comment/utils/format'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   notificationData: NotificationData
@@ -12,6 +13,8 @@ export interface Props {
 type FinalProps = Props
 
 function NotificationItem(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
+  
   // 拿到的通知文本为html，其中加粗使用的是b和strong标签，这里将其转换为rn标签
   function strongTagToRnBoldText(html: string) {
     let words = html.split(/<(b|strong)>.+?<\/(b|strong)>/).filter(word => !['b', 'strong'].includes(word)) // 以加粗标签作为分隔符，并剔除捕获组的内容
@@ -29,7 +32,7 @@ function NotificationItem(props: PropsWithChildren<FinalProps>) {
   }
   
   return (
-    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#ccc')} onPress={props.onPress}>
+    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(theme.colors.primary)} onPress={props.onPress}>
       <View style={styles.container}>
         <View style={{ flexDirection: 'row', alignItems: 'center', }}>
           {!props.notificationData.read ? <View style={styles.badge} /> : null} 

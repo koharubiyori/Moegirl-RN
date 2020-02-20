@@ -7,7 +7,7 @@ import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SwitchItem from './components/SwitchItem'
-import { colors } from '~/theme'
+import { colors, setThemeColor } from '~/theme'
 import { useTheme } from 'react-native-paper'
 
 export interface Props {
@@ -21,6 +21,25 @@ export interface RouteParams {
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & UserConnectedProps & ConfigConnectedProps
 
 function Settings(props: PropsWithChildren<FinalProps>) {
+  function showThemeOptions() {    
+    $dialog.optionsSheet.show({
+      title: '选择皮肤',
+      options: [
+        {
+          label: '萌百绿',
+          value: 'green'
+        }, {
+          label: 'H萌粉',
+          value: 'pink'
+        }
+      ],
+      defaultSelected: props.state.config.theme,
+      onChange (value) {
+        setConfig({ theme: value as any })
+        setThemeColor(value as any)
+      }
+    })
+  }
 
   function clearArticleCache() {
     $dialog.confirm.show({
@@ -85,6 +104,12 @@ function Settings(props: PropsWithChildren<FinalProps>) {
           subtext="条目界面的配色随条目本身的主题色切换" 
           value={config.changeThemeColorByArticleMainColor}
           onChange={val => setConfig({ changeThemeColorByArticleMainColor: val })}
+        />
+
+        <Title>界面</Title>
+        <SwitchItem hideSwitch 
+          title="更换皮肤"
+          onPress={showThemeOptions}
         />
 
         <Title>缓存</Title>

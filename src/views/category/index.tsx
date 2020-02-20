@@ -86,7 +86,11 @@ function Category(props: PropsWithChildren<FinalProps>) {
       />
 
       {branch ? <>
-        <ScrollView horizontal style={{ flexDirection: 'row', margin: 10, flexGrow: 0 }} ref={refs.categoryBranch}>
+        <ScrollView horizontal 
+          style={{ ...styles.branchContainer, backgroundColor: theme.colors.primary }} 
+          contentContainerStyle={{ paddingHorizontal: 10 }}
+          ref={refs.categoryBranch}
+        >
           {currentBranch!.map((categoryName, index) => 
             <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
               <CategoryBtn 
@@ -95,7 +99,7 @@ function Category(props: PropsWithChildren<FinalProps>) {
               >
                 {categoryName}
               </CategoryBtn>
-              {index !== currentBranch!.length - 1 ? <MaterialIcon name="chevron-right" size={30} color="#ccc" style={{ marginTop: 2 }} /> : null}
+              {index !== currentBranch!.length - 1 ? <MaterialIcon name="chevron-right" size={30} color="white" style={{ marginTop: 2 }} /> : null}
             </View>
           )}
         </ScrollView>
@@ -118,7 +122,7 @@ function Category(props: PropsWithChildren<FinalProps>) {
 
         ListHeaderComponent={
           articleTitle ? <>
-            <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
+            <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10, marginBottom: 5 }}>
               <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>这个分类对应的条目为：</Text>
               <TouchableOpacity onPress={() => props.navigation.push('article', { link: articleTitle })}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', color: theme.colors.primary }}>{articleTitle}</Text>
@@ -148,11 +152,17 @@ function Category(props: PropsWithChildren<FinalProps>) {
 export default Category
 
 const styles = StyleSheet.create({
+  branchContainer: {
+    flexDirection: 'row', 
+    flexGrow: 0,
+    paddingBottom: 10, 
+  },
+  
   categoryBtn: {
-    paddingVertical: 5, 
+    // paddingVertical: 5, 
     paddingHorizontal: 10, 
-    marginTop: 3,
-    borderRadius: 20,
+    marginTop: 2,
+    // borderRadius: 20,
   },
 })
 
@@ -178,7 +188,7 @@ function CategoryBtn(props: CategoryBtnProps) {
   
   return (
     <TouchableOpacity onPress={props.onPress}>
-      <View style={{ ...styles.categoryBtn, backgroundColor: props.isCurrent ? theme.colors.accent : theme.colors.primary }}>
+      <View style={{ ...styles.categoryBtn, backgroundColor: theme.colors.primary }}>
         <Text style={{ fontSize: 16, color: 'white' }}>{props.children}</Text>
       </View>
     </TouchableOpacity>

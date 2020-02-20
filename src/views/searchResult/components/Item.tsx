@@ -22,7 +22,7 @@ export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
       
       var [strong, plain] = section.split('</span>')
       return <Text key={index}>
-        <Text style={{ backgroundColor: theme.colors.surface }}>{strong}</Text>
+        <Text style={{ backgroundColor: theme.colors.light }}>{strong}</Text>
         {plain ? <Text>{plain}</Text> : null}
       </Text>
     })

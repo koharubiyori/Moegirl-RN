@@ -60,7 +60,9 @@ function Alert(props: PropsWithChildren<FinalProps>) {
         <Text style={{ fontSize: 15 }}>{params.content}</Text>
       </Dialog.Content>
       <Dialog.Actions>
-        <Button onPress={params.onPressCheck}>{params.checkText}</Button>
+        <Button onPress={params.onPressCheck}>
+          <Text style={{ fontSize: 16 }}>{params.checkText}</Text>
+        </Button>
       </Dialog.Actions>
     </Dialog>
   )
