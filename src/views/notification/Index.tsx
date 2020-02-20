@@ -6,6 +6,7 @@ import Toolbar from '~/components/Toolbar'
 import Item from './components/Item'
 import { markReadAllNotifications } from '~/redux/user/HOC'
 import StatusBar from '~/components/StatusBar'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -24,6 +25,7 @@ type NotificationList = {
 }
 
 export default function Notifications(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [notificationList, setNotificationList] = useState<NotificationList>({
     list: [],
     status: 1,
@@ -84,7 +86,7 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
         />}
 
         refreshControl={<RefreshControl 
-          colors={[$colors.primary]} 
+          colors={[theme.colors.primary]} 
           onRefresh={() => load(true)} 
           refreshing={false} 
         />}
@@ -96,7 +98,7 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
                 <Text>加载失败，点击重试</Text>
               </View>
             </TouchableOpacity>,
-          2: () => <ActivityIndicator color={$colors.primary} size={50} style={{ marginVertical: 10 }} />,
+          2: () => <ActivityIndicator color={theme.colors.primary} size={50} style={{ marginVertical: 10 }} />,
           4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
         } as { [status: number]: () => JSX.Element | null })[notificationList.status] || (() => {}))()}
       />

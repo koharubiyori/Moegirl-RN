@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, PropsWithChildren } from 'react'
 import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-native'
 import Button from '~/components/Button'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   title: string
@@ -11,6 +12,7 @@ export interface Props {
 type FinalProps = Props
 
 function CategoryItem(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const boxWidth = Dimensions.get('window').width / 2 - 10 
   const imgSize = boxWidth - 10
 
@@ -27,10 +29,10 @@ function CategoryItem(props: PropsWithChildren<FinalProps>) {
           />
         </> : <>
           <View style={{ width: imgSize, height: imgSize, backgroundColor: '#eee', justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ color: $colors.subtext, fontSize: 18, borderRadius: 1 }}>暂无图片</Text>
+            <Text style={{ color: theme.colors.placeholder, fontSize: 18, borderRadius: 1 }}>暂无图片</Text>
           </View>
         </>}
-        <View style={styles.divider} />
+        <View style={{ ...styles.divider, backgroundColor: theme.colors.primary }} />
         <Text style={{ textAlign: 'center' }} numberOfLines={1}>{props.title}</Text>
       </View>
     </TouchableOpacity>
@@ -52,7 +54,6 @@ const styles = StyleSheet.create({
   },
 
   divider: {
-    backgroundColor: $colors.primary,
     height: 2,
     marginVertical: 5
   }

@@ -14,6 +14,7 @@ import { ArticleApiData } from '~/api/article.d'
 import homeStyleSheet from './styles/home'
 import articleStyleSheet from './styles/article'
 import { DOMParser } from 'react-native-html-parser'
+import { useTheme } from 'react-native-paper'
 
 const styleSheets = {
   home: homeStyleSheet,
@@ -51,6 +52,7 @@ export interface ArticleViewRef {
 type FinalProps = Props & UserConnectedProps & ArticleViewConnectedProps
 
 function ArticleView(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [html, setHtml] = useState('')
   const [originalImgUrls, setOriginalImgUrls] = useState<{ name: string, url: string }[]>()
   const [articleData, setArticleData] = useState<ArticleApiData.GetContent>()
@@ -160,7 +162,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           window._appConfig = ${JSON.stringify(config.current || {})}
-          window._colors = ${JSON.stringify($colors)}
+          window._colors = ${JSON.stringify(theme.colors)}
           window._categories = ${JSON.stringify(categories)}
           $(function(){ 
             ${injectJsCodes};
@@ -377,10 +379,10 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
       {({
         0: () => 
           <TouchableOpacity onPress={() => loadContent(true)}>
-            <Text style={{ fontSize: 18, color: $colors.primary }}>重新加载</Text>
+            <Text style={{ fontSize: 18, color: theme.colors.primary }}>重新加载</Text>
           </TouchableOpacity>,
         1: () => null,
-        2: () => <ActivityIndicator color={$colors.primary} size={50} />,
+        2: () => <ActivityIndicator color={theme.colors.primary} size={50} />,
         3: () => 
           <WebView allowFileAccess domStorageEnabled
             scalesPageToFit={false}

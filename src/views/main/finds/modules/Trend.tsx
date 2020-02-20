@@ -4,6 +4,7 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import articleApi from '~/api/article'
 import queryApi from '~/api/query'
 import ArticleGroup, { ArticleGroupArticle } from './components/ArticleGroup'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   navigation: __Navigation.Navigation
@@ -18,6 +19,7 @@ export interface FindsModuleTrendRef {
 type FinalProps = Props
 
 function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [data, setData] = useState<ArticleGroupArticle[]>([])
   const [status, setStatus] = useState(2)
   
@@ -72,7 +74,7 @@ function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
   return (
     <ArticleGroup
       title="趋势"
-      icon={<MaterialCommunityIcon name="flash-circle" color={$colors.accent} size={26} />}
+      icon={<MaterialCommunityIcon name="flash-circle" color={theme.colors.accent} size={26} />}
       articles={data}
       navigation={props.navigation}
       status={status}

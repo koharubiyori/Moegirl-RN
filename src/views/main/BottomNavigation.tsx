@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, useState } from 'react'
 import { StyleSheet, View, Text, TouchableNativeFeedback, Dimensions } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -67,11 +68,13 @@ export interface BottomNavigationItemProps {
 }
 
 function Item(props: BottomNavigationItemProps) {
+  const theme = useTheme()
+  
   return (
     <TouchableNativeFeedback onPress={props.onPress}>
       <View style={styles.item}>
-        <MaterialIcon name={props.icon} size={20} color={props.selected ? $colors.primary : '#666'} />
-        <Text style={{ color: props.selected ? $colors.primary : '#666' }}>{props.label}</Text>
+        <MaterialIcon name={props.icon} size={20} color={props.selected ? theme.colors.primary : '#666'} />
+        <Text style={{ color: props.selected ? theme.colors.primary : '#666' }}>{props.label}</Text>
       </View>
     </TouchableNativeFeedback>
   )

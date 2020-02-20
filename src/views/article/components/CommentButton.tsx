@@ -1,5 +1,6 @@
 import React, { FC, MutableRefObject, PropsWithChildren, useLayoutEffect, useRef, useState } from 'react'
-import { Animated, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useTheme } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { withNavigation } from 'react-navigation'
 import { CommentConnectedProps, commentHOC } from '~/redux/comment/HOC'
@@ -23,6 +24,7 @@ export interface CommentButtonRef {
 type FinalProps = Props & CommentConnectedProps
 
 function CommentButton(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [visible, setVisible] = useState(false)
   const [transitionBottom] = useState(new Animated.Value(-size))
   const showLock = useRef(true) // 为了保证动画(条目加载成功两秒后显示)，声明一个变量用于判断前两秒不响应show方法
@@ -74,7 +76,7 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
   return (
     visible ? <>
       <AnimatedTouchableOpacity onPress={tap} style={{ ...styles.container, bottom: transitionBottom }}>
-        <View style={{ ...styles.main, backgroundColor: props.backgroundColor || $colors.primary }}>
+        <View style={{ ...styles.main, backgroundColor: props.backgroundColor || theme.colors.primary }}>
           <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
             <Icon name="comment" size={30} color={props.textColor || 'white'} style={{ position: 'relative', top: -4 }} />
             <Text style={{ position: 'absolute', bottom: 6, color: props.textColor || 'white' }}>
@@ -97,7 +99,6 @@ const styles = StyleSheet.create({
   },
 
   main: {
-    backgroundColor: $colors.primary,
     elevation: 10,
     width: size,
     height: size,

@@ -5,6 +5,7 @@ import storage from '~/utils/storage'
 import Header from '../components/Header'
 import Item from './components/Item'
 import Title from './components/Title'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -35,6 +36,7 @@ type HistoryRecordLists = {
 }
 
 function Finds(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const initLists = (): HistoryRecordLists => ({
     all: [],
     today: [],
@@ -101,7 +103,7 @@ function Finds(props: PropsWithChildren<FinalProps>) {
         1: () => null,
         2: () => 
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#eee' }}>
-            <ActivityIndicator color={$colors.primary} size={50} />
+            <ActivityIndicator color={theme.colors.primary} size={50} />
           </View>,
         3: () =>
           <ScrollView style={{ paddingVertical: 5 }}>

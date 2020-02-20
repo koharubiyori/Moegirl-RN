@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react'
-import { StyleSheet, Switch, Text, TouchableNativeFeedback, View } from 'react-native'
+import { StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native'
+import { Switch } from 'react-native-paper'
 
 export interface Props {
   title: string
@@ -28,7 +29,6 @@ export default function SettingItem(props: PropsWithChildren<FinalProps>) {
 
         {!props.hideSwitch ? <>
           <Switch 
-            thumbColor={props.value ? $colors.primary : '#eee'}
             value={props.value} 
             onValueChange={props.onChange}
           />

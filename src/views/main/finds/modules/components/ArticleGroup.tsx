@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 import { ActivityIndicator, Image, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { useTheme } from 'react-native-paper'
 
 export interface ArticleGroupArticle {
   title: string
@@ -20,6 +21,8 @@ export interface Props {
 type FinalProps = Props
 
 export default function ArticleGroup(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
+  
   return (
     <View style={{ ...styles.container, ...(props.style as any) }}>
       <View style={{ ...styles.header, borderBottomWidth: props.status === 3 || props.status === 4 ? 1 : 0 }}>
@@ -35,7 +38,7 @@ export default function ArticleGroup(props: PropsWithChildren<FinalProps>) {
             </View>
           </>}
 
-          {props.status === 2 ? <ActivityIndicator color={$colors.primary} size={26} style={{ marginLeft: 10 }} /> : null}
+          {props.status === 2 ? <ActivityIndicator color={theme.colors.primary} size={26} style={{ marginLeft: 10 }} /> : null}
         </View>
       </View>
 
@@ -54,7 +57,7 @@ export default function ArticleGroup(props: PropsWithChildren<FinalProps>) {
 
       {props.status === 0 ? <>
         <TouchableOpacity onPress={props.onPressReload}>
-          <Text style={{ marginVertical: 20, color: $colors.primary, textAlign: 'center' }}>重新加载</Text>
+          <Text style={{ marginVertical: 20, color: theme.colors.primary, textAlign: 'center' }}>重新加载</Text>
         </TouchableOpacity>  
       </> : null}
     </View>

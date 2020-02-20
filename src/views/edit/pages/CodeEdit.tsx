@@ -2,6 +2,7 @@ import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native'
 import editApi from '~/api/edit'
 import ArticleEditor from '~/components/articleEditor'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -16,6 +17,7 @@ export interface ScreenProps {
 type FinalProps = Props & __Navigation.InjectedNavigation
 
 function CodeEdit(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [status, setStatus] = useState(1)
   const [content, setContent] = useState<string | null>(null)
   const initContentSample = useRef('')
@@ -60,10 +62,10 @@ function CodeEdit(props: PropsWithChildren<FinalProps>) {
       {({
         0: () => 
           <TouchableOpacity onPress={loadCode}>
-            <Text style={{ fontSize: 16, color: $colors.primary }}>重新加载</Text>
+            <Text style={{ fontSize: 16, color: theme.colors.primary }}>重新加载</Text>
           </TouchableOpacity>,
         1: () => null, 
-        2: () => <ActivityIndicator color={$colors.primary} size={50} />,
+        2: () => <ActivityIndicator color={theme.colors.primary} size={50} />,
         3: () => <ArticleEditor content={content} onChangeText={changeText} />
       } as { [status: number]: () => JSX.Element | null })[status]()}
     </View>

@@ -12,7 +12,7 @@ import toast from './utils/toast'
 import { NavigationState } from 'react-navigation'
 import { getWaitNotificationsTotal } from './redux/user/HOC'
 import { Provider as PaperProvider, DefaultTheme, Theme } from 'react-native-paper'
-import { green } from './theme'
+import { colors, initSetThemeStateMethod } from './theme'
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()
@@ -22,7 +22,7 @@ const initialTheme: Theme = {
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
-    ...green
+    ...colors.green
   }
 }
 
@@ -34,6 +34,8 @@ function App() {
     snackBar: useRef<SnackBarRef>(),
     appNavigator: useRef<{ _navigation: __Navigation.Navigation }>()
   }
+
+  initSetThemeStateMethod(setTheme)
 
   useEffect(() => {
     global.$appNavigator = refs.appNavigator.current!._navigation

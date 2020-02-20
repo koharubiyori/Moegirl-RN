@@ -7,6 +7,8 @@ import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SwitchItem from './components/SwitchItem'
+import { colors } from '~/theme'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -116,7 +118,7 @@ export default configHOC(userHOC(Settings))
 
 const styles = StyleSheet.create({
   title: {
-    color: $colors.primary,
+    color: colors.green.primary,
     marginTop: 20,
     marginBottom: 5,
     marginLeft: 10
@@ -124,9 +126,11 @@ const styles = StyleSheet.create({
 })
 
 function Title(props: PropsWithChildren<{}>) {
+  const theme = useTheme()
+  
   return (
     <View style={styles.title}>
-      <Text style={{ color: $colors.primary, fontSize: 15 }}>{props.children}</Text>
+      <Text style={{ color: theme.colors.primary, fontSize: 15 }}>{props.children}</Text>
     </View>
   )
 }

@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import Button from '~/components/Button'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   data: any
@@ -11,6 +12,8 @@ export interface Props {
 type FinalProps = Props
 
 export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
+  
   function contentFormat(content: string) {
     if (content.trim() === '') return null
 
@@ -19,7 +22,7 @@ export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
       
       var [strong, plain] = section.split('</span>')
       return <Text key={index}>
-        <Text style={{ backgroundColor: '#93E478' }}>{strong}</Text>
+        <Text style={{ backgroundColor: theme.colors.surface }}>{strong}</Text>
         {plain ? <Text>{plain}</Text> : null}
       </Text>
     })
@@ -35,13 +38,13 @@ export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
       text = `匹配自页面分类：${props.data.categoriesnippet}`
     }
 
-    return <Text style={{ fontStyle: 'italic', color: $colors.accent }}>{text}</Text>
+    return <Text style={{ fontStyle: 'italic', color: theme.colors.accent }}>{text}</Text>
   }
 
   const content = contentFormat(props.data.snippet)
 
   return (
-    <Button contentContainerStyle={styles.container} noLimit={false} rippleColor={$colors.light}
+    <Button contentContainerStyle={styles.container} noLimit={false} rippleColor={theme.colors.primary}
       onPress={() => props.onPress(props.data.title)}
     >
       <View style={styles.title}>
@@ -52,7 +55,7 @@ export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
         {subInfo()}
       </View>
 
-      <View style={styles.content}>
+      <View style={{ ...styles.content, borderColor: theme.colors.primary }}>
         <Text style={{ color: content ? 'black' : '#ABABAB' }}>{content || '页面内貌似没有内容呢...'}</Text>
       </View>
 
@@ -81,8 +84,6 @@ const styles = StyleSheet.create({
   content: {
     paddingVertical: 5,
     marginTop: 5,
-    borderTopColor: $colors.primary,
-    borderBottomColor: $colors.primary,
     borderTopWidth: 2,
     borderBottomWidth: 2
   },

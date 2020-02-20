@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react'
 import { StyleSheet, View } from 'react-native'
 import ArticleView from '~/components/articleView'
 import Header from './components/Header'
+import { setThemeColor } from '~/theme'
 
 export interface Props {
 
@@ -10,6 +11,7 @@ export interface Props {
 type FinalProps = Props & __Navigation.InjectedNavigation
 
 function Home(props: PropsWithChildren<FinalProps>) {
+  setThemeColor('pink')
 
   return (
     <View style={{ flex: 1 }}>

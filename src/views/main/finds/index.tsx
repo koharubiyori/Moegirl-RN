@@ -6,6 +6,7 @@ import {
 import Header from '../components/Header'
 import Trend, { FindsModuleTrendRef } from './modules/Trend'
 import Recommended, { FindsModuleRecommendedRef } from './modules/Recommended'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -14,6 +15,7 @@ export interface Props {
 type FinalProps = Props & __Navigation.InjectedNavigation
 
 function Finds(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [visibleRefreshControl, setVisibleRefreshControl] = useState(false)
   const refs = {
     trend: useRef<FindsModuleTrendRef>(),
@@ -40,7 +42,7 @@ function Finds(props: PropsWithChildren<FinalProps>) {
       <Header title="发现" />
 
       <ScrollView
-        refreshControl={<RefreshControl colors={[$colors.primary]} onRefresh={reload} refreshing={visibleRefreshControl} />}
+        refreshControl={<RefreshControl colors={[theme.colors.primary]} onRefresh={reload} refreshing={visibleRefreshControl} />}
       >
         {/* <Text style={{ marginVertical: 20, marginLeft: 20, fontSize: 16 }}>{dateStr()}</Text> */}
         <Trend navigation={props.navigation} getRef={refs.trend} />

@@ -14,6 +14,7 @@ import { ArticleApiData } from '~/api/article.d'
 import store from '~/redux'
 import { getUserInfo } from '~/redux/user/HOC'
 import color from 'color'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -28,6 +29,7 @@ export interface RouteParams {
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & ConfigConnectedProps & CommentConnectedProps
 
 function Article(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [loadedPageInfo, setLoadedPageInfo] = useState<{
     pageName: string
     catalogItems: ArticleApiData.GetContent['parse']['sections']
@@ -39,7 +41,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
   })
   const [visibleHeader, setVisibleHeader] = useState(true)
   const [disabledMoreBtn, setDisabledMoreBtn] = useState(true)
-  const [themeColor, setThemeColor] = useState({ backgroundColor: $colors.primary, blackText: false })
+  const [themeColor, setThemeColor] = useState({ backgroundColor: theme.colors.primary, blackText: false })
   const prevProps = useRef(props)
   const refs = {
     header: useRef<ArticleHeaderRef>(),

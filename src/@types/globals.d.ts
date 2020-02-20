@@ -2,7 +2,7 @@
 
 declare namespace NodeJS { 
   interface Global extends __ReactNative.Global {
-    $colors: { [Name in 'primary' | 'dark' | 'light' | 'accent' | 'text' | 'subtext' | 'black']: string }
+    $colors: { [Name in 'primary' | 'dark' | 'light' | 'accent' | 'text' | 'secondary' | 'divider']: string }
     $avatarUrl: string
     $isVisibleLoading: boolean
     $drawer: {
