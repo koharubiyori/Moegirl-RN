@@ -33,6 +33,7 @@
     "react-native-paper": "^3.6.0",
     "react-native-progress": "^3.6.0",
     "react-native-reanimated": "1.2.0",
+    "react-native-restart": "^0.0.14",
     "react-native-screens": "1.0.0-alpha.23",
     "react-native-splash-screen": "^3.2.0",
     "react-native-tiny-toast": "^1.0.3",

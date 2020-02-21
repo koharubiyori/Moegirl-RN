@@ -6372,6 +6372,11 @@ react-native-reanimated@1.2.0:
   resolved "https://registry.npm.taobao.org/react-native-reanimated/download/react-native-reanimated-1.2.0.tgz#9219227a52a5dfa4d34c324596d6726ccd874293"
   integrity sha1-khkielKl36TTTDJFltZybM2HQpM=
 
+react-native-restart@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.npm.taobao.org/react-native-restart/download/react-native-restart-0.0.14.tgz#e66bf76e60421b37bfee20310beb6ab64ef57b9c"
+  integrity sha1-5mv3bmBCGze/7iAxC+tqtk71e5w=
+
 react-native-root-siblings@3.2.3:
   version "3.2.3"
   resolved "https://registry.npm.taobao.org/react-native-root-siblings/download/react-native-root-siblings-3.2.3.tgz#df5a1cff3a3a1f433f57320e1cae719f1b15a3f2"

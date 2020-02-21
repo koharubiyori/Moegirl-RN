@@ -1,12 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import qs from 'qs'
-import CookieManager from '@koharubiyori/react-native-cookies'
-
-const domain = 'https://www.hmoegirl.com'
-const api = `${domain}/api.php`
 
 const config = {
-  baseURL: api,
   timeout: 7000,
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -27,11 +22,6 @@ async function requestDataHandler(req: AxiosRequestConfig) {
     req.data = req.params
     delete req.params
   }
-
-  // 发送cookie
-  let cookies = await CookieManager.get(domain)
-  let stringCookies = Object.keys(cookies).map(item => `${item}=${cookies[item]}`).join(';')
-  req.headers.cookie = stringCookies
 
   return req
 }

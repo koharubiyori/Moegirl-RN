@@ -35,8 +35,3 @@ declare interface Window {
 declare interface DefaultProps<Props> extends Function {
   defaultProps?: Partial<Props>
 }
-
-declare module '~/../app.json' {
-  export const date: string
-  export const version: string
-}

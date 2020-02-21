@@ -42,7 +42,7 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
     setStatus(2)
     return new Promise(async (resolve, reject) => {
       try {
-        let cache = await storage.get('articleCache')
+        let cache = storage.get('articleCache')
   
         if (cache) {
           // 拿到缓存中所有标题

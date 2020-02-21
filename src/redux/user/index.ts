@@ -1,5 +1,5 @@
 import CookieManager from '@koharubiyori/react-native-cookies'
-import storage from '~/utils/storage'
+
 import setActionHandler from '~/utils/redux/setActionHandler'
 import { AccountApiData } from '~/api/account.d'
 
@@ -34,8 +34,6 @@ const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
   info: null
 }, action) => setActionHandler<ActionTypes, State>(action, {
   [SET_USERNAME]: action => {
-    storage.set('userName', action.name)
-
     return {
       ...state,
       name: action.name
@@ -43,7 +41,6 @@ const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
   },
 
   [CLEAR]: action => {
-    storage.remove('userName')
     CookieManager.clearAll()
 
     return {

@@ -41,29 +41,6 @@ function App() {
 
   initSetThemeStateMethod(setTheme)
 
-  // useEffect(() => {
-  //   global.$appNavigator = refs.appNavigator.current!._navigation
-    
-  //   let onPressBackBtnMark = false
-  //   const listener = BackHandler.addEventListener('hardwareBackPress', () => {
-  //     // navigation需要不断更新赋值，否则状态都是旧的(像是routes字段等)
-  //     global.$appNavigator = refs.appNavigator.current!._navigation
-
-  //     if (($appNavigator.state as any).routes.length !== 1) { return }
-  //     if ($drawer.visible.current) return $drawer.close()
-  //     if (!onPressBackBtnMark) {
-  //       toast.show('再按一次返回键退出应用')
-  //       onPressBackBtnMark = true
-  //       setTimeout(() => onPressBackBtnMark = false, 3000)
-  //       return true
-  //     } else {
-  //       BackHandler.exitApp()
-  //     }
-  //   })
-
-  //   return listener.remove
-  // }, [])
-
   useEffect(() => {
     // 初始化dialog方法
     let dialog: any = {}
@@ -121,9 +98,12 @@ function App() {
   return (
     <ReduxProvider store={store}>
       <PaperProvider theme={theme}>
-        <Drawer>
-          {isConfigLoaded ? <AppNavigator onNavigationStateChange={navigationStateChange} ref={refs.appNavigator as any} /> : null}
-        </Drawer>
+        {/* 为了能拿到用户设置，这里要等待配置载入完成 */}
+        {isConfigLoaded ? <>
+          <Drawer>
+            <AppNavigator onNavigationStateChange={navigationStateChange} ref={refs.appNavigator as any} />
+          </Drawer>
+        </> : null}
 
         <Alert getRef={refs.alert} />
         <Confirm getRef={refs.confirm} />

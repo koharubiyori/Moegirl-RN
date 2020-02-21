@@ -1,11 +1,19 @@
 import store from '~/redux'
 import myConnect from '~/utils/redux/myConnect'
-import { INIT, SET, State } from './index'
+import { WRITE, SET, initState, State } from './index'
+import baseStorage from '~/utils/baseStorage'
 
 const { dispatch, getState } = store
 
-export const set = (config: Partial<State>) => dispatch({ type: SET, data: config })
-export const init = () => dispatch({ type: INIT })
+export const set = (config: Partial<State>) => {
+  dispatch({ type: SET, data: config })
+  return baseStorage.merge('config', config)
+}
+
+export const init = () => {
+  dispatch({ type: WRITE, data: initState() })
+  return baseStorage.set('config', initState())
+}
 
 export interface ConnectedDispatch {
   $config: {

@@ -3,19 +3,23 @@ import { StyleSheet, View } from 'react-native'
 import ArticleView from '~/components/articleView'
 import Header from './components/Header'
 import { setThemeColor } from '~/theme'
+import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 
 export interface Props {
 
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation
+const siteNameMaps = {
+  moegirl: '萌娘百科',
+  hmoe: 'H萌'
+}
+
+type FinalProps = Props & __Navigation.InjectedNavigation & ConfigConnectedProps
 
 function Home(props: PropsWithChildren<FinalProps>) {
-  setThemeColor('pink')
-
   return (
     <View style={{ flex: 1 }}>
-      <Header title="萌娘百科" />
+      <Header title={siteNameMaps[props.state.config.currentSite]} />
       <ArticleView style={{ flex: 1 }} link="Mainpage" injectStyle={['article', 'home']}
         navigation={props.navigation}
       />
@@ -23,7 +27,7 @@ function Home(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default Home
+export default configHOC(Home)
 
 const styles = StyleSheet.create({
   

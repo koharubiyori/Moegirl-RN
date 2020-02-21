@@ -214,6 +214,7 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-splash-screen')
     implementation project(':@koharubiyori_react-native-orientation')
+    implementation project(':react-native-restart')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
