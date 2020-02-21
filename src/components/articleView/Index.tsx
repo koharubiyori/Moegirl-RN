@@ -13,12 +13,14 @@ import { scriptCodeString } from './scripts'
 import { ArticleApiData } from '~/api/article.d'
 import homeStyleSheet from './styles/home'
 import articleStyleSheet from './styles/article'
+import hmoeHomeStyleSheet from './styles/hmoeHome'
 import { DOMParser } from 'react-native-html-parser'
 import { useTheme } from 'react-native-paper'
 
 const styleSheets = {
   home: homeStyleSheet,
-  article: articleStyleSheet
+  article: articleStyleSheet,
+  hmoeHome: hmoeHomeStyleSheet
 }
 
 export type InjectStyleSheetName = keyof typeof styleSheets
@@ -150,7 +152,6 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           <style>
             body {
               padding-top: ${store.getState().config.immersionMode ? 55 : 55 + NativeModules.StatusBarManager.HEIGHT}px;
-              padding-bottom: 70px;
             }
           </style>
         ` : ''}
@@ -189,6 +190,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     setStatus(2)
     props.$articleView.getContent(props.link!, forceLoad)
       .then(data => {
+        console.log(data)
         let html = data.parse.text['*']
         // 如果为分类页，则从html字符串中抽取数据，然后交给category界面处理
         if (/^([Cc]ategory|分类):/.test(props.link!)) {

@@ -1,11 +1,10 @@
-import React, { PropsWithChildren } from 'react'
-import {
-  View, Text, Image, TouchableOpacity,
-  StyleSheet
-} from 'react-native'
+import React, { PropsWithChildren, useRef, useState } from 'react'
+import { Image, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { date, version } from '~/../app.json'
+import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import Toolbar from '~/components/Toolbar'
-import { date, version } from '~/../app.json'
+import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
 import { colors } from '~/theme'
 
 export interface Props {
@@ -16,9 +15,43 @@ export interface RouteParams {
 
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & ConfigConnectedProps
 
 function About(props: PropsWithChildren<FinalProps>) {
+  const [isDebauched, setIsDebauched] = useState(false)
+  const debauchPress = useRef({
+    count: 0,
+    timeoutKey: 0
+  })
+
+  function debauch() {
+    const toast = (msg: string) => ToastAndroid.show(msg, 3000)
+    if (isDebauched) {
+      toast('你还需要推到墙娘(小声)')
+    } else {
+      const dpc = debauchPress.current
+      clearTimeout(dpc.timeoutKey)
+      dpc.count++
+      dpc.timeoutKey = setTimeout(() => dpc.count = 0, 5000) as any
+      if (dpc.count === 3) {
+        toast('嗯？')
+      }
+      if (dpc.count === 4) {
+        toast('你在做什么呀')
+      }
+      if (dpc.count === 5) {
+        toast('不...不要盯着人家那里看啦')
+      }
+      if (dpc.count === 6) {
+        toast('H是不行的...，快不要这样做了')
+      }
+      if (dpc.count === 7) {
+        toast('你成功推到了萌百娘')
+        setIsDebauched(true)
+        props.$config.set({ showSiteSelector: true })
+      }
+    }
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -36,9 +69,19 @@ function About(props: PropsWithChildren<FinalProps>) {
       <View style={{ flex: 1, alignItems: 'center' }}>
         <Image source={require('~/assets/images/moegirl.png')} style={{ width: 105, height: 130, marginTop: 50 }} />
 
-        <View style={{ borderBottomColor: '#ccc', borderBottomWidth: 1, marginTop: 30, paddingHorizontal: 20 }}>
-          <Text style={{ fontSize: 18, color: colors.green.primary, marginBottom: 10 }}>万物皆可萌的百科全书</Text>
-        </View>
+        <Button 
+          noLimit={false}
+          style={{ marginTop: 30 }} 
+          contentContainerStyle={{ borderBottomColor: '#ccc', borderBottomWidth: 1, paddingHorizontal: 20 }}
+          rippleColor={colors.green.primary}
+          onPress={() => debauch()}
+        >
+          <Text style={{ fontSize: 18, color: colors.green.primary, marginVertical: 10 }}>
+            <Text>万物皆可</Text>
+            {isDebauched ? <Text style={{ color: colors.pink.primary }}>H</Text> : <Text>萌</Text>}
+            <Text>的百科全书</Text>
+          </Text>
+        </Button>
         
         <View style={{ marginTop: 20 }}>
           <Item title="版本" value={version}></Item>
@@ -56,7 +99,7 @@ function About(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default About
+export default configHOC(About)
 
 const styles = StyleSheet.create({
   item: {

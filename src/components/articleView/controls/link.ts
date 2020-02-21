@@ -33,7 +33,6 @@ export default function() {
     if (/^\/File:/.test(link)) {
       return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressImage', data: { name: decodeURIComponent(link.replace(/^\/File:/, '')) } }))
     } else if (/^#cite_note-/.test(link)) {
-      console.log($(link).text())
       let content = $(link).text().replace(/^\[跳转至目标\]/, '').trim()
       if (content.length > 400) { // 文字过多dialog会装不下
         document.querySelector(link)!.scrollIntoView()
