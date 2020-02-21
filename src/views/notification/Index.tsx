@@ -55,7 +55,6 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
           continue: data.query.notifications.continue
         }))
 
-        console.log(data)
         if (data.query.notifications.continue === null && data.query.notifications.list.length !== 0) {
           setNotificationList(prevVal => ({ ...prevVal, status: 4 }))
         }

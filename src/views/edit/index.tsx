@@ -94,7 +94,6 @@ function Edit(props: PropsWithChildren<FinalProps>) {
         hasInput: true,
         inputPlaceholder: '请输入编辑摘要',
         onPressCheck: text => {
-          console.log(text)
           toast.showLoading('提交中')
           editApi.editArticle(title, section, content, text!.trim())
             .finally(toast.hide)

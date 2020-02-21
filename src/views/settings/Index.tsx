@@ -152,12 +152,17 @@ function Settings(props: PropsWithChildren<FinalProps>) {
         />
 
         <Title>其他</Title>
-        {props.state.config.showSiteSelector ? <>
+        {/* {props.state.config.showSiteSelector ? <>
           <SwitchItem hideSwitch 
             title="更换数据源"
             onPress={showSiteSelector}
           />
-        </> : null}
+        </> : null} */}
+
+        <SwitchItem hideSwitch 
+          title="更换数据源"
+          onPress={showSiteSelector}
+        />
 
         <SwitchItem hideSwitch
           title="关于"

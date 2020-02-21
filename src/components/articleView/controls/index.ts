@@ -9,6 +9,6 @@ import biliPlayer from './biliPlayer'
 import trim from './trim'
 
 // 接收控件函数，字符串化并合并，用于注入到webview
-export const controlsCodeString = [
+export default [
   link, heimu, collapsible, music, music163, navbox, tabs, biliPlayer, trim
 ].map(item => `(${item.toString()})()`).join(';')

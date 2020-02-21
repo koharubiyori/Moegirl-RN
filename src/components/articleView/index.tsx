@@ -8,14 +8,16 @@ import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import request from '~/utils/request'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
-import { controlsCodeString } from './controls/index'
-import { scriptCodeString } from './scripts'
+import controlsCodeString from './controls/index'
+import scriptCodeString from './scripts'
+import hmoeControlsCodeString from './controls/hmoe'
 import { ArticleApiData } from '~/api/article.d'
 import homeStyleSheet from './styles/home'
 import articleStyleSheet from './styles/article'
 import hmoeHomeStyleSheet from './styles/hmoeHome'
 import { DOMParser } from 'react-native-html-parser'
 import { useTheme } from 'react-native-paper'
+import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 
 const styleSheets = {
   home: homeStyleSheet,
@@ -51,7 +53,7 @@ export interface ArticleViewRef {
   onMissing: () => {}
 }
 
-type FinalProps = Props & UserConnectedProps & ArticleViewConnectedProps
+type FinalProps = Props & UserConnectedProps & ArticleViewConnectedProps & ConfigConnectedProps
 
 function ArticleView(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
@@ -129,6 +131,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     let injectJsCodes = `
       ${global.__DEV__ ? 'try{' : ''}
         ${injectRequestUtil};
+        ${props.state.config.currentSite === 'hmoe' ? hmoeControlsCodeString : ''};
         ${scriptCodeString};
         ${controlsCodeString};
         ${props.injectJs || ''}
@@ -190,7 +193,6 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     setStatus(2)
     props.$articleView.getContent(props.link!, forceLoad)
       .then(data => {
-        console.log(data)
         let html = data.parse.text['*']
         // 如果为分类页，则从html字符串中抽取数据，然后交给category界面处理
         if (/^([Cc]ategory|分类):/.test(props.link!)) {
@@ -399,7 +401,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default articleViewHOC(userHOC(ArticleView))
+export default configHOC(articleViewHOC(userHOC(ArticleView)))
 
 const styles = StyleSheet.create({
   container: {

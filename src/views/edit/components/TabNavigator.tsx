@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Animated, Dimensions, Text, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import { createAppContainer } from 'react-navigation'
@@ -10,16 +10,19 @@ import preview from '../pages/Preview'
 function MyBottomTabBar(props: any) {
   const [transitionPointerLeftOffset] = useState(new Animated.Value(0)) 
   const theme = useTheme()
+  const lastProps = useRef(props)
   
-  function jumpTo(key: string, index: number) {
-    Animated.timing(transitionPointerLeftOffset, {
-      toValue: pointerWidth * index,
-      duration: 200
-    }).start()
-    
-    props.jumpTo(key)
-  }
+  useEffect(() => {
+    if (props.navigationState.index !== lastProps.current.navigationState.index) {
+      Animated.timing(transitionPointerLeftOffset, {
+        toValue: pointerWidth * props.navigationState.index,
+        duration: 200
+      }).start()
+    }
 
+    return () => lastProps.current = props
+  })
+  
   const { routes } = props.navigationState
   const backgroundColor = theme.colors.primary
   const pointerWidth = Dimensions.get('window').width / 2 + 0.5
@@ -29,7 +32,7 @@ function MyBottomTabBar(props: any) {
         <Button 
           style={{ flex: 1 }} 
           contentContainerStyle={{ flex: 1, backgroundColor, justifyContent: 'center', alignItems: 'center' }}
-          onPress={() => jumpTo(route.key, index)}
+          onPress={() => props.jumpTo(route.key)}
         >
           <View key={route.key}>
             <Text style={{ color: 'white' }}>{route.routeName}</Text>
