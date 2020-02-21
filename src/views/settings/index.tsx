@@ -1,14 +1,15 @@
 import React, { PropsWithChildren } from 'react'
 import { DeviceEventEmitter, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useTheme } from 'react-native-paper'
 import StatusBar from '~/components/StatusBar'
 import Toolbar from '~/components/Toolbar'
 import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
+import { colors, setThemeColor } from '~/theme'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SwitchItem from './components/SwitchItem'
-import { colors, setThemeColor } from '~/theme'
-import { useTheme } from 'react-native-paper'
+import RNRestart from 'react-native-restart'
 
 export interface Props {
 
@@ -37,6 +38,26 @@ function Settings(props: PropsWithChildren<FinalProps>) {
       onChange (value) {
         setConfig({ theme: value as any })
         setThemeColor(value as any)
+      }
+    })
+  }
+
+  function showSiteSelector () {
+    $dialog.optionsSheet.show({
+      title: '选择数据源',
+      options: [
+        {
+          label: '萌娘百科',
+          value: 'moegirl'
+        }, {
+          label: 'H萌',
+          value: 'hmoe'
+        }
+      ],
+      defaultSelected: props.state.config.currentSite,
+      onPressCheck (value) {
+        // 为了初始化全部数据，这里直接热重启
+        setConfig({ currentSite: value as any }).then(RNRestart.Restart)
       }
     })
   }
@@ -129,6 +150,14 @@ function Settings(props: PropsWithChildren<FinalProps>) {
           title={props.state.user.name ? '登出' : '登录'}
           onPress={() => props.state.user.name ? logout() : props.navigation.push('login')}
         />
+
+        <Title>其他</Title>
+        {!props.state.config.showSiteSelector ? <>
+          <SwitchItem hideSwitch 
+            title="更换数据源"
+            onPress={showSiteSelector}
+          />
+        </> : null}
 
         <SwitchItem hideSwitch
           title="关于"

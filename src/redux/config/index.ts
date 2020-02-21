@@ -1,18 +1,28 @@
-import storage from '~/utils/storage'
-import setActionHandler from '~/utils/redux/setActionHandler'
 import { ThemeColorType } from '~/theme'
 import { siteMaps } from '~/utils/moeRequest'
+import setActionHandler from '~/utils/redux/setActionHandler'
 
 export const SET = Symbol()
-export const INIT = Symbol()
+export const WRITE = Symbol()
 
 export interface ActionTypes {
   [SET]: {
     data: Partial<State>
   }
 
-  [INIT]: null
+  [WRITE]: {
+    data: State
+  }
 }
+
+export const initState = (): State => ({
+  heimu: true,
+  immersionMode: false,
+  changeThemeColorByArticleMainColor: false,
+  showSiteSelector: false,
+  currentSite: 'moegirl',
+  theme: 'green'
+})
 
 export interface State {
   heimu: boolean
@@ -23,24 +33,13 @@ export interface State {
   theme: ThemeColorType
 }
 
-const init = (): State => ({
-  heimu: true,
-  immersionMode: false,
-  changeThemeColorByArticleMainColor: false,
-  showSiteSelector: false,
-  currentSite: 'moegirl',
-  theme: 'green'
-})
-
-const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = init(), action) => setActionHandler<ActionTypes, State>(action, {
+const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = initState(), action) => setActionHandler<ActionTypes, State>(action, {
   [SET]: action => {
-    storage.merge('config', action.data)
     return { ...state, ...action.data }
   },
 
-  [INIT]: action => {
-    storage.set('config', init())
-    return init()
+  [WRITE]: action => {
+    return action.data
   }
 }) || state
 

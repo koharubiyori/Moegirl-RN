@@ -5,6 +5,7 @@ import editApi from '~/api/edit'
 import myConnect from '~/utils/redux/myConnect'
 import notificationApi from '~/api/notification'
 import { AccountApiData } from '~/api/account.d'
+import storage from '~/utils/storage'
 
 const { dispatch, getState } = store
 
@@ -12,6 +13,7 @@ export const login = (userName: string, password: string): Promise<string> => ne
   accountApi.login(userName, password).then(data => {
     if (data.clientlogin.status === 'PASS') {
       dispatch({ type: SET_USERNAME, name: data.clientlogin.username })
+      storage.set('userName', data.clientlogin.username!)
       resolve(data.clientlogin.username)
     } else { reject(data.clientlogin.status) }
   }).catch(reject)
@@ -19,6 +21,7 @@ export const login = (userName: string, password: string): Promise<string> => ne
 
 export const logout = () => {
   dispatch({ type: CLEAR })
+  storage.remove('userName')
   accountApi.logout()
 }
 

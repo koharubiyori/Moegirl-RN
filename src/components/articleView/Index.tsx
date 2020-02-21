@@ -99,7 +99,6 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     if (props.link) {
       loadContent()
     } else {
-      console.log(createDocument(props.html!))
       setHtml(createDocument(props.html!))
       setStatus(3)
     }
@@ -220,14 +219,14 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
         setArticleData(data)
       })
-      .catch(async e => {
+      .catch(e => {
         console.log(e)
         if (e && e.code === 'missingtitle') return props.onMissing && props.onMissing(props.link!)
 
         try {
-          const redirectMap = await storage.get('articleRedirectMap') || {}
+          const redirectMap = storage.get('articleRedirectMap') || {}
           let link = redirectMap[props.link!] || props.link
-          const articleCache = await storage.get('articleCache') || {}
+          const articleCache = storage.get('articleCache') || {}
           const data = articleCache[link!]
           if (data) {
             let html = data.parse.text['*']

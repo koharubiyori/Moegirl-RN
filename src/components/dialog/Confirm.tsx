@@ -92,7 +92,7 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
           <Text style={{ fontSize: 16 }}>{params.closeText}</Text>
         </Button>
         
-        <Button onPress={params.onPressCheck}>
+        <Button onPress={() => params.onPressCheck && params.onPressCheck(inputVal)}>
           <Text style={{ fontSize: 16 }}>{params.checkText}</Text>
         </Button>
       </Dialog.Actions>

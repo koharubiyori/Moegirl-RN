@@ -12,11 +12,8 @@ export interface BrowsingHistory {
 export default function(title: string) {
   const timestamp = new Date().getTime()
 
-  Promise.all([
-    storage.get('browsingHistory'),
-    articleApi.getMainImage(title)
-  ]).then(async ([history, img]) => {
-    let _history = history || []
+  articleApi.getMainImage(title).then(async img => {
+    let _history = storage.get('browsingHistory') || []
     _history.some((item, index) => {
       if (item.title === title) {
         _history.splice(index, 1)
@@ -47,8 +44,8 @@ export default function(title: string) {
     }
 
     _history.unshift(result)
-    storage.set('browsingHistory', _history).then(() => 
-      DeviceEventEmitter.emit('refreshHistory')
-    )
+    // console.log(_history)
+    storage.set('browsingHistory', _history)
+    DeviceEventEmitter.emit('refreshHistory')
   }).catch(e => console.log(e))
 }

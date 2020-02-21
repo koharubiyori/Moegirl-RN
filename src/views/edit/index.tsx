@@ -94,17 +94,16 @@ function Edit(props: PropsWithChildren<FinalProps>) {
         hasInput: true,
         inputPlaceholder: '请输入编辑摘要',
         onPressCheck: text => {
+          console.log(text)
           toast.showLoading('提交中')
           editApi.editArticle(title, section, content, text!.trim())
             .finally(toast.hide)
             .then(() => {
-              console.log(true)
               setTimeout(() => toast.show('编辑成功'))
               articleReloadFlag.current = true
               props.navigation.goBack()
             })
             .catch(code => {
-              console.log(code)
               if (code) {
                 const msg = (({
                   editconflict: '出现编辑冲突，请复制编辑的内容后再次进入编辑界面，并检查差异',
