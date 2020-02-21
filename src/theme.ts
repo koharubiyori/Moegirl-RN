@@ -14,7 +14,7 @@ export const colors: { [ThemeColorName in ThemeColorType]: MyTheme['colors'] } =
     placeholder: '#757575',
 
     dark: '#388E3C',
-    light: '#4CAF50'
+    light: '#B5E9B5'
   },
 
   pink: {
