@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useRef, useState } from 'react'
 import { Image, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
-import { date, version } from '~/../app.json'
+import { date, version, isHmoe } from '~/../app.json'
 import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import Toolbar from '~/components/Toolbar'
@@ -84,7 +84,7 @@ function About(props: PropsWithChildren<FinalProps>) {
         </Button>
         
         <View style={{ marginTop: 20 }}>
-          <Item title="版本" value={version}></Item>
+          <Item title="版本" value={version + isHmoe ? 'H' : ''}></Item>
           <Item title="更新日期" value={date}></Item>
         
           <View style={styles.item}>

@@ -3,4 +3,5 @@ declare module '~/../app.json' {
   export const displayName: string
   export const version: string
   export const date: string
+  export const isHmoe: boolean
 }

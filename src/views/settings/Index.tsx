@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react'
-import { DeviceEventEmitter, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { DeviceEventEmitter, Linking, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
+import RNRestart from 'react-native-restart'
 import StatusBar from '~/components/StatusBar'
 import Toolbar from '~/components/Toolbar'
 import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
@@ -9,7 +10,7 @@ import { colors, setThemeColor } from '~/theme'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SwitchItem from './components/SwitchItem'
-import RNRestart from 'react-native-restart'
+import { isHmoe } from '~/../app.json'
 
 export interface Props {
 
@@ -152,21 +153,21 @@ function Settings(props: PropsWithChildren<FinalProps>) {
         />
 
         <Title>其他</Title>
-        {/* {props.state.config.showSiteSelector ? <>
+        {isHmoe ? <>
           <SwitchItem hideSwitch 
             title="更换数据源"
             onPress={showSiteSelector}
           />
-        </> : null} */}
-
-        <SwitchItem hideSwitch 
-          title="更换数据源"
-          onPress={showSiteSelector}
-        />
+        </> : null}
 
         <SwitchItem hideSwitch
           title="关于"
           onPress={() => props.navigation.push('about')}
+        />
+
+        <SwitchItem hideSwitch
+          title={isHmoe ? '在Github上查看新版本' : '前往Github下载支持H萌的版本'}
+          onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
         />
       </ScrollView>
     </View>
