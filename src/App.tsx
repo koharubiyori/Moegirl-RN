@@ -74,9 +74,9 @@ function App() {
     global.$appNavigator = refs.appNavigator.current!._navigation
         
     let onPressBackBtnMark = false
-    BackHandler.addEventListener('hardwareBackPress', () => {
+    return BackHandler.addEventListener('hardwareBackPress', () => {
       // navigation需要不断更新赋值，否则状态都是旧的(像是routes字段等)
-      global.$appNavigator = refs.appNavigator.current!._navigation
+      if (refs.appNavigator.current) global.$appNavigator = refs.appNavigator.current!._navigation
 
       if (($appNavigator.state as any).routes.length !== 1) { return }
       if ($drawer.visible.current) return $drawer.close()

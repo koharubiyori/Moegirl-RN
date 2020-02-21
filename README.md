@@ -5,3 +5,5 @@
 该项目是一个萌娘百科第三方安卓客户端，使用React-Native开发。
 
 > 下载：https://www.coolapk.com/apk/247471
+
+> 下载(支持H萌)：https://github.com/koharubiyori/Moegirl-RN/releases
