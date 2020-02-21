@@ -57,7 +57,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
       defaultSelected: props.state.config.currentSite,
       onPressCheck (value) {
         // 为了初始化全部数据，这里直接热重启
-        setConfig({ currentSite: value as any }).then(RNRestart.Restart)
+        setConfig({ currentSite: value as any }).then(() => RNRestart.Restart())
       }
     })
   }
@@ -152,7 +152,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
         />
 
         <Title>其他</Title>
-        {!props.state.config.showSiteSelector ? <>
+        {props.state.config.showSiteSelector ? <>
           <SwitchItem hideSwitch 
             title="更换数据源"
             onPress={showSiteSelector}

@@ -7,7 +7,7 @@ function getContent(pageName = 'Mainpage') {
       action: 'parse',
       page: pageName,
       redirects: 1,
-      prop: 'text|categories|templates|sections|images'
+      prop: 'text|categories|templates|sections|images|displaytitle'
     }
   })
 }
