@@ -1,9 +1,10 @@
 export default function() {
   let viewBox = $('#articleContentContainer')
 
-  viewBox.find('.mw-editsection > a').each(function (e) {
+  viewBox.find('.mw-editsection').each(function (e) {
     // 编辑按钮替换图片
-    $(this).addClass('page-editBtn').html('<div class="edit-btn page-editBtn">')
+    let link = $(this).find('a').eq(0).attr('href')
+    $(this).addClass('page-editBtn').html(`<a href="${link}" class="edit-btn page-editBtn">`)
   })
 
   // 拦截点击链接
@@ -28,7 +29,7 @@ export default function() {
     }
 
     // 一般链接导向
-    let link = ($(e.target).attr('href') || $(e.target).parent('a').attr('href'))!
+    let link = ($(e.target).attr('href') || $(e.target).parent('a').attr('href') || $(this).attr('href'))!
     let type = 'inner'
     if (/^\/File:/.test(link)) {
       return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressImage', data: { name: decodeURIComponent(link.replace(/^\/File:/, '')) } }))

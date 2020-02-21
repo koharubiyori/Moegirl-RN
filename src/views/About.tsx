@@ -25,32 +25,32 @@ function About(props: PropsWithChildren<FinalProps>) {
   })
 
   function debauch() {
-    const toast = (msg: string) => ToastAndroid.show(msg, 3000)
-    if (isDebauched) {
-      toast('你还需要推到墙娘(小声)')
-    } else {
-      const dpc = debauchPress.current
-      clearTimeout(dpc.timeoutKey)
-      dpc.count++
-      dpc.timeoutKey = setTimeout(() => dpc.count = 0, 5000) as any
-      if (dpc.count === 3) {
-        toast('嗯？')
-      }
-      if (dpc.count === 4) {
-        toast('你在做什么呀')
-      }
-      if (dpc.count === 5) {
-        toast('不...不要盯着人家那里看啦')
-      }
-      if (dpc.count === 6) {
-        toast('H是不行的...，快不要这样做了')
-      }
-      if (dpc.count === 7) {
-        toast('你成功推到了萌百娘')
-        setIsDebauched(true)
-        props.$config.set({ showSiteSelector: true })
-      }
-    }
+    // const toast = (msg: string) => ToastAndroid.show(msg, 3000)
+    // if (isDebauched) {
+    //   toast('你还需要推到墙娘(小声)')
+    // } else {
+    //   const dpc = debauchPress.current
+    //   clearTimeout(dpc.timeoutKey)
+    //   dpc.count++
+    //   dpc.timeoutKey = setTimeout(() => dpc.count = 0, 5000) as any
+    //   if (dpc.count === 3) {
+    //     toast('嗯？')
+    //   }
+    //   if (dpc.count === 4) {
+    //     toast('你在做什么呀')
+    //   }
+    //   if (dpc.count === 5) {
+    //     toast('不...不要盯着人家那里看啦')
+    //   }
+    //   if (dpc.count === 6) {
+    //     toast('H是不行的...，快不要这样做了')
+    //   }
+    //   if (dpc.count === 7) {
+    //     toast('你成功推到了萌百娘')
+    //     setIsDebauched(true)
+    //     props.$config.set({ showSiteSelector: true })
+    //   }
+    // }
   }
 
   return (
