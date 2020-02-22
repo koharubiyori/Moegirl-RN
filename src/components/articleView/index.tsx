@@ -60,7 +60,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
   const [html, setHtml] = useState('')
   const [originalImgUrls, setOriginalImgUrls] = useState<{ name: string, url: string }[]>()
   const [articleData, setArticleData] = useState<ArticleApiData.GetContent>()
-  const [status, setStatus] = useState(1)
+  const [status, setStatus] = useState<0 | 1 | 2 | 3>(1)
   const config = useRef(store.getState().config)
   const refs = {
     webView: useRef<any>()
@@ -170,6 +170,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           ${categories ? ('window._categories = ' + JSON.stringify(categories)) : ''}
           $(function(){ 
             ${injectJsCodes};
+            ReactNativeWebView.postMessage(JSON.stringify({ type: 'onReady' }))
           })
         </script>
       </body>
@@ -217,7 +218,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         }
         
         setHtml(createDocument(html, data.parse.categories.map(item => item['*'])))
-        setStatus(3)
+        // setStatus(3)
         props.onLoaded && props.onLoaded(data)
         // 无法显示svg，这里过滤掉
         loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
@@ -236,7 +237,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
             let html = data.parse.text['*']
             setHtml(createDocument(html, data.parse.categories.map(item => item['*'])))
             $dialog.snackBar.show('因读取失败，载入条目缓存')
-            setStatus(3)
+            // setStatus(3)
             props.onLoaded && props.onLoaded(data)
             loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
             setArticleData(data)
@@ -259,6 +260,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     type EventParamsMap = {
       print: string
       error: string
+      onReady: undefined
       onPressNote: { content: string }
       request: {
         config: {
@@ -293,6 +295,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
     setEventHandler('print', msg => console.log('=== print ===', msg))
     setEventHandler('error', msg => console.log('--- WebViewError ---', msg))
+    setEventHandler('onReady', () => setStatus(3))
     setEventHandler('onPressNote', data => {
       $dialog.alert.show({
         title: '注释',
@@ -379,24 +382,31 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <View style={{ ...styles.container, ...(props.style as any) }}>
-      {({
-        0: () => 
-          <TouchableOpacity onPress={() => loadContent(true)}>
-            <Text style={{ fontSize: 18, color: theme.colors.primary }}>重新加载</Text>
-          </TouchableOpacity>,
-        1: () => null,
-        2: () => <ActivityIndicator color={theme.colors.primary} size={50} />,
-        3: () => 
-          <WebView allowFileAccess domStorageEnabled
-            scalesPageToFit={false}
-            source={{ html, baseUrl }}
-            originWhitelist={['*']}
-            style={{ width: Dimensions.get('window').width }}
-            onMessage={receiveMessage}
-            ref={refs.webView}
-          />
-      } as { [status: number]: () => JSX.Element | null })[status]()}
+    <View style={{ ...(props.style as any) }}>
+      {/* 这个webView是一直显示的，因为要监听发出的onReady事件 */}
+      <WebView allowFileAccess domStorageEnabled
+        scalesPageToFit={false}
+        source={{ html, baseUrl }}
+        originWhitelist={['*']}
+        style={{ width: Dimensions.get('window').width }}
+        onMessage={receiveMessage}
+        ref={refs.webView}
+      />
+      
+      {/* 这个遮罩覆盖上面的webView */}
+      {status !== 3 ? <>
+        <View style={styles.mask}>
+          {{
+            0: () => 
+              <TouchableOpacity onPress={() => loadContent(true)}>
+                <Text style={{ fontSize: 18, color: theme.colors.primary }}>重新加载</Text>
+              </TouchableOpacity>,
+            1: () => null,
+            2: () => <ActivityIndicator color={theme.colors.primary} size={50} />,
+            3: () => null
+          }[status]()}
+        </View>
+      </> : null}
     </View>
   )
 }
@@ -404,7 +414,13 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 export default configHOC(articleViewHOC(userHOC(ArticleView)))
 
 const styles = StyleSheet.create({
-  container: {
+  mask: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   }

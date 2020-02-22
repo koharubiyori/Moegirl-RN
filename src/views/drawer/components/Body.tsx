@@ -16,10 +16,10 @@ type FinalProps = Props & UserConnectedProps
 function DrawerBody(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
 
-  function tap(handler: (navigation: __Navigation.Navigation) => void) {
+  function tap(handler: () => void) {
     return () => {
       $drawer.close()
-      handler($appNavigator)
+      setTimeout(handler, 200)
     }
   }
 
@@ -65,17 +65,17 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
         </> : null}
         
         {props.state.user.name ? <>
-          <TouchableOpacity onPress={tap(navigation => navigation.push('article', { link: 'User:' + props.state.user.name }))}>
+          <TouchableOpacity onPress={tap(() => $appNavigator.push('article', { link: 'User:' + props.state.user.name }))}>
             <Image source={{ uri: $avatarUrl + props.state.user.name }} style={styles.avatar} />
             <Text style={styles.hintText}>欢迎你，{props.state.user.name}</Text>
           </TouchableOpacity>
         </> : <>
           <View>
-            <TouchableOpacity onPress={tap(navigation => navigation.navigate('login'))}>
+            <TouchableOpacity onPress={tap(() => $appNavigator.navigate('login'))}>
               <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={tap(navigation => navigation.navigate('login'))}>
+            <TouchableOpacity onPress={tap(() => $appNavigator.navigate('login'))}>
               <Text style={styles.hintText}>登录/加入萌娘百科</Text>
             </TouchableOpacity>
           </View>

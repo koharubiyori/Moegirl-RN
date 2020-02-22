@@ -24,7 +24,7 @@ function DrawerItem(props: PropsWithChildren<FinalProps>) {
   
   function onPress () {
     $drawer.close()
-    props.onPress()
+    setTimeout(props.onPress, 200)
   }
 
   return (

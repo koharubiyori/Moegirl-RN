@@ -56,20 +56,15 @@ const routes: { [RouteName in keyof (RoutesParams & { BottomTabNavigator: any })
   searchResult,
   login,
   about,
-  imageViewer,
   category,
-
-  ...systemViews({
-    settings,
-    edit,
-    comment,
-    reply,
-    notifications,
-  }),
+  settings,
+  edit,
+  comment,
+  reply,
+  notifications,
   
-  ...systemViews({ 
-    biliPlayer 
-  }, 'forFade'),
+  imageViewer,
+  biliPlayer,
 }
 
 const StackNavigator = createStackNavigator(routes, { 
@@ -80,11 +75,11 @@ const StackNavigator = createStackNavigator(routes, {
   }) as any
 })
 
-function systemViews<
+function transitionType<
   Routes extends { [RouterName in keyof RoutesParams]?: FC<any> }
 >(
   routes: Routes,
-  transitionType: keyof typeof StackViewStyleInterpolator = 'forHorizontal'
+  transitionType: keyof typeof StackViewStyleInterpolator = 'forFade'
 ): { [RouterName in keyof Routes]: { screen: FC<any>, params: any } } {
   let forHorizontalRoutes: any = {}
   
@@ -100,13 +95,9 @@ function systemViews<
 
 function screenInterpolator(sceneProps: TransitionProps) {
   const params = sceneProps.scene.route.params || {}
-  const transitionType: keyof typeof StackViewStyleInterpolator = params.transitionType
+  const transitionType: keyof typeof StackViewStyleInterpolator = params.transitionType || 'forFadeFromBottomAndroid'
 
-  if (transitionType) {
-    return StackViewStyleInterpolator[transitionType]
-  } else {
-    return StackViewStyleInterpolator.forFadeFromBottomAndroid
-  }
+  return StackViewStyleInterpolator[transitionType]
 }
 
 const AppNavigator = createAppContainer(StackNavigator)

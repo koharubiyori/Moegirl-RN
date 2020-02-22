@@ -1128,10 +1128,17 @@
     "@types/react" "*"
     "@types/react-native" "*"
 
-"@types/react-native@*", "@types/react-native@^0.61.0":
+"@types/react-native@*":
   version "0.61.4"
   resolved "https://registry.npm.taobao.org/@types/react-native/download/@types/react-native-0.61.4.tgz#dfd323579c98a447ca7d152e94fb1507e84de7d2"
   integrity sha1-39MjV5yYpEfKfRUulPsVB+hN59I=
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-native@^0.61.16":
+  version "0.61.16"
+  resolved "https://registry.npm.taobao.org/@types/react-native/download/@types/react-native-0.61.16.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Freact-native%2Fdownload%2F%40types%2Freact-native-0.61.16.tgz#8dc5f5d3fe0b2b4d1454bbc84641434c7afcdcf5"
+  integrity sha1-jcX10/4LK00UVLvIRkFDTHr83PU=
   dependencies:
     "@types/react" "*"
 
@@ -6300,13 +6307,6 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
 
-react-native-default-menu@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.npm.taobao.org/react-native-default-menu/download/react-native-default-menu-0.0.8.tgz#d7d40a7e6928a27ef3ca3160bd5776e69d11b4a5"
-  integrity sha1-19QKfmkoon7zyjFgvVd25p0RtKU=
-  dependencies:
-    react-native-vector-icons "^6.1.0"
-
 react-native-experimental-navigation@^0.29.2:
   version "0.29.2"
   resolved "https://registry.npm.taobao.org/react-native-experimental-navigation/download/react-native-experimental-navigation-0.29.2.tgz#14727e2df0c7fd4693ab96821b59474410968e85"
@@ -6431,7 +6431,7 @@ react-native-typescript-transformer@^1.2.13:
     semver "^5.4.1"
     source-map "^0.5.6"
 
-react-native-vector-icons@^6.1.0, react-native-vector-icons@^6.6.0:
+react-native-vector-icons@^6.6.0:
   version "6.6.0"
   resolved "https://registry.npm.taobao.org/react-native-vector-icons/download/react-native-vector-icons-6.6.0.tgz#66cf004918eb05d90778d64bd42077c1800d481b"
   integrity sha1-Zs8ASRjrBdkHeNZL1CB3wYANSBs=

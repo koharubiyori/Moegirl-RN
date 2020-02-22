@@ -71,6 +71,7 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
     <Dialog
       visible={visible}
       onDismiss={hide}
+      style={{ paddingHorizontal: 10 }}
     >
       <Dialog.Title>{params.title}</Dialog.Title>
       <Dialog.Content>

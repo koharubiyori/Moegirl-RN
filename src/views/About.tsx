@@ -84,7 +84,7 @@ function About(props: PropsWithChildren<FinalProps>) {
         </Button>
         
         <View style={{ marginTop: 20 }}>
-          <Item title="版本" value={version + isHmoe ? 'H' : ''}></Item>
+          <Item title="版本" value={version + (isHmoe ? 'H' : '')}></Item>
           <Item title="更新日期" value={date}></Item>
         
           <View style={styles.item}>
