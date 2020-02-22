@@ -7,6 +7,7 @@ import toast from '~/utils/toast'
 import Header from './components/Header'
 import TabNavigator from './components/TabNavigator'
 import { useTheme } from 'react-native-paper'
+import SubmitDialog from './components/SubmitDialog'
 
 export interface Props {
 
@@ -20,10 +21,15 @@ export interface RouteParams {
 
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 
+export const maxSummaryLength = 220
+const SummarySuffix = '  // Edit via MoegirlViewer'
+
 function Edit(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
   const [status, setStatus] = useState(1)
   const [content, setContent] = useState('')
+  const [summary, setSummary] = useState('')
+  const [visibleSubmitDialog, setVisibleSubmitDialog] = useState(false)
   const essentialUpdate = useRef(false)
   const articleReloadFlag = useRef(false)
   const refs = {
@@ -87,49 +93,55 @@ function Edit(props: PropsWithChildren<FinalProps>) {
     }
   }
 
-  function submit () {
-    const { content, isContentChanged } = refs.tabNavigator.current.state.nav.routes[0].params
+  function showSubmitDialog () {
+    const { isContentChanged } = refs.tabNavigator.current.state.nav.routes[0].params
     if (isContentChanged) {
-      $dialog.confirm.show({
-        hasInput: true,
-        inputPlaceholder: '请输入编辑摘要',
-        onPressCheck: text => {
-          toast.showLoading('提交中')
-          editApi.editArticle(title, section, content, text!.trim())
-            .finally(toast.hide)
-            .then(() => {
-              setTimeout(() => toast.show('编辑成功'))
-              articleReloadFlag.current = true
-              props.navigation.goBack()
-            })
-            .catch(code => {
-              if (code) {
-                const msg = (({
-                  editconflict: '出现编辑冲突，请复制编辑的内容后再次进入编辑界面，并检查差异',
-                  protectedpage: '没有权限编辑此页面！',
-                  readonly: '目前数据库处于锁定状态，无法编辑'
-                } as { [code: string]: string })[code] || '未知错误')
-
-                $dialog.alert.show({ content: msg })
-              } else {
-                $dialog.alert.show({ content: '网络错误，请稍候再试' })
-              }             
-            })
-        }
-      })
+      setVisibleSubmitDialog(true)
     } else {
       toast.show('内容未发生变化')
     }
+  }
+
+  function submit () {
+    const { content } = refs.tabNavigator.current.state.nav.routes[0].params
+    toast.showLoading('提交中')
+    editApi.editArticle(title, section, content, summary!.trim() + SummarySuffix)
+      .finally(toast.hide)
+      .then(() => {
+        setTimeout(() => toast.show('编辑成功'))
+        articleReloadFlag.current = true
+        props.navigation.goBack()
+      })
+      .catch(code => {
+        if (code) {
+          const msg = (({
+            editconflict: '出现编辑冲突，请复制编辑的内容后再次进入编辑界面，并检查差异',
+            protectedpage: '没有权限编辑此页面！',
+            readonly: '目前数据库处于锁定状态，无法编辑'
+          } as { [code: string]: string })[code] || '未知错误')
+
+          $dialog.alert.show({ content: msg })
+        } else {
+          $dialog.alert.show({ content: '网络错误，请稍候再试' })
+        }             
+      })
   }
   
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar />
-      <Header title={title} navigation={props.navigation} onPressDoneBtn={submit} />
+      <Header title={title} navigation={props.navigation} onPressDoneBtn={showSubmitDialog} />
       <TabNavigator 
         screenProps={{ title, section, isCreate, content }}
         onNavigationStateChange={navigationStateChange}
         ref={refs.tabNavigator}
+      />
+      <SubmitDialog
+        visible={visibleSubmitDialog}
+        value={summary}
+        onChangeText={setSummary}
+        onDismiss={() => setVisibleSubmitDialog(false)}
+        onSubmit={submit}
       />
     </View>
   )

@@ -11,6 +11,7 @@ const { dispatch, getState } = store
 
 export const login = (userName: string, password: string): Promise<string> => new Promise((resolve, reject) => {
   accountApi.login(userName, password).then(data => {
+    console.log(data)
     if (data.clientlogin.status === 'PASS') {
       dispatch({ type: SET_USERNAME, name: data.clientlogin.username })
       storage.set('userName', data.clientlogin.username!)

@@ -93,7 +93,7 @@ function OptionsSheet(props: PropsWithChildren<FinalProps>) {
           </MyButton>
         )}
       </Dialog.Content>
-      <Dialog.Actions>
+      <Dialog.Actions style={{ marginHorizontal: 10 }}>
         <Button onPress={() => params.onPressCheck && params.onPressCheck(selected)}>
           <Text style={{ fontSize: 16 }}>{params.checkText}</Text>
         </Button>

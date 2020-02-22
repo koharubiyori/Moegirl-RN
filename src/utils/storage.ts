@@ -67,9 +67,10 @@ const siteStorageManager: MyStorageManager = {
   },
 
   merge: (key, val) => {
-    if (typeof siteStorages[key] === 'object' && typeof val === 'object') {
+    let currentData = siteStorages[key] || {}
+    if (typeof currentData === 'object' && typeof val === 'object') {
       siteStorages[key] = {
-        ...siteStorages[key] as any,
+        ...currentData as any,
         ...val as any
       }
     } else {

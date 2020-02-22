@@ -1,11 +1,11 @@
-import React, { FC, PropsWithChildren, useRef } from 'react'
+import React, { FC, PropsWithChildren, useRef, useState } from 'react'
 import { Animated, NativeModules, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
-import Menu, { DefaultMenuRef } from 'react-native-default-menu'
+// import Menu, { DefaultMenuRef } from 'react-native-default-menu'
 import { IconProps } from 'react-native-vector-icons/Icon'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
-import { useTheme } from 'react-native-paper'
+import { useTheme, Menu } from 'react-native-paper'
 
 export interface Props {
   title: string
@@ -34,8 +34,11 @@ type FinalProps = Props & UserConnectedProps
 
 function MyToolbar(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
-  const refs = {
-    menu: useRef<DefaultMenuRef>()
+  const [visibleMenu, setVisibleMenu] = useState(false)
+
+  function pressAction(actionName: string, index: number) {
+    setVisibleMenu(false)
+    props.onPressActions && props.onPressActions(actionName, index)
   }
 
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
@@ -64,11 +67,28 @@ function MyToolbar(props: PropsWithChildren<FinalProps>) {
           </> : null}
 
           {props.actions ? <>
-            <Menu options={props.actions} onPress={props.onPressActions} ref={refs.menu}>
+            <Menu
+              visible={visibleMenu}
+              statusBarHeight={statusBarHeight}
+              onDismiss={() => setVisibleMenu(false)}
+              anchor={
+                <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => setVisibleMenu(true)}>
+                  <MaterialIcon name="more-vert" size={28} color={props.textColor} {...props.moreIconProps} style={{ position: 'relative', top: 1 }} />
+                </Button>
+              }
+            >
+              {props.actions.map((actionName, index) => <Menu.Item 
+                key={index}
+                style={{ paddingVertical: 5 }}
+                title={actionName}
+                onPress={() => pressAction(actionName, index)}
+              />)}
+            </Menu>
+            {/* <Menu options={props.actions} onPress={props.onPressActions} ref={refs.menu}>
               <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => !props.disabledMoreBtn && refs.menu.current!.showPopupMenu()}>
                 <MaterialIcon name="more-vert" size={28} color={props.textColor} {...props.moreIconProps} style={{ position: 'relative', top: 1 }} />
               </Button>
-            </Menu>
+            </Menu> */}
           </> : null}
         </View>
       </Animated.View>

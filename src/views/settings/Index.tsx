@@ -6,7 +6,7 @@ import StatusBar from '~/components/StatusBar'
 import Toolbar from '~/components/Toolbar'
 import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
-import { colors, setThemeColor } from '~/theme'
+import { colors, setThemeColor, themeColorType, ThemeColorType } from '~/theme'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SwitchItem from './components/SwitchItem'
@@ -24,17 +24,14 @@ type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & UserCon
 
 function Settings(props: PropsWithChildren<FinalProps>) {
   function showThemeOptions() {    
+    const themeOptions = Object.keys(themeColorType).map(themeValue => ({
+      label: themeColorType[themeValue as ThemeColorType],
+      value: themeValue
+    }))
+    
     $dialog.optionsSheet.show({
       title: '选择皮肤',
-      options: [
-        {
-          label: '萌百绿',
-          value: 'green'
-        }, {
-          label: 'H萌粉',
-          value: 'pink'
-        }
-      ],
+      options: themeOptions,
       defaultSelected: props.state.config.theme,
       onChange (value) {
         setConfig({ theme: value as any })
