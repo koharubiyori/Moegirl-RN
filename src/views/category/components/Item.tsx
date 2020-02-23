@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { useTheme } from 'react-native-paper'
+import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { useTheme, Text } from 'react-native-paper'
 
 export interface Props {
   title: string
@@ -17,7 +17,7 @@ function CategoryItem(props: PropsWithChildren<FinalProps>) {
 
   return (
     <TouchableOpacity style={{ ...styles.wrapper, width: boxWidth }} onPress={props.onPress}>
-      <View style={styles.container}>
+      <View style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
         {props.imgUrl ? <>
           <Image 
             source={{ uri: props.imgUrl }} 
@@ -27,11 +27,11 @@ function CategoryItem(props: PropsWithChildren<FinalProps>) {
             style={{ width: imgSize, height: imgSize, borderRadius: 1 }} 
           />
         </> : <>
-          <View style={{ width: imgSize, height: imgSize, backgroundColor: theme.colors.lightBg, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ color: theme.colors.placeholder, fontSize: 18, borderRadius: 1 }}>暂无图片</Text>
+          <View style={{ width: imgSize, height: imgSize, backgroundColor: theme.colors.placeholder, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: theme.colors.disabled, fontSize: 18, borderRadius: 1 }}>暂无图片</Text>
           </View>
         </>}
-        <View style={{ ...styles.divider, backgroundColor: theme.colors.primary }} />
+        <View style={{ ...styles.divider, backgroundColor: theme.colors.accent }} />
         <Text style={{ textAlign: 'center' }} numberOfLines={1}>{props.title}</Text>
       </View>
     </TouchableOpacity>

@@ -4,7 +4,7 @@ import Toolbar from '~/components/Toolbar'
 import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
 import toast from '~/utils/toast'
-import color from 'color'
+import Color from 'color'
 import { colors } from '~/theme'
 
 export interface Props {
@@ -108,14 +108,14 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
   let backgroundColor = transitionValue.interpolate({
     inputRange: [0, 1],
     outputRange: [
-      color(props.backgroundColor).rgb().string(), 
-      props.state.config.theme === 'night' ? color(colors.night.primary).rgb().string() : 'rgb(255, 255, 255)'
+      Color(props.backgroundColor).rgb().string(), 
+      props.state.config.theme === 'night' ? Color(colors.night.primary).rgb().string() : 'rgb(255, 255, 255)'
     ]
   })
   // 在通过获取条目的主题色从而改变颜色时，对backgroundColor重新赋值
   if (props.backgroundColor !== lastProps.current.backgroundColor) {
-    const lastColor = color(lastProps.current.backgroundColor).rgb().string()
-    const currentColor = color(props.backgroundColor).rgb().string()
+    const lastColor = Color(lastProps.current.backgroundColor).rgb().string()
+    const currentColor = Color(props.backgroundColor).rgb().string()
     // 注意这里用的是colorChangeTransitionValue
     backgroundColor = colorChangeTransitionValue.interpolate({
       inputRange: [0, 1],

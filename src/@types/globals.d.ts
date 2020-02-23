@@ -2,7 +2,6 @@
 
 declare namespace NodeJS { 
   interface Global extends __ReactNative.Global {
-    $colors: { [Name in 'primary' | 'dark' | 'light' | 'accent' | 'text' | 'secondary' | 'divider']: string }
     $avatarUrl: string
     $isVisibleLoading: boolean
     $drawer: {
@@ -15,7 +14,6 @@ declare namespace NodeJS {
   }
 }
 
-declare const $colors: NodeJS.Global['$colors']
 declare const $avatarUrl: NodeJS.Global['$avatarUrl']
 declare const $isVisibleLoading: NodeJS.Global['$isVisibleLoading']
 declare const $drawer: NodeJS.Global['$drawer']
@@ -28,7 +26,8 @@ declare interface Window {
   _request (config: object, callback: (data: any) => void): void
   _request_id: number
   _appConfig: __AppUserConfig.__
-  _colors: NodeJS.Global['$colors']
+  _colors: __Theme.Colors
+  _themeColors: __Theme.ThemeColors
   _categories: string[]
 }
 

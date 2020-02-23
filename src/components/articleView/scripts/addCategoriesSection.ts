@@ -17,11 +17,13 @@ export default function() {
   $('head').append(`<style>
     .categoryBox {
       display: inline-block;
-      padding: 5px 10px;
+      height: 30px;
+      line-height: 30px;
+      padding: 0 10px;
       margin: 2px 2.5px;
-      background-color: ${window._colors.primary};
+      background-color: ${window._appConfig.theme === 'night' ? window._colors.night.primary : window._themeColors.primary};
       border-radius: 20px;
-      color: white;
+      color: ${window._appConfig.theme === 'night' ? window._colors.night.text : 'white'};
     }
   </style>`)
 }

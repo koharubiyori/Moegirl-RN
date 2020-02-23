@@ -13,7 +13,7 @@ import Header, { ArticleHeaderRef } from './components/Header'
 import { ArticleApiData } from '~/api/article.d'
 import store from '~/redux'
 import { getUserInfo } from '~/redux/user/HOC'
-import color from 'color'
+import Color from 'color'
 import { useTheme } from 'react-native-paper'
 
 export interface Props {
@@ -233,7 +233,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
     color: string
   }
   function setThemeByArticleMainColor(mainColor: ArticleMainColor) {
-    const blackText = color(mainColor.color).isDark()
+    const blackText = Color(mainColor.color).isDark()
     setThemeColor({ backgroundColor: mainColor.backgroundColor, blackText })
   }
 
@@ -247,9 +247,10 @@ function Article(props: PropsWithChildren<FinalProps>) {
     backgroundColor: themeColor.backgroundColor,
     textColor: themeColor.blackText ? 'black' : 'white'
   }
+
   return (
     <CatalogTriggerView 
-      {...themeColorProps}
+      {...(props.state.config.theme === 'night' ? { backgroundColor: themeColor.backgroundColor, textColor: theme.colors.text } : themeColorProps)}
       immersionMode={config.immersionMode}
       items={loadedPageInfo.catalogItems} 
       onPressTitle={articleViewIntoAnchor} 
@@ -261,7 +262,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
           ...styles.header, 
           top: config.immersionMode ? -statusBarHeight : 0
         }} 
-        {...themeColorProps}
+        {...(props.state.config.theme === 'night' ? { backgroundColor: themeColor.backgroundColor, textColor: theme.colors.text } : themeColorProps)}
         navigation={props.navigation} 
         title={loadedPageInfo.pageName} 
         disabledMoreBtn={disabledMoreBtn}
@@ -274,7 +275,10 @@ function Article(props: PropsWithChildren<FinalProps>) {
         style={{ flex: 1 }} 
         navigation={props.navigation}
         link={link} 
-        injectStyle={['article']}
+        injectStyle={[
+          'article',
+          ...(props.state.config.theme === 'night' ? ['nightMode'] : []) as any
+        ]}
         injectJs={articleViewInjectJs}
         onMessages={{ changeHeaderVisible: setVisibleHeader, getArticleMainColor: setThemeByArticleMainColor }}
         onLoaded={contentLoaded}
@@ -284,7 +288,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
 
       {loadedPageInfo.id && isVisibleComment() ? <CommentButton 
         id={loadedPageInfo.id}
-        {...(props.state.config.theme === 'night' ? { backgroundColor: theme.colors.accent, textColor: 'white' } : themeColorProps)}
+        {...(props.state.config.theme === 'night' ? { backgroundColor: theme.colors.primary, textColor: theme.colors.text } : themeColorProps)}
         onPress={toComment}
         getRef={refs.commentButton}
       /> : null } 

@@ -34,7 +34,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
       title: '选择皮肤',
       options: themeOptions,
       defaultSelected: props.state.config.theme,
-      onChange (value) {
+      onChange(value) {
         setConfig({ theme: value as any })
         setThemeColor(value as any)
         if (value === 'night' && props.state.config.changeThemeColorByArticleMainColor) {

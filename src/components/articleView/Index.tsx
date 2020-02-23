@@ -1,4 +1,4 @@
-import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState } from 'react'
+import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState, FC } from 'react'
 import { ActivityIndicator, BackHandler, Dimensions, Linking, NativeModules, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
 import { WebView } from 'react-native-webview'
 import articleApi from '~/api/article'
@@ -14,15 +14,18 @@ import hmoeControlsCodeString from './controls/hmoe'
 import { ArticleApiData } from '~/api/article.d'
 import homeStyleSheet from './styles/home'
 import articleStyleSheet from './styles/article'
+import nightModeStyleSheet from './styles/nightMode'
 import hmoeHomeStyleSheet from './styles/hmoeHome'
 import { DOMParser } from 'react-native-html-parser'
 import { useTheme } from 'react-native-paper'
 import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
+import { colors } from '~/theme'
 
 const styleSheets = {
   home: homeStyleSheet,
   article: articleStyleSheet,
-  hmoeHome: hmoeHomeStyleSheet
+  nightMode: nightModeStyleSheet,
+  hmoeHome: hmoeHomeStyleSheet,
 }
 
 export type InjectStyleSheetName = keyof typeof styleSheets
@@ -40,7 +43,7 @@ export interface Props {
   onMessages?: { [msgName: string]: (data: any) => void }
   onLoaded? (articleData: ArticleApiData.GetContent): void
   onMissing? (link: string): void
-  getRef: MutableRefObject<any>
+  getRef?: MutableRefObject<any>
 }
 
 export interface ArticleViewRef {
@@ -166,7 +169,11 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           window._appConfig = ${JSON.stringify(config.current || {})}
-          window._colors = ${JSON.stringify(theme.colors)}
+          window._themeColors = ${JSON.stringify({
+            moegirl: colors.green,
+            hmoe: colors.pink
+          }[config.current.currentSite])}
+          window._colors = ${JSON.stringify(colors)}
           ${categories ? ('window._categories = ' + JSON.stringify(categories)) : ''}
           $(function(){ 
             ${injectJsCodes};
@@ -399,7 +406,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           {{
             0: () => 
               <TouchableOpacity onPress={() => loadContent(true)}>
-                <Text style={{ fontSize: 18, color: theme.colors.primary }}>重新加载</Text>
+                <Text style={{ fontSize: 18, color: theme.colors.accent }}>重新加载</Text>
               </TouchableOpacity>,
             1: () => null,
             2: () => <ActivityIndicator color={theme.colors.accent} size={50} />,
@@ -411,7 +418,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default configHOC(articleViewHOC(userHOC(ArticleView)))
+export default configHOC(articleViewHOC(userHOC(ArticleView))) as FC<Props>
 
 const styles = StyleSheet.create({
   mask: {

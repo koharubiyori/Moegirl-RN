@@ -62,7 +62,7 @@ function CodeEdit(props: PropsWithChildren<FinalProps>) {
       {({
         0: () => 
           <TouchableOpacity onPress={loadCode}>
-            <Text style={{ fontSize: 16, color: theme.colors.primary }}>重新加载</Text>
+            <Text style={{ fontSize: 16, color: theme.colors.accent }}>重新加载</Text>
           </TouchableOpacity>,
         1: () => null, 
         2: () => <ActivityIndicator color={theme.colors.accent} size={50} />,

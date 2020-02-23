@@ -5,7 +5,7 @@ export default function() {
     if (window._appConfig.heimu) {
       $(this).data('unTapped', true)
       $(this).one('click', e => {
-        $(this).css('color', 'white').find('a').css('color', '#5BCEFF')
+        $(this).addClass('heimu-tapped')
         if ($(this).data('unTapped')) {
           $(this).data('unTapped', false)
           e.preventDefault()
@@ -13,7 +13,7 @@ export default function() {
         }
       })
     } else {
-      $(this).css('color', 'white').find('a').css('color', '#5BCEFF')
+      $(this).addClass('heimu-tapped')
     }
 
   })

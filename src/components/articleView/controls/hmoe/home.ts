@@ -6,6 +6,6 @@ export default function() {
     let link = aTag.attr('href')
     let title = aTag.text()
     aTag.remove()
-    $(this).wrap(`<a href="${link}">`).find('.mainpage-page-intro').append(`<span style="color:${window._colors.primary}">${title}</span>`)
+    $(this).wrap(`<a href="${link}">`).find('.mainpage-page-intro').append(`<span style="color:${window._themeColors.primary}">${title}</span>`)
   })
 }

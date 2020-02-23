@@ -13,7 +13,7 @@ export interface ShowFnOptions {
   defaultSelected: string | number
   checkText?: string
   onPressCheck?(value: string | number): void
-  onClose?(): void
+  onClose?(value: string | number): void
   onChange?(value: string | number): void
 }
 
@@ -33,7 +33,7 @@ function OptionsSheet(props: PropsWithChildren<FinalProps>) {
     options: [] as ShowFnOptions['options'],
     checkText: '',
     onPressCheck: (() => {}) as ShowFnOptions['onPressCheck'],
-    onClose: () => {},
+    onClose: (() => {}) as ShowFnOptions['onClose'],
     onChange: (() => {}) as ShowFnOptions['onChange']
   })
 
@@ -57,7 +57,7 @@ function OptionsSheet(props: PropsWithChildren<FinalProps>) {
   }
 
   function hide() {
-    params.onClose()
+    params.onClose && params.onClose(selected)
     setVisible(false)
   }
 
