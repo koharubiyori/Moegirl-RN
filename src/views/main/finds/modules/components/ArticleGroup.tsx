@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
-import { ActivityIndicator, Image, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
-import { useTheme } from 'react-native-paper'
+import { ActivityIndicator, Image, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { useTheme, Surface, Text } from 'react-native-paper'
 
 export interface ArticleGroupArticle {
   title: string
@@ -24,8 +24,16 @@ export default function ArticleGroup(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
   
   return (
-    <View style={{ ...styles.container, ...(props.style as any) }}>
-      <View style={{ ...styles.header, borderBottomWidth: props.status === 3 || props.status === 4 ? 1 : 0 }}>
+    <Surface style={{ 
+      ...styles.container, 
+      backgroundColor: theme.colors.surface,
+      ...(props.style as any) 
+    }}>
+      <View style={{ 
+        ...styles.header, 
+        borderBottomColor: theme.colors.placeholder,
+        borderBottomWidth: props.status === 3 || props.status === 4 ? 1 : 0 
+      }}>
         <View style={{ height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {props.icon}
@@ -34,11 +42,11 @@ export default function ArticleGroup(props: PropsWithChildren<FinalProps>) {
 
           {!props.subtitle ? null : <>
             <View style={{ justifyContent: 'center', marginLeft: 10, flex: 1 }}>
-              <Text style={{ color: '#ABABAB', fontSize: 13 }} numberOfLines={1}>{props.subtitle}</Text>
+              <Text style={{ color: theme.colors.placeholder, fontSize: 13 }} numberOfLines={1}>{props.subtitle}</Text>
             </View>
           </>}
 
-          {props.status === 2 ? <ActivityIndicator color={theme.colors.primary} size={26} style={{ marginLeft: 10 }} /> : null}
+          {props.status === 2 ? <ActivityIndicator color={theme.colors.accent} size={26} style={{ marginLeft: 10 }} /> : null}
         </View>
       </View>
 
@@ -53,14 +61,14 @@ export default function ArticleGroup(props: PropsWithChildren<FinalProps>) {
         )}</View>
       </> : null}
 
-      {props.status === 4 ? <Text style={{ marginVertical: 20, color: '#ABABAB', textAlign: 'center' }}>暂无相关条目</Text> : null}
+      {props.status === 4 ? <Text style={{ marginVertical: 20, color: theme.colors.placeholder, textAlign: 'center' }}>暂无相关条目</Text> : null}
 
       {props.status === 0 ? <>
         <TouchableOpacity onPress={props.onPressReload}>
           <Text style={{ marginVertical: 20, color: theme.colors.primary, textAlign: 'center' }}>重新加载</Text>
         </TouchableOpacity>  
       </> : null}
-    </View>
+    </Surface>
   )
 }
 
@@ -68,17 +76,14 @@ const styles = StyleSheet.create({
   container: {
     margin: 10,
     elevation: 2,
-    backgroundColor: 'white',
     borderRadius: 3
   },
 
   header: {
     paddingHorizontal: 10,
-    borderBottomColor: '#ccc'
   },
 
   item: {
-    backgroundColor: 'white',
     paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',

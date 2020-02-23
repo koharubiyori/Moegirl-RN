@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import Button from '~/components/Button'
-import { useTheme } from 'react-native-paper'
+import { useTheme, Text } from 'react-native-paper'
 
 export interface Props {
   data: any
@@ -44,7 +44,7 @@ export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
   const content = contentFormat(props.data.snippet)
 
   return (
-    <Button contentContainerStyle={styles.container} noLimit={false} rippleColor={theme.colors.primary}
+    <Button contentContainerStyle={{ ...styles.container, backgroundColor: theme.colors.surface }} noLimit={false} rippleColor={theme.colors.accent}
       onPress={() => props.onPress(props.data.title)}
     >
       <View style={styles.title}>
@@ -55,12 +55,12 @@ export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
         {subInfo()}
       </View>
 
-      <View style={{ ...styles.content, borderColor: theme.colors.primary }}>
-        <Text style={{ color: content ? 'black' : '#ABABAB' }}>{content || '页面内貌似没有内容呢...'}</Text>
+      <View style={{ ...styles.content, borderColor: theme.colors.accent }}>
+        <Text style={{ color: content ? 'black' : theme.colors.disabled }}>{content || '页面内貌似没有内容呢...'}</Text>
       </View>
 
       <View style={styles.footer}>
-        <Text style={{ textAlign: 'right', color: '#666' }}>最后更新于：{props.data.timestamp.split('T')[0]}</Text>
+        <Text style={{ textAlign: 'right', color: theme.colors.disabled }}>最后更新于：{props.data.timestamp.split('T')[0]}</Text>
       </View>
     </Button>
   )
@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
     padding: 5,
     marginTop: 10,
     marginHorizontal: 10,
-    backgroundColor: 'white',
     elevation: 2,
   },
 

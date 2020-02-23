@@ -1,6 +1,6 @@
 import React, { MutableRefObject, PropsWithChildren, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { Button, Dialog, TextInput } from 'react-native-paper'
+import { StyleSheet } from 'react-native'
+import { Button, Dialog, Text, TextInput, useTheme } from 'react-native-paper'
 
 export interface Props {
   getRef: MutableRefObject<any>
@@ -25,6 +25,7 @@ export interface ShowFnOptions {
 type FinalProps = Props
 
 function Confirm(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [visible, setVisible] = useState(false)
   const [params, setParams] = useState<ShowFnOptions>({
     title: '',
@@ -84,7 +85,9 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
             value={inputVal} 
             placeholder={params.inputPlaceholder} 
             onChangeText={setInputVal}
-            style={styles.input}
+            style={{
+              backgroundColor: 'transparent'
+            }}
           />
         </> : null}
       </Dialog.Content>
@@ -94,7 +97,7 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
         </Button>
         
         <Button onPress={() => params.onPressCheck && params.onPressCheck(inputVal)}>
-          <Text style={{ fontSize: 16 }}>{params.checkText}</Text>
+          <Text style={{ fontSize: 16, color: theme.colors.accent }}>{params.checkText}</Text>
         </Button>
       </Dialog.Actions>
     </Dialog>
@@ -104,7 +107,5 @@ function Confirm(props: PropsWithChildren<FinalProps>) {
 export default Confirm
 
 const styles = StyleSheet.create({
-  input: {
-    backgroundColor: 'white'
-  }
+
 })

@@ -8,6 +8,7 @@ import Header from './components/Header'
 import TabNavigator from './components/TabNavigator'
 import { useTheme } from 'react-native-paper'
 import SubmitDialog from './components/SubmitDialog'
+import ViewContainer from '~/components/ViewContainer'
 
 export interface Props {
 
@@ -60,20 +61,28 @@ function Edit(props: PropsWithChildren<FinalProps>) {
       if (global.$isVisibleLoading) {
         return true
       } else {
-        const { params } = refs.tabNavigator.current.state.nav.routes[0]
-        if (params && params.isContentChanged) {
-          $dialog.confirm.show({
-            content: '编辑还未保存，确定要放弃编辑的内容？',
-            onPressCheck: () => props.navigation.goBack()
-          })
-    
-          return true
-        }
+        return checkAllowBack()
       }
     })
 
     return () => listener.remove()
   })
+
+  function checkAllowBack() {
+    if (global.$isVisibleLoading) {
+      return true
+    } else {
+      const { params } = refs.tabNavigator.current.state.nav.routes[0]
+      if (params && params.isContentChanged) {
+        $dialog.confirm.show({
+          content: '编辑还未保存，确定要放弃编辑的内容？',
+          onPressCheck: () => props.navigation.goBack()
+        })
+  
+        return true
+      }
+    }
+  }
 
   // 监听tab导航容器的状态变化，在编辑器内容变更且用户查看预览时refresh预览视图
   function navigationStateChange(prevState: NavigationState, state: NavigationState) {
@@ -128,9 +137,9 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   }
   
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <ViewContainer>
       <StatusBar />
-      <Header title={title} navigation={props.navigation} onPressDoneBtn={showSubmitDialog} />
+      <Header title={title} onPressBack={checkAllowBack} onPressDoneBtn={showSubmitDialog} />
       <TabNavigator 
         screenProps={{ title, section, isCreate, content }}
         onNavigationStateChange={navigationStateChange}
@@ -143,7 +152,7 @@ function Edit(props: PropsWithChildren<FinalProps>) {
         onDismiss={() => setVisibleSubmitDialog(false)}
         onSubmit={submit}
       />
-    </View>
+    </ViewContainer>
   )
 }
 

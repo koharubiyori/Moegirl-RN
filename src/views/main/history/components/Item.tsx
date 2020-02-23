@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from 'react'
-import { Image, StyleSheet, Text } from 'react-native'
+import { Image, StyleSheet } from 'react-native'
 import Button from '~/components/Button'
 import { BrowsingHistoryWithViewDate } from '../index'
-import { useTheme } from 'react-native-paper'
+import { useTheme, Surface, Text } from 'react-native-paper'
 
 export interface Props {
   data: BrowsingHistoryWithViewDate
@@ -15,7 +15,7 @@ export default function HistoryItem(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
   
   return (
-    <Button contentContainerStyle={styles.container} noLimit={false} rippleColor={theme.colors.primary}
+    <Button contentContainerStyle={{ ...styles.container, backgroundColor: theme.colors.surface }} noLimit={false} rippleColor={theme.colors.accent}
       onPress={() => props.onPress(props.data.title)}
     >
       <Image source={props.data.img || require('~/assets/images/moemoji.png')} resizeMode="cover" style={{ width: 60, height: 70, position: 'absolute', top: 5, left: 5 }} />
@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     padding: 3,
     marginVertical: 5,
     marginHorizontal: 10,
-    backgroundColor: 'white',
     elevation: 2,
     borderRadius: 1
   }

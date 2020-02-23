@@ -6,6 +6,8 @@ import Item from './components/Item'
 import Editor, { CommentEditorRef } from './components/Editor'
 import Header from './components/Header'
 import format from './utils/format'
+import ViewContainer from '~/components/ViewContainer'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -18,6 +20,7 @@ export interface RouteParams {
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & CommentConnectedProps
 
 function CommentReply(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [replyId, setReplyId] = useState('')
   const refs = {
     editor: useRef<CommentEditorRef>()
@@ -47,7 +50,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
   const children = format.children(activeComment.children, state.activeId)
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#eee' }}>
+    <ViewContainer grayBgColor>
       <StatusBar />
       <Header title={'回复：' + activeComment.username} onPressAddComment={addReply} navigation={props.navigation} />
       <Editor getRef={refs.editor}
@@ -67,7 +70,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
             signedName={signedName} 
             onDel={delCommentData}
           />
-          {children.length !== 0 ? <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginVertical: 10 }}>回复</Text> : null}
+          {children.length !== 0 ? <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginVertical: 10 }}>回复</Text> : null}
         </View>
         
         {children.map(item => <Item isReply visibleReply={false} visibleReplyNum={false}
@@ -79,11 +82,11 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
           onPressReply={() => addReply(item.id)}
         />)}
 
-        <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>
+        <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>
           {children.length === 0 ? '还没有回复哦' : '已经没有啦'}
         </Text>
       </ScrollView>
-    </View>
+    </ViewContainer>
   )
 }
 

@@ -6,6 +6,7 @@ import Header from '../components/Header'
 import Item from './components/Item'
 import Title from './components/Title'
 import { useTheme } from 'react-native-paper'
+import ViewContainer from '~/components/ViewContainer'
 
 export interface Props {
 
@@ -93,16 +94,16 @@ function Finds(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <ViewContainer>
       <Header title="浏览历史" />
       {{
         0: () => 
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#eee' }}>
-            <Text style={{ color: '#666', fontSize: 18 }}>暂无记录</Text>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ color: theme.colors.placeholder, fontSize: 18 }}>暂无记录</Text>
           </View>,
         1: () => null,
         2: () => 
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#eee' }}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator color={theme.colors.primary} size={50} />
           </View>,
         3: () =>
@@ -125,7 +126,7 @@ function Finds(props: PropsWithChildren<FinalProps>) {
             <View style={{ height: 10 }} />
           </ScrollView>
       }[status]()}
-    </View>
+    </ViewContainer>
   )
 }
 

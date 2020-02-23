@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, PropsWithChildren, FC } from 'react'
-import { View, Text, StyleSheet, Image, TouchableNativeFeedback, TouchableOpacity } from 'react-native'
+import React, { PropsWithChildren } from 'react'
+import { Image, StyleSheet, TouchableNativeFeedback, TouchableOpacity, View } from 'react-native'
+import { Text, useTheme } from 'react-native-paper'
 import { NotificationData } from '~/api/notification.d'
 import format from '~/views/comment/utils/format'
-import { useTheme } from 'react-native-paper'
 
 export interface Props {
   notificationData: NotificationData
@@ -33,7 +33,7 @@ function NotificationItem(props: PropsWithChildren<FinalProps>) {
   
   return (
     <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(theme.colors.primary)} onPress={props.onPress}>
-      <View style={styles.container}>
+      <View style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', }}>
           {!props.notificationData.read ? <View style={styles.badge} /> : null} 
 
@@ -42,11 +42,13 @@ function NotificationItem(props: PropsWithChildren<FinalProps>) {
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Text numberOfLines={1}>{strongTagToRnBoldText(props.notificationData['*'].header)}</Text>
-            <Text style={{ fontSize: 13, marginTop: 5, color: '#ABABAB' }} numberOfLines={2}>{props.notificationData['*'].body || props.notificationData['*'].compactHeader}</Text>
+            <Text style={{ fontSize: 13, marginTop: 5, color: theme.colors.placeholder }} numberOfLines={2}>
+              {props.notificationData['*'].body || props.notificationData['*'].compactHeader}
+            </Text>
           </View>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <Text style={{ color: '#ABABAB' }}>{format.date(parseInt(props.notificationData.timestamp.unix))}</Text>
+          <Text style={{ color: theme.colors.placeholder }}>{format.date(parseInt(props.notificationData.timestamp.unix))}</Text>
         </View>
       </View>
     </TouchableNativeFeedback>
@@ -59,8 +61,7 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 1,
     paddingVertical: 5,
-    paddingHorizontal: 10,
-    backgroundColor: 'white'
+    paddingHorizontal: 10
   },
 
   avatar: {

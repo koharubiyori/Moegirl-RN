@@ -10,6 +10,7 @@ import SearchHint from './components/SearchHint'
 import RecentSearch from './components/RecentSearch'
 import storage from '~/utils/storage'
 import searchApi from '~/api/search'
+import ViewContainer from '~/components/ViewContainer'
 
 export interface Props {
 
@@ -68,7 +69,7 @@ function Search(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <ViewContainer>
       <StatusBar blackText />
       <Header value={searchWord} 
         onChangeText={changeText} 
@@ -82,7 +83,7 @@ function Search(props: PropsWithChildren<FinalProps>) {
           onPressTitle={toSearchResultView}
         />
       }
-    </View>
+    </ViewContainer>
   )
 }
 

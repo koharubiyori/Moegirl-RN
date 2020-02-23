@@ -3,6 +3,7 @@ import { Animated, Modal, StyleSheet, Text, TextInput, TouchableOpacity, Touchab
 import { postComment } from '~/api/comment'
 import toast from '~/utils/toast'
 import { withNavigation } from 'react-navigation'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   targetId?: string
@@ -19,6 +20,7 @@ export interface CommentEditorRef {
 type FinalProps = Props & __Navigation.InjectedNavigation
 
 function CommentEditor(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [visible, setVisible] = useState(false)
   const [inputText, setInputText] = useState('')
   const [transitionOpacity] = useState(new Animated.Value(0))
@@ -84,8 +86,8 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
     <Modal transparent visible={visible} onRequestClose={close}>
       <TouchableWithoutFeedback onPress={tapMaskToCloseSelf}>
         <Animated.View style={{ ...styles.container, opacity: transitionOpacity }} ref={refs.mask}>
-          <Animated.View style={{ ...styles.body, transform: [{ translateY: transitionTranslateY }] }}>
-            <TextInput style={styles.input} multiline disableFullscreenUI autoCorrect={false}
+          <Animated.View style={{ ...styles.body, backgroundColor: theme.colors.background, transform: [{ translateY: transitionTranslateY }] }}>
+            <TextInput style={{ ...styles.input, borderColor: theme.colors.placeholder }} multiline disableFullscreenUI autoCorrect={false}
               placeholder="说点什么吧..."
               textAlignVertical="top" 
               onChangeText={setInputText}
@@ -94,7 +96,8 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
             
             <View style={{ marginTop: 10 }}>
               <TouchableOpacity onPress={submit} disabled={inputText.length === 0}>
-                <Text style={{ color: inputText.length === 0 ? '#ccc' : '#666', fontSize: 17, marginBottom: 10 }}>提交</Text>
+                {/* 这里颜色是正确的，但不符合语义 */}
+                <Text style={{ color: theme.colors[inputText.length ? 'disabled' : 'placeholder'], fontSize: 17, marginBottom: 10 }}>提交</Text>
               </TouchableOpacity>
             </View>
           </Animated.View>
@@ -121,14 +124,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 15,
     flexDirection: 'row',
-    backgroundColor: 'white',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10
   },
 
   input: {
     flex: 1,
-    borderColor: '#ccc',
     borderWidth: 1,
     marginRight: 7,
     borderRadius: 10,

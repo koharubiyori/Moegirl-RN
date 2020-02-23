@@ -1,12 +1,13 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View, LayoutAnimation, RefreshControl } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View, LayoutAnimation, RefreshControl } from 'react-native'
 import notificationApi from '~/api/notification'
 import { NotificationData } from '~/api/notification.d'
 import Toolbar from '~/components/Toolbar'
 import Item from './components/Item'
 import { markReadAllNotifications } from '~/redux/user/HOC'
 import StatusBar from '~/components/StatusBar'
-import { useTheme } from 'react-native-paper'
+import { useTheme, Text } from 'react-native-paper'
+import ViewContainer from '~/components/ViewContainer'
 
 export interface Props {
 
@@ -20,7 +21,7 @@ type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 
 type NotificationList = {
   list: NotificationData[]
-  status: number
+  status: 0 | 1 | 2 | 3 | 4 | 5
   continue: string | null
 }
 
@@ -65,7 +66,7 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
   }
   
   return (
-    <View style={{ flex: 1, backgroundColor: '#eee' }}>
+    <ViewContainer grayBgColor>
       <StatusBar />  
       <Toolbar
         title="通知"
@@ -85,23 +86,26 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
         />}
 
         refreshControl={<RefreshControl 
-          colors={[theme.colors.primary]} 
+          colors={[theme.colors.accent]} 
           onRefresh={() => load(true)} 
           refreshing={false} 
         />}
 
-        ListFooterComponent={(({
+        ListFooterComponent={{
           0: () => 
             <TouchableOpacity onPress={() => load()}>
               <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
                 <Text>加载失败，点击重试</Text>
               </View>
             </TouchableOpacity>,
-          2: () => <ActivityIndicator color={theme.colors.primary} size={50} style={{ marginVertical: 10 }} />,
-          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
-        } as { [status: number]: () => JSX.Element | null })[notificationList.status] || (() => {}))()}
+          1: () => null,
+          2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
+          3: () => null,
+          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
+          5: () => null
+        }[notificationList.status]()}
       />
-    </View>
+    </ViewContainer>
   )
 }
 

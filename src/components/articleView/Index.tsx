@@ -395,14 +395,14 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
       
       {/* 这个遮罩覆盖上面的webView */}
       {status !== 3 ? <>
-        <View style={styles.mask}>
+        <View style={{ ...styles.mask, backgroundColor: theme.colors.background }}>
           {{
             0: () => 
               <TouchableOpacity onPress={() => loadContent(true)}>
                 <Text style={{ fontSize: 18, color: theme.colors.primary }}>重新加载</Text>
               </TouchableOpacity>,
             1: () => null,
-            2: () => <ActivityIndicator color={theme.colors.primary} size={50} />,
+            2: () => <ActivityIndicator color={theme.colors.accent} size={50} />,
             3: () => null
           }[status]()}
         </View>

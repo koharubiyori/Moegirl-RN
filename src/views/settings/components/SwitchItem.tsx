@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
-import { StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native'
-import { Switch, useTheme } from 'react-native-paper'
+import { StyleSheet, TouchableNativeFeedback, View } from 'react-native'
+import { Switch, Text, useTheme } from 'react-native-paper'
 
 export interface Props {
   title: string
@@ -23,15 +23,14 @@ export default function SettingItem(props: PropsWithChildren<FinalProps>) {
   
   return (
     <TouchableNativeFeedback onPress={() => { props.onChange && props.onChange(!props.value); props.onPress && props.onPress() }}>
-      <View style={styles.container}>
+      <View style={{ ...styles.container, borderBottomColor: theme.colors.lightBg }}>
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 16 }}>{props.title}</Text>
-          {props.subtext ? <Text style={{ fontSize: 12, color: '#ABABAB', marginTop: 5 }}>{props.subtext}</Text> : null}
+          {props.subtext ? <Text style={{ fontSize: 12, color: theme.colors.disabled, marginTop: 5 }}>{props.subtext}</Text> : null}
         </View>
 
         {!props.hideSwitch ? <>
           <Switch 
-            color={theme.colors.primary}
             value={props.value} 
             onValueChange={props.onChange}
           />
@@ -46,7 +45,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 15,
-    borderBottomColor: '#eee',
     borderBottomWidth: 1
   }
 })

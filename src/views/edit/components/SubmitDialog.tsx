@@ -1,6 +1,6 @@
-import React, { PropsWithChildren, useState } from 'react'
-import { StyleSheet, Text } from 'react-native'
-import { Button, Dialog, TextInput, HelperText } from 'react-native-paper'
+import React, { PropsWithChildren } from 'react'
+import { StyleSheet } from 'react-native'
+import { Button, Dialog, HelperText, TextInput, useTheme, Text, DefaultTheme } from 'react-native-paper'
 import { maxSummaryLength } from '../index'
 
 export interface Props {
@@ -14,6 +14,8 @@ export interface Props {
 type FinalProps = Props
 
 function EditSubmitDialog(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
+  
   return (
     <Dialog
       visible={props.visible}
@@ -23,23 +25,27 @@ function EditSubmitDialog(props: PropsWithChildren<FinalProps>) {
       <Dialog.Title>保存编辑</Dialog.Title>
       <Dialog.Content>
         <TextInput autoFocus
+          theme={{ ...DefaultTheme, colors: { ...theme.colors, primary: theme.colors.accent } }}
           maxLength={maxSummaryLength}
           value={props.value} 
           placeholder="请输入摘要" 
           onChangeText={props.onChangeText}
-          style={styles.input}
+          selectionColor={theme.colors.accent}
+          style={{
+            backgroundColor: 'transparent'
+          }}
         />
         <HelperText>
           还能输入{maxSummaryLength - props.value.length}个字
         </HelperText>
       </Dialog.Content>
       <Dialog.Actions>
-        <Button onPress={props.onDismiss} style={{ marginRight: 10 }} color="#ccc">
-          <Text style={{ fontSize: 16 }}>取消</Text>
+        <Button onPress={props.onDismiss} style={{ marginRight: 10 }} color={theme.colors.placeholder}>
+          <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>取消</Text>
         </Button>
         
         <Button onPress={props.onSubmit}>
-          <Text style={{ fontSize: 16 }}>提交</Text>
+          <Text style={{ fontSize: 16, color: theme.colors.accent }}>提交</Text>
         </Button>
       </Dialog.Actions>
     </Dialog>
@@ -50,6 +56,6 @@ export default EditSubmitDialog
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: 'white'
+    backgroundColor: 'transparent'
   }
 })

@@ -5,6 +5,7 @@ import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
 import toast from '~/utils/toast'
 import color from 'color'
+import { colors } from '~/theme'
 
 export interface Props {
   title: string
@@ -106,7 +107,10 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
   // 在因执行show或hide改变transitionValue时，进行颜色值映射
   let backgroundColor = transitionValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [color(props.backgroundColor).rgb().string(), 'rgb(255, 255, 255)']
+    outputRange: [
+      color(props.backgroundColor).rgb().string(), 
+      props.state.config.theme === 'night' ? color(colors.night.primary).rgb().string() : 'rgb(255, 255, 255)'
+    ]
   })
   // 在通过获取条目的主题色从而改变颜色时，对backgroundColor重新赋值
   if (props.backgroundColor !== lastProps.current.backgroundColor) {
@@ -165,15 +169,6 @@ export default configHOC(userHOC(ArticleHeader)) as FC<Props>
 const styles = StyleSheet.create({
   body: {
     zIndex: 1
-  },
-  
-  title: {
-    color: 'white',
-    fontSize: 18,
-    marginLeft: 10,
-    marginTop: 5,
-    flexShrink: 1,
-    maxWidth: Dimensions.get('window').width / 2
   },
 
   rightBtnContainer: {

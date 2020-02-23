@@ -1,14 +1,13 @@
-import React, { PropsWithChildren, useRef, FC } from 'react'
+import React, { FC, PropsWithChildren, useRef } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useTheme } from 'react-native-paper'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import * as commentApi from '~/api/comment'
-import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
+import { CommentConnectedProps, commentHOC } from '~/redux/comment/HOC'
 import toast from '~/utils/toast'
 import format from '../utils/format'
-import { CommentData } from '~/api/comment.d'
-import { useTheme } from 'react-native-paper'
 
 export interface Props {
   data: any
@@ -102,22 +101,22 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
   const { myatt: isLiked, like: likeNum } = data
   const formattedChildren = format.children(data.children || [], data.id)
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
       <View style={styles.header}>
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => props.onPressAvatar && props.onPressAvatar(data.username)}>
-              <Image source={{ uri: $avatarUrl + data.username }} style={styles.avatar} />
+              <Image source={{ uri: $avatarUrl + data.username }} style={{ ...styles.avatar, backgroundColor: theme.colors.lightBg }} />
             </TouchableOpacity>
             <View>
               <Text>{data.username}</Text>
-              <Text style={{ color: '#ABABAB', marginTop: 3 }}>{format.date(data.timestamp)}</Text>
+              <Text style={{ color: theme.colors.disabled, marginTop: 3 }}>{format.date(data.timestamp)}</Text>
             </View>
           </View>
 
           {props.visibleDelBtn && props.data.username === props.signedName ? <>
             <TouchableOpacity onPress={del}>
-              <MaterialIcon name="clear" color="#ccc" size={iconSize} />
+              <MaterialIcon name="clear" color={theme.colors.placeholder} size={iconSize} />
             </TouchableOpacity>
           </> : null}
         </View>
@@ -126,9 +125,9 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
       <View style={styles.main}>
         <Text>
           {props.data.targetName ? <>
-            <Text style={{ color: '#ABABAB' }}>
+            <Text style={{ color: theme.colors.disabled }}>
               <Text>回复 </Text>
-              <Text style={{ color: '#007ACC' }}>{props.data.targetName}：  </Text>
+              <Text style={{ color: theme.colors.accent }}>{props.data.targetName}：</Text>
             </Text>
           </> : null}
           
@@ -137,14 +136,14 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
       </View>
 
       {props.visibleReply && props.data.children && props.data.children.length !== 0 ? <>
-        <View style={styles.reply}>
+        <View style={{ ...styles.reply, backgroundColor: theme.colors.lightBg }}>
           {formattedChildren.filter((_, ind) => ind < 3).map(item =>
             <View key={item.id} style={{ marginVertical: 2 }}>
               <Text>
-                <Text style={{ color: '#007ACC' }}>{item.username}</Text>
+                <Text style={{ color: theme.colors.accent }}>{item.username}</Text>
                 {item.targetName ? <Text> 回复 </Text> : null}
-                {item.targetName ? <Text style={{ color: '#007ACC' }}>{item.targetName}</Text> : null}
-                <Text style={{ color: '#007ACC' }}>：</Text>
+                {item.targetName ? <Text style={{ color: theme.colors.accent }}>{item.targetName}</Text> : null}
+                <Text style={{ color: theme.colors.accent }}>：</Text>
                 <Text>{format.content(item.text)}</Text>
               </Text>
             </View>
@@ -152,7 +151,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
 
           {formattedChildren.length > 3
             ? <TouchableOpacity onPress={() => props.onPressReply && props.onPressReply(data.id)}>
-              <Text style={{ color: '#666', textAlign: 'center', marginTop: 10 }}>查看更多</Text>
+              <Text style={{ color: theme.colors.disabled, textAlign: 'center', marginTop: 10 }}>查看更多</Text>
             </TouchableOpacity>
             : null}
         </View>
@@ -162,7 +161,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
         <TouchableOpacity style={{ ...styles.footerItem, position: 'relative', top: 1 }} 
           onPress={toggleLike}
         >
-          {likeNum === 0 ? <AntDesignIcon name="like2" color="#ccc" size={iconSize} /> : null}
+          {likeNum === 0 ? <AntDesignIcon name="like2" color={theme.colors.placeholder} size={iconSize} /> : null}
           {likeNum > 0 && !isLiked ? <AntDesignIcon name="like2" color={theme.colors.accent} size={iconSize} /> : null}
           {isLiked ? <AntDesignIcon name="like1" color={theme.colors.accent} size={iconSize} /> : null}
           {likeNum > 0 ? <Text style={{ color: theme.colors.accent, marginLeft: 5 }}>{likeNum}</Text> : null}
@@ -173,7 +172,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
             onPress={() => props.onPressReply && props.onPressReply(data.id)}
           >
             {!props.visibleReplyNum || data.children.length === 0 
-              ? <FontAwesomeIcon name="comment-o" color="#ccc" size={iconSize} />
+              ? <FontAwesomeIcon name="comment-o" color={theme.colors.placeholder} size={iconSize} />
               : <>
                 <FontAwesomeIcon name="comment" color={theme.colors.accent} size={iconSize} />
                 <Text style={{ color: theme.colors.accent, marginLeft: 5 }}>{data.children.length}</Text>
@@ -183,7 +182,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
         </> : null}
 
         <TouchableOpacity style={styles.footerItem} onPress={report}>
-          <AntDesignIcon name="flag" color="#ccc" size={iconSize} /> 
+          <AntDesignIcon name="flag" color={theme.colors.placeholder} size={iconSize} /> 
         </TouchableOpacity>
       </View>
     </View>
@@ -196,9 +195,7 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 15,
     paddingHorizontal: 20,
-    backgroundColor: 'white',
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1
+    marginBottom: 1
   },
 
   header: {
@@ -211,7 +208,6 @@ const styles = StyleSheet.create({
   avatar: {
     width: 50,
     height: 50,
-    backgroundColor: '#eee',
     borderRadius: 30,
     marginRight: 10
   },
@@ -241,7 +237,6 @@ const styles = StyleSheet.create({
 
   reply: {
     flex: 1,
-    backgroundColor: '#eee',
     marginLeft: 60,
     marginRight: 30,
     padding: 10

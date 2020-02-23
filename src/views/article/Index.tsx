@@ -89,7 +89,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
       })
 
       // 注入一个主题色获取器
-      if (!window._appConfig.changeThemeColorByArticleMainColor) { return }
+      if (!window._appConfig.changeThemeColorByArticleMainColor || window._appConfig.theme === 'night') { return }
       const firstInfobox = document.querySelector('table.infobox[align="right"] > tbody > tr > td') ||
         document.querySelector('table.navbox > tbody > tr > td > table > tbody > tr > th')
       if (firstInfobox) {
@@ -123,12 +123,17 @@ function Article(props: PropsWithChildren<FinalProps>) {
     props.navigation.setParams({ reloadMethod: () => refs.articleView.current!.loadContent(true) })
   }, [])
 
-  // 如果退出沉浸模式，则立即显示头部
   useEffect(() => {
+    // 如果退出沉浸模式，则立即显示头部
     if (prevProps.current.state.config.immersionMode && !props.state.config.immersionMode) {
       changeHeaderVisible(true)
     } else {
       changeHeaderVisible(visibleHeader)
+    }
+
+    // 如果主题发生变化，则更新主题
+    if (prevProps.current.state.config.theme !== props.state.config.theme) {
+      setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
     }
 
     prevProps.current = props
@@ -279,7 +284,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
 
       {loadedPageInfo.id && isVisibleComment() ? <CommentButton 
         id={loadedPageInfo.id}
-        {...themeColorProps}
+        {...(props.state.config.theme === 'night' ? { backgroundColor: theme.colors.accent, textColor: 'white' } : themeColorProps)}
         onPress={toComment}
         getRef={refs.commentButton}
       /> : null } 
