@@ -70,7 +70,7 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
           <Icon name="keyboard-backspace" size={25} color={theme.colors.disabled} />
         </Button>
 
-        <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>搜索：{searchWord}</Text>
+        <Text numberOfLines={1} style={styles.title}>搜索：{searchWord}</Text>
       </View>
 
       {status !== 5 ? <>
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     marginLeft: 10,
+    flex: 1
   },
 
   totalHint: {

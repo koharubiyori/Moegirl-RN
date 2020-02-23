@@ -8,6 +8,7 @@ import Toolbar from '~/components/Toolbar'
 import Item from './components/Item'
 import StatusBar from '~/components/StatusBar'
 import { useTheme } from 'react-native-paper'
+import ViewContainer from '~/components/ViewContainer'
 
 export interface Props {
   
@@ -75,7 +76,7 @@ function Category(props: PropsWithChildren<FinalProps>) {
 
   const currentBranch = branch ? branch.concat([title]) : null
   return (
-    <View style={{ flex: 1 }}>
+    <ViewContainer style={{ flex: 1 }}>
       <StatusBar blackText={false} />
       <Toolbar
         title={'分类:' + title}
@@ -99,7 +100,7 @@ function Category(props: PropsWithChildren<FinalProps>) {
               >
                 {categoryName}
               </CategoryBtn>
-              {index !== currentBranch!.length - 1 ? <MaterialIcon name="chevron-right" size={30} color="white" style={{ marginTop: 2 }} /> : null}
+              {index !== currentBranch!.length - 1 ? <MaterialIcon name="chevron-right" size={30} color={theme.colors.onSurface} style={{ marginTop: 2 }} /> : null}
             </View>
           )}
         </ScrollView>
@@ -125,7 +126,7 @@ function Category(props: PropsWithChildren<FinalProps>) {
             <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10, marginBottom: 5 }}>
               <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>这个分类对应的条目为：</Text>
               <TouchableOpacity onPress={() => props.navigation.push('article', { link: articleTitle })}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold', color: theme.colors.primary }}>{articleTitle}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: theme.colors.accent }}>{articleTitle}</Text>
               </TouchableOpacity>
             </View>
           </> : null
@@ -145,7 +146,7 @@ function Category(props: PropsWithChildren<FinalProps>) {
           5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>该分类下没有条目</Text>
         }[categoryData.status])()}
       />
-    </View>
+    </ViewContainer>
   )
 }
 
@@ -189,7 +190,7 @@ function CategoryBtn(props: CategoryBtnProps) {
   return (
     <TouchableOpacity onPress={props.onPress}>
       <View style={{ ...styles.categoryBtn, backgroundColor: theme.colors.primary }}>
-        <Text style={{ fontSize: 16, color: 'white' }}>{props.children}</Text>
+        <Text style={{ fontSize: 16, color: theme.colors.onSurface }}>{props.children}</Text>
       </View>
     </TouchableOpacity>
   )

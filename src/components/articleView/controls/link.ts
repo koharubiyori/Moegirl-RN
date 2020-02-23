@@ -52,6 +52,8 @@ export default function() {
       type = 'outer'
     }
 
+    if (/^([Ss]pecial|特殊):/.test(link)) { return }
+    
     window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressLink', data: { link, type } }))
   })
 }

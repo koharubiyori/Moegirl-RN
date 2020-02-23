@@ -65,7 +65,7 @@ export default function ArticleGroup(props: PropsWithChildren<FinalProps>) {
 
       {props.status === 0 ? <>
         <TouchableOpacity onPress={props.onPressReload}>
-          <Text style={{ marginVertical: 20, color: theme.colors.primary, textAlign: 'center' }}>重新加载</Text>
+          <Text style={{ marginVertical: 20, color: theme.colors.accent, textAlign: 'center' }}>重新加载</Text>
         </TouchableOpacity>  
       </> : null}
     </Surface>

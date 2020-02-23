@@ -1,6 +1,6 @@
 import jss from 'jss'
 import preset from 'jss-preset-default'
-import styleVars from './styleVars'
+import { colors } from '~/theme'
 
 jss.setup(preset())
 
@@ -8,6 +8,10 @@ export default jss.createStyleSheet({
   '@global': {
     '.mainpage-newsbox > .mainpage-title:first-child': {
       display: 'none'
+    },
+
+    '.mainpage-1stcontent > p:first-child': {
+      display: 'none',
     },
 
     '.mainpage-1stcontent, .mainpage-content': {
@@ -52,7 +56,7 @@ export default jss.createStyleSheet({
 
     '.mainpage-title': {
       lineHeight: '30px',
-      background: styleVars.primary,
+      background: colors.green.primary,
       color: 'white',
       fontSize: 20,
       textAlign: 'center',

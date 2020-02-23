@@ -1,6 +1,6 @@
 import React, { FC, PropsWithChildren, useRef } from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { useTheme } from 'react-native-paper'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { useTheme, Text } from 'react-native-paper'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'

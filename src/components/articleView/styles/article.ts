@@ -3,7 +3,6 @@ import preset from 'jss-preset-default'
 import externalImg from './base64Imgs/external'
 import listPointImg from './base64Imgs/listPoint'
 import EditImg from './base64Imgs/edit'
-import styleVars from './styleVars'
 
 jss.setup(preset())
 
@@ -433,6 +432,14 @@ export default jss.createStyleSheet({
       '& a': {
         color: 'black',
         transition: 'inherit'
+      }
+    },
+
+    '.heimu-tapped': {
+      color: 'white',
+
+      '& a': {
+        color: '#5BCEFF'
       }
     },
 

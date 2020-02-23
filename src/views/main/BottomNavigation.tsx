@@ -22,7 +22,7 @@ function MyBottomNavigation(props: PropsWithChildren<FinalProps>) {
     <View style={{ 
       ...styles.container, 
       backgroundColor: theme.colors.background,
-      borderTopColor: '#eee'
+      borderTopColor: theme.colors.lightBg
     }}>
       <Item 
         selected={active === 'home'}
