@@ -139,10 +139,10 @@ function Category(props: PropsWithChildren<FinalProps>) {
               </View>
             </TouchableOpacity>,
           1: () => null,
-          2: () => <ActivityIndicator color={theme.colors.primary} size={50} style={{ marginVertical: 10 }} />,
+          2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
           3: () => null,
-          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
-          5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>该分类下没有条目</Text>
+          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
+          5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>该分类下没有条目</Text>
         }[categoryData.status])()}
       />
     </View>

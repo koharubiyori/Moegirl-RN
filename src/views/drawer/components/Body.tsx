@@ -1,11 +1,11 @@
 import React, { PropsWithChildren } from 'react'
-import { BackHandler, Dimensions, Image, NativeModules, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { BackHandler, Dimensions, Image, NativeModules, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import Item from './Item'
 import { colors } from '~/theme'
-import { useTheme } from 'react-native-paper'
+import { useTheme, Text } from 'react-native-paper'
 
 export interface Props {
   immersionMode: boolean
@@ -19,7 +19,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
   function tap(handler: () => void) {
     return () => {
       $drawer.close()
-      setTimeout(handler, 200)
+      setTimeout(handler, 1800)
     }
   }
 
@@ -37,7 +37,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
 
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
   return (
-    <View style={{ backgroundColor: 'white', height: Dimensions.get('window').height }}>
+    <View style={{ backgroundColor: theme.colors.background, height: Dimensions.get('window').height }}>
       <Image source={require('~/assets/images/drawer_bg.png')} resizeMode="cover" 
         style={{ ...styles.bgImage, width: Dimensions.get('window').width * 0.6, height: Dimensions.get('window').height - 160 }}
       />
@@ -48,11 +48,15 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
           backgroundColor: theme.colors.primary
         }}>
         {props.state.user.name !== null ? <>
-          <Button style={{ ...styles.headerIcon, top: (props.immersionMode ? 0 : statusBarHeight) + 10 }}
+          <Button 
+            style={{ 
+              ...styles.headerIcon, 
+              top: (props.immersionMode ? 0 : statusBarHeight) + 10 
+            }}
             onPress={() => { $appNavigator.navigate('notifications'); $drawer.close() }}
           >
             <View>
-              <MaterialIcon name="notifications" size={25} color="white" />
+              <MaterialIcon name="notifications" size={25} color={theme.colors.onSurface} />
               {props.state.user.waitNotificationsTotal !== 0 ? <>
                 <View style={{ ...styles.badge, ...(props.state.user.waitNotificationsTotal > 99 ? { width: 28, right: -16 } : {}) }}>
                   <Text style={{ color: 'white', fontSize: 12 }}>
@@ -66,17 +70,17 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
         
         {props.state.user.name ? <>
           <TouchableOpacity onPress={tap(() => $appNavigator.push('article', { link: 'User:' + props.state.user.name }))}>
-            <Image source={{ uri: $avatarUrl + props.state.user.name }} style={styles.avatar} />
-            <Text style={styles.hintText}>欢迎你，{props.state.user.name}</Text>
+            <Image source={{ uri: $avatarUrl + props.state.user.name }} style={{ ...styles.avatar, borderColor: 'white' }} />
+            <Text style={{ ...styles.hintText, color: theme.colors.onSurface }}>欢迎你，{props.state.user.name}</Text>
           </TouchableOpacity>
         </> : <>
           <View>
             <TouchableOpacity onPress={tap(() => $appNavigator.navigate('login'))}>
-              <Image source={require('~/assets/images/akari.jpg')} style={styles.avatar} />
+              <Image source={require('~/assets/images/akari.jpg')} style={{ ...styles.avatar, borderColor: 'white' }} />
             </TouchableOpacity>
 
             <TouchableOpacity onPress={tap(() => $appNavigator.navigate('login'))}>
-              <Text style={styles.hintText}>登录/加入萌娘百科</Text>
+              <Text style={{ ...styles.hintText, color: theme.colors.onSurface }}>登录/加入萌娘百科</Text>
             </TouchableOpacity>
           </View>
         </>}
@@ -99,7 +103,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
           onPress={tap(() => $appNavigator.navigate('settings'))}
         >
           <MaterialIcon name="settings" size={22} color="#666" />
-          <Text style={{ color: '#666', marginLeft: 10 }}>设置</Text>
+          <Text style={{ color: theme.colors.disabled, marginLeft: 10 }}>设置</Text>
         </Button>
 
         <View style={{ width: 1, height: '60%', backgroundColor: '#ccc' }} />
@@ -111,7 +115,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
           onPress={() => BackHandler.exitApp()}
         >
           <MaterialIcon name="subdirectory-arrow-left" size={22} color="#666" />
-          <Text style={{ color: '#666', marginLeft: 10 }}>退出应用</Text>
+          <Text style={{ color: theme.colors.disabled, marginLeft: 10 }}>退出应用</Text>
         </Button>
       </View>
     </View>
@@ -125,7 +129,6 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.green.primary,
   },
 
   headerIcon: {
@@ -146,12 +149,10 @@ const styles = StyleSheet.create({
     height: 75,
     marginLeft: 20,
     borderRadius: 75 / 2,
-    borderColor: 'white',
     borderWidth: 3,
   },
 
   hintText: {
-    color: 'white', 
     marginLeft: 20, 
     marginTop: 15, 
     fontSize: 16
@@ -170,7 +171,6 @@ const styles = StyleSheet.create({
     borderRadius: 8.5,
     justifyContent: 'center',
     alignItems: 'center', 
-    backgroundColor: 'red', 
     position: 'absolute', 
     top: -6, 
     right: -6

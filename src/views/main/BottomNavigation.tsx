@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useState } from 'react'
-import { StyleSheet, View, Text, TouchableNativeFeedback, Dimensions } from 'react-native'
+import { StyleSheet, TouchableNativeFeedback, View } from 'react-native'
+import { Text, useTheme } from 'react-native-paper'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -10,6 +10,7 @@ export interface Props {
 type FinalProps = Props & { jumpTo (routeName: string): void }
 
 function MyBottomNavigation(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [active, setActive] = useState('home')
 
   function selectTab(key: string) {
@@ -18,7 +19,11 @@ function MyBottomNavigation(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={{ 
+      ...styles.container, 
+      backgroundColor: theme.colors.background,
+      borderTopColor: '#eee'
+    }}>
       <Item 
         selected={active === 'home'}
         icon="book"
@@ -47,8 +52,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     height: 55,
-    backgroundColor: 'white',
-    borderTopColor: '#eee',
     borderTopWidth: 0.8
   },
 
@@ -73,8 +76,8 @@ function Item(props: BottomNavigationItemProps) {
   return (
     <TouchableNativeFeedback onPress={props.onPress}>
       <View style={styles.item}>
-        <MaterialIcon name={props.icon} size={20} color={props.selected ? theme.colors.primary : '#666'} />
-        <Text style={{ color: props.selected ? theme.colors.primary : '#666' }}>{props.label}</Text>
+        <MaterialIcon name={props.icon} size={20} color={props.selected ? theme.colors.accent : theme.colors.disabled} />
+        <Text style={{ color: props.selected ? theme.colors.accent : theme.colors.disabled }}>{props.label}</Text>
       </View>
     </TouchableNativeFeedback>
   )

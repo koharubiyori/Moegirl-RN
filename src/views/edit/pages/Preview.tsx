@@ -39,7 +39,7 @@ function EditPreview(props: PropsWithChildren<FinalProps>) {
             <Text style={{ fontSize: 16, color: theme.colors.primary }}>重新加载</Text>
           </TouchableOpacity>,
         1: () => null,
-        2: () => <ActivityIndicator color={theme.colors.primary} size={50} />,
+        2: () => <ActivityIndicator color={theme.colors.accent} size={50} />,
         3: () => <ArticleView disabledLink style={{ flex: 1 }} html={html} injectStyle={['article']} navigation={props.navigation} />
       } as { [status: number]: () => JSX.Element | null })[status]()}
     </View>

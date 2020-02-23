@@ -3,6 +3,7 @@ import { NativeModules, StyleSheet, TextInput, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { withNavigation } from 'react-navigation'
 import Button from '~/components/Button'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   value: string
@@ -13,12 +14,13 @@ export interface Props {
 type FinalProps = Props & __Navigation.InjectedNavigation
 
 function SearchHeader(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
 
   return (
-    <View style={{ ...styles.body, height: 56 + statusBarHeight, paddingTop: statusBarHeight }}>
-      <Button onPress={() => props.navigation.goBack()} rippleColor="#ccc">
-        <Icon name="keyboard-backspace" size={26} color="#666" />
+    <View style={{ ...styles.body, backgroundColor: theme.colors.surface, height: 56 + statusBarHeight, paddingTop: statusBarHeight }}>
+      <Button onPress={() => props.navigation.goBack()} rippleColor={theme.colors.placeholder}>
+        <Icon name="keyboard-backspace" size={26} color={theme.colors.disabled} />
       </Button>
 
       <TextInput autoFocus value={props.value}
@@ -26,10 +28,11 @@ function SearchHeader(props: PropsWithChildren<FinalProps>) {
         returnKeyType="search"
         autoCorrect={false}
         placeholder="搜索萌娘百科..."
+        placeholderTextColor={theme.colors.text}
         onChangeText={props.onChangeText}
         onSubmitEditing={props.onSubmit}
-        style={styles.input}
-      ></TextInput>
+        style={{ ...styles.input, color: theme.colors.text }}
+      />
     </View>
   )
 }
@@ -43,7 +46,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white'
   },
 
   input: {

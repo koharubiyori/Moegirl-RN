@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef, PropsWithChildren } from 'react'
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-native'
-import Button from '~/components/Button'
+import React, { PropsWithChildren } from 'react'
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 
 export interface Props {
@@ -28,7 +27,7 @@ function CategoryItem(props: PropsWithChildren<FinalProps>) {
             style={{ width: imgSize, height: imgSize, borderRadius: 1 }} 
           />
         </> : <>
-          <View style={{ width: imgSize, height: imgSize, backgroundColor: '#eee', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ width: imgSize, height: imgSize, backgroundColor: theme.colors.lightBg, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: theme.colors.placeholder, fontSize: 18, borderRadius: 1 }}>暂无图片</Text>
           </View>
         </>}

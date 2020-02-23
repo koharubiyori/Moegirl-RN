@@ -9,6 +9,7 @@ import Item from './components/Item'
 import Editor, { CommentEditorRef } from './components/Editor'
 import Header from './components/Header'
 import { useTheme } from 'react-native-paper'
+import ViewContainer from '~/components/ViewContainer'
 
 export interface Props {
 
@@ -66,7 +67,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
   const state = props.$comment.getActiveData()
   if (state.status === 1) return null
   return (
-    <View style={{ flex: 1, backgroundColor: '#eee' }}>
+    <ViewContainer grayBgColor>
       <StatusBar />
       <Header title={'评论：' + title} onPressAddComment={addComment} navigation={props.navigation} />
       <Editor getRef={refs.editor} pageId={state.pageId} onPosted={props.$comment.incrementLoad} />
@@ -88,7 +89,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
           
           ListHeaderComponent={state.data.popular.length !== 0 ? <>
             <View style={{ marginVertical: 10 }}>
-              <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginBottom: 10 }}>热门评论</Text>
+              <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginBottom: 10 }}>热门评论</Text>
               {state.data.popular.map(item =>
                 <Item key={item.id} 
                   data={item} 
@@ -100,7 +101,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
                   onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
                 />  
               )}
-              <Text style={{ fontSize: 18, marginLeft: 20, color: '#666', marginTop: 10 }}>全部评论</Text>
+              <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginTop: 10 }}>全部评论</Text>
             </View>
           </> : null}
 
@@ -112,13 +113,13 @@ function Comment(props: PropsWithChildren<FinalProps>) {
                 </View>
               </TouchableOpacity>,
 
-            2: () => <ActivityIndicator color={theme.colors.primary} size={50} style={{ marginVertical: 10 }} />,
-            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
-            5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>还没有评论哦</Text>
+            2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
+            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
+            5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>还没有评论哦</Text>
           } as { [status: number]: () => JSX.Element | null })[state.status] || (() => {}))()}
         />
       </> : null}
-    </View>
+    </ViewContainer>
   )
 }
 

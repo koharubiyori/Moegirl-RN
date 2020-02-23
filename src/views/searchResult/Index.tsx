@@ -1,12 +1,13 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, Image, LayoutAnimation, NativeModules, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, FlatList, Image, LayoutAnimation, NativeModules, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import searchApi from '~/api/search'
 import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import Item from './components/Item'
 import { SearchData } from '~/api/search.d'
-import { useTheme } from 'react-native-paper'
+import { useTheme, Text } from 'react-native-paper'
+import ViewContainer from '~/components/ViewContainer'
 
 export interface Props {
   
@@ -62,11 +63,11 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
 
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
   return (
-    <View style={{ flex: 1 }}>
+    <ViewContainer>
       <StatusBar blackText />
-      <View style={{ ...styles.header, height: 56 + statusBarHeight, paddingTop: statusBarHeight }}>
-        <Button onPress={() => props.navigation.goBack()} rippleColor="#ccc">
-          <Icon name="keyboard-backspace" size={25} color="#666" />
+      <View style={{ ...styles.header, backgroundColor: theme.colors.surface, height: 56 + statusBarHeight, paddingTop: statusBarHeight }}>
+        <Button onPress={() => props.navigation.goBack()} rippleColor={theme.colors.placeholder}>
+          <Icon name="keyboard-backspace" size={25} color={theme.colors.disabled} />
         </Button>
 
         <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>搜索：{searchWord}</Text>
@@ -88,7 +89,7 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
           ListHeaderComponent={
             status === 3 || status === 4 ? <>
               <View style={styles.totalHint}>
-                <Text style={{ color: '#666' }}>共搜索到{total}条结果。</Text>
+                <Text style={{ color: theme.colors.disabled }}>共搜索到{total}条结果。</Text>
               </View>
             </> : null
           }
@@ -101,18 +102,18 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
                 </View>
               </TouchableOpacity>,
             1: () => null,
-            2: () => <ActivityIndicator color={theme.colors.primary} size={50} style={{ marginVertical: 10 }} />,
+            2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
             3: () => null,
-            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: '#666' }}>已经没有啦</Text>,
+            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
           }[status])()}
         />
       </> : <>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', position: 'relative', top: -40 }}>
           <Image source={require('~/assets/images/sushimoe.png')} style={{ width: 170, height: 170 }} />
-          <Text style={{ color: '#ABABAB' }}>什么也没找到...</Text>
+          <Text style={{ color: theme.colors.disabled }}>什么也没找到...</Text>
         </View>
       </>}
-    </View>
+    </ViewContainer>
   )
 }
 
@@ -129,7 +130,6 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    color: '#666',
     fontSize: 18,
     marginLeft: 10,
   },

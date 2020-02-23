@@ -5,7 +5,7 @@ declare module 'react-native-paper' {
   export interface MyTheme extends Theme {
     colors: Theme['colors'] & {
       [CustomColor in 
-        'dark' | 'light'
+        'dark' | 'light' | 'lightBg'
       ]: string
     }
   }

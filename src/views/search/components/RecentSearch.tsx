@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   onPressTitle (title: string): void
@@ -12,29 +13,31 @@ export interface Props {
 type FinalProps = Props
 
 export default function RecentSearch(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
+  
   return (
     <View style={{ flex: 1 }}>
       {props.titles && props.titles.length ? <>
         <View style={styles.header}>
-          <Text style={{ color: '#666' }}>最近搜索</Text>
-          <Button onPress={props.onPressDelete} rippleColor="#ccc">
-            <Icon name="delete" size={20} color="#666" />
+          <Text style={{ color: theme.colors.disabled }}>最近搜索</Text>
+          <Button onPress={props.onPressDelete} rippleColor={theme.colors.placeholder}>
+            <Icon name="delete" size={20} color={theme.colors.placeholder } />
           </Button>
         </View>
 
         <ScrollView keyboardShouldPersistTaps="always">{props.titles.map(title => 
-          <Button rippleColor="#ccc" noLimit={false} contentContainerStyle={{ paddingHorizontal: 5 }}
+          <Button rippleColor={theme.colors.placeholder} noLimit={false} contentContainerStyle={{ paddingHorizontal: 5 }}
             onPress={() => props.onPressTitle(title)}
             key={title}
           >
-            <View style={styles.title}>
-              <Text style={{ color: '#666' }}>{title}</Text>
+            <View style={{ ...styles.title, borderBottomColor: theme.colors.lightBg }}>
+              <Text style={{ color: theme.colors.disabled }}>{title}</Text>
             </View>
           </Button>
         )}</ScrollView>
       </> : <>
         <View style={styles.noDataHintContainer}>
-          <Text style={styles.noDataHint}>暂无搜索记录</Text>
+          <Text style={{ ...styles.noDataHint, color: theme.colors.placeholder }}>暂无搜索记录</Text>
         </View>
       </>}
     </View>
@@ -57,7 +60,6 @@ const styles = StyleSheet.create({
   },  
 
   noDataHint: {
-    color: '#ccc',
     fontSize: 16
   },
 
@@ -66,6 +68,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
   }
 })

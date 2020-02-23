@@ -11,6 +11,7 @@ import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SwitchItem from './components/SwitchItem'
 import { isHmoe } from '~/../app.json'
+import ViewContainer from '~/components/ViewContainer'
 
 export interface Props {
 
@@ -36,6 +37,9 @@ function Settings(props: PropsWithChildren<FinalProps>) {
       onChange (value) {
         setConfig({ theme: value as any })
         setThemeColor(value as any)
+        if (value === 'night' && props.state.config.changeThemeColorByArticleMainColor) {
+          toast.show('黑夜模式下动态主题不生效')
+        }
       }
     })
   }
@@ -95,7 +99,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
   const { config } = props.state
   const setConfig = (config: Parameters<typeof props.$config.set>[0]) => props.$config.set(config)
   return (
-    <View style={{ flex: 1 }}>
+    <ViewContainer>
       <StatusBar />  
 
       <Toolbar
@@ -122,7 +126,10 @@ function Settings(props: PropsWithChildren<FinalProps>) {
         <SwitchItem title="动态主题" 
           subtext="条目界面的配色随条目本身的主题色切换" 
           value={config.changeThemeColorByArticleMainColor}
-          onChange={val => setConfig({ changeThemeColorByArticleMainColor: val })}
+          onChange={val => {
+            setConfig({ changeThemeColorByArticleMainColor: val })
+            props.state.config.theme === 'night' && toast.show('黑夜模式下动态主题不生效')
+          }}
         />
 
         <Title>界面</Title>
@@ -167,7 +174,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
           onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
         />
       </ScrollView>
-    </View>
+    </ViewContainer>
   )
 }
 
@@ -187,7 +194,7 @@ function Title(props: PropsWithChildren<{}>) {
   
   return (
     <View style={styles.title}>
-      <Text style={{ color: theme.colors.primary, fontSize: 15 }}>{props.children}</Text>
+      <Text style={{ color: theme.colors.accent, fontSize: 15 }}>{props.children}</Text>
     </View>
   )
 }

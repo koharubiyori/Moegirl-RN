@@ -1,11 +1,10 @@
 import React, { FC, PropsWithChildren, useRef, useState } from 'react'
-import { Animated, NativeModules, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
-// import Menu, { DefaultMenuRef } from 'react-native-default-menu'
+import { Animated, NativeModules, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { IconProps } from 'react-native-vector-icons/Icon'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
-import { useTheme, Menu } from 'react-native-paper'
+import { useTheme, Menu, Text } from 'react-native-paper'
 
 export interface Props {
   title: string
@@ -26,7 +25,6 @@ export interface Props {
 }
 
 (MyToolbar as DefaultProps<Props>).defaultProps = {
-  textColor: 'white',
   leftIcon: 'keyboard-backspace',
 }
 
@@ -42,6 +40,7 @@ function MyToolbar(props: PropsWithChildren<FinalProps>) {
   }
 
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
+  const textColor = props.textColor || theme.colors.onSurface
   return (
     <Animated.View style={{
       ...styles.body,
@@ -53,16 +52,16 @@ function MyToolbar(props: PropsWithChildren<FinalProps>) {
       <Animated.View style={{ ...(props.contentContainerStyle as any), flexDirection: 'row' }}>
         <View style={{ flexDirection: 'row', flex: 1 }}>
           <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressLeftIcon && props.onPressLeftIcon()}>
-            <MaterialIcon name={props.leftIcon!} size={28} color={props.textColor} {...props.leftIconProps} />
+            <MaterialIcon name={props.leftIcon!} size={28} color={textColor} {...props.leftIconProps} />
             {props.state.user.waitNotificationsTotal !== 0 && props.badge ? <View style={styles.badge} /> : null} 
           </Button>
-          <Text style={{ ...styles.title, color: props.textColor }} numberOfLines={1}>{props.title}</Text>
+          <Text style={{ ...styles.title, color: textColor }} numberOfLines={1}>{props.title}</Text>
         </View>
 
         <View style={{ flexDirection: 'row', marginLeft: 10 }}>
           {props.rightIcon ? <>
             <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressRightIcon && props.onPressRightIcon()}>
-              <MaterialIcon name={props.rightIcon} size={28} color={props.textColor} {...props.rightIconProps} style={{ position: 'relative', top: 1 }} />
+              <MaterialIcon name={props.rightIcon} size={28} color={textColor} {...props.rightIconProps} style={{ position: 'relative', top: 1 }} />
             </Button>
           </> : null}
 
@@ -73,7 +72,7 @@ function MyToolbar(props: PropsWithChildren<FinalProps>) {
               onDismiss={() => setVisibleMenu(false)}
               anchor={
                 <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => setVisibleMenu(true)}>
-                  <MaterialIcon name="more-vert" size={28} color={props.textColor} {...props.moreIconProps} style={{ position: 'relative', top: 1 }} />
+                  <MaterialIcon name="more-vert" size={28} color={textColor} {...props.moreIconProps} style={{ position: 'relative', top: 1 }} />
                 </Button>
               }
             >
@@ -84,11 +83,6 @@ function MyToolbar(props: PropsWithChildren<FinalProps>) {
                 onPress={() => pressAction(actionName, index)}
               />)}
             </Menu>
-            {/* <Menu options={props.actions} onPress={props.onPressActions} ref={refs.menu}>
-              <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => !props.disabledMoreBtn && refs.menu.current!.showPopupMenu()}>
-                <MaterialIcon name="more-vert" size={28} color={props.textColor} {...props.moreIconProps} style={{ position: 'relative', top: 1 }} />
-              </Button>
-            </Menu> */}
           </> : null}
         </View>
       </Animated.View>

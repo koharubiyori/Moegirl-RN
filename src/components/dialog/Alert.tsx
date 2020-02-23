@@ -1,6 +1,5 @@
 import React, { MutableRefObject, PropsWithChildren, useState } from 'react'
-import { Text } from 'react-native'
-import { Button, Dialog } from 'react-native-paper'
+import { Button, Dialog, Text, useTheme } from 'react-native-paper'
 
 export interface Props {
   getRef: MutableRefObject<any>
@@ -22,6 +21,7 @@ export interface AlertRef {
 type FinalProps = Props
 
 function Alert(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [visible, setVisible] = useState(false)
   const [params, setParams] = useState({
     title: '',
@@ -61,7 +61,7 @@ function Alert(props: PropsWithChildren<FinalProps>) {
       </Dialog.Content>
       <Dialog.Actions>
         <Button onPress={params.onPressCheck}>
-          <Text style={{ fontSize: 16 }}>{params.checkText}</Text>
+          <Text style={{ fontSize: 16, color: theme.colors.accent }}>{params.checkText}</Text>
         </Button>
       </Dialog.Actions>
     </Dialog>

@@ -1,12 +1,10 @@
-import React, { useState, useRef, PropsWithChildren } from 'react'
-import {
-  View, Text, ScrollView, RefreshControl,
-  StyleSheet
-} from 'react-native'
-import Header from '../components/Header'
-import Trend, { FindsModuleTrendRef } from './modules/Trend'
-import Recommended, { FindsModuleRecommendedRef } from './modules/Recommended'
+import React, { PropsWithChildren, useRef, useState } from 'react'
+import { RefreshControl, ScrollView } from 'react-native'
 import { useTheme } from 'react-native-paper'
+import ViewContainer from '~/components/ViewContainer'
+import Header from '../components/Header'
+import Recommended, { FindsModuleRecommendedRef } from './modules/Recommended'
+import Trend, { FindsModuleTrendRef } from './modules/Trend'
 
 export interface Props {
 
@@ -38,17 +36,17 @@ function Finds(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#eee' }}>
+    <ViewContainer grayBgColor>
       <Header title="发现" />
 
       <ScrollView
-        refreshControl={<RefreshControl colors={[theme.colors.primary]} onRefresh={reload} refreshing={visibleRefreshControl} />}
+        refreshControl={<RefreshControl colors={[theme.colors.accent]} onRefresh={reload} refreshing={visibleRefreshControl} />}
       >
         {/* <Text style={{ marginVertical: 20, marginLeft: 20, fontSize: 16 }}>{dateStr()}</Text> */}
         <Trend navigation={props.navigation} getRef={refs.trend} />
         <Recommended navigation={props.navigation} getRef={refs.recommended} />
       </ScrollView>
-    </View>
+    </ViewContainer>
   )
 }
 

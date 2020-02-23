@@ -21,6 +21,7 @@ import appInit from './init'
 
 const initialTheme: Theme = {
   ...DefaultTheme,
+  dark: true,
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,

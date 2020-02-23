@@ -1,13 +1,14 @@
-import React, { PropsWithChildren, useEffect, useState, useRef } from 'react'
-import { BackHandler, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
+import { BackHandler, Image, Linking, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { Text, TextInput, useTheme, DefaultTheme } from 'react-native-paper'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
-import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
-import toast from '~/utils/toast'
-import { TextInput, useTheme, DefaultTheme } from 'react-native-paper'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import ViewContainer from '~/components/ViewContainer'
+import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
 import { colors } from '~/theme'
+import toast from '~/utils/toast'
 
 export interface Props {
 
@@ -20,6 +21,7 @@ export interface RouteParams {
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & UserConnectedProps
 
 function Login(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [userName, setUserName] = useState('')
   const [password, setPassword] = useState('')
 
@@ -43,23 +45,23 @@ function Login(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <View style={{ flex: 1, alignItems: 'center' }}>
+    <ViewContainer style={{ alignItems: 'center' }}>
       <StatusBar translucent={false} blackText />
       <Image source={require('~/assets/images/moemoji.png')} style={{ width: 70, height: 80, marginTop: 20, marginLeft: -10 }} resizeMode="cover" />
-      <Text style={{ color: colors.green.primary, fontSize: 17, marginTop: 20 }}>萌娘百科，万物皆可萌的百科全书！</Text>
+      <Text style={{ color: theme.colors.accent, fontSize: 17, marginTop: 20 }}>萌娘百科，万物皆可萌的百科全书！</Text>
 
       <InputItem icon="account-circle" placeholder="用户名" value={userName} onChangeText={setUserName} />
       <InputItem secureTextEntry icon="lock" placeholder="密码" value={password} onChangeText={setPassword} />
 
-      <Button contentContainerStyle={styles.submitBtn} noLimit={false} onPress={submit}>
+      <Button contentContainerStyle={{ ...styles.submitBtn, backgroundColor: theme.colors.primary }} noLimit={false} onPress={submit}>
         <Text style={{ color: 'white', fontSize: 18 }}>登录</Text>
       </Button>
 
       <View style={{ flex: 1 }}></View>
       <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => Linking.openURL('https://mzh.moegirl.org/index.php?title=Special:创建账户')}>
-        <Text style={{ color: colors.green.primary, textDecorationLine: 'underline', fontSize: 16 }}>还没有萌百帐号？点击前往官网进行注册</Text>
+        <Text style={{ color: theme.colors.accent, textDecorationLine: 'underline', fontSize: 16 }}>还没有萌百帐号？点击前往官网进行注册</Text>
       </TouchableOpacity>
-    </View>
+    </ViewContainer>
   )
 }
 
@@ -71,7 +73,6 @@ const styles = StyleSheet.create({
     height: 40, 
     justifyContent: 'center', 
     alignItems: 'center', 
-    backgroundColor: colors.green.primary, 
     borderRadius: 3,
     marginTop: 20,
     // elevation: 1
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
   textInput: {
     width: 250,
     height: 50,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     paddingLeft: 25,
   }
 })
@@ -93,19 +94,35 @@ interface InputItemProps {
   onChangeText (text: string): void
 }
 function InputItem(props: InputItemProps) {
+  const theme = useTheme()
+  const [isFocused, setIsFocused] = useState(false)
   const textInputRef = useRef<any>()
-  
+
+  useEffect(() => {
+    const intervalKey = setInterval(() => {
+      setIsFocused(textInputRef.current.isFocused())
+    }, 50)
+
+    return () => clearInterval(intervalKey)
+  }, [])
+
   return (
     <TouchableWithoutFeedback onPress={() => textInputRef.current.focus()}>
       <View style={{ marginVertical: 10 }}>
-        <MaterialIcon name={props.icon} color={colors.green.primary} size={28} style={{ position: 'absolute', zIndex: 1, top: 12 }} />
+        <MaterialIcon 
+          style={{ position: 'absolute', zIndex: 1, top: 12 }} 
+          name={props.icon} 
+          color={theme.colors[isFocused ? 'accent' : 'disabled']} 
+          size={28} 
+        />
+        
         <TextInput 
-          theme={{ ...DefaultTheme, colors: colors.green }}
           style={styles.textInput}
+          theme={{ ...DefaultTheme, colors: { ...theme.colors, primary: theme.colors.accent } }}
           secureTextEntry={props.secureTextEntry} 
           placeholder={props.placeholder} 
           value={props.value} 
-          onChangeText={props.onChangeText} 
+          onChangeText={props.onChangeText}
           ref={textInputRef}
         />
       </View>

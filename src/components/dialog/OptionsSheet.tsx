@@ -1,6 +1,6 @@
 import React, { MutableRefObject, PropsWithChildren, useState } from 'react'
-import { Button, Dialog, RadioButton, useTheme } from 'react-native-paper'
-import { View, Text } from 'react-native'
+import { Button, Dialog, RadioButton, useTheme, Text } from 'react-native-paper'
+import { View } from 'react-native'
 import MyButton from '~/components/Button'
 
 export interface Props {
@@ -84,7 +84,6 @@ function OptionsSheet(props: PropsWithChildren<FinalProps>) {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <RadioButton
                 value={option.value}
-                color={theme.colors.primary}
                 status={selected === option.value ? 'checked' : 'unchecked'}
                 onPress={() => tapOption(option.value)}
               />
@@ -95,7 +94,7 @@ function OptionsSheet(props: PropsWithChildren<FinalProps>) {
       </Dialog.Content>
       <Dialog.Actions style={{ marginHorizontal: 10 }}>
         <Button onPress={() => params.onPressCheck && params.onPressCheck(selected)}>
-          <Text style={{ fontSize: 16 }}>{params.checkText}</Text>
+          <Text style={{ fontSize: 16, color: theme.colors.accent }}>{params.checkText}</Text>
         </Button>
       </Dialog.Actions>
     </Dialog>

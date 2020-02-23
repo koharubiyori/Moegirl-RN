@@ -3,6 +3,7 @@ import { Dimensions, Keyboard, ScrollView, StyleProp, StyleSheet, Text, ViewStyl
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { WebView } from 'react-native-webview'
 import Button from '~/components/Button'
+import { useTheme } from 'react-native-paper'
 
 export interface Props {
   style?: StyleProp<ViewStyle>
@@ -13,6 +14,7 @@ export interface Props {
 type FinalProps = Props
 
 function ArticleEditor(props: PropsWithChildren<FinalProps>) {
+  const theme = useTheme()
   const [html, setHtml] = useState('')
   const [visibleQuickInsertBar, setVisibleQuickInertBar] = useState(false)
   const refs = {
@@ -144,7 +146,12 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
         ref={refs.webView}
       />
       {visibleQuickInsertBar ? <>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickInsertBar}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} 
+          style={{ 
+            ...styles.quickInsertBar, 
+            backgroundColor: theme.colors.surface,
+            borderTopColor: theme.colors.placeholder 
+          }}>
           <QuickInsertItem icon="fountain-pen-tip" onPress={() => insertCodes(' --~~~~')} />
           <QuickInsertItem title="[[ ]]" onPress={() => insertCodes('[[]]', 2)} />
           <QuickInsertItem title="{{ }}" onPress={() => insertCodes('{{}}', 2)} />
@@ -165,8 +172,6 @@ export default ArticleEditor
 const styles = StyleSheet.create({
   quickInsertBar: {
     maxHeight: 40,
-    backgroundColor: 'white',
-    borderTopColor: '#ccc',
     borderTopWidth: 1
   }
 })
@@ -178,19 +183,20 @@ export interface QuickInsertItemProps {
 }
 
 function QuickInsertItem (props: PropsWithChildren<QuickInsertItemProps>) {
+  const theme = useTheme()
   let width = Dimensions.get('window').width / 5
   width = width - width / 2 / 5
 
   return (
     <Button 
-      rippleColor="#ccc" 
+      rippleColor={theme.colors.accent}
       style={{ width }} 
       contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
       onPress={props.onPress}
     >
       {props.title 
-        ? <Text style={{ fontSize: 20, color: '#666' }}>{props.title}</Text>
-        : <MaterialCommunityIcon name={props.icon!} size={30} color="#666" />
+        ? <Text style={{ fontSize: 20, color: theme.colors.disabled }}>{props.title}</Text>
+        : <MaterialCommunityIcon name={props.icon!} size={30} color={theme.colors.disabled} />
       } 
     </Button>
   )
