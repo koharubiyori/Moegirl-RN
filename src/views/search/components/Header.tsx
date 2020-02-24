@@ -29,7 +29,7 @@ function SearchHeader(props: PropsWithChildren<FinalProps>) {
         returnKeyType="search"
         autoCorrect={false}
         placeholder={props.state.config.source === 'hmoe' ? '搜索H萌娘...' : '搜索萌娘百科...'}
-        placeholderTextColor={theme.colors.text}
+        placeholderTextColor={theme.colors.placeholder}
         onChangeText={props.onChangeText}
         onSubmitEditing={props.onSubmit}
         style={{ ...styles.input, color: theme.colors.text }}

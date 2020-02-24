@@ -89,6 +89,7 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
           <Animated.View style={{ ...styles.body, backgroundColor: theme.colors.background, transform: [{ translateY: transitionTranslateY }] }}>
             <TextInput style={{ ...styles.input, borderColor: theme.colors.placeholder }} multiline disableFullscreenUI autoCorrect={false}
               placeholder="说点什么吧..."
+              placeholderTextColor={theme.colors.placeholder}
               textAlignVertical="top" 
               onChangeText={setInputText}
               ref={refs.textInput}

@@ -8,6 +8,7 @@ import Header from './components/Header'
 import format from './utils/format'
 import ViewContainer from '~/components/ViewContainer'
 import { useTheme } from 'react-native-paper'
+import store from '~/redux'
 
 export interface Props {
 
@@ -25,7 +26,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
   const refs = {
     editor: useRef<CommentEditorRef>()
   }
-  const signedName = props.navigation.getParam('signedName')
+  const signedName = store.getState().user.name
 
   function addReply(replyId = '') {
     if (!signedName) {
