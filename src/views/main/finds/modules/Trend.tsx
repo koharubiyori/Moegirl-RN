@@ -49,10 +49,14 @@ function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
             }
           })
     
-          let result = Object.keys(total).map(title => ({ title, total: total[title] })).sort((x, y) => x.total < y.total ? 1 : -1)
+          let result = Object.keys(total)
+            .filter(title => title !== 'Mainpage')
+            .map(title => ({ title, total: total[title] }))
+            .sort((x, y) => x.total < y.total ? 1 : -1)
           return result.filter((_, index) => index < 5)  
         })    
         .then(data => {
+          console.log(data)
           Promise.all(
             data.map(item => articleApi.getMainImage(item.title))
           ).then(images => {
