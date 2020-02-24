@@ -12,6 +12,8 @@ import toast from '~/utils/toast'
 import SwitchItem from './components/SwitchItem'
 import { isHmoe } from '~/../app.json'
 import ViewContainer from '~/components/ViewContainer'
+import changeNavigationBarColor from 'react-native-navigation-bar-color'
+import store from '~/redux'
 
 export interface Props {
 
@@ -35,11 +37,16 @@ function Settings(props: PropsWithChildren<FinalProps>) {
       options: themeOptions,
       defaultSelected: props.state.config.theme,
       onChange(value) {
-        setConfig({ theme: value as any })
-        setThemeColor(value as any)
+        if (value !== 'night') {
+          setConfig({ lastTheme: value as any })
+        }
+
         if (value === 'night' && props.state.config.changeThemeColorByArticleMainColor) {
           toast.show('黑夜模式下动态主题不生效')
         }
+
+        setConfig({ theme: value as any })
+        setThemeColor(value as any)
       }
     })
   }
@@ -52,14 +59,14 @@ function Settings(props: PropsWithChildren<FinalProps>) {
           label: '萌娘百科',
           value: 'moegirl'
         }, {
-          label: 'H萌',
+          label: 'H萌娘',
           value: 'hmoe'
         }
       ],
-      defaultSelected: props.state.config.currentSite,
+      defaultSelected: props.state.config.source,
       onPressCheck (value) {
         // 为了初始化全部数据，这里直接热重启
-        setConfig({ currentSite: value as any }).then(() => RNRestart.Restart())
+        setConfig({ source: value as any }).then(() => RNRestart.Restart())
       }
     })
   }

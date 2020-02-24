@@ -14,6 +14,20 @@ export default function() {
         text: '#26ca9b'
       }
     }
+
+    if (window._appConfig.theme === 'night') {
+      theme = {
+        before: {
+          back: window._colors.night.primary,
+          text: window._colors.night.text
+        },
+        after: {
+          back: window._colors.night.accent,
+          text: window._colors.night.onSurface
+        }
+      }
+    }
+
     $(this).find('.TabLabelText').each(function () {
       titles.push(this.innerText)
       $(this).next('.TabContentText').hide()
@@ -22,7 +36,7 @@ export default function() {
     
     let nav = $('<div class="tabNav" style="text-align:center; margin-bottom:5px;">')
     for (let i = 0; i < titles.length; i++) {
-      let btn = $(`<span class="tabBtn" style="display:inline-block; border-radius:10px; background:${theme.before.back}; color:${theme.before.text}; margin:5px 2.5px; padding:3px 8px;">${titles[i]}</span>`)
+      let btn = $(`<span class="tabBtn" style="display:inline-block; height:24px; line-height:24px; border-radius:10px; background:${theme.before.back}; color:${theme.before.text}; margin:5px 2.5px; padding:0 8px;">${titles[i]}</span>`)
         .click(function () {
           $(this).parent().find('.tabBtn').css({
             background: theme.before.back,

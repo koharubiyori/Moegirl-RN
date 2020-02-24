@@ -70,7 +70,7 @@ function OptionsSheet(props: PropsWithChildren<FinalProps>) {
     <Dialog
       visible={visible}
       onDismiss={hide}
-      style={{ marginHorizontal: 40 }}
+      style={{ marginHorizontal: 20 }}
     >
       <Dialog.Title>{params.title}</Dialog.Title>
       <Dialog.Content>

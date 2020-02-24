@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { BackHandler, DeviceEventEmitter } from 'react-native'
+import { BackHandler, DeviceEventEmitter, NativeModules } from 'react-native'
 import SplashScreen from 'react-native-splash-screen'
 import { Provider as ReduxProvider } from 'react-redux'
 import Alert, { AlertRef } from '~/components/dialog/Alert'
@@ -54,7 +54,7 @@ function App() {
     // 执行其他初始化操作
     appInit().then(config => {
       if (config) {
-        setThemeColor(config!.theme)
+        setThemeColor(config.theme)
       }
 
       setIsConfigLoaded(true)

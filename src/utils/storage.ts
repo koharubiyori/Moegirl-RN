@@ -46,7 +46,7 @@ const siteStorageManager: MyStorageManager = {
     const config = await baseStorage.get('config')
     config ? setConfig(config) : initConfig()
     const currentConfig = store.getState().config
-    site = currentConfig.currentSite
+    site = currentConfig.source
 
     const data = await baseStorage.get(site)
     if (data) siteStorages = data

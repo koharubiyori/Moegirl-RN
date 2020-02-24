@@ -6351,6 +6351,11 @@ react-native-iphone-x-helper@1.2.1:
   resolved "https://registry.npm.taobao.org/react-native-iphone-x-helper/download/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
   integrity sha1-ZF4v+7tJ6AhEu0y740oSb9oeZ3I=
 
+react-native-navigation-bar-color@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/react-native-navigation-bar-color/download/react-native-navigation-bar-color-1.0.0.tgz#04ff752a58049af93ceea9ccf266b8d3fbc6514a"
+  integrity sha1-BP91KlgEmvk87qnM8ma40/vGUUo=
+
 react-native-paper@^3.6.0:
   version "3.6.0"
   resolved "https://registry.npm.taobao.org/react-native-paper/download/react-native-paper-3.6.0.tgz#9f8452387bc6e6dae84db90c9c4715af5c7bd142"

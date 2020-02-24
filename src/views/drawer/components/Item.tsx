@@ -10,7 +10,8 @@ export interface Props {
   icon: string | { uri: string }
   title: string
   isOuterLink?: boolean
-  onPress (): void
+  rawPress?: boolean
+  onPress(): void
 }
 
 (DrawerItem as DefaultProps<Props>).defaultProps = {
@@ -24,11 +25,11 @@ function DrawerItem(props: PropsWithChildren<FinalProps>) {
   
   function onPress () {
     $drawer.close()
-    setTimeout(props.onPress, 1800)
+    setTimeout(props.onPress)
   }
 
   return (
-    <Button onPress={onPress} contentContainerStyle={null} rippleColor={theme.colors.primary} noLimit={false}>
+    <Button onPress={props.rawPress ? props.onPress : onPress} contentContainerStyle={null} rippleColor={theme.colors.accent} noLimit={false}>
       <View style={{ height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
         <View style={{ flex: 1, flexDirection: 'row' }}>
           {typeof props.icon === 'string'

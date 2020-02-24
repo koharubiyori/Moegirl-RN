@@ -7,8 +7,8 @@ import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import ViewContainer from '~/components/ViewContainer'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
-import { colors } from '~/theme'
 import toast from '~/utils/toast'
+import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 
 export interface Props {
 
@@ -18,7 +18,7 @@ export interface RouteParams {
 
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & UserConnectedProps
+type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & UserConnectedProps & ConfigConnectedProps
 
 function Login(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
@@ -44,11 +44,18 @@ function Login(props: PropsWithChildren<FinalProps>) {
       .catch(status => toast.show(status === 'FAIL' ? '用户名或密码错误' : '网络错误，请重试'))
   }
 
+  const isHmoeSource = props.state.config.source === 'hmoe'
   return (
     <ViewContainer style={{ alignItems: 'center' }}>
       <StatusBar translucent={false} blackText />
-      <Image source={require('~/assets/images/moemoji.png')} style={{ width: 70, height: 80, marginTop: 20, marginLeft: -10 }} resizeMode="cover" />
-      <Text style={{ color: theme.colors.accent, fontSize: 17, marginTop: 20 }}>萌娘百科，万物皆可萌的百科全书！</Text>
+      <Image 
+        source={isHmoeSource ? require('~/assets/images/hmoe.jpg') : require('~/assets/images/moemoji.png')} 
+        style={{ width: isHmoeSource ? 80 : 70, height: 80, marginTop: 20, marginLeft: -10, borderRadius: 5 }} 
+        resizeMode="cover" 
+      />
+      <Text style={{ color: theme.colors.accent, fontSize: 17, marginTop: 20 }}>
+        {isHmoeSource ? 'H萌娘，万物皆可H' : '萌娘百科，万物皆可萌的百科全书！'}
+      </Text>
 
       <InputItem icon="account-circle" placeholder="用户名" value={userName} onChangeText={setUserName} />
       <InputItem secureTextEntry icon="lock" placeholder="密码" value={password} onChangeText={setPassword} />
@@ -58,14 +65,17 @@ function Login(props: PropsWithChildren<FinalProps>) {
       </Button>
 
       <View style={{ flex: 1 }}></View>
-      <TouchableOpacity style={{ marginBottom: 10 }} onPress={() => Linking.openURL('https://mzh.moegirl.org/index.php?title=Special:创建账户')}>
-        <Text style={{ color: theme.colors.accent, textDecorationLine: 'underline', fontSize: 16 }}>还没有萌百帐号？点击前往官网进行注册</Text>
+      <TouchableOpacity 
+        style={{ marginBottom: 10 }} 
+        onPress={() => Linking.openURL(isHmoeSource ? 'https://www.hmoegirl.com/index.php?title=特殊:创建账户&returnto=H萌娘%3A关于' : 'https://mzh.moegirl.org/index.php?title=Special:创建账户')}
+      >
+        <Text style={{ color: theme.colors.accent, textDecorationLine: 'underline', fontSize: 16 }}>还没有{isHmoeSource ? 'H萌娘' : '萌百'}帐号？点击前往官网进行注册</Text>
       </TouchableOpacity>
     </ViewContainer>
   )
 }
 
-export default userHOC(Login)
+export default configHOC(userHOC(Login))
 
 const styles = StyleSheet.create({
   submitBtn: {
@@ -75,7 +85,6 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     borderRadius: 3,
     marginTop: 20,
-    // elevation: 1
   },
 
   textInput: {

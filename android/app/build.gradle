@@ -131,8 +131,8 @@ android {
         applicationId "com.moegirlviewer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 20
-        versionName "1.3.0H"
+        versionCode 21
+        versionName "1.4.0H"
     }
     splits {
         abi {
@@ -196,6 +196,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-navigation-bar-color')
     // 如果你需要支持GIF动图
     implementation 'com.facebook.fresco:animated-gif:2.0.0'
 
