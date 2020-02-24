@@ -1,7 +1,7 @@
 
 declare module 'react-redux' {
   export * from '~/../node_modules/@types/react-redux'
-  import { FC } from 'react'
+  import { FC, ComponentClass } from 'react'
 
   export interface MapStateToProps{
     <T>(state: T): { state: T }
@@ -15,5 +15,5 @@ declare module 'react-redux' {
     }
   }
 
-  export function connect(mapStateToProps: MapStateToProps, mapDispatchToProps: MapDispatchToProps): (Element: FC<any>) => FC<any>
+  export function connect(mapStateToProps: MapStateToProps, mapDispatchToProps: MapDispatchToProps): (Element: FC<any> | ComponentClass<any>) => FC<any>
 }

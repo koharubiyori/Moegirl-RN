@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { withNavigation } from 'react-navigation'
 import Button from '~/components/Button'
 import { useTheme } from 'react-native-paper'
+import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 
 export interface Props {
   value: string
@@ -11,7 +12,7 @@ export interface Props {
   onSubmit (): void
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation
+type FinalProps = Props & __Navigation.InjectedNavigation & ConfigConnectedProps
 
 function SearchHeader(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
@@ -27,7 +28,7 @@ function SearchHeader(props: PropsWithChildren<FinalProps>) {
         autoCapitalize="none"
         returnKeyType="search"
         autoCorrect={false}
-        placeholder="搜索萌娘百科..."
+        placeholder={props.state.config.source === 'hmoe' ? '搜索H萌娘...' : '搜索萌娘百科...'}
         placeholderTextColor={theme.colors.text}
         onChangeText={props.onChangeText}
         onSubmitEditing={props.onSubmit}
@@ -37,7 +38,7 @@ function SearchHeader(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default withNavigation(SearchHeader) as FC<Props>
+export default configHOC(withNavigation(SearchHeader)) as FC<Props>
 
 const styles = StyleSheet.create({
   body: {
