@@ -61,7 +61,15 @@ function Edit(props: PropsWithChildren<FinalProps>) {
       if (global.$isVisibleLoading) {
         return true
       } else {
-        return checkAllowBack()
+        const { params } = refs.tabNavigator.current.state.nav.routes[0]
+        if (params && params.isContentChanged) {
+          $dialog.confirm.show({
+            content: '编辑还未保存，确定要放弃编辑的内容？',
+            onPressCheck: () => props.navigation.goBack()
+          })
+  
+          return true
+        }
       }
     })
 
@@ -69,18 +77,14 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   })
 
   function checkAllowBack() {
-    if (global.$isVisibleLoading) {
-      return true
+    const { params } = refs.tabNavigator.current.state.nav.routes[0]
+    if (params && params.isContentChanged) {
+      $dialog.confirm.show({
+        content: '编辑还未保存，确定要放弃编辑的内容？',
+        onPressCheck: () => props.navigation.goBack()
+      })
     } else {
-      const { params } = refs.tabNavigator.current.state.nav.routes[0]
-      if (params && params.isContentChanged) {
-        $dialog.confirm.show({
-          content: '编辑还未保存，确定要放弃编辑的内容？',
-          onPressCheck: () => props.navigation.goBack()
-        })
-  
-        return true
-      }
+      props.navigation.goBack()
     }
   }
 
