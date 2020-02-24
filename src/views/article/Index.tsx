@@ -275,10 +275,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
         style={{ flex: 1 }} 
         navigation={props.navigation}
         link={link} 
-        injectStyle={[
-          'article',
-          ...(props.state.config.theme === 'night' ? ['nightMode'] : []) as any
-        ]}
+        injectStyle={['article']}
         injectJs={articleViewInjectJs}
         onMessages={{ changeHeaderVisible: setVisibleHeader, getArticleMainColor: setThemeByArticleMainColor }}
         onLoaded={contentLoaded}

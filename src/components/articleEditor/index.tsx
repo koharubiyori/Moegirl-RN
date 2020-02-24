@@ -1,9 +1,11 @@
-import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
+import React, { PropsWithChildren, useEffect, useRef, useState, FC } from 'react'
 import { Dimensions, Keyboard, ScrollView, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { WebView } from 'react-native-webview'
 import Button from '~/components/Button'
 import { useTheme } from 'react-native-paper'
+import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
+import { colors } from '~/theme'
 
 export interface Props {
   style?: StyleProp<ViewStyle>
@@ -11,7 +13,7 @@ export interface Props {
   onChangeText? (content: string): void
 }
 
-type FinalProps = Props
+type FinalProps = Props & ConfigConnectedProps
 
 function ArticleEditor(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
@@ -53,12 +55,13 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
       ` : ''}
     `
 
+    const isNightMode = props.state.config.theme === 'night'
     return `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Document</title>
         <style>
@@ -79,9 +82,10 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
             border: none;
             outline: none;
             box-sizing: border-box;
-            background-color: white;
+            background-color: ${isNightMode ? colors.night.primary : 'white'};
+            color: ${isNightMode ? colors.night.text : 'black'};
             font-size: 14px;
-            caret-color: #007ACC;
+            caret-color: ${colors.teal.primary};
             resize: none;
             font-family: 'Consolas'
           }
@@ -167,7 +171,7 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default ArticleEditor
+export default configHOC(ArticleEditor) as FC<Props>
 
 const styles = StyleSheet.create({
   quickInsertBar: {

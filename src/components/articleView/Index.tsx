@@ -36,7 +36,7 @@ export interface Props {
   link?: string
   html?: string
   disabledLink?: boolean
-  injectStyle?: InjectStyleSheetName[]
+  injectStyle: InjectStyleSheetName[]
   injectCss?: string
   injectJs?: string
   autoPaddingTopForHeader?: boolean
@@ -64,6 +64,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
   const [originalImgUrls, setOriginalImgUrls] = useState<{ name: string, url: string }[]>()
   const [articleData, setArticleData] = useState<ArticleApiData.GetContent>()
   const [status, setStatus] = useState<0 | 1 | 2 | 3>(1)
+  const lastProps = useRef(props)
   const config = useRef(store.getState().config)
   const refs = {
     webView: useRef<any>()
@@ -111,6 +112,19 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     }
   }, [])
 
+  useEffect(() => {
+    if (lastProps.current.state.config.theme !== props.state.config.theme) {
+      if (props.link) {
+        loadContent()
+      } else {
+        setHtml(createDocument(props.html!))
+        setStatus(3)
+      }
+    }
+
+    return () => { lastProps.current = props }
+  })
+
   function createDocument(content: string, categories?: string[]) {
     let injectRequestUtil = function() {
       // 注入一个请求器，用于通信
@@ -129,12 +143,18 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
     injectRequestUtil = `(${injectRequestUtil})();`
 
+    const injectStyles = props.injectStyle
+      // 本来是根据props传入的injectStyle来动态加载样式表的，但不知道为什么无论如何在这里拿到的props1都是第一次传入的旧props
+      // 只好在这里判断是否加载黑夜模式的样式了
+      .concat(store.getState().config.theme === 'night' ? ['nightMode'] : [])
+      .map(name => styleSheets[name])
+      .join('')
     const scriptTags = libScript.reduce((prev, next) => prev + `<script src="js/lib/${next}.js"></script>`, '')
 
     let injectJsCodes = `
       ${global.__DEV__ ? 'try{' : ''}
         ${injectRequestUtil};
-        ${props.state.config.currentSite === 'hmoe' ? hmoeControlsCodeString : ''};
+        ${props.state.config.source === 'hmoe' ? hmoeControlsCodeString : ''};
         ${scriptCodeString};
         ${controlsCodeString};
         ${props.injectJs || ''}
@@ -144,16 +164,16 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         }
       ` : ''}
     `
-
+    
     return `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Document</title>
-        <style>${props.injectStyle ? props.injectStyle.map(name => styleSheets[name]).join('') : ''}</style>
+        <style>${injectStyles}</style>
         ${props.autoPaddingTopForHeader ? `
           <style>
             body {
@@ -168,13 +188,20 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         ${scriptTags}
         <script>
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
-          window._appConfig = ${JSON.stringify(config.current || {})}
+          // 用户设置
+          window._appConfig = ${JSON.stringify(config.current || {})}     
+          // 当前主题色
           window._themeColors = ${JSON.stringify({
             moegirl: colors.green,
             hmoe: colors.pink
-          }[config.current.currentSite])}
+          }[config.current.source])}
+          // 所有主题色
           window._colors = ${JSON.stringify(colors)}
-          ${categories ? ('window._categories = ' + JSON.stringify(categories)) : ''}
+          // 分类信息
+          ${categories ? ('window._categories = ' + JSON.stringify(categories)) : ''};
+          // 当前页面名
+          window._articleTitle = '${props.link}'
+          // 执行全部脚本代码
           $(function(){ 
             ${injectJsCodes};
             ReactNativeWebView.postMessage(JSON.stringify({ type: 'onReady' }))
@@ -225,7 +252,8 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         }
         
         setHtml(createDocument(html, data.parse.categories.map(item => item['*'])))
-        // setStatus(3)
+        // 本身在webview里也会向外发送渲染完毕的消息，这里也写一个防止出现什么问题导致一直status:2
+        setTimeout(() => setStatus(3), 1000)
         props.onLoaded && props.onLoaded(data)
         // 无法显示svg，这里过滤掉
         loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
@@ -244,7 +272,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
             let html = data.parse.text['*']
             setHtml(createDocument(html, data.parse.categories.map(item => item['*'])))
             $dialog.snackBar.show('因读取失败，载入条目缓存')
-            // setStatus(3)
+            setTimeout(() => setStatus(3), 1000)
             props.onLoaded && props.onLoaded(data)
             loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
             setArticleData(data)

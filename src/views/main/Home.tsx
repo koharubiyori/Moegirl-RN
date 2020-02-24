@@ -11,7 +11,7 @@ export interface Props {
 
 const siteNameMaps = {
   moegirl: '萌娘百科',
-  hmoe: 'H萌'
+  hmoe: 'H萌娘'
 }
 
 type FinalProps = Props & __Navigation.InjectedNavigation & ConfigConnectedProps
@@ -20,20 +20,16 @@ function Home(props: PropsWithChildren<FinalProps>) {
   const homeStyleName: any = {
     moegirl: 'home',
     hmoe: 'hmoeHome'
-  }[props.state.config.currentSite]
+  }[props.state.config.source]
 
   const isNightMode = props.state.config.theme === 'night'
   return (
     <View style={{ flex: 1 }}>
-      <Header title={siteNameMaps[props.state.config.currentSite]} />
+      <Header title={siteNameMaps[props.state.config.source]} />
       <ArticleView 
         style={{ flex: 1 }} 
         link="Mainpage" 
-        injectStyle={[
-          'article', 
-          homeStyleName, 
-          ...(isNightMode ? ['nightMode'] : [])
-        ]}
+        injectStyle={['article', homeStyleName]}
         navigation={props.navigation}
       />
     </View>

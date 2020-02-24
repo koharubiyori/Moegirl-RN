@@ -1,17 +1,19 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, FC } from 'react'
 import { BackHandler, Dimensions, Image, NativeModules, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 import Item from './Item'
-import { colors } from '~/theme'
 import { useTheme, Text } from 'react-native-paper'
+import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
+import { setThemeColor } from '~/theme'
+import toast from '~/utils/toast'
 
 export interface Props {
   immersionMode: boolean
 }
 
-type FinalProps = Props & UserConnectedProps
+type FinalProps = Props & UserConnectedProps & ConfigConnectedProps
 
 function DrawerBody(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
@@ -19,7 +21,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
   function tap(handler: () => void) {
     return () => {
       $drawer.close()
-      setTimeout(handler, 1800)
+      setTimeout(handler)
     }
   }
 
@@ -35,7 +37,30 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
     })
   }
 
+  function toggleNight() {
+    if (props.state.config.theme === 'night') {
+      let newThemeColor: string | any
+      if (props.state.config.lastTheme === 'night') {
+        newThemeColor = props.state.config.source === 'hmoe' ? 'pink' : 'green'
+      } else {
+        newThemeColor = props.state.config.lastTheme
+      }
+      
+      console.log('get', props.state.config.lastTheme)
+      setThemeColor(newThemeColor)
+      props.$config.set({ theme: newThemeColor })
+    } else {
+      setThemeColor('night')
+      props.$config.set({ theme: 'night' })
+      if (props.state.config.changeThemeColorByArticleMainColor) {
+        toast.show('黑夜模式下动态主题不生效')
+      }
+    }
+  }
+
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
+  const isHmoeSource = props.state.config.source === 'hmoe'
+  const isNightMode = props.state.config.theme === 'night'
   return (
     <View style={{ backgroundColor: theme.colors.background, height: Dimensions.get('window').height }}>
       <Image source={require('~/assets/images/drawer_bg.png')} resizeMode="cover" 
@@ -58,7 +83,11 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
             <View>
               <MaterialIcon name="notifications" size={25} color={theme.colors.onSurface} />
               {props.state.user.waitNotificationsTotal !== 0 ? <>
-                <View style={{ ...styles.badge, ...(props.state.user.waitNotificationsTotal > 99 ? { width: 28, right: -16 } : {}) }}>
+                <View style={{ 
+                  ...styles.badge, 
+                  ...(props.state.user.waitNotificationsTotal > 99 ? { width: 28, right: -16 } : {}),
+                  backgroundColor: theme.colors.error
+                }}>
                   <Text style={{ color: 'white', fontSize: 12 }}>
                     {props.state.user.waitNotificationsTotal > 99 ? '99+' : props.state.user.waitNotificationsTotal}
                   </Text>
@@ -80,7 +109,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={tap(() => $appNavigator.navigate('login'))}>
-              <Text style={{ ...styles.hintText, color: theme.colors.onSurface }}>登录/加入萌娘百科</Text>
+              <Text style={{ ...styles.hintText, color: theme.colors.onSurface }}>登录/加入{isHmoeSource ? 'H萌娘' : '萌娘百科'}</Text>
             </TouchableOpacity>
           </View>
         </>}
@@ -91,6 +120,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
           <Item icon="help" title="提问求助区" onPress={() => $appNavigator.push('article', { link: 'Talk:提问求助区' })} />
           <Item icon="forum" title="讨论版" onPress={() => $appNavigator.push('article', { link: 'Talk:讨论版' })} />
           <Item icon="touch-app" title="操作提示" onPress={showActionHelps} />
+          <Item rawPress icon="brightness-4" title="切换黑夜模式" onPress={toggleNight} />
           {/* <Item icon="exposure-plus-1" title="支持萌娘百科" onPress={() => $appNavigator.push('article', { link: '萌娘百科:捐款' })} /> */}
         </View>
       </ScrollView>
@@ -123,7 +153,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default userHOC(DrawerBody)
+export default configHOC(userHOC(DrawerBody)) as FC<Props>
 
 const styles = StyleSheet.create({
   header: {

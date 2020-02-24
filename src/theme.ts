@@ -1,4 +1,5 @@
 import { Theme, DefaultTheme, MyTheme } from 'react-native-paper'
+import changeNavigationBarColor from 'react-native-navigation-bar-color'
 
 let setThemeState: React.Dispatch<React.SetStateAction<Theme>> = null as any
 
@@ -20,6 +21,7 @@ const commonColors = {
   placeholder: '#BDBDBD',
   background: 'white',
   onSurface: 'white',
+  error: '#FF0000',
 
   lightBg: '#eee'
 }
@@ -34,6 +36,7 @@ export const colors: { [ThemeColorName in ThemeColorType]: MyTheme['colors'] } =
     placeholder: '#797979',
     background: '#3A3A3B',
     surface: '#4E4E4E',
+    error: '#FF0000',
     
     dark: '#076642',
     light: '#0B9560',
@@ -104,13 +107,16 @@ export const colors: { [ThemeColorName in ThemeColorType]: MyTheme['colors'] } =
 
 export const initSetThemeStateMethod = (method: typeof setThemeState) => setThemeState = method
 
-export function setThemeColor(themeColor: ThemeColorType, dark?: boolean) {
+export function setThemeColor(themeColor: ThemeColorType) {
   setThemeState({
     ...DefaultTheme,
-    ...(dark ? { dark } : {}),
     colors: {
       ...DefaultTheme.colors,
       ...colors[themeColor]
     }
   })  
+
+  setTimeout(() => {
+    changeNavigationBarColor(themeColor === 'night' ? colors.night.background : 'white', false, true)
+  })
 }

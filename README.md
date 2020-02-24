@@ -6,4 +6,4 @@
 
 > 下载：https://www.coolapk.com/apk/247471
 
-> 下载(支持H萌)：https://github.com/koharubiyori/Moegirl-RN/releases
+> 下载(支持H萌娘)：https://github.com/koharubiyori/Moegirl-RN/releases

@@ -10,7 +10,7 @@ export const siteMaps = {
 
 export default async function<ResponseData = any>(config: AxiosRequestConfig): Promise<ResponseData> {
   const userConfig = store.getState().config
-  const domain = siteMaps[userConfig.currentSite]
+  const domain = siteMaps[userConfig.source]
   config.baseURL = domain + '/api.php'
   
   // 为所有萌百请求默认添加format: 'json'

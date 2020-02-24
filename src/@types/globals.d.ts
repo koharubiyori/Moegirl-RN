@@ -29,6 +29,7 @@ declare interface Window {
   _colors: __Theme.Colors
   _themeColors: __Theme.ThemeColors
   _categories: string[]
+  _articleTitle: string
 }
 
 declare interface DefaultProps<Props> extends Function {
