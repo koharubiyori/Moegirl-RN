@@ -22,14 +22,16 @@ type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & ConfigC
 function About(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
 
+  const isNightMode = props.state.config.theme === 'night'
   return (
     <ViewContainer>
-      <StatusBar blackText={theme.dark} />    
+      <StatusBar blackText />    
       <Toolbar
         title="关于"
         style={{ 
-          backgroundColor: theme.colors.surface
+          backgroundColor: isNightMode ? theme.colors.primary : 'white',
         }}
+        textColor={isNightMode ? theme.colors.onSurface : theme.colors.disabled}
         leftIcon="keyboard-backspace"
         onPressLeftIcon={() => props.navigation.goBack()}
       />        
