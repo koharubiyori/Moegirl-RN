@@ -23,6 +23,7 @@ import category, { RouteParams as CategoryRP } from './views/category'
 // 本来想在模态框中实现，因发现webView的全屏模式和模态框一起使用时发生了bug(全屏后白屏)，故这里用一个单独的路由来显示
 import biliPlayer, { RouteParams as BiliPlayerRP } from './views/biliPlayer'
 import { TransitionProps } from 'react-navigation-stack/lib/typescript/types'
+import store from './redux'
 
 const BottomTabNavigator = createBottomTabNavigator(
   { home, finds, history },
@@ -94,8 +95,9 @@ function transitionType<
 }
 
 function screenInterpolator(sceneProps: TransitionProps) {
+  const defaultTransition: keyof typeof StackViewStyleInterpolator = store.getState().config.theme !== 'night' ? 'forFadeFromBottomAndroid' : 'forHorizontal'
   const params = sceneProps.scene.route.params || {}
-  const transitionType: keyof typeof StackViewStyleInterpolator = params.transitionType || 'forFadeFromBottomAndroid'
+  const transitionType: keyof typeof StackViewStyleInterpolator = params.transitionType || defaultTransition
 
   return StackViewStyleInterpolator[transitionType]
 }

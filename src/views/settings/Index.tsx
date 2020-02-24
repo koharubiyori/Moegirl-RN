@@ -177,7 +177,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
         />
 
         <SwitchItem hideSwitch
-          title={isHmoe ? '在Github上查看新版本' : '前往Github下载支持H萌的版本'}
+          title={isHmoe ? '在Github上查看新版本' : '前往Github下载支持H萌娘的版本'}
           onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
         />
       </ScrollView>
