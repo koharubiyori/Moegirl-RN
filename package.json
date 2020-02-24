@@ -12,7 +12,8 @@
     "postinstall": "jetifier -r",
     "menu": "adb shell input keyevent 82",
     "build": "cd android && ./gradlew assembleRelease && cd ../",
-    "push": "adb push android/app/build/outputs/apk/release/app-release.apk sdcard"
+    "push": "adb push android/app/build/outputs/apk/release/app-release.apk sdcard",
+    "adbinstall": "adb install -r android/app/build/outputs/apk/release/app-release.apk"
   },
   "dependencies": {
     "@koharubiyori/react-native-cookies": "^3.3.0",
