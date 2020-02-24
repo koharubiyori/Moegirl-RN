@@ -133,6 +133,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
 
     // 如果主题发生变化，则更新主题
     if (prevProps.current.state.config.theme !== props.state.config.theme) {
+      changeHeaderVisible(true)
       setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
     }
 
