@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { createAppContainer } from 'react-navigation'
-import { createStackNavigator, StackViewStyleInterpolator } from 'react-navigation-stack'
+import { createStackNavigator, TransitionPresets } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import home from './views/main/Home'
 import finds from './views/main/finds'
@@ -71,36 +71,46 @@ const routes: { [RouteName in keyof (RoutesParams & { BottomTabNavigator: any })
 const StackNavigator = createStackNavigator(routes, { 
   initialRouteName: 'BottomTabNavigator',
   headerMode: 'none',
-  transitionConfig: sceneProps => ({
-    screenInterpolator: screenInterpolator(sceneProps)
-  }) as any
-})
+  // transitionConfig: sceneProps => ({
+  //   screenInterpolator: screenInterpolator(sceneProps)
+  // }),
 
-function transitionType<
-  Routes extends { [RouterName in keyof RoutesParams]?: FC<any> }
->(
-  routes: Routes,
-  transitionType: keyof typeof StackViewStyleInterpolator = 'forFade'
-): { [RouterName in keyof Routes]: { screen: FC<any>, params: any } } {
-  let forHorizontalRoutes: any = {}
-  
-  for (let routeName in routes) {
-    forHorizontalRoutes[routeName] = {
-      screen: routes[routeName],
-      params: { transitionType }
+  defaultNavigationOptions(props) {
+    console.log(props)
+    
+    return {
+      gestureEnabled: true,
+      cardOverlayEnabled: true,
+      ...TransitionPresets.DefaultTransition,
     }
   }
+})
 
-  return forHorizontalRoutes
-}
+// function transitionType<
+//   Routes extends { [RouterName in keyof RoutesParams]?: FC<any> }
+// >(
+//   routes: Routes,
+//   transitionType: keyof typeof StackViewStyleInterpolator = 'forFade'
+// ): { [RouterName in keyof Routes]: { screen: FC<any>, params: any } } {
+//   let forHorizontalRoutes: any = {}
+  
+//   for (let routeName in routes) {
+//     forHorizontalRoutes[routeName] = {
+//       screen: routes[routeName],
+//       params: { transitionType }
+//     }
+//   }
 
-function screenInterpolator(sceneProps: TransitionProps) {
-  const defaultTransition: keyof typeof StackViewStyleInterpolator = store.getState().config.theme !== 'night' ? 'forFadeFromBottomAndroid' : 'forHorizontal'
-  const params = sceneProps.scene.route.params || {}
-  const transitionType: keyof typeof StackViewStyleInterpolator = params.transitionType || defaultTransition
+//   return forHorizontalRoutes
+// }
 
-  return StackViewStyleInterpolator[transitionType]
-}
+// function screenInterpolator(sceneProps: TransitionProps) {
+//   const defaultTransition: keyof typeof StackViewStyleInterpolator = store.getState().config.theme !== 'night' ? 'forFadeFromBottomAndroid' : 'forHorizontal'
+//   const params = sceneProps.scene.route.params || {}
+//   const transitionType: keyof typeof StackViewStyleInterpolator = params.transitionType || defaultTransition
+
+//   return StackViewStyleInterpolator[transitionType]
+// }
 
 const AppNavigator = createAppContainer(StackNavigator)
 
