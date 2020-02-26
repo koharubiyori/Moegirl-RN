@@ -4,13 +4,13 @@ export default function() {
   let clientWidth = document.body.clientWidth
   // 防止图片越界
   viewBox.find('img').each(function () {
+    // .image-box为image模板的类，不能对image模板中的图片做限制
+    if ($(this).parent('.image-box').length === 0) { return }
+
     if (parseInt($(this).attr('width')!) > clientWidth - 20) {
       $(this).attr('width', clientWidth - 20).removeAttr('height')
     }
   })
-
-  // .image-box为image模板的类，不能对image模板中的图片做限制
-  viewBox.find('.image-box img').removeAttr('width')
 
   // 防止thumb越界
   viewBox.find('.thumbinner').each(function () {

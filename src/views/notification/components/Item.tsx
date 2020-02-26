@@ -42,7 +42,7 @@ function NotificationItem(props: PropsWithChildren<FinalProps>) {
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Text numberOfLines={1}>{strongTagToRnBoldText(props.notificationData['*'].header)}</Text>
-            <Text style={{ fontSize: 13, marginTop: 5, color: theme.colors.placeholder }} numberOfLines={2}>
+            <Text style={{ fontSize: 13, marginTop: 5, color: theme.colors.placeholder }}>
               {props.notificationData['*'].body || props.notificationData['*'].compactHeader}
             </Text>
           </View>

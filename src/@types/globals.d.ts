@@ -8,6 +8,7 @@ declare namespace NodeJS {
       visible: { current: boolean }
       open (): void
       close (): void
+      setLock (value: boolean): void
     }
     $appNavigator: __Navigation.Navigation
     $dialog: __Dialog.__

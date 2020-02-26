@@ -21,8 +21,8 @@ export default function appInit() {
       // 获取一次编辑令牌，判断登录状态是否有效
       checkLoginStatus()
         .then(() => {
-          getWaitNotificationsTotal()
-          getUserInfo()
+          getWaitNotificationsTotal() // 获取等待的通知总数
+          getUserInfo() // 获取用户信息
         })
         .catch(() => {
           userLogout()

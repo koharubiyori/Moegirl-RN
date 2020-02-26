@@ -49,4 +49,10 @@ export namespace EditApiData {
     nochange?: ''
     error?: { code: string }
   }
+
+  interface GetCaptcha {
+    backendId: string
+    id: string
+    path: string
+  }
 }

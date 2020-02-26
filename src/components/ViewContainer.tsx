@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, FC } from 'react'
 import { StyleProp, StyleSheet, View, ViewProps, ViewStyle } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
@@ -28,7 +28,7 @@ function ViewContainer(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default configHOC(ViewContainer)
+export default configHOC(ViewContainer) as FC<Props>
 
 const styles = StyleSheet.create({
   

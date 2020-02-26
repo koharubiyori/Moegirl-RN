@@ -3,17 +3,22 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "react-native start",
+    "start": "yarn adb:reverse && react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "adbrestart": "adb kill-server && adb start-server",
-    "tcp8081": "adb reverse tcp:8081 tcp:8081",
-    "android": "react-native run-android",
     "postinstall": "jetifier -r",
-    "menu": "adb shell input keyevent 82",
-    "build": "cd android && ./gradlew assembleRelease && cd ../",
-    "push": "adb push android/app/build/outputs/apk/release/app-release.apk sdcard",
-    "adbinstall": "adb install -r android/app/build/outputs/apk/release/app-release.apk"
+    "android": "yarn adb:uninstall && react-native run-android",
+    "clear": "cd android && ./gradlew clean",
+
+    "build": "yarn clear && cd android && ./gradlew assembleRelease && cd ../",
+    "build:test": "yarn adb:uninstall && yarn clear && react-native run-android --variant release",
+
+    "adb:reverse": "adb reverse tcp:8081 tcp:8081",
+    "adb:menu": "adb shell input keyevent 82",
+    "adb:push": "adb push android/app/build/outputs/apk/release/app-release.apk sdcard",
+    "adb:restart": "adb kill-server && adb start-server",
+    "adb:install": "adb install -r android/app/build/outputs/apk/release/app-release.apk",
+    "adb:uninstall": "adb uninstall com.moegirlviewer"
   },
   "dependencies": {
     "@koharubiyori/react-native-cookies": "^3.3.0",
@@ -33,6 +38,7 @@
     "react-native-navigation-bar-color": "^1.0.0",
     "react-native-paper": "^3.6.0",
     "react-native-progress": "^3.6.0",
+    "react-native-push-notification": "^3.1.9",
     "react-native-reanimated": "1.2.0",
     "react-native-restart": "^0.0.14",
     "react-native-safe-area-context": "^0.7.3",
@@ -60,6 +66,7 @@
     "@types/qs": "^6.9.0",
     "@types/react": "^16.9.17",
     "@types/react-native": "^0.61.16",
+    "@types/react-native-push-notification": "^3.0.7",
     "@types/react-native-vector-icons": "^6.4.5",
     "@types/react-redux": "^7.1.6",
     "@types/redux": "^3.6.0",

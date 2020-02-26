@@ -18,14 +18,14 @@ export interface ActionTypes {
     total: number
   }
   [SET_USER_INFO]: {
-    info: AccountApiData.GetInfo
+    info: AccountApiData.GetInfo['query']['userinfo']
   }
 }
 
 export interface State {
   name: string | null
   waitNotificationsTotal: number
-  info: AccountApiData.GetInfo | null
+  info: AccountApiData.GetInfo['query']['userinfo'] | null
 }
 
 const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
