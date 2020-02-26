@@ -989,6 +989,13 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/masked-view/download/@react-native-community/masked-view-0.1.6.tgz#c7f2ac187c1f25aa8c30d11baa8f4398eca3bb84"
   integrity sha1-x/KsGHwfJaqMMNEbqo9DmOyju4Q=
 
+"@react-native-community/push-notification-ios@^1.0.1":
+  version "1.0.6"
+  resolved "https://registry.npm.taobao.org/@react-native-community/push-notification-ios/download/@react-native-community/push-notification-ios-1.0.6.tgz#d0e90ec91139a6dfa043a572d41fe694db58bf54"
+  integrity sha1-0OkOyRE5pt+gQ6Vy1B/mlNtYv1Q=
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-navigation/core@^3.5.1":
   version "3.5.1"
   resolved "https://registry.npm.taobao.org/@react-navigation/core/download/@react-navigation/core-3.5.1.tgz#7a2339fca3496979305fb3a8ab88c2ca8d8c214d"
@@ -1124,6 +1131,11 @@
   version "6.9.0"
   resolved "https://registry.npm.taobao.org/@types/qs/download/@types/qs-6.9.0.tgz#2a5fa918786d07d3725726f7f650527e1cfeaffd"
   integrity sha1-Kl+pGHhtB9NyVyb39lBSfhz+r/0=
+
+"@types/react-native-push-notification@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.npm.taobao.org/@types/react-native-push-notification/download/@types/react-native-push-notification-3.0.7.tgz#eeced67f709918c237698ce261f296f469236a4d"
+  integrity sha1-7s7Wf3CZGMI3aYziYfKW9Gkjak0=
 
 "@types/react-native-vector-icons@^6.4.5":
   version "6.4.5"
@@ -5976,6 +5988,13 @@ react-native-progress@^3.6.0:
   integrity sha1-/q83SR+Ru0ISB/12HiDLcliio6Y=
   dependencies:
     prop-types "^15.7.2"
+
+react-native-push-notification@^3.1.9:
+  version "3.1.9"
+  resolved "https://registry.npm.taobao.org/react-native-push-notification/download/react-native-push-notification-3.1.9.tgz#760ee06e743fef74fc9fcb672dac40794fdc4c47"
+  integrity sha1-dg7gbnQ/73T8n8tnLaxAeU/cTEc=
+  dependencies:
+    "@react-native-community/push-notification-ios" "^1.0.1"
 
 react-native-reanimated@1.2.0:
   version "1.2.0"

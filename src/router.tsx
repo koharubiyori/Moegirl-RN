@@ -1,29 +1,25 @@
-import React, { FC } from 'react'
+import React from 'react'
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator, TransitionPresets } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import home from './views/main/Home'
-import finds from './views/main/finds'
-import history from './views/main/history'
-import BottomNavigation from './views/main/BottomNavigation'
-
-import article, { RouteParams as ArticleRP } from './views/article'
-import search, { RouteParams as SearchRP } from './views/search'
-import searchResult, { RouteParams as SearchResultRP } from './views/searchResult'
-import login, { RouteParams as LoginRP } from './views/login'
-import edit, { RouteParams as EditRP } from './views/edit'
-import comment, { RouteParams as CommentRP } from './views/comment'
-import reply, { RouteParams as ReplyRP } from './views/comment/Reply'
 import about, { RouteParams as AboutRP } from './views/About'
-import settings, { RouteParams as SettingsRP } from './views/settings'
-import imageViewer, { RouteParams as ImageViewerRP } from './views/imageViewer'
-import notifications, { RouteParams as NotificationsRP } from './views/notification'
-import category, { RouteParams as CategoryRP } from './views/category'
-
+import article, { RouteParams as ArticleRP } from './views/article'
 // 本来想在模态框中实现，因发现webView的全屏模式和模态框一起使用时发生了bug(全屏后白屏)，故这里用一个单独的路由来显示
 import biliPlayer, { RouteParams as BiliPlayerRP } from './views/biliPlayer'
-import { TransitionProps } from 'react-navigation-stack/lib/typescript/types'
-import store from './redux'
+import category, { RouteParams as CategoryRP } from './views/category'
+import comment, { RouteParams as CommentRP } from './views/comment'
+import reply, { RouteParams as ReplyRP } from './views/comment/Reply'
+import edit, { RouteParams as EditRP } from './views/edit'
+import imageViewer, { RouteParams as ImageViewerRP } from './views/imageViewer'
+import login, { RouteParams as LoginRP } from './views/login'
+import BottomNavigation from './views/main/BottomNavigation'
+import finds from './views/main/finds'
+import history from './views/main/history'
+import home from './views/main/Home'
+import notifications, { RouteParams as NotificationsRP } from './views/notification'
+import search, { RouteParams as SearchRP } from './views/search'
+import searchResult, { RouteParams as SearchResultRP } from './views/searchResult'
+import settings, { RouteParams as SettingsRP } from './views/settings'
 
 const BottomTabNavigator = createBottomTabNavigator(
   { home, finds, history },
@@ -71,13 +67,8 @@ const routes: { [RouteName in keyof (RoutesParams & { BottomTabNavigator: any })
 const StackNavigator = createStackNavigator(routes, { 
   initialRouteName: 'BottomTabNavigator',
   headerMode: 'none',
-  // transitionConfig: sceneProps => ({
-  //   screenInterpolator: screenInterpolator(sceneProps)
-  // }),
 
   defaultNavigationOptions(props) {
-    console.log(props)
-    
     return {
       gestureEnabled: true,
       cardOverlayEnabled: true,
@@ -85,32 +76,6 @@ const StackNavigator = createStackNavigator(routes, {
     }
   }
 })
-
-// function transitionType<
-//   Routes extends { [RouterName in keyof RoutesParams]?: FC<any> }
-// >(
-//   routes: Routes,
-//   transitionType: keyof typeof StackViewStyleInterpolator = 'forFade'
-// ): { [RouterName in keyof Routes]: { screen: FC<any>, params: any } } {
-//   let forHorizontalRoutes: any = {}
-  
-//   for (let routeName in routes) {
-//     forHorizontalRoutes[routeName] = {
-//       screen: routes[routeName],
-//       params: { transitionType }
-//     }
-//   }
-
-//   return forHorizontalRoutes
-// }
-
-// function screenInterpolator(sceneProps: TransitionProps) {
-//   const defaultTransition: keyof typeof StackViewStyleInterpolator = store.getState().config.theme !== 'night' ? 'forFadeFromBottomAndroid' : 'forHorizontal'
-//   const params = sceneProps.scene.route.params || {}
-//   const transitionType: keyof typeof StackViewStyleInterpolator = params.transitionType || defaultTransition
-
-//   return StackViewStyleInterpolator[transitionType]
-// }
 
 const AppNavigator = createAppContainer(StackNavigator)
 

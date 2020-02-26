@@ -1,20 +1,19 @@
+import Color from 'color'
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { DeviceEventEmitter, NativeModules, StyleSheet } from 'react-native'
+import { useTheme } from 'react-native-paper'
+import { ArticleApiData } from '~/api/article.d'
 import ArticleView, { ArticleViewRef } from '~/components/articleView'
 import StatusBar from '~/components/StatusBar'
-import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
-import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
+import store from '~/redux'
+import { CommentConnectedProps, commentHOC } from '~/redux/comment/HOC'
+import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
 import saveHistory from '~/utils/saveHistory'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import CatalogTriggerView, { CatalogTriggerViewRef } from './components/catalogTriggerView'
 import CommentButton, { CommentButtonRef } from './components/CommentButton'
 import Header, { ArticleHeaderRef } from './components/Header'
-import { ArticleApiData } from '~/api/article.d'
-import store from '~/redux'
-import { getUserInfo } from '~/redux/user/HOC'
-import Color from 'color'
-import { useTheme } from 'react-native-paper'
 
 export interface Props {
 
@@ -134,6 +133,12 @@ function Article(props: PropsWithChildren<FinalProps>) {
     // 如果主题发生变化，则更新主题
     if (prevProps.current.state.config.theme !== props.state.config.theme) {
       changeHeaderVisible(true)
+      // 注意这里和/src/theme.ts导出的方法重名了，这个是用于条目页动态主题的
+      setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
+    }
+
+    // 如果关闭了动态主题，则更新为当前已选主题
+    if (prevProps.current.state.config.changeThemeColorByArticleMainColor && !props.state.config.changeThemeColorByArticleMainColor) {
       setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
     }
 
@@ -206,20 +211,8 @@ function Article(props: PropsWithChildren<FinalProps>) {
   function missingGoBack(link: string) {
     const userData = store.getState().user
     if (userData.name === link.split('User:')[1]) {
-      getUserInfo()
-        .then(userInfoData => {
-          if (userInfoData.query.userinfo.implicitgroups.includes('autoconfirmed')) {
-            props.navigation.replace('edit', { title: link, isCreate: true })
-            toast.show('你的用户页不存在，请点击空白区域编辑并创建')
-          } else {
-            $dialog.alert.show({
-              title: '抱歉，暂不支持非自动确认用户编辑',
-              content: '请先通过网页端进行编辑10次以上，且注册时间超过24小时，即成为自动确认用户。',
-              onPressCheck: () => props.navigation.goBack(),
-              onClose: () => props.navigation.goBack()
-            })
-          }
-        })
+      props.navigation.replace('edit', { title: link, isCreate: true })
+      toast.show('你的用户页不存在，请点击空白区域编辑并创建')
     } else {
       $dialog.alert.show({
         content: '该条目或用户页还未创建',

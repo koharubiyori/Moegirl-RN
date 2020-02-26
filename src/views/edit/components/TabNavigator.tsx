@@ -64,7 +64,6 @@ const TopTabNavigator = createMaterialTopTabNavigator({
   维基文本: codeEdit, 
   预览视图: preview
 }, {
-  swipeEnabled: false,
   tabBarComponent: MyBottomTabBar,
 })
 

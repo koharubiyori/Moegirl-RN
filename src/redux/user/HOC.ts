@@ -44,9 +44,9 @@ export const check = (): Promise<void> => {
   })
 }
 
-export const getWaitNotificationsTotal = (): Promise<number> => {
+export const getWaitNotificationsTotal = (): Promise<number | null> => {
   return new Promise((resolve, reject) => {
-    if (getState().user.name === null) return resolve(0)
+    if (getState().user.name === null) return resolve(null)
     notificationApi.get('', 1)
       .then(data => {
         dispatch({ type: SET_WAIT_NOTIFICATIONS_TOTAL, total: data.query.notifications.rawcount })
@@ -61,14 +61,25 @@ export const markReadAllNotifications = () => {
     .then(() => dispatch({ type: SET_WAIT_NOTIFICATIONS_TOTAL, total: 0 }))
 }
 
-export const getUserInfo = (): Promise<AccountApiData.GetInfo> => {
+export const getUserInfo = (): Promise<AccountApiData.GetInfo['query']['userinfo']> => {
   return new Promise((resolve, reject) => {
     const state = getState()
     if (state.user.info) return resolve(state.user.info)
     accountApi.getInfo()
       .then(data => {
-        dispatch({ type: SET_USER_INFO, info: data })
-        resolve(data)
+        console.log(data)
+        dispatch({ type: SET_USER_INFO, info: data.query.userinfo })
+        resolve(data.query.userinfo)
+      })
+      .catch(reject)
+  })
+}
+
+export const checkUserIsAutoConfirmed = (): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    getUserInfo()
+      .then(userInfo => {
+        resolve(userInfo.implicitgroups.includes('autoconfirmed'))
       })
       .catch(reject)
   })

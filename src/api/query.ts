@@ -1,3 +1,4 @@
+// query和search区分的规则为：query不依赖用户的输入，search根据用户输入进行请求
 import request from '~/utils/moeRequest'
 import { QueryApiData } from './query.d'
 

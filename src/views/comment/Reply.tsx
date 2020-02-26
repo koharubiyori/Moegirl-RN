@@ -70,6 +70,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
             visibleDelBtn={false} 
             signedName={signedName} 
             onDel={delCommentData}
+            onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
           />
           {children.length !== 0 ? <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginVertical: 10 }}>回复</Text> : null}
         </View>
@@ -81,6 +82,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
           onDel={delCommentData}
           signedName={signedName} 
           onPressReply={() => addReply(item.id)}
+          onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
         />)}
 
         <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>

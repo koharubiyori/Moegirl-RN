@@ -12,6 +12,7 @@ type FinalProps = Props
 function MyDrawer(props: PropsWithChildren<FinalProps>) {
   const [immersionMode, setImmersionMode] = useState(false)
   const [isWatchingArticle, setIsWatchingArticle] = useState(false)
+  const [lock, setLock] = useState(false)
   const visible = useRef(false)
   const refs = {
     drawer: useRef<any>()
@@ -40,7 +41,7 @@ function MyDrawer(props: PropsWithChildren<FinalProps>) {
   }, [])
 
   useEffect(() => {
-    global.$drawer = { visible: visible, open, close }
+    global.$drawer = { visible: visible, open, close, setLock }
   })
 
   function open() {
@@ -52,7 +53,9 @@ function MyDrawer(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <DrawerLayoutAndroid 
+    <DrawerLayoutAndroid
+      keyboardDismissMode="on-drag"
+      drawerLockMode={lock ? 'locked-closed' : 'unlocked'}
       renderNavigationView={() => <DrawerBody immersionMode={immersionMode && isWatchingArticle} />}
       drawerWidth={Dimensions.get('window').width * 0.6}
       onDrawerOpen={() => visible.current = true}

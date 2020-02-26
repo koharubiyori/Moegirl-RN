@@ -51,7 +51,10 @@ function Finds(props: PropsWithChildren<FinalProps>) {
   useEffect(() => {
     refresh()
     DeviceEventEmitter.addListener('refreshHistory', () => refresh())
-    DeviceEventEmitter.addListener('clearHistory', () => setLists(initLists()))
+    DeviceEventEmitter.addListener('clearHistory', () => {
+      setStatus(0)
+      setLists(initLists())
+    })
 
     return () => {
       DeviceEventEmitter.removeListener('refreshHistory')

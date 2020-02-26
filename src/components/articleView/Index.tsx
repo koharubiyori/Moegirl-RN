@@ -376,17 +376,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     setEventHandler('openApp', data => Linking.openURL(data.url))
     setEventHandler('onPressEdit', data => {
       if (props.state.user.name) {
-        props.$user.getUserInfo()
-          .then(userInfoData => {
-            if (userInfoData.query.userinfo.implicitgroups.includes('autoconfirmed')) {
-              props.navigation.push('edit', { title: data.page, section: data.section })
-            } else {
-              $dialog.alert.show({
-                title: '抱歉，暂不支持非自动确认用户编辑',
-                content: '请先通过网页端进行编辑10次以上，且注册时间超过24小时，即成为自动确认用户。'
-              })
-            }
-          })
+        props.navigation.push('edit', { title: data.page, section: data.section })
       } else {
         $dialog.confirm.show({
           content: '登录后才可以进行编辑，要前往登录界面吗？',

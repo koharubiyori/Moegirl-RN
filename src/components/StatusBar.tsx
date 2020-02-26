@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, FC } from 'react'
 import { NativeModules, StatusBar, View } from 'react-native'
 import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 
@@ -37,4 +37,4 @@ function MyStatusBar(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default configHOC(MyStatusBar)
+export default configHOC(MyStatusBar) as FC<Props>

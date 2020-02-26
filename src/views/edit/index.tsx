@@ -9,6 +9,10 @@ import TabNavigator from './components/TabNavigator'
 import { useTheme } from 'react-native-paper'
 import SubmitDialog from './components/SubmitDialog'
 import ViewContainer from '~/components/ViewContainer'
+import { checkUserIsAutoConfirmed } from '~/redux/user/HOC'
+import { EditApiData } from '~/api/edit.d'
+import useLockDrawer from '~/hooks/useLockDrawer'
+import CaptchaDialog from './components/CaptchaDialog'
 
 export interface Props {
 
@@ -31,6 +35,8 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   const [content, setContent] = useState('')
   const [summary, setSummary] = useState('')
   const [visibleSubmitDialog, setVisibleSubmitDialog] = useState(false)
+  const [visibleCaptchaDialog, setVisibleCaptchaDialog] = useState(false)
+  const [captcha, setCaptcha] = useState<EditApiData.GetCaptcha | null>(null)
   const essentialUpdate = useRef(false)
   const articleReloadFlag = useRef(false)
   const refs = {
@@ -40,6 +46,8 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   const title = props.navigation.getParam('title')
   const section = props.navigation.getParam('section')
   const isCreate = props.navigation.getParam('isCreate')
+
+  useLockDrawer()
 
   // 监听stackNavigator的变化，如果离开时已编辑flag为true，且页面堆栈最后一个为article，则执行那个article页面实例上在params暴露的reload方法
   useEffect(() => {
@@ -106,19 +114,25 @@ function Edit(props: PropsWithChildren<FinalProps>) {
     }
   }
 
+  function loadCaptcha() {
+    return editApi.getCaptcha().then(setCaptcha)
+  }
+
   function showSubmitDialog () {
     const { isContentChanged } = refs.tabNavigator.current.state.nav.routes[0].params
     if (isContentChanged) {
-      setVisibleSubmitDialog(true)
+      loadCaptcha()
+        .then(() => setVisibleSubmitDialog(true))
+        .catch(console.log)
     } else {
       toast.show('内容未发生变化')
     }
   }
 
-  function submit () {
-    const { content } = refs.tabNavigator.current.state.nav.routes[0].params
+  function executeEdit(captchaId?: string, captchaVal?: string) {
     toast.showLoading('提交中')
-    editApi.editArticle(title, section, content, summary!.trim() + SummarySuffix)
+    const { content } = refs.tabNavigator.current.state.nav.routes[0].params
+    editApi.editArticle(title, section, content, summary!.trim() + SummarySuffix, captchaId, captchaVal)
       .finally(toast.hide)
       .then(() => {
         setTimeout(() => toast.show('编辑成功'))
@@ -139,7 +153,20 @@ function Edit(props: PropsWithChildren<FinalProps>) {
         }             
       })
   }
-  
+
+  function submit () {
+    toast.showLoading('提交中')
+    checkUserIsAutoConfirmed()
+      .finally(toast.hide)
+      .then(isAutoConfirmed => {
+        if (isAutoConfirmed) {
+          executeEdit()
+        } else {
+          setVisibleCaptchaDialog(true)
+        }
+      })
+  }
+
   return (
     <ViewContainer>
       <StatusBar />
@@ -155,6 +182,13 @@ function Edit(props: PropsWithChildren<FinalProps>) {
         onChangeText={setSummary}
         onDismiss={() => setVisibleSubmitDialog(false)}
         onSubmit={submit}
+      />
+      <CaptchaDialog
+        visible={visibleCaptchaDialog}
+        img={captcha ? captcha.path : undefined}
+        onDismiss={() => setVisibleCaptchaDialog(false)}
+        onPressImg={loadCaptcha}
+        onSubmit={captchaVal => executeEdit(captcha!.id, captchaVal)}
       />
     </ViewContainer>
   )

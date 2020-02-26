@@ -1,4 +1,5 @@
 import request from '~/utils/moeRequest'
+import rawRequest from '~/utils/request'
 import { EditApiData } from './edit.d'
 
 function getCode(pageName: string, section: number | null) {
@@ -49,24 +50,43 @@ function getToken() {
   })
 }
 
-function _editArticle(title: string, section: number | undefined, content: string, summary: string, timestamp: string | undefined, token: string) {
+function _editArticle(
+  title: string, 
+  section: number | undefined, 
+  content: string, 
+  summary: string, 
+  timestamp: string | undefined, 
+  token: string,
+  captchaid?: string,
+  captchaword?: string
+) {
   return request<EditApiData.EditArticle>({
     method: 'post',
     params: {
       action: 'edit',
+      tags: 'Android App Edit',
+      minor: 1,
       title,
-      ...(section ? { section } : {}),
       text: content,
       summary,
-      minor: 1,
+      ...(section ? { section } : {}),
       ...(timestamp ? { basetimestamp: timestamp } : {}),
+      ...(captchaid ? { captchaid } : {}),
+      ...(captchaword ? { captchaword } : {}),
       token      
     }
   })
 }
 
 let retryMark = false // 对所有请求执行一次失败后重试，以跳过所有警告
-async function editArticle(title: string, section: number | undefined, content: string, summary: string): Promise<void> {
+async function editArticle(
+  title: string, 
+  section: number | undefined, 
+  content: string, 
+  summary: string,
+  captchaid?: string,
+  captchaword?: string
+): Promise<void> {
   try {
     const timestampData = await getLastTimestamp(title)
     let timestamp: string | undefined
@@ -79,7 +99,7 @@ async function editArticle(title: string, section: number | undefined, content: 
     const tokenData = await getToken()
     const token = tokenData.query.tokens.csrftoken
 
-    const result = await _editArticle(title, section, content, summary, timestamp, token)
+    const result = await _editArticle(title, section, content, summary, timestamp, token, captchaid, captchaword)
 
     if ('error' in result) {
       retryMark = false
@@ -99,5 +119,22 @@ async function editArticle(title: string, section: number | undefined, content: 
   }
 }
 
-const editApi = { getCode, getPreview, getLastTimestamp, getToken, editArticle }
+function getCaptcha() {
+  const captchaBaseUrl = 'https://mmixlaxtpscprd.moegirlpedia.moetransit.com/image/Retrieval?id='
+  return rawRequest({
+    baseURL: 'https://mmixlaxtpscprd.moegirlpedia.moetransit.com/questionEntry/BeginChallenge',
+    params: {
+      expectedLang: 'zh-CN'
+    }
+  })
+    .then(rawData => {
+      const data: EditApiData.GetCaptcha = rawData.data
+      return {
+        ...data,
+        path: captchaBaseUrl + data.path
+      }
+    }) as Promise<EditApiData.GetCaptcha>
+}
+
+const editApi = { getCode, getPreview, getLastTimestamp, getToken, editArticle, getCaptcha }
 export default editApi

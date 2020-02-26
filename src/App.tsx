@@ -15,6 +15,7 @@ import { Provider as PaperProvider, DefaultTheme, Theme } from 'react-native-pap
 import { colors, initSetThemeStateMethod, setThemeColor } from './theme'
 import OptionsSheet, { OptionsSheetRef } from './components/dialog/OptionsSheet'
 import appInit from './init'
+import { pushMessage } from './notificationServe'
 // import AsyncStorage from '@react-native-community/async-storage'
 
 // AsyncStorage.clear()
@@ -42,7 +43,7 @@ function App() {
 
   initSetThemeStateMethod(setTheme)
 
-  useEffect(() => {
+  useEffect(() => {    
     // 初始化dialog方法
     let dialog: any = {}
     for (let key in refs) {
@@ -65,9 +66,14 @@ function App() {
     setTimeout(SplashScreen.hide, 1000)
   }, [])
 
-  // 每隔一分钟check一次未读通知
+  // 每隔30秒check一次未读通知
   useEffect(() => {
-    const intervalKey = setInterval(getWaitNotificationsTotal, 1000 * 60)
+    const intervalKey = setInterval(() => {
+      getWaitNotificationsTotal()
+        .then(awaitNotiTotal => {
+          awaitNotiTotal && pushMessage(`你有${awaitNotiTotal}条未读通知。`, 'awaitNotification')
+        })
+    }, 1000 * 30)
     return () => clearInterval(intervalKey)
   }, [])
 
