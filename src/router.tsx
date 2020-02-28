@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator, TransitionPresets } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
@@ -53,15 +53,28 @@ const routes: { [RouteName in keyof (RoutesParams & { BottomTabNavigator: any })
   searchResult,
   login,
   about,
+  comment,
   category,
   settings,
   edit,
-  comment,
   reply,
   notifications,
-  
   imageViewer,
   biliPlayer,
+}
+
+function transitionedScreens<
+  T extends { [RouteName in keyof RoutesParams]?: FC<any> }
+>(screens: T, transitionPresetName: keyof typeof TransitionPresets): T {
+  let newScreens: any = {}
+  for (let screenName in screens) {
+    newScreens[screenName] = {
+      screen: screens[screenName],
+      navigationOptions: { ...TransitionPresets[transitionPresetName] }
+    }
+  } 
+  
+  return newScreens
 }
 
 const StackNavigator = createStackNavigator(routes, { 

@@ -31,8 +31,9 @@ export default function() {
     // 一般链接导向
     let link = ($(e.target).attr('href') || $(e.target).parent('a').attr('href') || $(this).attr('href'))!
     let type = 'inner'
-    if (/^\/File:/.test(link)) {
-      return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressImage', data: { name: decodeURIComponent(link.replace(/^\/File:/, '')) } }))
+    link = decodeURIComponent(link)
+    if (/^\/([Ff]ile|文件):/.test(link)) {
+      return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressImage', data: { name: link.replace(/^\/([Ff]ile|文件):/, '') } }))
     } else if (/^#cite_note-/.test(link)) {
       let content = $(link).text().replace(/^\[跳转至目标\]/, '').trim()
       if (content.length > 400) { // 文字过多dialog会装不下
@@ -47,7 +48,7 @@ export default function() {
     } else if (link.indexOf('redlink=1') >= 0) {
       type = 'notExists'
     } else if (/^\//.test(link)) {
-      link = decodeURIComponent(link.substring(1))
+      link = link.substring(1)
     } else if (/^https?:\/\//.test(link)) {
       type = 'outer'
     }
