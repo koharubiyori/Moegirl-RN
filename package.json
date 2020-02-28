@@ -18,7 +18,8 @@
     "adb:push": "adb push android/app/build/outputs/apk/release/app-release.apk sdcard",
     "adb:restart": "adb kill-server && adb start-server",
     "adb:install": "adb install -r android/app/build/outputs/apk/release/app-release.apk",
-    "adb:uninstall": "adb uninstall com.moegirlviewer"
+    "adb:uninstall": "adb uninstall com.moegirlviewer",
+    "adb:reinstall": "yarn adb:uninstall && yarn adb:install"
   },
   "dependencies": {
     "@koharubiyori/react-native-cookies": "^3.3.0",

@@ -31,7 +31,6 @@ function Comment(props: PropsWithChildren<FinalProps>) {
   const signedName = store.getState().user.name
 
   useEffect(() => {
-    // InteractionManager.runAfterInteractions(() => setIsFirstRendered(true))
     setTimeout(() => setIsFirstRendered(true))
   }, [])
 
