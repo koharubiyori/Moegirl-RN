@@ -84,7 +84,12 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
     }
 
     if (index === 2) {
-      const shareUrl = `萌娘百科 - ${props.title} https://mzh.moegirl.org/${props.title}`
+      const siteMaps = {
+        moegirl: 'https://mzh.moegirl.org',
+        hmoe: 'https://www.hmoegirl.com'
+      }
+
+      const shareUrl = `萌娘百科 - ${props.title} ${siteMaps[props.state.config.source]}/${props.title}`
       Clipboard.setString(shareUrl)
       toast.show('已将分享链接复制至剪切板', 'center')
     }

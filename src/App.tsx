@@ -60,10 +60,10 @@ function App() {
 
       setIsConfigLoaded(true)
       setTimeout(initGlobalNavigatorAndExitAppHandler)
-    })
 
-    // 初始化完成一秒后隐藏启动图
-    setTimeout(SplashScreen.hide, 1000)
+      // 初始化完成一秒后隐藏启动图
+      setTimeout(SplashScreen.hide, 500)
+    })
   }, [])
 
   // 每隔30秒check一次未读通知

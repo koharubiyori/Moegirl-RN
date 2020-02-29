@@ -36,15 +36,19 @@ export default function appInit() {
     }
   }
 
-  return new Promise<ConfigState | null>(resolve => {
+  return new Promise<ConfigState | null>(async resolve => {
     // 这里先等待载入当前domain的本地数据
-    storage.load().then(() => {
+    try {
+      await storage.load()
       main()
-      // 再等待初始化config到redux中
-      baseStorage.get('config').then(localConfig => {
-        localConfig ? setConfig(localConfig) : initConfig()
-        resolve(localConfig)
-      })
-    })
+  
+      // 再等待数据载入到redux
+      const localConfig = await baseStorage.get('config')
+      localConfig ? setConfig(localConfig) : initConfig()
+      resolve(localConfig)
+    } catch (e) {
+      console.log(e)
+      resolve()
+    }
   })
 }

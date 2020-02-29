@@ -12,7 +12,6 @@ export default class Tree {
   tree: TreeData[]
   
   constructor (data: RawTreeData[] = []) {
-    // this.data = data || []     // Tree实例中不再保存原始评论数据，以此尝试是否能提高性能解决评论卡顿
     this.tree = this.toTree(data)
   }
 

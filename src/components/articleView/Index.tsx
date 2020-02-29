@@ -254,7 +254,6 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         setHtml(createDocument(html, data.parse.categories.map(item => item['*'])))
         // 本身在webview里也会向外发送渲染完毕的消息，这里也写一个防止出现什么问题导致一直status:2
         setTimeout(() => setStatus(3), 1000)
-        props.onLoaded && props.onLoaded(data)
         // 无法显示svg，这里过滤掉
         loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
         setArticleData(data)
@@ -273,7 +272,6 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
             setHtml(createDocument(html, data.parse.categories.map(item => item['*'])))
             $dialog.snackBar.show('因读取失败，载入条目缓存')
             setTimeout(() => setStatus(3), 1000)
-            props.onLoaded && props.onLoaded(data)
             loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
             setArticleData(data)
           } else {
@@ -330,7 +328,10 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
     setEventHandler('print', msg => console.log('=== print ===', msg))
     setEventHandler('error', msg => console.log('--- WebViewError ---', msg))
-    setEventHandler('onReady', () => setStatus(3))
+    setEventHandler('onReady', () => {
+      props.onLoaded && props.onLoaded(articleData!)
+      setStatus(3)
+    })
     setEventHandler('onPressNote', data => {
       $dialog.alert.show({
         title: '注释',

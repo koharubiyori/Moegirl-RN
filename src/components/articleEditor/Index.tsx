@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useEffect, useRef, useState, FC } from 'react'
-import { Dimensions, Keyboard, ScrollView, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native'
+import { Dimensions, Keyboard, ScrollView, StyleProp, StyleSheet, Text, ViewStyle, View } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { WebView } from 'react-native-webview'
 import Button from '~/components/Button'
@@ -156,15 +156,15 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
             backgroundColor: theme.colors.surface,
             borderTopColor: theme.colors.placeholder 
           }}>
-          <QuickInsertItem icon="fountain-pen-tip" onPress={() => insertCodes(' --~~~~')} />
-          <QuickInsertItem title="[[ ]]" onPress={() => insertCodes('[[]]', 2)} />
-          <QuickInsertItem title="{{ }}" onPress={() => insertCodes('{{}}', 2)} />
-          <QuickInsertItem title="''' '''" onPress={() => insertCodes("''''''", 3)} />
-          <QuickInsertItem title="|" onPress={() => insertCodes('|')} />
-          <QuickInsertItem title="<del>" onPress={() => insertCodes('<del></del>', 6)} />
+          <QuickInsertItem icon="fountain-pen-tip" subtitle="签名" onPress={() => insertCodes(' --~~~~')} />
+          <QuickInsertItem title="[[ ]]" subtitle="链接" onPress={() => insertCodes('[[]]', 2)} />
+          <QuickInsertItem title="{{ }}" subtitle="模板" onPress={() => insertCodes('{{}}', 2)} />
+          <QuickInsertItem title="''' '''" subtitle="粗体" onPress={() => insertCodes("''''''", 3)} />
+          <QuickInsertItem title="|" subtitle="管道符" onPress={() => insertCodes('|')} />
+          <QuickInsertItem title="<del>" subtitle="删除线" onPress={() => insertCodes('<del></del>', 6)} />
           <QuickInsertItem title="黑幕" onPress={() => insertCodes('{{黑幕|}}', 2)} />
-          <QuickInsertItem title="==" onPress={() => insertCodes('==  ==', 3)} />
-          <QuickInsertItem title="===" onPress={() => insertCodes('===  ===', 4)} />
+          <QuickInsertItem title="==" subtitle="大标题" onPress={() => insertCodes('==  ==', 3)} />
+          <QuickInsertItem title="===" subtitle="小标题" onPress={() => insertCodes('===  ===', 4)} />
         </ScrollView>
       </> : null}
     </>
@@ -175,7 +175,7 @@ export default configHOC(ArticleEditor) as FC<Props>
 
 const styles = StyleSheet.create({
   quickInsertBar: {
-    maxHeight: 40,
+    maxHeight: 45,
     borderTopWidth: 1
   }
 })
@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
 export interface QuickInsertItemProps {
   title?: string
   icon?: string
+  subtitle?: string
   onPress (): void
 }
 
@@ -195,13 +196,18 @@ function QuickInsertItem (props: PropsWithChildren<QuickInsertItemProps>) {
     <Button 
       rippleColor={theme.colors.accent}
       style={{ width }} 
-      contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      contentContainerStyle={{ flex: 1, justifyContent: 'space-around', alignItems: 'center' }}
       onPress={props.onPress}
     >
-      {props.title 
-        ? <Text style={{ fontSize: 20, color: theme.colors.disabled }}>{props.title}</Text>
-        : <MaterialCommunityIcon name={props.icon!} size={30} color={theme.colors.disabled} />
-      } 
+      {props.title ? <View>
+        <Text style={{ fontSize: 18, color: theme.colors.disabled }}>{props.title}</Text>
+      </View> : <>
+        <MaterialCommunityIcon name={props.icon!} size={28} color={theme.colors.disabled} style={{ marginVertical: -2 }} />
+      </>}
+
+      {props.subtitle ? <>
+        <Text style={{ fontSize: 9, textAlign: 'center', color: theme.colors.disabled, }}>{props.subtitle}</Text>
+      </> : null}
     </Button>
   )
 }

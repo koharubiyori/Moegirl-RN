@@ -120,7 +120,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
           <Item icon="help" title="提问求助区" onPress={() => $appNavigator.push('article', { link: 'Talk:提问求助区' })} />
           <Item icon="forum" title="讨论版" onPress={() => $appNavigator.push('article', { link: 'Talk:讨论版' })} />
           <Item icon="touch-app" title="操作提示" onPress={showActionHelps} />
-          <Item rawPress icon="brightness-4" title="切换黑夜模式" onPress={toggleNight} />
+          <Item rawPress icon="brightness-4" title={(props.state.config.theme === 'night' ? '关闭' : '开启') + '黑夜模式'} onPress={toggleNight} />
           {/* <Item icon="exposure-plus-1" title="支持萌娘百科" onPress={() => $appNavigator.push('article', { link: '萌娘百科:捐款' })} /> */}
         </View>
       </ScrollView>

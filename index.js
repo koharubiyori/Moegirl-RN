@@ -1,4 +1,4 @@
-import './src/global' // トップに置かないとゲットできない
+import './src/global' // 不放到这里会访问不到
 import 'react-native-gesture-handler'
 import { AppRegistry, UIManager } from 'react-native'
 import App from './src/App'
