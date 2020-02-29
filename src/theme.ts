@@ -6,11 +6,12 @@ let setThemeState: React.Dispatch<React.SetStateAction<Theme>> = null as any
 export const themeColorType = {
   green: '萌百绿',
   pink: 'H萌粉',
-  blue: '天蓝',
   indigo: '夜空蓝',
+  orange: '奇迹橙',
+  blue: '天蓝',
   deepPurple: '深紫',
   teal: '水绿',
-  night: '黑夜'
+  night: '黑夜',
 }
 
 export type ThemeColorType = keyof typeof themeColorType
@@ -102,6 +103,16 @@ export const colors: { [ThemeColorName in ThemeColorType]: MyTheme['colors'] } =
 
     dark: '#00796B',
     light: '#B2DFDB'
+  },
+
+  orange: {
+    ...DefaultTheme.colors,
+    ...commonColors,
+    primary: '#FFA000',
+    accent: '#FFA000',
+
+    dark: '#E38F00',
+    light: '#FFD29A'
   }
 }
 

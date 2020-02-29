@@ -182,24 +182,15 @@ function Article(props: PropsWithChildren<FinalProps>) {
     })
 
     if (anchor) {
-      refs.articleView.current!.injectScript(`
-        let target = document.getElementById('${anchor}')
-        if(target){
-          setTimeout(() => window.scrollTo(0, target.getBoundingClientRect().top))
-        }else{
-          window.onload = function(){
-            document.getElementById('${anchor}').scrollIntoView()
-          }
-        }
-      `)
-
+      articleViewIntoAnchor(anchor)
       $dialog.snackBar.show(`该链接指向了“${decodeURIComponent(anchor.replace(/\./g, '%'))}”章节`)
     }
   }
 
-  function articleViewIntoAnchor(anchor: string, isSmooth = true) {
+  function articleViewIntoAnchor(anchor: string) {
     refs.articleView.current!.injectScript(`
-      document.getElementById('${anchor}').scrollIntoView({ behavior: '${isSmooth ? 'smooth' : 'instant'}' })
+      document.getElementById('${anchor}').scrollIntoView()
+      window.scrollTo(0, window.scrollY - 56)
     `)
   }
 
@@ -227,7 +218,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
     color: string
   }
   function setThemeByArticleMainColor(mainColor: ArticleMainColor) {
-    const blackText = Color(mainColor.color).isDark()
+    const blackText = Color(mainColor.backgroundColor).isLight()
     setThemeColor({ backgroundColor: mainColor.backgroundColor, blackText })
   }
 

@@ -65,6 +65,7 @@ const TopTabNavigator = createMaterialTopTabNavigator({
   预览视图: preview
 }, {
   tabBarComponent: MyBottomTabBar,
+  swipeEnabled: false
 })
 
 export default createAppContainer(TopTabNavigator)
