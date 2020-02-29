@@ -114,12 +114,14 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
   useEffect(() => {
     if (lastProps.current.state.config.theme !== props.state.config.theme) {
-      if (props.link) {
-        loadContent()
-      } else {
-        setHtml(createDocument(props.html!))
-        setStatus(3)
-      }
+      setTimeout(() => {
+        if (props.link) {
+          loadContent()
+        } else {
+          setHtml(createDocument(props.html!))
+          setStatus(3)
+        }
+      })
     }
 
     return () => { lastProps.current = props }
@@ -190,8 +192,8 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           // 用户设置
           window._appConfig = ${JSON.stringify(config.current || {})}     
-          // 当前主题色（不止props，这里拿到的theme也是旧的）
-          window._themeColors = ${JSON.stringify(theme.colors)}
+          // 当前主题色（不止props，这里拿到的theme也是旧的，目前只好这样）
+          window._themeColors = ${JSON.stringify(colors[config.current.theme])}
           // 所有主题色
           window._colors = ${JSON.stringify(colors)}
           // 分类信息
