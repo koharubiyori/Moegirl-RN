@@ -7,7 +7,7 @@
     "test": "jest",
     "lint": "eslint .",
     "postinstall": "jetifier -r",
-    "android": "yarn adb:uninstall && react-native run-android",
+    "android": "yarn adb:uninstall && react-native run-android && yarn start",
     "clear": "cd android && ./gradlew clean",
 
     "build": "yarn clear && cd android && ./gradlew assembleRelease && cd ../",

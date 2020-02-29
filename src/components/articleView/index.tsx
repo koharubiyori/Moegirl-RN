@@ -190,11 +190,8 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           // 用户设置
           window._appConfig = ${JSON.stringify(config.current || {})}     
-          // 当前主题色
-          window._themeColors = ${JSON.stringify({
-            moegirl: colors.green,
-            hmoe: colors.pink
-          }[config.current.source])}
+          // 当前主题色（不止props，这里拿到的theme也是旧的）
+          window._themeColors = ${JSON.stringify(theme.colors)}
           // 所有主题色
           window._colors = ${JSON.stringify(colors)}
           // 分类信息
