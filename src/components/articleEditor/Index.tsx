@@ -199,11 +199,13 @@ function QuickInsertItem (props: PropsWithChildren<QuickInsertItemProps>) {
       contentContainerStyle={{ flex: 1, justifyContent: 'space-around', alignItems: 'center' }}
       onPress={props.onPress}
     >
-      {props.title ? <View>
-        <Text style={{ fontSize: 18, color: theme.colors.disabled }}>{props.title}</Text>
-      </View> : <>
-        <MaterialCommunityIcon name={props.icon!} size={28} color={theme.colors.disabled} style={{ marginVertical: -2 }} />
-      </>}
+      <View style={{ height: 25 }}>
+        {props.title ? <>
+          <Text style={{ fontSize: 18, color: theme.colors.disabled }}>{props.title}</Text>
+        </> : <>
+          <MaterialCommunityIcon name={props.icon!} size={28} color={theme.colors.disabled} style={{ marginVertical: -2 }} />
+        </>}
+      </View>
 
       {props.subtitle ? <>
         <Text style={{ fontSize: 9, textAlign: 'center', color: theme.colors.disabled, }}>{props.subtitle}</Text>
