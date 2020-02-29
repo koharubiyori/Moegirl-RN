@@ -9,10 +9,8 @@
     "postinstall": "jetifier -r",
     "android": "yarn adb:uninstall && react-native run-android && yarn start",
     "clear": "cd android && ./gradlew clean",
-
     "build": "yarn clear && cd android && ./gradlew assembleRelease && cd ../",
     "build:test": "yarn adb:uninstall && yarn clear && react-native run-android --variant release",
-
     "adb:reverse": "adb reverse tcp:8081 tcp:8081",
     "adb:menu": "adb shell input keyevent 82",
     "adb:push": "adb push android/app/build/outputs/apk/release/app-release.apk sdcard",
@@ -31,7 +29,7 @@
     "jss": "^10.0.3",
     "jss-preset-default": "^10.0.3",
     "qs": "^6.8.0",
-    "react": "^16.12.0",
+    "react": "^16.13.0",
     "react-native": "^0.61.5",
     "react-native-gesture-handler": "1.4.1",
     "react-native-html-parser": "^0.1.0",
