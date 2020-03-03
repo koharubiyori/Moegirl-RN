@@ -1,27 +1,24 @@
-import React, { FC, MutableRefObject, PropsWithChildren, useRef, useState } from 'react'
+import React, { FC, MutableRefObject, PropsWithChildren, useRef, useState, useEffect } from 'react'
 import { Animated, Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import { withNavigation } from 'react-navigation'
 import { postComment } from '~/api/comment'
 import toast from '~/utils/toast'
+import StatusBar from '~/components/StatusBar'
 
 export interface Props {
+  visible: boolean
   targetId?: string
   pageId: number
-  onPosted (): void
-  getRef: MutableRefObject<any>
-}
-
-export interface CommentEditorRef {
-  show (): void
-  hide (): void
+  onPosted(): void
+  onDismiss(): void
 }
 
 type FinalProps = Props & __Navigation.InjectedNavigation
 
 function CommentEditor(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false) // 组件内拥有一个独立的visible
   const [inputText, setInputText] = useState('')
   const [transitionOpacity] = useState(new Animated.Value(0))
   const [transitionTranslateY] = useState(new Animated.Value(120))
@@ -29,8 +26,16 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
     mask: useRef<any>(),
     textInput: useRef<any>()
   }
+  const lastProps = useRef(props)
 
-  if (props.getRef) props.getRef.current = { show, hide }
+  useEffect(() => {
+    // 监听props.visible的变化，改变内部的visible
+    if (lastProps.current.visible !== props.visible) {
+      props.visible ? show() : hide()
+    }
+
+    lastProps.current = props
+  })
 
   function show() {
     setVisible(true)
@@ -46,17 +51,13 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
   }
 
   function close() {
-    if (visible) {
-      if (inputText) {
-        $dialog.confirm.show({
-          content: '关闭后当前编辑的评论内容将不会保存，是否关闭？',
-          onPressCheck: hide
-        })
-      } else {
-        hide()
-      }
+    if (inputText) {
+      $dialog.confirm.show({
+        content: '关闭后当前编辑的评论内容将不会保存，是否关闭？',
+        onPressCheck: props.onDismiss
+      })
     } else {
-      props.navigation.goBack()
+      props.onDismiss()
     }
   }
 
@@ -69,8 +70,6 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
       .then(() => {
         setTimeout(() => toast.show('发表成功'))
         setInputText('')
-        hide()
-
         props.onPosted()
       })
       .catch(e => {
@@ -84,8 +83,8 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
   }
 
   return (
-    <Modal transparent visible={visible} onRequestClose={close}>
-      <TouchableWithoutFeedback onPress={tapMaskToCloseSelf}>
+    visible ? <>
+      <TouchableWithoutFeedback onPress={tapMaskToCloseSelf} style={{ ...styles.container }}>
         <Animated.View style={{ ...styles.container, opacity: transitionOpacity }} ref={refs.mask}>
           <Animated.View style={{ ...styles.body, backgroundColor: theme.colors.background, transform: [{ translateY: transitionTranslateY }] }}>
             <TextInput style={{ ...styles.input, borderColor: theme.colors.placeholder }} multiline disableFullscreenUI autoCorrect={false}
@@ -105,7 +104,7 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
           </Animated.View>
         </Animated.View>
       </TouchableWithoutFeedback>
-    </Modal>
+    </> : null
   )
 }
 
@@ -113,8 +112,13 @@ export default withNavigation(CommentEditor) as FC<Props>
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)'
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    zIndex: 1
   },
 
   body: {

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useRef } from 'react'
+import React, { PropsWithChildren, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, InteractionManager, LayoutAnimation, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import StatusBar from '~/components/StatusBar'
@@ -8,7 +8,7 @@ import store from '~/redux'
 import { SET as COMMENT_SET } from '~/redux/comment'
 import { CommentConnectedProps, commentHOC } from '~/redux/comment/HOC'
 import toast from '~/utils/toast'
-import Editor, { CommentEditorRef } from './components/Editor'
+import Editor from './components/Editor'
 import Header from './components/Header'
 import Item from './components/Item'
 
@@ -23,10 +23,9 @@ export interface RouteParams {
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & CommentConnectedProps
 
 function Comment(props: PropsWithChildren<FinalProps>) {
+  const [visibleEditor, setVisibleEditor] = useState(false)
+
   const theme = useTheme()
-  const refs = {
-    editor: useRef<CommentEditorRef>()
-  }
   const title = props.navigation.getParam('title')
   const signedName = store.getState().user.name
 
@@ -48,7 +47,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
       })
     }
 
-    refs.editor.current!.show()
+    setVisibleEditor(true)
   }
 
   function toReply(id: string) {
@@ -63,7 +62,12 @@ function Comment(props: PropsWithChildren<FinalProps>) {
     <ViewContainer grayBgColor>
       <StatusBar />
       <Header title={'评论：' + title} onPressAddComment={addComment} navigation={props.navigation} />
-      <Editor getRef={refs.editor} pageId={state.pageId} onPosted={props.$comment.incrementLoad} />
+      <Editor 
+        visible={visibleEditor} 
+        pageId={state.pageId} 
+        onPosted={() => { props.$comment.incrementLoad(); setVisibleEditor(false) }} 
+        onDismiss={() => setVisibleEditor(false)}
+      />
     
       <FlatList removeClippedSubviews data={state.tree.tree} 
         onEndReachedThreshold={1}
