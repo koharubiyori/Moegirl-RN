@@ -57,7 +57,6 @@ const routes: { [RouteName in (keyof RoutesParams) | 'BottomTabNavigator']: any 
 
   comment,
   reply,
-  category,
   settings,
   edit,
   notifications,
@@ -65,6 +64,10 @@ const routes: { [RouteName in (keyof RoutesParams) | 'BottomTabNavigator']: any 
   ...transitionedScreens('fade', {
     imageViewer,
     biliPlayer,
+  }),
+
+  ...transitionedScreens('onlyCloseTransition', {
+    category,
   })
 }
 

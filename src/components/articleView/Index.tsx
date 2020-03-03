@@ -246,11 +246,13 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
             articleTitle = descContainer.getElementsByTagName('a')[0].getAttribute('title')
           }
 
-          return props.navigation.replace('category', { 
-            title: props.link!.split(':')[1], 
-            branch: categoryBranch,
-            articleTitle 
-          })
+          return setTimeout(() => {
+            props.navigation.replace('category', { 
+              title: props.link!.split(':')[1], 
+              branch: categoryBranch,
+              articleTitle 
+            })
+          }, 250) // 延迟250毫秒，防止动画还没播完就跳转了
         }
         
         setHtml(createDocument(html, data.parse.categories.filter(item => !('hidden' in item)).map(item => item['*'])))
