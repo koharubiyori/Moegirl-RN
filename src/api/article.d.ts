@@ -40,7 +40,7 @@ export namespace ArticleApiData {
       pageid: number
       redirects: any[]
       text: { '*': string }
-      categories: { sortkey: string, '*': string }[]
+      categories: { sortkey: string, hidden?: '', '*': string }[]
       templates: ArticleTemplateData[]
       images: string[]
       sections: ArticleTemplateData[]
