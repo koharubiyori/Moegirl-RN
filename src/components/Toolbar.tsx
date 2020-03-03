@@ -71,7 +71,7 @@ function MyToolbar(props: PropsWithChildren<FinalProps>) {
               statusBarHeight={statusBarHeight}
               onDismiss={() => setVisibleMenu(false)}
               anchor={
-                <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => setVisibleMenu(true)}>
+                <Button contentContainerStyle={{ padding: 3 }} style={{ marginLeft: 10 }} onPress={() => !props.disabledMoreBtn && setVisibleMenu(true)}>
                   <MaterialIcon name="more-vert" size={28} color={textColor} {...props.moreIconProps} style={{ position: 'relative', top: 1 }} />
                 </Button>
               }

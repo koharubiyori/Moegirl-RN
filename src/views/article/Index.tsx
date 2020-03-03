@@ -41,7 +41,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
   const [visibleHeader, setVisibleHeader] = useState(true)
   const [disabledMoreBtn, setDisabledMoreBtn] = useState(true)
   const [themeColor, setThemeColor] = useState({ backgroundColor: theme.colors.primary, blackText: false })
-  const prevProps = useRef(props)
+  const lastProps = useRef(props)
   const refs = {
     header: useRef<ArticleHeaderRef>(),
     articleView: useRef<ArticleViewRef>(),
@@ -124,25 +124,25 @@ function Article(props: PropsWithChildren<FinalProps>) {
 
   useEffect(() => {
     // 如果退出沉浸模式，则立即显示头部
-    if (prevProps.current.state.config.immersionMode && !props.state.config.immersionMode) {
+    if (lastProps.current.state.config.immersionMode && !props.state.config.immersionMode) {
       changeHeaderVisible(true)
     } else {
       changeHeaderVisible(visibleHeader)
     }
 
     // 如果主题发生变化，则更新主题
-    if (prevProps.current.state.config.theme !== props.state.config.theme) {
-      changeHeaderVisible(true)
+    if (lastProps.current.state.config.theme !== props.state.config.theme) {
+      setVisibleHeader(true)
       // 注意这里和/src/theme.ts导出的方法重名了，这个是用于条目页动态主题的
       setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
     }
 
     // 如果关闭了动态主题，则更新为当前已选主题
-    if (prevProps.current.state.config.changeThemeColorByArticleMainColor && !props.state.config.changeThemeColorByArticleMainColor) {
+    if (lastProps.current.state.config.changeThemeColorByArticleMainColor && !props.state.config.changeThemeColorByArticleMainColor) {
       setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
     }
 
-    prevProps.current = props
+    lastProps.current = props
   })
 
   // 以一个值的变化映射头栏和评论按钮的显隐变化
@@ -257,7 +257,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
       />
 
       <ArticleView autoPaddingTopForHeader
-        style={{ flex: 1 }} 
+        style={{ flex: 1, backgroundColor: theme.colors.background }} 
         navigation={props.navigation}
         link={link} 
         injectStyle={['article']}

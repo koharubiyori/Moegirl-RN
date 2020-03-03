@@ -8,6 +8,7 @@ import Item from './components/Item'
 import { SearchData } from '~/api/search.d'
 import { useTheme, Text } from 'react-native-paper'
 import ViewContainer from '~/components/ViewContainer'
+import useLayoutAnimation from '~/hooks/useLayoutAnimation'
 
 export interface Props {
   
@@ -30,11 +31,9 @@ function SearchResult(props: PropsWithChildren<FinalProps>) {
     loadList()
   }, [])
 
-  useEffect(() => {
-    LayoutAnimation.configureNext(
-      LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
-    )
-  })
+  useLayoutAnimation(
+    LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
+  )
 
   function loadList () {
     if (status === 4 || status === 2) { return }
