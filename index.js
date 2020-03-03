@@ -16,6 +16,9 @@ if (!__DEV__) {
   }
 }
 
+// 禁用yellowBox
+console.disableYellowBox = true
+
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true)
 
 AppRegistry.registerComponent(appName, () => App)

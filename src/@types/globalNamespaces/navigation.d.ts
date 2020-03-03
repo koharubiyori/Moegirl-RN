@@ -1,5 +1,5 @@
 import { NavigationScreenProp } from 'react-navigation'
-import { RoutesParams } from '~/router'
+import { RoutesParams } from '~/routes'
 
 export = Navigation
 export as namespace __Navigation
