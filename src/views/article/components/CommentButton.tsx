@@ -27,7 +27,7 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
   const [visible, setVisible] = useState(false)
   const [transitionBottom] = useState(new Animated.Value(-size))
-  const showLock = useRef(true) // 为了保证动画(条目加载成功两秒后显示)，声明一个变量用于判断前两秒不响应show方法
+  const showLock = useRef(true) // 为了保证延迟显示，声明一个变量用于判断前n秒不响应show方法
   const animateLock = useRef(false)
 
   if (props.getRef) props.getRef.current = { show, hide }
@@ -38,7 +38,7 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
     setTimeout(() => {
       showLock.current = false
       show()
-    }, 1000)
+    }, 100)
   }, [])
 
   function show() {
