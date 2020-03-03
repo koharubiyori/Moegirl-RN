@@ -1,18 +1,37 @@
-import { TransitionPresets } from 'react-navigation-stack'
+import { TransitionPresets, CardStyleInterpolators } from 'react-navigation-stack'
 import { RoutesParams } from '../index'
 import { FC } from 'react'
+import { StackNavigationOptions, TransitionSpec } from 'react-navigation-stack/lib/typescript/src/vendor/types'
 
-type CustomTransitionName = 'fade'
+type CustomTransitionName = 'fade' | 'onlyCloseTransition'
 
 export default function transitionedScreens<
   T extends { [RouteName in keyof RoutesParams]?: FC<any> }
 >(transitionPresetName: (keyof typeof TransitionPresets) | CustomTransitionName, screens: T): T {
   let newScreens: any = {}
-  let navigationOptions: any = {}
+  let navigationOptions: StackNavigationOptions = {}
 
   switch (transitionPresetName) {
+    case 'onlyCloseTransition': {
+      navigationOptions = {
+        transitionSpec: {
+          open: {
+            animation: 'timing',
+            config: {
+              duration: 0
+            }
+          },
+          close: TransitionPresets.ModalSlideFromBottomIOS.transitionSpec.close
+        },
+        
+        cardStyleInterpolator: TransitionPresets.ModalSlideFromBottomIOS.cardStyleInterpolator,
+      }
+
+      break
+    }
+    
     case 'fade': {
-      const transitionSpecConfig = {
+      const transitionSpecConfig: TransitionSpec = {
         animation: 'timing',
         config: {
           duration: 250
