@@ -1,9 +1,9 @@
-import React, { MutableRefObject, PropsWithChildren, useRef, useState, FC } from 'react'
+import React, { FC, MutableRefObject, PropsWithChildren, useRef, useState } from 'react'
 import { Animated, Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { useTheme } from 'react-native-paper'
+import { withNavigation } from 'react-navigation'
 import { postComment } from '~/api/comment'
 import toast from '~/utils/toast'
-import { withNavigation } from 'react-navigation'
-import { useTheme } from 'react-native-paper'
 
 export interface Props {
   targetId?: string
@@ -70,6 +70,7 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
         setTimeout(() => toast.show('发表成功'))
         setInputText('')
         hide()
+
         props.onPosted()
       })
       .catch(e => {

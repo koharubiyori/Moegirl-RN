@@ -8,6 +8,7 @@ import { markReadAllNotifications } from '~/redux/user/HOC'
 import StatusBar from '~/components/StatusBar'
 import { useTheme, Text } from 'react-native-paper'
 import ViewContainer from '~/components/ViewContainer'
+import useLayoutAnimation from '~/hooks/useLayoutAnimation'
 
 export interface Props {
 
@@ -38,11 +39,9 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
     markReadAllNotifications()
   }, [])
 
-  useEffect(() => {
-    LayoutAnimation.configureNext(
-      LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
-    )
-  })
+  useLayoutAnimation(
+    LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
+  )
 
   function load(force = false) {
     if ([2, 4, 5].includes(notificationList.status) && !force) return Promise.resolve()

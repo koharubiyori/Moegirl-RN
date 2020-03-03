@@ -20,6 +20,7 @@ import notifications, { RouteParams as NotificationsRP } from './views/notificat
 import search, { RouteParams as SearchRP } from './views/search'
 import searchResult, { RouteParams as SearchResultRP } from './views/searchResult'
 import settings, { RouteParams as SettingsRP } from './views/settings'
+import store from './redux'
 
 const BottomTabNavigator = createBottomTabNavigator(
   { home, finds, history },
@@ -53,19 +54,21 @@ const routes: { [RouteName in keyof (RoutesParams & { BottomTabNavigator: any })
   searchResult,
   login,
   about,
+
   comment,
+  reply,
   category,
   settings,
   edit,
-  reply,
   notifications,
+
   imageViewer,
   biliPlayer,
 }
 
 function transitionedScreens<
   T extends { [RouteName in keyof RoutesParams]?: FC<any> }
->(screens: T, transitionPresetName: keyof typeof TransitionPresets): T {
+>(transitionPresetName: keyof typeof TransitionPresets, screens: T): T {
   let newScreens: any = {}
   for (let screenName in screens) {
     newScreens[screenName] = {
@@ -80,12 +83,11 @@ function transitionedScreens<
 const StackNavigator = createStackNavigator(routes, { 
   initialRouteName: 'BottomTabNavigator',
   headerMode: 'none',
-
+  
   defaultNavigationOptions(props) {
     return {
-      gestureEnabled: true,
-      cardOverlayEnabled: true,
-      ...TransitionPresets.DefaultTransition,
+      // ...TransitionPresets[store.getState().config.theme === 'night' ? 'ModalSlideFromBottomIOS' : 'ModalSlideFromBottomIOS']
+      ...TransitionPresets.ModalSlideFromBottomIOS
     }
   }
 })

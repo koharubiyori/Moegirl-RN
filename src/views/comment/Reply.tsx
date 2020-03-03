@@ -1,14 +1,15 @@
 import React, { PropsWithChildren, useRef, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { LayoutAnimation, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useTheme } from 'react-native-paper'
 import StatusBar from '~/components/StatusBar'
-import { commentHOC, CommentConnectedProps } from '~/redux/comment/HOC'
-import Item from './components/Item'
+import ViewContainer from '~/components/ViewContainer'
+import useLayoutAnimation from '~/hooks/useLayoutAnimation'
+import store from '~/redux'
+import { CommentConnectedProps, commentHOC } from '~/redux/comment/HOC'
 import Editor, { CommentEditorRef } from './components/Editor'
 import Header from './components/Header'
+import Item from './components/Item'
 import format from './utils/format'
-import ViewContainer from '~/components/ViewContainer'
-import { useTheme } from 'react-native-paper'
-import store from '~/redux'
 
 export interface Props {
 
@@ -27,6 +28,10 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
     editor: useRef<CommentEditorRef>()
   }
   const signedName = store.getState().user.name
+
+  useLayoutAnimation(
+    LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
+  )
 
   function addReply(replyId = '') {
     if (!signedName) {

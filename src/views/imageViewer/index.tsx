@@ -22,6 +22,7 @@ function MyImageViewer(props: PropsWithChildren<FinalProps>) {
     <>
       <StatusBar hidden />
       <ImageViewer 
+        style={{ backgroundColor: 'black' }}
         imageUrls={imgs} 
         index={index}
         saveToLocalByLongPress={false} 
