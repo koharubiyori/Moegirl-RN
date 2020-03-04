@@ -114,7 +114,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
   }, [loadedPageInfo])
 
   useEffect(() => {
-    const listener = DeviceEventEmitter.addListener('navigationStateChange', () => setVisibleHeader(true))
+    const listener = props.navigation.addListener('willFocus', () => setVisibleHeader(true))
     return () => listener.remove()
   }, [])
 
