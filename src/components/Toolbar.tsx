@@ -53,7 +53,7 @@ function MyToolbar(props: PropsWithChildren<FinalProps>) {
         <View style={{ flexDirection: 'row', flex: 1 }}>
           <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressLeftIcon && props.onPressLeftIcon()}>
             <MaterialIcon name={props.leftIcon!} size={28} color={textColor} {...props.leftIconProps} />
-            {props.state.user.waitNotificationsTotal !== 0 && props.badge ? <View style={styles.badge} /> : null} 
+            {props.badge ? <View style={{ ...styles.badge, backgroundColor: theme.colors.error }} /> : null} 
           </Button>
           <Text style={{ ...styles.title, color: textColor }} numberOfLines={1}>{props.title}</Text>
         </View>
@@ -114,7 +114,8 @@ const styles = StyleSheet.create({
   badge: {
     width: 9,
     height: 9,
-    backgroundColor: 'red',
+    borderWidth: 1,
+    borderColor: 'white',
     borderRadius: 4.5,
     position: 'absolute',
     top: 3,

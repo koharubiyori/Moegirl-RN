@@ -2,19 +2,21 @@ import React, { PropsWithChildren, FC } from 'react'
 import { withNavigation } from 'react-navigation'
 import StatusBar from '~/components/StatusBar'
 import Toolbar from '~/components/Toolbar'
+import { userHOC, UserConnectedProps } from '~/redux/user/HOC'
 
 export interface Props {
   title: string
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation
+type FinalProps = Props & UserConnectedProps & __Navigation.InjectedNavigation
 
 function IndexHeader(props: PropsWithChildren<FinalProps>) {
   
   return (
     <>
       <StatusBar />
-      <Toolbar badge
+      <Toolbar 
+        badge={props.state.user.waitNotificationsTotal !== 0}
         title={props.title}
         leftIcon="menu"
         rightIcon="search"
@@ -25,4 +27,4 @@ function IndexHeader(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default withNavigation(IndexHeader) as FC<Props>
+export default userHOC(withNavigation(IndexHeader)) as FC<Props>
