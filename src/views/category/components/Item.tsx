@@ -1,6 +1,7 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, FC } from 'react'
 import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useTheme, Text } from 'react-native-paper'
+import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 
 export interface Props {
   title: string
@@ -8,13 +9,14 @@ export interface Props {
   onPress(): void
 }
 
-type FinalProps = Props
+type FinalProps = Props & ConfigConnectedProps
 
 function CategoryItem(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
   const boxWidth = Dimensions.get('window').width / 2 - 10 
   const imgSize = boxWidth - 10
 
+  const isNightTheme = props.state.config.theme === 'night'
   return (
     <TouchableOpacity style={{ ...styles.wrapper, width: boxWidth }} onPress={props.onPress}>
       <View style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
@@ -27,7 +29,8 @@ function CategoryItem(props: PropsWithChildren<FinalProps>) {
             style={{ width: imgSize, height: imgSize, borderRadius: 1 }} 
           />
         </> : <>
-          <View style={{ width: imgSize, height: imgSize, backgroundColor: theme.colors.placeholder, justifyContent: 'center', alignItems: 'center' }}>
+          {/* 这里无论用哪个颜色都不是特别满意，所以就使用单独的颜色了 */}
+          <View style={{ width: imgSize, height: imgSize, backgroundColor: isNightTheme ? '#5B5B5B' : '#E2E2E2', justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: theme.colors.disabled, fontSize: 18, borderRadius: 1 }}>暂无图片</Text>
           </View>
         </>}
@@ -38,7 +41,7 @@ function CategoryItem(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default CategoryItem
+export default configHOC(CategoryItem) as FC<Props>
 
 const styles = StyleSheet.create({
   container: {
