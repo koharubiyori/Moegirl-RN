@@ -63,7 +63,7 @@ function EditCaptchaDialog(props: PropsWithChildren<FinalProps>) {
             backgroundColor: 'transparent'
           }}
         />
-        <HelperText>空格和标点符号无需输入，若看不清可以点击图片更换</HelperText>
+        <HelperText>空格和标点符号无需输入，若看不清可以点击图片更换。</HelperText>
       </Dialog.Content>
       <Dialog.Actions>
         <Button onPress={props.onDismiss} style={{ marginRight: 10 }} color={theme.colors.placeholder}>
