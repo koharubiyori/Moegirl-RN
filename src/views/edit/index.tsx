@@ -121,9 +121,7 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   function showSubmitDialog () {
     const { isContentChanged } = refs.tabNavigator.current.state.nav.routes[0].params
     if (isContentChanged) {
-      loadCaptcha()
-        .then(() => setVisibleSubmitDialog(true))
-        .catch(console.log)
+      setVisibleSubmitDialog(true)
     } else {
       toast.show('内容未发生变化')
     }
@@ -162,7 +160,11 @@ function Edit(props: PropsWithChildren<FinalProps>) {
         if (isAutoConfirmed) {
           executeEdit()
         } else {
-          setVisibleCaptchaDialog(true)
+          toast.showLoading('提交中')
+          loadCaptcha()
+            .finally(toast.hide)
+            .then(() => setVisibleCaptchaDialog(true))
+            .catch(console.log)
         }
       })
   }
