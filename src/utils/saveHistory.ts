@@ -44,7 +44,6 @@ export default function(title: string) {
     }
 
     _history.unshift(result)
-    // console.log(_history)
     storage.set('browsingHistory', _history)
     DeviceEventEmitter.emit('refreshHistory')
   }).catch(e => console.log(e))

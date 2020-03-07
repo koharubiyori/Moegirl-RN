@@ -11,7 +11,6 @@ const { dispatch, getState } = store
 
 export const login = (userName: string, password: string): Promise<string> => new Promise((resolve, reject) => {
   accountApi.login(userName, password).then(data => {
-    console.log(data)
     if (data.clientlogin.status === 'PASS') {
       dispatch({ type: SET_USERNAME, name: data.clientlogin.username })
       storage.set('userName', data.clientlogin.username!)
@@ -67,7 +66,6 @@ export const getUserInfo = (): Promise<AccountApiData.GetInfo['query']['userinfo
     if (state.user.info) return resolve(state.user.info)
     accountApi.getInfo()
       .then(data => {
-        console.log(data)
         dispatch({ type: SET_USER_INFO, info: data.query.userinfo })
         resolve(data.query.userinfo)
       })

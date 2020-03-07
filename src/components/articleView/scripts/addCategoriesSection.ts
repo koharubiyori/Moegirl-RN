@@ -14,8 +14,7 @@ export default function() {
   )
   
   viewBox.find('.mw-parser-output').append(title, categories)
-  console.log(window._appConfig.theme === 'night')
-  console.log(window._colors.night.text)
+
   $('head').append(`<style>
     .categoryBox {
       display: inline-block;
