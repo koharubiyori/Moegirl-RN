@@ -56,7 +56,6 @@ function FindsModuleTrend(props: PropsWithChildren<FinalProps>) {
           return result.filter((_, index) => index < 5)  
         })    
         .then(data => {
-          console.log(data)
           Promise.all(
             data.map(item => articleApi.getMainImage(item.title))
           ).then(images => {

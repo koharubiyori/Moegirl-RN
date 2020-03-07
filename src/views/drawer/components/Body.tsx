@@ -46,7 +46,6 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
         newThemeColor = props.state.config.lastTheme
       }
       
-      console.log('get', props.state.config.lastTheme)
       setThemeColor(newThemeColor)
       props.$config.set({ theme: newThemeColor })
     } else {

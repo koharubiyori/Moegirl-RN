@@ -61,7 +61,6 @@ function Category(props: PropsWithChildren<FinalProps>) {
         }
         if (!data.continue) nextStatus = 4
 
-        // console.log(data.query.pages)
         setCategoryData(prevVal => ({
           list: prevVal.list.concat(Object.values(data.query.pages)),
           status: nextStatus as any,

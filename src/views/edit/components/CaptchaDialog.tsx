@@ -19,7 +19,6 @@ function EditCaptchaDialog(props: PropsWithChildren<FinalProps>) {
   const [status, setStatus] = useState<0 | 1 | 2 | 3>(1)
   const theme = useTheme()
   
-  console.log(status)
   const imgSize = {
     width: Dimensions.get('window').width - 120,
     height: 160
