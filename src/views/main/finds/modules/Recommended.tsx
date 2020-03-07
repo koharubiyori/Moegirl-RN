@@ -44,6 +44,7 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
       try {
         let cache = storage.get('articleCache')
   
+        console.log(cache)
         if (cache) {
           // 拿到缓存中所有标题
           let data = Object.values(cache).map(item => item.parse.title)

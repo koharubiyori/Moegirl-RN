@@ -135,7 +135,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
           value={config.changeThemeColorByArticleMainColor}
           onChange={val => {
             setConfig({ changeThemeColorByArticleMainColor: val })
-            props.state.config.theme === 'night' && toast.show('黑夜模式下动态主题不生效')
+            props.state.config.theme === 'night' && val && toast.show('黑夜模式下动态主题不生效')
           }}
         />
 
