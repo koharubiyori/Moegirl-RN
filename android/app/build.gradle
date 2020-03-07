@@ -131,8 +131,8 @@ android {
         applicationId "com.moegirlviewer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 25
-        versionName "1.4.4"
+        versionCode 26
+        versionName "1.4.5H"
     }
     splits {
         abi {
