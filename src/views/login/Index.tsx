@@ -110,7 +110,7 @@ function InputItem(props: InputItemProps) {
   useEffect(() => {
     const intervalKey = setInterval(() => {
       setIsFocused(textInputRef.current.isFocused())
-    }, 50)
+    }, 10)
 
     return () => clearInterval(intervalKey)
   }, [])

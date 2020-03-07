@@ -6,7 +6,7 @@ import Color from 'color'
 jss.setup(preset())
 
 const { night } = colors
-const linkColor = Color(night.accent).darken(0.2).toString()
+const linkColor = Color(night.accent).darken(0.1).toString()
 
 export default jss.createStyleSheet({
   '@global': {
@@ -24,7 +24,7 @@ export default jss.createStyleSheet({
       },
   
       '&.new': {
-        color: '#D1484A',
+        color: '#D96768',
       }
     },
 
