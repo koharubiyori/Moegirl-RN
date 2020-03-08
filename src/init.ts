@@ -10,6 +10,8 @@ import { State as ConfigState } from './redux/config'
 export default function appInit() {  
   function main() {
     const name = storage.get('userName')
+    console.log(name)
+    
     if (!name) {
       !__DEV__ && count.increment()
     } else {
