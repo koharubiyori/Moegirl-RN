@@ -76,9 +76,20 @@ const StackNavigator = createStackNavigator(routes, {
   headerMode: 'none',
   
   defaultNavigationOptions(props) {
+    const { ModalSlideFromBottomIOS } = TransitionPresets
+    
     return {
-      // ...TransitionPresets[store.getState().config.theme === 'night' ? 'ModalSlideFromBottomIOS' : 'ModalSlideFromBottomIOS']
-      ...TransitionPresets.ModalSlideFromBottomIOS
+      ...ModalSlideFromBottomIOS,
+      transitionSpec: {
+        ...ModalSlideFromBottomIOS.transitionSpec,
+        close: {
+          ...ModalSlideFromBottomIOS.transitionSpec.close,
+          config: {
+            ...ModalSlideFromBottomIOS.transitionSpec.close.config,
+            mass: 1.5
+          }
+        }
+      }
     }
   }
 })

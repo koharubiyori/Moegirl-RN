@@ -50,13 +50,13 @@ function getToken() {
   })
 }
 
-function _editArticle(
+function executeEditArticle(
+  token: string,
   title: string, 
   section: number | undefined, 
   content: string, 
   summary: string, 
   timestamp: string | undefined, 
-  token: string,
   captchaid?: string,
   captchaword?: string
 ) {
@@ -99,7 +99,7 @@ async function editArticle(
     const tokenData = await getToken()
     const token = tokenData.query.tokens.csrftoken
 
-    const result = await _editArticle(title, section, content, summary, timestamp, token, captchaid, captchaword)
+    const result = await executeEditArticle(token, title, section, content, summary, timestamp, captchaid, captchaword)
 
     if ('error' in result) {
       retryMark = false

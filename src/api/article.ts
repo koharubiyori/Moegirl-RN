@@ -21,7 +21,7 @@ function getMainImage(pageName: string) {
       pithumbsize: 500
     }
   }).then(data => {
-    var { pages } = data.query
+    const { pages } = data.query
     return Object.values(pages)[0].thumbnail
   })
 }
