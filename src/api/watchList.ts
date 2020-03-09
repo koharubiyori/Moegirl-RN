@@ -20,10 +20,12 @@ function getList(nextKey?: string) {
   return request<WatchListApiData.GetWatchList>({
     params: {
       action: 'query',
-      generator: 'watchlistraw',
+      prop: 'pageimages',
+      list: 'watchlistraw',
+      wrlimit: '50',
+      pithumbsize: 500,
       ...(nextKey ? {
-        continue: 'gwrcontinue||',
-        generator: 'watchlistraw',
+        continue: '-||pageimages',
         gwrcontinue: nextKey
       } : {})
     }
@@ -32,24 +34,35 @@ function getList(nextKey?: string) {
 
 function getMainImages(titles: string[]) {
   return request<WatchListApiData.GetImages>({
+    method: 'post',
     params: {
       action: 'query',
       prop: 'pageimages',
       titles: titles.join('|'),
       pithumbsize: 500
     }
-  }).then(data => {
-    var { pages } = data.query
-    return Object.values(pages).map(item => item.thumbnail)
   })
 }
 
-async function getListWithImage(nextKey?: string) {
-  const pagesData = await getList(nextKey)
-  const titles = Object.values(pagesData.query.pages).map(item => item.title)
-  const images = await getMainImages(titles)
-  
-  return titles.map((title, index) => ({ title, image: images[index] }))
+function getListWithImage(nextKey?: string) {
+  return request<WatchListApiData.GetWatchList>({
+    params: {
+      action: 'query',
+      format: 'json',
+      prop: 'pageimages|revisions',
+      continue: 'gwrcontinue||',
+      generator: 'watchlistraw',
+      redirects: 1,
+      rvprop: 'timestamp',
+      gwrcontinue: nextKey,
+      gwrlimit: '50',
+      pithumbsize: 500,
+      ...(nextKey ? {
+        continue: 'gwrcontinue||',
+        gwrcontinue: nextKey
+      } : {})
+    }
+  })
 }
 
 function getToken() {
@@ -64,6 +77,7 @@ function getToken() {
 
 function executeSetWatchStatus(token: string, title: string, unwatch?: boolean) {
   return request({
+    method: 'post',
     params: {
       action: 'watch',
       format: 'json',

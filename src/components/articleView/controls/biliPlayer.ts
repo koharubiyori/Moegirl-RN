@@ -13,6 +13,7 @@ export default function() {
 
     let titlePhoneEvent = new Hammer(title[0])
     titlePhoneEvent.on('press', function() {
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'vibrate' }))
       window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'openApp', data: { url: 'https://www.bilibili.com/video/' + avId } }))
     })
 

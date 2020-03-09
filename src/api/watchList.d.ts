@@ -1,21 +1,36 @@
-export namespace WatchListApiData {
+export namespace WatchListApiData {  
   interface GetWatchList {
     continue: {
       gwrcontinue: string
       continue: string
     }
-    
+
     query: {
+      redirects?: {
+        from: string
+        to: string
+      }[]
+
       pages: {
         [pageId: number]: {
           pageid: number
           ns: number
           title: string
+          missing?: ''
+          thumbnail?: {
+            source: string
+            width: number
+            height: number
+          }
+          pageimage: string
+          revisions: {
+            timestamp: string
+          }[]
         }
       }
     }
   }
-  
+
   interface GetPageInfo {
     query: {
       pages: {

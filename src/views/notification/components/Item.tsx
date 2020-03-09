@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react'
 import { Image, StyleSheet, TouchableNativeFeedback, TouchableOpacity, View } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 import { NotificationData } from '~/api/notification.d'
-import format from '~/views/comment/utils/format'
+import toViewDate from '~/utils/toViewDate'
 
 export interface Props {
   notificationData: NotificationData
@@ -48,7 +48,7 @@ function NotificationItem(props: PropsWithChildren<FinalProps>) {
           </View>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <Text style={{ color: theme.colors.placeholder }}>{format.date(parseInt(props.notificationData.timestamp.unix))}</Text>
+          <Text style={{ color: theme.colors.placeholder }}>{toViewDate(new Date((props.notificationData.timestamp.unix as any as number) * 1000))}</Text>
         </View>
       </View>
     </TouchableNativeFeedback>
@@ -59,7 +59,7 @@ export default NotificationItem
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 1,
+    marginBottom: 1,
     paddingVertical: 5,
     paddingHorizontal: 10
   },

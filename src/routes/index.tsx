@@ -20,6 +20,7 @@ import notifications, { RouteParams as NotificationsRP } from '~/views/notificat
 import search, { RouteParams as SearchRP } from '~/views/search'
 import searchResult, { RouteParams as SearchResultRP } from '~/views/searchResult'
 import settings, { RouteParams as SettingsRP } from '~/views/settings'
+import watchList, { RouteParams as WatchListRP } from '~/views/watchList'
 import transitionedScreens from './utils/transitionedScreens'
 
 const BottomTabNavigator = createBottomTabNavigator(
@@ -45,6 +46,7 @@ export type RoutesParams = {
   notifications: NotificationsRP
   biliPlayer: BiliPlayerRP
   category: CategoryRP
+  watchList: WatchListRP
 }
 
 const routes: { [RouteName in (keyof RoutesParams) | 'BottomTabNavigator']: any } = { 
@@ -60,6 +62,7 @@ const routes: { [RouteName in (keyof RoutesParams) | 'BottomTabNavigator']: any 
   settings,
   edit,
   notifications,
+  watchList,
 
   ...transitionedScreens('fade', {
     imageViewer,
