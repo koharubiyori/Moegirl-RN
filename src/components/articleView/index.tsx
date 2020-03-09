@@ -1,5 +1,5 @@
 import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState, FC } from 'react'
-import { ActivityIndicator, BackHandler, Dimensions, Linking, NativeModules, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { ActivityIndicator, BackHandler, Dimensions, Linking, NativeModules, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle, Vibration } from 'react-native'
 import { WebView } from 'react-native-webview'
 import articleApi from '~/api/article'
 import store from '~/redux'
@@ -321,6 +321,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         avId: string | number
         page: string | number
       }
+      vibrate: undefined
     }
 
     const { type, data }: { type: keyof EventParamsMap, data: EventParamsMap[keyof EventParamsMap] } = JSON.parse(event.nativeEvent.data)
@@ -357,8 +358,9 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         console.log(e)
         injectScript(`window['${callbackName}']('${JSON.stringify({ error: true })}')`)
       })
-      
     })
+
+    setEventHandler('vibrate', () => setTimeout(() => Vibration.vibrate(25)))
 
     if (props.disabledLink) { return }
     

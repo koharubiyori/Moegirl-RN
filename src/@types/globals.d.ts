@@ -36,3 +36,5 @@ declare interface Window {
 declare interface DefaultProps<Props> extends Function {
   defaultProps?: Partial<Props>
 }
+
+declare type PromiseFnReturnType<T extends (...args: any[]) => Promise<any>> = T extends (...args: any[]) => Promise<infer R> ? R : any
