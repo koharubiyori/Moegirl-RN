@@ -9,76 +9,6 @@ jss.setup(preset())
 // 已知问题：提供值范围的属性，加important后会报错，但报错在@global上面，提示不相关。目前的解决办法：给提供值范围的属性加important后要as any
 export default jss.createStyleSheet({
   '@global': {
-    // 消除移动端hoverPic中绝对定位带来的内容溢出问题
-    '.PicHoverBox': {
-      position: 'relative'
-    },
-
-    // 渲染模板Template:kiraraf角色卡片列表时添加的收起按钮无效
-    '#mw-customcollapsible-kirarafCharaList .collapseBtn': {
-      display: 'none'
-    },
-
-    // 隐藏目录，表单元素，提问求助区讨论存档入口，mouse-ripple模板
-    [`#toc,
-      .tochide,
-      .linkBox,
-      .mw-inputbox-centered,
-      .mouse-ripple
-    `]: {
-      display: 'none'
-    },
-
-    // 优化提问求助区头部显示
-    '#commonTalkBox': {
-      '& > div': {
-        display: 'block',
-        width: 'auto',
-      },
-
-      '& #commonTalkBoxCaption': {
-        width: '100%',
-        height: 50,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderBottom: 0
-      },
-
-      '& #commonTalkBoxLeft': {
-        '& > ul': {
-          margin: 0,
-          padding: '10px 20px'
-        },
-
-        '&::after': {
-          content: '""',
-          display: 'block',
-          height: 2,
-          backgroundColor: 'white',
-        }
-      },
-
-      '& #commonTalkBoxRight': {
-        '& > div:first-child': {
-          width: 'auto',
-          border: 'none',
-          marginLeft: 0,
-
-          '& > ul': {
-            margin: 0,
-            padding: '10px 20px'  
-          }
-        }
-      }
-    },
-
-    '.image-box': {
-      '& .thumbcaption': {
-        display: 'none'
-      }
-    },
-
     'html, body': {
       overflowX: 'hidden'
     },
@@ -149,6 +79,84 @@ export default jss.createStyleSheet({
         width: '100% !important',
         backgroundColor: 'transparent !important',
       },
+    },
+    
+    // 消除移动端hoverPic中绝对定位带来的内容溢出问题
+    '.PicHoverBox': {
+      position: 'relative'
+    },
+
+    // 渲染模板Template:kiraraf角色卡片列表时添加的收起按钮无效
+    '#mw-customcollapsible-kirarafCharaList .collapseBtn': {
+      display: 'none'
+    },
+
+    // 隐藏目录，表单元素，提问求助区讨论存档入口，mouse-ripple模板
+    [`#toc,
+      .tochide,
+      .linkBox,
+      .mw-inputbox-centered,
+      .mouse-ripple
+    `]: {
+      display: 'none'
+    },
+
+    // 优化提问求助区头部显示
+    '#commonTalkBox': {
+      '& > div': {
+        display: 'block',
+        width: 'auto',
+      },
+
+      '& #commonTalkBoxCaption': {
+        width: '100%',
+        height: 50,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottom: 0
+      },
+
+      '& #commonTalkBoxLeft': {
+        '& > ul': {
+          margin: 0,
+          padding: '10px 20px'
+        },
+
+        '&::after': {
+          content: '""',
+          display: 'block',
+          height: 2,
+          backgroundColor: 'white',
+        }
+      },
+
+      '& #commonTalkBoxRight': {
+        '& > div:first-child': {
+          width: 'auto',
+          border: 'none',
+          marginLeft: 0,
+
+          '& > ul': {
+            margin: 0,
+            padding: '10px 20px'  
+          }
+        }
+      }
+    },
+
+    '.tl-outerImage': {
+      maxWidth: '100%',
+
+      '& img': {
+        maxWidth: '100%'
+      }
+    },
+
+    '.image-box': {
+      '& .thumbcaption': {
+        display: 'none'
+      }
     },
 
     // 人物基本信息模板
@@ -275,6 +283,19 @@ export default jss.createStyleSheet({
         color: '#0b0080',
         marginLeft: 5
       },
+
+      '& .image > img': {
+        maxWidth: '100%',
+        height: 'auto'
+      },
+
+      '& .tl-outerImage': {
+        width: 'auto !important',
+
+        '& > .img': {
+          width: '100%'
+        }
+      }
     },
 
     'table.navbox': {
