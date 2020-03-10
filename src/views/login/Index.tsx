@@ -136,7 +136,7 @@ function InputItem(props: InputItemProps) {
               text: theme.colors[isFocused ? 'accent' : 'disabled'], 
             } 
           }}
-          selectionColor={Color(theme.colors.accent).lighten(0.75).toString()}
+          selectionColor={Color(theme.colors.accent).lighten(0.25).toString()}
           secureTextEntry={props.secureTextEntry} 
           placeholder={props.placeholder} 
           value={props.value} 

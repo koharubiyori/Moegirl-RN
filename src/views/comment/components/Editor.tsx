@@ -1,10 +1,9 @@
-import React, { FC, MutableRefObject, PropsWithChildren, useRef, useState, useEffect } from 'react'
-import { Animated, Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-import { useTheme } from 'react-native-paper'
+import React, { FC, PropsWithChildren, useEffect, useRef, useState } from 'react'
+import { Animated, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { useTheme, Text } from 'react-native-paper'
 import { withNavigation } from 'react-navigation'
 import { postComment } from '~/api/comment'
 import toast from '~/utils/toast'
-import StatusBar from '~/components/StatusBar'
 
 export interface Props {
   visible: boolean
@@ -62,6 +61,7 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
   }
 
   function submit() {
+    if (inputText.length === 0) return toast.show('评论或回复内容不能为空')
     if (inputText === '0') { return toast.show('因萌百评论系统的bug，不能以“0”作为评论内容') }
 
     toast.showLoading('提交中')
@@ -85,9 +85,16 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
   return (
     visible ? <>
       <TouchableWithoutFeedback onPress={tapMaskToCloseSelf} style={{ ...styles.container }}>
+        {/* 这里的错误暂时没找到办法消掉 */}
         <Animated.View style={{ ...styles.container, opacity: transitionOpacity }} ref={refs.mask}>
           <Animated.View style={{ ...styles.body, backgroundColor: theme.colors.background, transform: [{ translateY: transitionTranslateY }] }}>
-            <TextInput style={{ ...styles.input, borderColor: theme.colors.placeholder }} multiline disableFullscreenUI autoCorrect={false}
+            <TextInput multiline disableFullscreenUI 
+              style={{ 
+                ...styles.input, 
+                borderColor: theme.colors.placeholder,
+                color: theme.colors.text 
+              }} 
+              autoCorrect={false}
               placeholder="说点什么吧..."
               placeholderTextColor={theme.colors.placeholder}
               textAlignVertical="top" 
@@ -96,7 +103,7 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
             />
             
             <View style={{ marginTop: 10 }}>
-              <TouchableOpacity onPress={submit} disabled={inputText.length === 0}>
+              <TouchableOpacity onPress={submit}>
                 {/* 这里颜色是正确的，但不符合语义 */}
                 <Text style={{ color: theme.colors[inputText.length ? 'disabled' : 'placeholder'], fontSize: 17, marginBottom: 10 }}>提交</Text>
               </TouchableOpacity>
@@ -117,7 +124,7 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 1
   },
 
