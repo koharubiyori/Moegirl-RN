@@ -6,7 +6,7 @@ import ViewContainer from '~/components/ViewContainer'
 import useLayoutAnimation from '~/hooks/useLayoutAnimation'
 import store from '~/redux'
 import { CommentConnectedProps, commentHOC } from '~/redux/comment/HOC'
-import Editor, { CommentEditorRef } from './components/Editor'
+import Editor from './components/Editor'
 import Header from './components/Header'
 import Item from './components/Item'
 import format from './utils/format'
@@ -24,9 +24,7 @@ type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & Comment
 function CommentReply(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
   const [replyId, setReplyId] = useState('')
-  const refs = {
-    editor: useRef<CommentEditorRef>()
-  }
+  const [visibleEditor, setVisibleEditor] = useState(false)
   const signedName = store.getState().user.name
 
   useLayoutAnimation(
@@ -41,10 +39,8 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
       })
     }
     
-    refs.editor.current!.show()
-    
     setReplyId(replyId)
-    setTimeout(refs.editor.current!.show)
+    setVisibleEditor(true)
   }
 
   function delCommentData(id: string) {
@@ -59,10 +55,12 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
     <ViewContainer grayBgColor>
       <StatusBar />
       <Header title={'回复：' + activeComment.username} onPressAddComment={addReply} navigation={props.navigation} />
-      <Editor getRef={refs.editor}
+      <Editor
+        visible={visibleEditor}
         pageId={state.pageId}
         targetId={replyId || state.activeId}  
-        onPosted={() => props.$comment.incrementLoad(true)}
+        onDismiss={() => setVisibleEditor(false)}
+        onPosted={() => { props.$comment.incrementLoad(true); setVisibleEditor(false) }}
       />
     
       <ScrollView style={{ flex: 1 }}>
@@ -75,19 +73,19 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
             visibleDelBtn={false} 
             signedName={signedName} 
             onDel={delCommentData}
-            onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
           />
           {children.length !== 0 ? <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginVertical: 10 }}>回复</Text> : null}
         </View>
         
-        {children.map(item => <Item isReply visibleReply={false} visibleReplyNum={false}
+        {children.map(item => <Item isReply 
           key={item.id}
+          visibleReply={false} 
+          visibleReplyNum={false}
           data={item}
           navigation={props.navigation}
           onDel={delCommentData}
           signedName={signedName} 
           onPressReply={() => addReply(item.id)}
-          onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
         />)}
 
         <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>

@@ -24,6 +24,7 @@ type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & Comment
 
 function Comment(props: PropsWithChildren<FinalProps>) {
   const [visibleEditor, setVisibleEditor] = useState(false)
+  const [commentTargetId, setCommentTargetId] = useState<undefined | string>(undefined)
 
   const theme = useTheme()
   const title = props.navigation.getParam('title')
@@ -51,8 +52,15 @@ function Comment(props: PropsWithChildren<FinalProps>) {
   }
 
   function toReply(id: string) {
-    store.dispatch({ type: COMMENT_SET, data: { activeId: id } })
-    props.navigation.push('reply', { signedName: signedName! })
+    const activeDataCommentTree = props.$comment.getActiveData().tree.tree
+    // 判断评论下是否有回复
+    if (activeDataCommentTree.find(comment => comment.id === id)!.children.length === 0) {
+      setCommentTargetId(id)
+      setVisibleEditor(true)
+    } else {
+      store.dispatch({ type: COMMENT_SET, data: { activeId: id } })
+      props.navigation.push('reply', { signedName: signedName! })
+    }
   }
 
   // 使用redux的数据源
@@ -65,8 +73,9 @@ function Comment(props: PropsWithChildren<FinalProps>) {
       <Editor 
         visible={visibleEditor} 
         pageId={state.pageId} 
-        onPosted={() => { props.$comment.incrementLoad(); setVisibleEditor(false) }} 
-        onDismiss={() => setVisibleEditor(false)}
+        targetId={commentTargetId}
+        onPosted={() => { props.$comment.incrementLoad(); setVisibleEditor(false); setCommentTargetId(undefined) }} 
+        onDismiss={() => { setVisibleEditor(false); setCommentTargetId(undefined) }}
       />
     
       <FlatList removeClippedSubviews data={state.tree.tree} 
@@ -80,7 +89,6 @@ function Comment(props: PropsWithChildren<FinalProps>) {
           signedName={signedName}
           onDel={props.$comment.del}
           onPressReply={toReply}
-          onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
         />}
           
         ListHeaderComponent={state.data.popular.length !== 0 ? <>
@@ -94,7 +102,6 @@ function Comment(props: PropsWithChildren<FinalProps>) {
                 visibleReplyBtn={false} 
                 signedName={signedName}
                 onDel={props.$comment.del} 
-                onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
               />  
             )}
             <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginTop: 10 }}>全部评论</Text>

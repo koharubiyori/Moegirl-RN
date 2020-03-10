@@ -3,7 +3,7 @@ import { CommentApiData, CommentData } from '~/api/comment.d'
 import setActionHandler from '~/utils/redux/setActionHandler'
 
 export const SET_ACTIVE_ID = Symbol()
-export const SET = Symbol()
+export const SET = Symbol() // 设置当前活动的数据(activeData，当前页面的评论数据)
 export const INCREMENT_DATA = Symbol()
 export const DEL = Symbol()
 export const SET_LIKE_STATUS = Symbol()

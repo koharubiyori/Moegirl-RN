@@ -19,7 +19,6 @@ export interface Props {
   navigation: __Navigation.Navigation
   signedName: string | null
   onDel?(commentId: string): void
-  onPressAvatar?(username: string): void
   onPressReply?(commentId: string): void
 }
 
@@ -105,7 +104,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
       <View style={styles.header}>
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => props.onPressAvatar && props.onPressAvatar(data.username)}>
+            <TouchableOpacity onPress={() => props.navigation.push('article', { link: 'User:' + data.username })}>
               <Image source={{ uri: $avatarUrl + data.username }} style={{ ...styles.avatar, backgroundColor: theme.colors.lightBg }} />
             </TouchableOpacity>
             <View>
