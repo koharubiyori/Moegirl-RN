@@ -188,6 +188,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
   }
 
   function articleViewIntoAnchor(anchor: string) {
+    setVisibleHeader(false)
     refs.articleView.current!.injectScript(`
       document.getElementById('${anchor}').scrollIntoView()
       window.scrollTo(0, window.scrollY - 56)
@@ -262,7 +263,10 @@ function Article(props: PropsWithChildren<FinalProps>) {
         link={link} 
         injectStyle={['article']}
         injectJs={articleViewInjectJs}
-        onMessages={{ changeHeaderVisible: setVisibleHeader, getArticleMainColor: setThemeByArticleMainColor }}
+        onMessages={{ 
+          changeHeaderVisible: setVisibleHeader, 
+          getArticleMainColor: setThemeByArticleMainColor 
+        }}
         onLoaded={contentLoaded}
         onMissing={missingGoBack}
         getRef={refs.articleView}

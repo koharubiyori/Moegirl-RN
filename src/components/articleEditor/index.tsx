@@ -18,6 +18,9 @@ type FinalProps = Props & ConfigConnectedProps
 function ArticleEditor(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
   const [html, setHtml] = useState('')
+  // 用两个变量判断是否显示快速插入栏，防止页面上有其他输入栏被focus时显示快速插入栏或键盘没有展开时显示
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false)
+  const [isFocusedEditor, setIsFocusedEditor] = useState(false)
   const [visibleQuickInsertBar, setVisibleQuickInertBar] = useState(false)
   const refs = {
     webView: useRef<any>()
@@ -28,8 +31,8 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
   }, [props.content])
 
   useEffect(() => {
-    const keyboardShowListener = Keyboard.addListener('keyboardDidShow', () => setVisibleQuickInertBar(true))
-    const keyboardHideListener = Keyboard.addListener('keyboardDidHide', () => setVisibleQuickInertBar(false))
+    const keyboardShowListener = Keyboard.addListener('keyboardDidShow', () => setIsShowKeyboard(true))
+    const keyboardHideListener = Keyboard.addListener('keyboardDidHide', () => setIsShowKeyboard(false))
 
     return () => {
       keyboardShowListener.remove()
@@ -37,17 +40,29 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
     }
   }, [])
 
+  useEffect(() => {
+    setVisibleQuickInertBar(isShowKeyboard && isFocusedEditor)
+  }, [isShowKeyboard, isFocusedEditor])
+
   function createDocument(content: string) {
-    let js = function() {
+    let injectedJs = function() {
       let edit = document.querySelector('#editArea')
       edit!.addEventListener('input', (e: any) => {
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: e.target.value } }))
+      })
+
+      edit!.addEventListener('focus', () => {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onFocus' }))
+      })
+
+      edit!.addEventListener('blur', () => {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onBlur' }))
       })
     }.toString()
 
     let injectJsCodes = `
       ${global.__DEV__ ? 'try{' : ''}
-        ;(${js})();
+        ;(${injectedJs})();
       ${global.__DEV__ ? `
         }catch(e){
           ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
@@ -115,6 +130,14 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
 
     if (type === 'onInput') {
       props.onChangeText && props.onChangeText(data.text)
+    }
+
+    if (type === 'onFocus') {
+      setIsFocusedEditor(true)
+    }
+
+    if (type === 'onBlur') {
+      setIsFocusedEditor(false)
     }
   }
 

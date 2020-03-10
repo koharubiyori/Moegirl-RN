@@ -27,7 +27,7 @@ export interface RouteParams {
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 
 export const maxSummaryLength = 220
-const SummarySuffix = '  // Edit via Moegirl Viewer'
+const SummarySuffix = '  // 来自Moegirl Viewer的编辑'
 
 function Edit(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()

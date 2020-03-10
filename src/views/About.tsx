@@ -1,13 +1,12 @@
-import React, { PropsWithChildren, useRef, useState } from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 import { date, isHmoe, version } from '~/../app.json'
-import Button from '~/components/Button'
 import StatusBar from '~/components/StatusBar'
 import Toolbar from '~/components/Toolbar'
+import ViewContainer from '~/components/ViewContainer'
 import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
 import { colors } from '~/theme'
-import ViewContainer from '~/components/ViewContainer'
 
 export interface Props {
 

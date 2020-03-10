@@ -19,9 +19,10 @@ export interface Props {
   actions?: string[]
   moreIconProps?: IconProps
   disabledMoreBtn?: boolean
+
   onPressLeftIcon? (): void
   onPressRightIcon? (): void
-  onPressActions? (eventName: string, index: number): void
+  onPressActions? (actionName: string, index: number): void
 }
 
 (MyToolbar as DefaultProps<Props>).defaultProps = {
@@ -61,10 +62,10 @@ function MyToolbar(props: PropsWithChildren<FinalProps>) {
         <View style={{ flexDirection: 'row', marginLeft: 10 }}>
           {props.rightIcon ? <>
             <Button contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressRightIcon && props.onPressRightIcon()}>
-              <MaterialIcon name={props.rightIcon} size={28} color={textColor} {...props.rightIconProps} style={{ position: 'relative', top: 1 }} />
+              <MaterialIcon name={props.rightIcon} size={28} color={textColor} {...props.rightIconProps} style={{ position: 'relative', top: 2 }} />
             </Button>
           </> : null}
-
+          
           {props.actions ? <>
             <Menu
               visible={visibleMenu}
