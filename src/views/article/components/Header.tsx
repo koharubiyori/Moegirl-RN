@@ -1,11 +1,12 @@
-import React, { MutableRefObject, PropsWithChildren, useRef, useState, FC, useEffect } from 'react'
-import { Animated, Clipboard, Dimensions, NativeModules, StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import Color from 'color'
+import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState, FC } from 'react'
+import { Animated, Clipboard, StyleProp, ViewStyle, StyleSheet } from 'react-native'
+import watchListApi from '~/api/watchList'
 import Toolbar from '~/components/Toolbar'
 import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
-import toast from '~/utils/toast'
-import Color from 'color'
 import { colors } from '~/theme'
+import toast from '~/utils/toast'
 
 export interface Props {
   title: string
@@ -31,10 +32,19 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
   const [visible, setVisible] = useState(true)
   const [transitionValue] = useState(new Animated.Value(0))
   const [colorChangeTransitionValue] = useState(new Animated.Value(0))
+  const [isWatched, setIsWatched] = useState(false)
   const animateLock = useRef(false)
   const lastProps = useRef(props)
 
   if (props.getRef) props.getRef.current = { show, hide }
+
+  useEffect(() => {
+    if (props.state.user.name) {
+      watchListApi.isWatched(props.title)
+        .then(setIsWatched)
+        .catch(console.log)
+    }
+  }, [])
 
   useEffect(() => {
     if (props.backgroundColor !== lastProps.current.backgroundColor) {
@@ -70,32 +80,47 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
     }).start(() => animateLock.current = false)
   }
 
-  function eventHandlers(eventName: string, index: number) {
-    if (index === 0) {
+  type ActionName = '刷新' | '登录' | '编辑此页' | '分享' | '打开目录' | '加入监视列表' | '移出监视列表'
+  function eventHandlers(actionName: ActionName, index: number) {
+    if (actionName === '刷新') {
       props.onPressRefreshBtn()
     }
     
-    if (index === 1) {
-      if (props.state.user.name) {
-        props.navigation.push('edit', { title: props.title })
-      } else {
-        props.navigation.push('login')
-      }
+    if (actionName === '登录') {
+      props.navigation.push('login')
     }
 
-    if (index === 2) {
+    if (actionName === '编辑此页') {
+      props.navigation.push('edit', { title: props.title })
+    }
+
+    if (actionName === '分享') {
       const siteMaps = {
         moegirl: 'https://mzh.moegirl.org',
         hmoe: 'https://www.hmoegirl.com'
       }
 
-      const shareUrl = `萌娘百科 - ${props.title} ${siteMaps[props.state.config.source]}/${props.title}`
+      const shareUrl = `${props.state.config.source === 'moegirl' ? '萌娘百科' : 'H萌娘'} - ${props.title} ${siteMaps[props.state.config.source]}/${props.title}`
       Clipboard.setString(shareUrl)
       toast.show('已将分享链接复制至剪切板', 'center')
     }
 
-    if (index === 3) {
+    if (actionName === '打开目录') {
       props.onPressOpenCatalog()
+    }
+
+    if (actionName === '加入监视列表' || actionName === '移出监视列表') {
+      toast.showLoading('操作中')
+      watchListApi.setWatchStatus(props.title, isWatched)
+        .finally(toast.hide)
+        .then(data => {
+          setIsWatched(prevVal => !prevVal)
+          toast.show(`已${isWatched ? '移出' : '加入'}监视列表`)
+        })
+        .catch(e => {
+          console.log(e)
+          toast.show('网络错误，请重试')
+        })
     }
   }
 
@@ -131,6 +156,14 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
     outputRange: [0, 5]
   })
 
+  const watchListActionBtnName: ActionName = isWatched ? '移出监视列表' : '加入监视列表'
+  const actions: ActionName[] = [
+    '刷新',
+    ...([props.state.user.name ? '编辑此页' : '登录'] as ActionName[]),
+    ...(props.state.user.name ? [watchListActionBtnName] : []),
+    '分享',
+    '打开目录'
+  ]
   return (
     <Toolbar
       style={{ 
@@ -145,12 +178,7 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
       title={props.title}
       leftIcon="home"
       rightIcon="search"
-      actions={[
-        '刷新',
-        ...[props.state.user.name ? '编辑此页' : '登录'],
-        '分享',
-        '打开目录'
-      ]}
+      actions={actions}
       disabledMoreBtn={props.disabledMoreBtn}
       onPressLeftIcon={() => props.navigation.popToTop()}
       onPressRightIcon={() => props.navigation.push('search')}

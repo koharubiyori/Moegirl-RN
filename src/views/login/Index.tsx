@@ -9,6 +9,7 @@ import ViewContainer from '~/components/ViewContainer'
 import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
 import toast from '~/utils/toast'
 import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
+import Color from 'color'
 
 export interface Props {
 
@@ -126,8 +127,16 @@ function InputItem(props: InputItemProps) {
         />
         
         <TextInput 
-          style={styles.textInput}
-          theme={{ ...DefaultTheme, colors: { ...theme.colors, primary: theme.colors.accent } }}
+          style={{ ...styles.textInput }}
+          theme={{ 
+            ...DefaultTheme, 
+            colors: { 
+              ...theme.colors, 
+              primary: theme.colors.accent, 
+              text: theme.colors[isFocused ? 'accent' : 'disabled'], 
+            } 
+          }}
+          selectionColor={Color(theme.colors.accent).lighten(0.75).toString()}
           secureTextEntry={props.secureTextEntry} 
           placeholder={props.placeholder} 
           value={props.value} 

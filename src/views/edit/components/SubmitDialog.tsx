@@ -1,7 +1,10 @@
-import React, { PropsWithChildren } from 'react'
-import { StyleSheet } from 'react-native'
+import React, { PropsWithChildren, useRef } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { Button, Dialog, HelperText, TextInput, useTheme, Text, DefaultTheme } from 'react-native-paper'
 import { maxSummaryLength } from '../index'
+import MyButton from '~/components/Button'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { ScrollView } from 'react-native'
 
 export interface Props {
   visible: boolean
@@ -15,6 +18,9 @@ type FinalProps = Props
 
 function EditSubmitDialog(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
+  const refs = {
+    input: useRef<any>()
+  }
   
   return (
     <Dialog
@@ -34,11 +40,29 @@ function EditSubmitDialog(props: PropsWithChildren<FinalProps>) {
           style={{
             backgroundColor: 'transparent'
           }}
+          ref={refs.input}
         />
         <HelperText>
           还能输入{maxSummaryLength - props.value.length}个字
         </HelperText>
+
+        <Text style={{ marginTop: 15, fontSize: 15 }}>快速摘要</Text>
+        <ScrollView horizontal style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+          {['修饰语句', '修正笔误', '内容扩充', '排版'].map(text =>
+            <TouchableOpacity
+              key={text}
+              style={{ borderRadius: 20, padding: 8, marginRight: 5, backgroundColor: theme.colors.lightBg }}
+              onPress={() => {
+                props.onChangeText(props.value + text)
+                setTimeout(() => refs.input.current.focus(), 500)
+              }}
+            >
+              <Text style={{ fontSize: 15 }}>{text}</Text>
+            </TouchableOpacity>
+          )}
+        </ScrollView>
       </Dialog.Content>
+      
       <Dialog.Actions>
         <Button onPress={props.onDismiss} style={{ marginRight: 10 }} color={theme.colors.placeholder}>
           <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>取消</Text>

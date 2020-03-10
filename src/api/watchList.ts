@@ -89,11 +89,11 @@ function executeSetWatchStatus(token: string, title: string, unwatch?: boolean) 
   })
 }
 
-async function setWatchStatus(title: string, unwatch?: boolean) {
+async function setWatchStatus(title: string, unwatch = false) {
   try {
     const tokenData = await getToken()
     const token = tokenData.query.tokens.watchtoken
-    executeSetWatchStatus(token, title, unwatch)
+    return await executeSetWatchStatus(token, title, unwatch)
   } catch (e) {
     return Promise.reject(e)
   }
