@@ -8,8 +8,8 @@ import baseStorage from './utils/baseStorage'
 import { State as ConfigState } from './redux/config'
 
 export default function appInit() {  
-  function main() {
-    const name = storage.get('userName')
+  async function main() {
+    const name = await storage.get('userName')
     console.log(name)
     
     if (!name) {
@@ -40,14 +40,11 @@ export default function appInit() {
 
   return new Promise<ConfigState | null>(async resolve => {
     try {
-      // 这里先等待载入当前domain的本地数据
-      await storage.load()
-
       // 再等待数据载入到redux
       const localConfig = await baseStorage.get('config')
-      localConfig ? setConfig(localConfig) : initConfig()
+      await (localConfig ? setConfig(localConfig) : initConfig())
+      await main()
       resolve(localConfig)
-      main()
     } catch (e) {
       console.log(e)
       resolve()

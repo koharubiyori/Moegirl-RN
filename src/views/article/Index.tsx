@@ -158,13 +158,13 @@ function Article(props: PropsWithChildren<FinalProps>) {
     }
   }
 
-  function contentLoaded(data: ArticleApiData.GetContent) {
+  async function contentLoaded(data: ArticleApiData.GetContent) {
     setDisabledMoreBtn(false)
     let title = loadedPageInfo.pageName.replace(/_/g, ' ')
     let trueTitle = data.parse.title
 
     // 写入缓存
-    storage.merge('articleCache', { [trueTitle]: data })
+    await storage.merge('articleCache', { [trueTitle]: data })
 
     if (title !== trueTitle) {
       $dialog.snackBar.show(`“${loadedPageInfo.pageName}”被重定向至此页`)
