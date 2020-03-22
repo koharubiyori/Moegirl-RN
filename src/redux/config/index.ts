@@ -23,7 +23,7 @@ export interface State {
   showSiteSelector: boolean
   source: keyof typeof siteMaps
   theme: ThemeColorType
-  lastTheme: ThemeColorType
+  lastTheme: ThemeColorType // 用于在黑夜模式和其他theme间切换
 }
 
 export const initState = (): State => ({
@@ -33,7 +33,7 @@ export const initState = (): State => ({
   showSiteSelector: false,
   source: isHmoe ? 'hmoe' : 'moegirl',
   theme: isHmoe ? 'pink' : 'green',
-  lastTheme: isHmoe ? 'pink' : 'green' // 用于在黑夜模式和其他theme间切换
+  lastTheme: isHmoe ? 'pink' : 'green',
 })
 
 const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = initState(), action) => setActionHandler<ActionTypes, State>(action, {

@@ -13,7 +13,7 @@ export default function(title: string) {
   const timestamp = new Date().getTime()
 
   articleApi.getMainImage(title).then(async img => {
-    let _history = await storage.get('browsingHistory') || []
+    let _history = storage.get('browsingHistory') || []
     _history.some((item, index) => {
       if (item.title === title) {
         _history.splice(index, 1)
@@ -44,7 +44,7 @@ export default function(title: string) {
     }
 
     _history.unshift(result)
-    storage.set('browsingHistory', _history)
+    await storage.set('browsingHistory', _history)
     DeviceEventEmitter.emit('refreshHistory')
   }).catch(e => console.log(e))
 }
