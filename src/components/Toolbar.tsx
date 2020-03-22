@@ -9,7 +9,7 @@ import { useTheme, Menu, Text } from 'react-native-paper'
 export interface Props {
   title: string
   style?: StyleProp<ViewStyle>
-  contentContainerStyle?: StyleProp<ViewStyle> // 这个属性主要是为了支持文章节目的头栏动画
+  contentContainerStyle?: StyleProp<ViewStyle> // 这个属性主要是为了支持文章界面的头栏动画
   textColor?: string
   leftIcon?: string
   rightIcon?: string

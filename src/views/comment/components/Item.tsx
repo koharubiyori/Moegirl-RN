@@ -18,6 +18,7 @@ export interface Props {
   visibleDelBtn?: boolean
   navigation: __Navigation.Navigation
   signedName: string | null
+  pageId: number
   onDel?(commentId: string): void
   onPressReply?(commentId: string): void
 }
@@ -50,7 +51,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
     commentApi.toggleLike(props.data.id, isLiked)
       .finally(toast.hide)
       .then(data => {
-        props.$comment.setLikeStatus(props.data.id, !isLiked)
+        props.$comment.setLikeStatus(props.pageId, props.data.id, !isLiked)
       }).catch(e => {
         console.log(e)
         setTimeout(() => toast.show('网络错误'))
