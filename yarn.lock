@@ -873,10 +873,10 @@
   resolved "https://registry.npmjs.org/@koharubiyori/react-native-orientation/-/react-native-orientation-3.1.4.tgz#b8486f24ebb71a27f2e85605391077d198c0982a"
   integrity sha512-udJZxCBRPgY88Y+qZDnqSgSvYjoGpVRVMJY6Z5lYAxzwXlVFXg5g6tHPj61F0BfoHGxJzvVdRvxtYGblwUhqyg==
 
-"@react-native-community/async-storage@^1.6.1":
-  version "1.7.1"
-  resolved "https://registry.npm.taobao.org/@react-native-community/async-storage/download/@react-native-community/async-storage-1.7.1.tgz#ef2104d865de61ad91bba66613e57e689ff4e6a1"
-  integrity sha1-7yEE2GXeYa2Ru6ZmE+V+aJ/05qE=
+"@react-native-community/async-storage@^1.8.1":
+  version "1.8.1"
+  resolved "https://registry.npm.taobao.org/@react-native-community/async-storage/download/@react-native-community/async-storage-1.8.1.tgz#c93e69dcf948667b207e409b8039b7edf199159b"
+  integrity sha1-yT5p3PlIZnsgfkCbgDm37fGZFZs=
 
 "@react-native-community/cli-debugger-ui@^3.0.0":
   version "3.0.0"

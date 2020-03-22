@@ -153,7 +153,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
     let trueTitle = data.parse.title
 
     // 写入缓存
-    await storage.merge('articleCache', { [trueTitle]: data })
+    storage.merge('articleCache', { [trueTitle]: data })
 
     if (title !== trueTitle) {
       $dialog.snackBar.show(`“${loadedPageInfo.pageName}”被重定向至此页`)

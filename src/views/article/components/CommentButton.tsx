@@ -73,7 +73,6 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
   }
 
   const state = props.$comment.getCommentDataByPageId(props.id)
-  console.log(state)
   return (
     visible ? <>
       <AnimatedTouchableOpacity onPress={tap} style={{ ...styles.container, bottom: transitionBottom }}>

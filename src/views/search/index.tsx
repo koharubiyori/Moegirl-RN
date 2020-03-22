@@ -1,16 +1,12 @@
-import React, { useState, useEffect, useRef, PropsWithChildren } from 'react'
-import {
-  View, Text, 
-  StyleSheet
-} from 'react-native'
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
+import searchApi from '~/api/search'
 import StatusBar from '~/components/StatusBar'
+import ViewContainer from '~/components/ViewContainer'
+import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import Header from './components/Header'
-import SearchHint from './components/SearchHint'
 import RecentSearch from './components/RecentSearch'
-import storage from '~/utils/storage'
-import searchApi from '~/api/search'
-import ViewContainer from '~/components/ViewContainer'
+import SearchHint from './components/SearchHint'
 
 export interface Props {
 
@@ -29,8 +25,8 @@ function Search(props: PropsWithChildren<FinalProps>) {
   const setTimeoutKey = useRef(0)
 
   useEffect(() => {
-    storage.get('searchHistory')  
-      .then(data => data && setSearchHistory(data))
+    let data = storage.get('searchHistory')  
+    data && setSearchHistory(data)
   }, [])
 
   function changeText(text: string) {
