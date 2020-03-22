@@ -13,7 +13,7 @@ export default function(title: string) {
   const timestamp = new Date().getTime()
 
   articleApi.getMainImage(title).then(async img => {
-    let _history = storage.get('browsingHistory') || []
+    let _history = await storage.get('browsingHistory') || []
     _history.some((item, index) => {
       if (item.title === title) {
         _history.splice(index, 1)

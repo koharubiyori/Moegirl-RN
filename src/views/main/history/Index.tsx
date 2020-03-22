@@ -62,9 +62,9 @@ function Finds(props: PropsWithChildren<FinalProps>) {
     }
   }, [])
 
-  function refresh () {
+  async function refresh () {
     setStatus(2)
-    let list = storage.get('browsingHistory')
+    let list = await storage.get('browsingHistory')
     if (!list) return setStatus(0)
 
     let lists: HistoryRecordLists = {

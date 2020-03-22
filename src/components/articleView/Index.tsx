@@ -262,14 +262,14 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
         loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
         setArticleData(data)
       })
-      .catch(e => {
+      .catch(async e => {
         console.log(e)
         if (e && e.code === 'missingtitle') return props.onMissing && props.onMissing(props.link!)
 
         try {
-          const redirectMap = storage.get('articleRedirectMap') || {}
+          const redirectMap = await storage.get('articleRedirectMap') || {}
           let link = redirectMap[props.link!] || props.link
-          const articleCache = storage.get('articleCache') || {}
+          const articleCache = await storage.get('articleCache') || {}
           const data = articleCache[link!]
           if (data) {
             let html = data.parse.text['*']

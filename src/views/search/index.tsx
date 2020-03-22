@@ -29,8 +29,8 @@ function Search(props: PropsWithChildren<FinalProps>) {
   const setTimeoutKey = useRef(0)
 
   useEffect(() => {
-    const data = storage.get('searchHistory')
-    data && setSearchHistory(data)
+    storage.get('searchHistory')  
+      .then(data => data && setSearchHistory(data))
   }, [])
 
   function changeText(text: string) {
