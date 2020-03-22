@@ -2,40 +2,43 @@ import Tree from '~/utils/tree'
 import { CommentApiData, CommentData } from '~/api/comment.d'
 import setActionHandler from '~/utils/redux/setActionHandler'
 
-export const SET_ACTIVE_ID = Symbol()
-export const SET = Symbol() // 设置当前活动的数据(activeData，当前页面的评论数据)
+export const INIT_PAGE_DATA = Symbol()
+export const SET = Symbol()
 export const INCREMENT_DATA = Symbol()
 export const DEL = Symbol()
 export const SET_LIKE_STATUS = Symbol()
 
 export interface ActionTypes {
-  [SET_ACTIVE_ID]: {
-    id: number
+  [INIT_PAGE_DATA]: {
+    pageId: number
   }
 
   [SET]: {
+    pageId: number
     data: State['pages'][keyof State['pages']]
   }
 
   [INCREMENT_DATA]: {
+    pageId: number
     posts: CommentData[]
     count: number
     isReply: boolean
   }
 
   [DEL]: {
+    pageId: number
     id: string
     isReply: boolean
   }
 
   [SET_LIKE_STATUS]: {
+    pageId: number
     id: string
     zan: boolean
   }
 }
 
 export interface State {
-  activeId: number
   pages: { 
     [commentId: string]: {
       data: CommentApiData.Get['flowthread']
@@ -61,37 +64,40 @@ const init = (pageId = 0) => ({
 })
 
 const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
-  pages: {},
-  activeId: 0 // 当前正在显示的页面id(处于评论界面)
+  pages: {}
 }, action) => {
-  let activeData = state.pages[state.activeId]
-
-  const mixinActiveData = (data: Partial<State['pages'][keyof State['pages']]>) => ({
-    ...state,
-    pages: {
-      ...state.pages,
-      [state.activeId]: {
-        ...activeData,
-        ...data
+  const mixinActiveData = (pageId: number, data: Partial<State['pages'][keyof State['pages']]>) => {
+    let activeData = state.pages[action.pageId]
+    return {
+      ...state,
+      pages: {
+        ...state.pages,
+        [pageId]: {
+          ...activeData,
+          ...data
+        }
       }
     }
-  })
+  }
 
   return setActionHandler<ActionTypes, State>(action, {
-    [SET_ACTIVE_ID]: action => {
+    [INIT_PAGE_DATA]: action => {
+      let activeData = state.pages[action.pageId]
+
       return {
         ...state,
-        activeId: action.id,
+        activeId: action.pageId,
         pages: {
           ...state.pages, 
-          [action.id]: state.pages[action.id] || init(action.id)
+          [action.pageId]: activeData || init(action.pageId)
         }
       }
     },
 
-    [SET]: action => mixinActiveData(action.data),
+    [SET]: action => mixinActiveData(action.pageId, action.data),
 
     [INCREMENT_DATA]: action => {
+      let activeData = state.pages[action.pageId]
       let currentPostIds = activeData.data.posts.map(item => item.id)
       let posts = action.posts.filter(item => !currentPostIds.includes(item.id))
 
@@ -101,7 +107,7 @@ const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
         var newPosts = [...posts, ...activeData.data.posts]
       }
 
-      return mixinActiveData({
+      return mixinActiveData(action.pageId, {
         data: {
           ...activeData.data,
           posts: newPosts,
@@ -113,11 +119,12 @@ const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
     },
 
     [DEL]: action => {
+      let activeData = state.pages[action.pageId]
       let newPosts = activeData.data.posts.filter(item => item.id !== action.id)
       let newPopular = activeData.data.popular.filter(item => item.id !== action.id)
 
       let count = action.isReply ? activeData.data.count : (activeData.data.count - 1)
-      return mixinActiveData({
+      return mixinActiveData(action.pageId, {
         data: {
           posts: newPosts,
           popular: newPopular,
@@ -129,6 +136,7 @@ const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
     },
 
     [SET_LIKE_STATUS]: action => {
+      let activeData = state.pages[action.pageId]
       let changeTargetComment = (item: CommentData) => {
         if (item.id === action.id) {
           item.myatt = action.zan ? 1 : 0
@@ -139,7 +147,7 @@ const reducer: __Redux.ReduxReducer<State, keyof ActionTypes> = (state = {
       activeData.data.posts.forEach(changeTargetComment)
       activeData.data.popular.forEach(changeTargetComment)
 
-      return mixinActiveData({
+      return mixinActiveData(action.pageId, {
         tree: new Tree(activeData.data.posts)
       })
     }  

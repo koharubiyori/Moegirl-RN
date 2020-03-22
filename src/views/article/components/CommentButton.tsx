@@ -33,8 +33,8 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
   if (props.getRef) props.getRef.current = { show, hide }
 
   useLayoutEffect(() => {
-    props.$comment.setActiveId(props.id)
-    props.$comment.load()
+    props.$comment.initPageData(props.id)
+    props.$comment.load(props.id)
     setTimeout(() => {
       showLock.current = false
       show()
@@ -67,12 +67,13 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
   }
 
   function tap() {
-    let state = props.$comment.getActiveData()
-    if (state.status === 0) props.$comment.load()
+    let state = props.$comment.getCommentDataByPageId(props.id)
+    if (state.status === 0) props.$comment.load(props.id)
     props.onPress()
   }
 
-  const state = props.$comment.getActiveData()
+  const state = props.$comment.getCommentDataByPageId(props.id)
+  console.log(state)
   return (
     visible ? <>
       <AnimatedTouchableOpacity onPress={tap} style={{ ...styles.container, bottom: transitionBottom }}>

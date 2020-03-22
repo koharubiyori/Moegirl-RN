@@ -102,17 +102,6 @@ function Article(props: PropsWithChildren<FinalProps>) {
     return `(${codeStr})();`
   }())
 
-  // 后退后设置当前页面comment的activeId
-  useEffect(() => {
-    const listener = props.navigation.addListener('didFocus', () => {
-      if (loadedPageInfo.id) {
-        props.$comment.setActiveId(loadedPageInfo.id)
-      }
-    })
-
-    return () => listener.remove()
-  }, [loadedPageInfo])
-
   useEffect(() => {
     const listener = props.navigation.addListener('willFocus', () => setVisibleHeader(true))
     return () => listener.remove()
@@ -121,7 +110,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
   useEffect(() => {
     props.navigation.setParams({ reloadMethod: () => refs.articleView.current!.loadContent(true) })
   }, [])
-
+  
   useEffect(() => {
     // 如果退出沉浸模式，则立即显示头部
     if (lastProps.current.state.config.immersionMode && !props.state.config.immersionMode) {
@@ -196,8 +185,8 @@ function Article(props: PropsWithChildren<FinalProps>) {
   }
 
   function toComment() {
-    if ([0, 1, 2].includes(props.$comment.getActiveData().status)) { return toast.show('加载评论中，请稍候') }
-    props.navigation.push('comment', { title: loadedPageInfo.pageName })
+    if ([0, 1, 2].includes(props.$comment.getCommentDataByPageId(loadedPageInfo.id).status)) { return toast.show('加载评论中，请稍候') }
+    props.navigation.push('comment', { title: loadedPageInfo.pageName, pageId: loadedPageInfo.id })
   }
 
   function missingGoBack(link: string) {

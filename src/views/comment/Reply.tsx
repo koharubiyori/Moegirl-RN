@@ -16,7 +16,7 @@ export interface Props {
 }
 
 export interface RouteParams {
-  signedName: string
+  pageId: number
 }
 
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & CommentConnectedProps
@@ -26,6 +26,8 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
   const [replyId, setReplyId] = useState('')
   const [visibleEditor, setVisibleEditor] = useState(false)
   const signedName = store.getState().user.name
+
+  const pageId = props.navigation.getParam('pageId')
 
   useLayoutAnimation(
     LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
@@ -44,11 +46,12 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
   }
 
   function delCommentData(id: string) {
-    props.$comment.del(id, true)
+    props.$comment.del(pageId, id, true)
   }
 
-  const state = props.$comment.getActiveData()
-  const activeComment = state.tree.tree.filter(item => item.id === state.activeId)[0]
+  const state = props.$comment.getCommentDataByPageId(pageId)
+  const activeComment = state.tree.tree.find(item => item.id === state.activeId)!
+  console.log(activeComment)
   const children = format.children(activeComment.children, state.activeId)
 
   return (
@@ -60,13 +63,14 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
         pageId={state.pageId}
         targetId={replyId || state.activeId}  
         onDismiss={() => setVisibleEditor(false)}
-        onPosted={() => { props.$comment.incrementLoad(true); setVisibleEditor(false) }}
+        onPosted={() => { props.$comment.incrementLoad(pageId, true); setVisibleEditor(false) }}
       />
     
       <ScrollView style={{ flex: 1 }}>
         <View>
           <Item isReply 
             data={activeComment} 
+            pageId={pageId}
             navigation={props.navigation} 
             visibleReply={false} 
             visibleReplyBtn={false} 
@@ -79,6 +83,7 @@ function CommentReply(props: PropsWithChildren<FinalProps>) {
         
         {children.map(item => <Item isReply 
           key={item.id}
+          pageId={pageId}
           visibleReply={false} 
           visibleReplyNum={false}
           data={item}

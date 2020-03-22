@@ -18,6 +18,7 @@ export interface Props {
 
 export interface RouteParams {
   title: string
+  pageId: number
 }
 
 type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & CommentConnectedProps
@@ -28,6 +29,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
 
   const theme = useTheme()
   const title = props.navigation.getParam('title')
+  const pageId = props.navigation.getParam('pageId')
   const signedName = store.getState().user.name
 
   useLayoutAnimation(
@@ -36,7 +38,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
 
   function loadList() {
     InteractionManager.runAfterInteractions(() => {
-      props.$comment.load().catch(() => toast.show('加载失败，正在重试'))
+      props.$comment.load(pageId).catch(() => toast.show('加载失败，正在重试'))
     })
   }
 
@@ -52,19 +54,19 @@ function Comment(props: PropsWithChildren<FinalProps>) {
   }
 
   function toReply(id: string) {
-    const activeDataCommentTree = props.$comment.getActiveData().tree.tree
+    const activeDataCommentTree = props.$comment.getCommentDataByPageId(pageId).tree.tree
     // 判断评论下是否有回复
     if (activeDataCommentTree.find(comment => comment.id === id)!.children.length === 0) {
       setCommentTargetId(id)
       setVisibleEditor(true)
     } else {
-      store.dispatch({ type: COMMENT_SET, data: { activeId: id } })
-      props.navigation.push('reply', { signedName: signedName! })
+      store.dispatch({ type: COMMENT_SET, pageId, data: { activeId: id } })
+      props.navigation.push('reply', { pageId })
     }
   }
 
   // 使用redux的数据源
-  const state = props.$comment.getActiveData()
+  const state = props.$comment.getCommentDataByPageId(pageId)
   if (state.status === 1) return null
   return (
     <ViewContainer grayBgColor>
@@ -74,7 +76,7 @@ function Comment(props: PropsWithChildren<FinalProps>) {
         visible={visibleEditor} 
         pageId={state.pageId} 
         targetId={commentTargetId}
-        onPosted={() => { props.$comment.incrementLoad(); setVisibleEditor(false); setCommentTargetId(undefined) }} 
+        onPosted={() => { props.$comment.incrementLoad(pageId); setVisibleEditor(false); setCommentTargetId(undefined) }} 
         onDismiss={() => { setVisibleEditor(false); setCommentTargetId(undefined) }}
       />
     
@@ -83,11 +85,13 @@ function Comment(props: PropsWithChildren<FinalProps>) {
         onEndReached={loadList}
         initialNumToRender={4}
         style={{ flex: 1 }}
-        renderItem={item => <Item key={item.item.id} 
+        renderItem={item => <Item 
+          key={item.item.id} 
           data={item.item}
+          pageId={pageId}
           navigation={props.navigation}
           signedName={signedName}
-          onDel={props.$comment.del}
+          onDel={commentId => props.$comment.del(pageId, commentId)}
           onPressReply={toReply}
         />}
           
@@ -97,11 +101,12 @@ function Comment(props: PropsWithChildren<FinalProps>) {
             {state.data.popular.map(item =>
               <Item key={item.id} 
                 data={item} 
+                pageId={pageId}
                 navigation={props.navigation} 
                 visibleReply={false} 
                 visibleReplyBtn={false} 
                 signedName={signedName}
-                onDel={props.$comment.del} 
+                onDel={commentId => props.$comment.del(pageId, commentId)} 
               />  
             )}
             <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginTop: 10 }}>全部评论</Text>
