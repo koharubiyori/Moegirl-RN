@@ -6,19 +6,42 @@ import { check as checkLoginStatus, getUserInfo, getWaitNotificationsTotal, logo
 import storage from './utils/storage'
 import baseStorage from './utils/baseStorage'
 import { State as ConfigState } from './redux/config'
+import appApi from './api/app'
+import { version, isHmoe } from '~/../app.json'
+import { Linking } from 'react-native'
 
 export default function appInit() {  
-  function main() {
-    const name = storage.get('userName')
-    
-    if (!name) {
-      !__DEV__ && count.increment()
-    } else {
-      store.dispatch({ type: SET_USERNAME, name })
+  return new Promise<ConfigState | null>(async resolve => {
+    try {
+      // 等待数据载入到redux
+      const localConfig = await baseStorage.get('config')
+      await (localConfig ? setConfig(localConfig) : initConfig())
+      
+      // 初始化当前选中的source数据
+      await storage.load()
+      
+      accessCount()
+      checkLoginStatusAndGetUserInfo()
+      checkLastVersion()
+      resolve(localConfig)
+    } catch (e) {
+      console.log(e)
+      resolve()
+    }
+  })
   
-      // 统计使用量排除自己
-      name !== '東東君' && !__DEV__ && count.increment(name)
-    
+  function accessCount() {
+    const name = storage.get('userName')
+    name 
+      ? name !== '東東君' && !__DEV__ && count.increment(name)
+      : !__DEV__ && count.increment()
+  }
+
+  function checkLoginStatusAndGetUserInfo() {
+    const name = storage.get('userName')
+    if (name) {
+      store.dispatch({ type: SET_USERNAME, name })
+
       // 获取一次编辑令牌，判断登录状态是否有效
       checkLoginStatus()
         .then(() => {
@@ -37,20 +60,18 @@ export default function appInit() {
     }
   }
 
-  return new Promise<ConfigState | null>(async resolve => {
-    try {
-      // 等待数据载入到redux
-      const localConfig = await baseStorage.get('config')
-      await (localConfig ? setConfig(localConfig) : initConfig())
-      
-      // 初始化当前选中的source数据
-      await storage.load()
-      
-      main()
-      resolve(localConfig)
-    } catch (e) {
-      console.log(e)
-      resolve()
-    }
-  })
+  function checkLastVersion() {
+    appApi.getGithubLastRelease()
+      .then(data => {
+        if (data.version === version) {
+          $dialog.confirm.show({
+            title: '发现新版本，是否下载？',
+            content: data.info,
+            onPressCheck() {
+              Linking.openURL(isHmoe ? data.downloadLink : 'https://www.coolapk.com/apk/247471')
+            }
+          })
+        }
+      })
+  }
 }
