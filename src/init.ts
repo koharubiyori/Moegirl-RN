@@ -39,9 +39,13 @@ export default function appInit() {
 
   return new Promise<ConfigState | null>(async resolve => {
     try {
-      // 再等待数据载入到redux
+      // 等待数据载入到redux
       const localConfig = await baseStorage.get('config')
       await (localConfig ? setConfig(localConfig) : initConfig())
+      
+      // 初始化当前选中的source数据
+      await storage.load()
+      
       main()
       resolve(localConfig)
     } catch (e) {

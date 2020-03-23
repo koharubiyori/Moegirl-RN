@@ -89,15 +89,16 @@ function App() {
       // navigation需要不断更新赋值，否则状态都是旧的(像是routes字段等)
       if (refs.appNavigator.current) global.$appNavigator = refs.appNavigator.current!._navigation
 
-      if (($appNavigator.state as any).routes.length !== 1) { return }
-      if ($drawer.visible.current) return $drawer.close()
+      if (($appNavigator.state as any).routes.length !== 1) { return undefined }
+      if ($drawer.visible.current) return $drawer.close() as any
       if (!onPressBackBtnMark) {
         toast.show('再按一次返回键退出应用')
         onPressBackBtnMark = true
         setTimeout(() => onPressBackBtnMark = false, 3000)
-        return true
+        return undefined
       } else {
         BackHandler.exitApp()
+        return undefined
       }
     })
   }

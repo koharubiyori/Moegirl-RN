@@ -49,6 +49,4 @@ export default function() {
     let parent = thumbBlock.parent().parent()
     parent.after(thumbBlock)
   })
-
-  viewBox.find('a[href^="#cite_ref"]').text('[跳转至目标]').css('color', window._themeColors.accent)
 }

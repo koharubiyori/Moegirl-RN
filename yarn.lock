@@ -1152,10 +1152,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-native@^0.61.16":
-  version "0.61.16"
-  resolved "https://registry.npm.taobao.org/@types/react-native/download/@types/react-native-0.61.16.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Freact-native%2Fdownload%2F%40types%2Freact-native-0.61.16.tgz#8dc5f5d3fe0b2b4d1454bbc84641434c7afcdcf5"
-  integrity sha1-jcX10/4LK00UVLvIRkFDTHr83PU=
+"@types/react-native@^0.61.23":
+  version "0.61.23"
+  resolved "https://registry.npm.taobao.org/@types/react-native/download/@types/react-native-0.61.23.tgz#bff4e0311c229a5203eb37aacd4febf59f3e2980"
+  integrity sha1-v/TgMRwimlID6zeqzU/r9Z8+KYA=
   dependencies:
     "@types/react" "*"
 

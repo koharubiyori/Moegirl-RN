@@ -41,22 +41,25 @@ let site: keyof typeof siteMaps
 const siteStorageManager: MyStorageManager = {
   // 初始化数据实例和domain
   load: async () => {
-    const config = await baseStorage.get('config')
-    config ? setConfig(config) : initConfig()
     const currentConfig = store.getState().config
     site = currentConfig.source
 
     const data = await baseStorage.get(site)
-    if (data) siteStorages = data
+    if (data) {
+      siteStorages = data
+    } else {
+      await baseStorage.set(site, {} as any)
+    }
   },
   
   set: (key, val) => {
     siteStorages[key] = val
-    baseStorage.merge(site, { [key]: val })
+    // 这里放弃使用merge，因为之前发生了丢数据的情况，怀疑是这个merge方法导致的(官网标注没有被所有原生实现支持)
+    baseStorage.set(site, siteStorages)
   },
 
   get: key => {
-    return siteStorages[key] || null
+    return (key in siteStorages) ? siteStorages[key] : null
   },
 
   remove: key => {
