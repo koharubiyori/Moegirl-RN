@@ -41,6 +41,18 @@ export default jss.createStyleSheet({
         '&:visited': {
           color: '#a55858'
         }
+      },
+
+      '&.mw-selflink': {
+        pointerEvents: 'none'
+      },
+
+      '&[href^="#cite_ref"]': {
+        display: 'inline-block',
+        backgroundColor: '#ccc',
+        color: 'white',
+        borderRadius: 3,
+        padding: '0 3px',
       }
     },
 
@@ -162,7 +174,11 @@ export default jss.createStyleSheet({
     // 人物基本信息模板
     '.infotemplatebox': {
       border: '1px #eee solid',
-      padding: 5
+      padding: 5,
+
+      '& table': {
+        width: '100% !important'
+      }
     },
 
     '.section-heading': {

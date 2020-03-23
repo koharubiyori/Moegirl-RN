@@ -3,7 +3,7 @@ export default function() {
   let viewBox = $('#articleContentContainer')
 
   viewBox.find('.wikitable.bilibili-video-container').each(function () {
-    let avId = parseInt($(this).data('aid').toString().replace('av', ''))
+    let avId = parseInt($(this).data('id').toString().replace('av', ''))
     let page = $(this).data('page')
 
     let title = $('<div class="bilibili-video-title">标题获取中...</div>')

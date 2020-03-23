@@ -71,7 +71,7 @@ export default jss.createStyleSheet({
         > tr > th,
         * > tr > th
       `]: {
-        backgroundColor: night.placeholder,
+        backgroundColor: Color(night.placeholder).darken(0.3).toString(),
         textAlign: 'center'
       },
 
@@ -106,6 +106,7 @@ export default jss.createStyleSheet({
 
     '.navbox-title, table.navbox th': {
       backgroundColor: night.primary + '!important',
+      backgroundImage: 'none !important',
       color: night.text + '!important',
       '-webkit-text-fill-color': night.text + '!important'
     },

@@ -35,13 +35,11 @@ export default function() {
     if (/^\/([Ff]ile|文件):/.test(link)) {
       return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressImage', data: { name: link.replace(/^\/([Ff]ile|文件):/, '') } }))
     } else if (/^#cite_note-/.test(link)) {
-      let content = $(link).text().replace(/^\[跳转至目标\]/, '').trim()
-      if (content.length > 400) { // 文字过多dialog会装不下
-        document.querySelector(link)!.scrollIntoView()
-        return window.scrollTo(0, window.scrollY - 60)
-      } else {
-        return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressNote', data: { anchor: link, content } }))
-      }
+      document.querySelector(link)!.scrollIntoView()
+      window.scrollTo(0, window.scrollY - 60)
+      $(link).addClass('activeNote')
+      setTimeout(() => $(link).removeClass('activeNote'), 2000)
+      return
     } else if (/^#/.test(link)) {
       document.querySelector(link)!.scrollIntoView()
       return window.scrollTo(0, window.scrollY - 60)
@@ -57,4 +55,20 @@ export default function() {
     
     window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressLink', data: { link, type } }))
   })
+
+  $('head').append(`<style>
+    @keyframes flash {
+      from {
+        background-color: ${window._themeColors.accent};
+      }
+
+      to {
+        background-color: transparent;
+      }
+    }
+  
+    .activeNote {
+      animation: flash 2s;
+    }
+  </style>`)
 }

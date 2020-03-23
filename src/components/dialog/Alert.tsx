@@ -1,5 +1,7 @@
 import React, { MutableRefObject, PropsWithChildren, useState } from 'react'
 import { Button, Dialog, Text, useTheme } from 'react-native-paper'
+import { ScrollView } from 'react-native-gesture-handler'
+import { Dimensions } from 'react-native'
 
 export interface Props {
   getRef: MutableRefObject<any>
@@ -49,16 +51,21 @@ function Alert(props: PropsWithChildren<FinalProps>) {
     setVisible(false)
   }
 
+  const maxHeight = Dimensions.get('window').height * 0.7
   return (
     <Dialog
       visible={visible}
       onDismiss={hide}
-      style={{ marginHorizontal: 20, paddingHorizontal: 10 }}
+      style={{ marginHorizontal: 20, paddingHorizontal: 10, maxHeight }}
     >
       <Dialog.Title>{params.title}</Dialog.Title>
+
       <Dialog.Content>
-        <Text style={{ fontSize: 15 }}>{params.content}</Text>
+        <ScrollView style={{ maxHeight: maxHeight - 160 }}>
+          <Text style={{ fontSize: 15 }}>{params.content}</Text>
+        </ScrollView>
       </Dialog.Content>
+      
       <Dialog.Actions>
         <Button onPress={params.onPressCheck}>
           <Text style={{ fontSize: 16, color: theme.colors.accent }}>{params.checkText}</Text>
