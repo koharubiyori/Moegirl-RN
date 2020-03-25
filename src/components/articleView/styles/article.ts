@@ -287,7 +287,7 @@ export default jss.createStyleSheet({
       margin: '5px 0 !important',
 
       '&.mw-uncollapsed': {
-        maxWidth: 'calc(100% - 10px)',
+        maxWidth: '100%',
       },
 
       '&:not(.mw-uncollapsed) > tbody > tr:not(:first-child)': {
