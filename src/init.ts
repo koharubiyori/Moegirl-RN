@@ -12,18 +12,18 @@ import { Linking } from 'react-native'
 
 export default function appInit() {  
   return new Promise<ConfigState | null>(async resolve => {
-    try {
+    try {      
       // 等待数据载入到redux
       const localConfig = await baseStorage.get('config')
       await (localConfig ? setConfig(localConfig) : initConfig())
-      
+
       // 初始化当前选中的source数据
       await storage.load()
       
       accessCount()
       checkLoginStatusAndGetUserInfo()
       checkLastVersion()
-      resolve(localConfig)
+      resolve()
     } catch (e) {
       console.log(e)
       resolve()
