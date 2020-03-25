@@ -63,7 +63,15 @@ export default function appInit() {
   function checkLastVersion() {
     appApi.getGithubLastRelease()
       .then(data => {
-        if (data.version !== version) {
+        function version2float(version: string) {
+          return parseFloat(
+            version
+              .replace(/[^\d\.]/g, '')
+              .replace(/\.(\d)$/, '$1')
+          )
+        }
+        
+        if (version2float(data.version) > version2float(version)) {
           $dialog.confirm.show({
             title: '发现新版本，是否下载？',
             content: data.info,
