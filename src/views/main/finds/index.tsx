@@ -40,6 +40,7 @@ function Finds(props: PropsWithChildren<FinalProps>) {
       <Header title="发现" />
 
       <ScrollView
+        contentContainerStyle={{ paddingTop: 10 }}
         refreshControl={<RefreshControl colors={[theme.colors.accent]} onRefresh={reload} refreshing={visibleRefreshControl} />}
       >
         {/* <Text style={{ marginVertical: 20, marginLeft: 20, fontSize: 16 }}>{dateStr()}</Text> */}

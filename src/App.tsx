@@ -71,11 +71,17 @@ function App() {
   }, [])
 
   // 每隔30秒check一次未读通知
+  const lastCheckedNotiTotal = useRef(0)
   useEffect(() => {
     const intervalKey = setInterval(() => {
       getWaitNotificationsTotal()
         .then(awaitNotiTotal => {
-          awaitNotiTotal && pushMessage(`你有${awaitNotiTotal}条未读通知。`, 'awaitNotification')
+          if (awaitNotiTotal === null) { return }
+          if (awaitNotiTotal !== 0 && awaitNotiTotal !== lastCheckedNotiTotal.current) {
+            pushMessage(`你有${awaitNotiTotal}条未读通知。`, 'awaitNotification')
+          }
+
+          lastCheckedNotiTotal.current = awaitNotiTotal!
         })
     }, 1000 * 30)
     return () => clearInterval(intervalKey)

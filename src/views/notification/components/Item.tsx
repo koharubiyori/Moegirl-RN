@@ -41,8 +41,8 @@ function NotificationItem(props: PropsWithChildren<FinalProps>) {
             <Image source={{ uri: $avatarUrl + props.notificationData.agent.name }} style={styles.avatar} />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text numberOfLines={1}>{strongTagToRnBoldText(props.notificationData['*'].header)}</Text>
-            <Text style={{ fontSize: 13, marginTop: 5, color: theme.colors.placeholder }}>
+            <Text >{strongTagToRnBoldText(props.notificationData['*'].header)}</Text>
+            <Text style={{ fontSize: 13, marginTop: 5, color: theme.colors.disabled }}>
               {props.notificationData['*'].body || props.notificationData['*'].compactHeader}
             </Text>
           </View>

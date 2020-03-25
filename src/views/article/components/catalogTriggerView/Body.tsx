@@ -3,10 +3,11 @@ import { Dimensions, NativeModules, ScrollView, StyleSheet, Text, View } from 'r
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import Button from '~/components/Button'
 import { useTheme } from 'react-native-paper'
+import { ArticleSectionData } from '~/api/article.d'
 
 export interface Props {
   immersionMode: boolean
-  items: any[]
+  items: ArticleSectionData[]
   backgroundColor: string
   textColor: string
   onClose (): void
@@ -43,7 +44,7 @@ function CatalogBody(props: PropsWithChildren<FinalProps>) {
                   ...(parseInt(item.level) < 3 ? { fontSize: 16, color: theme.colors.disabled } : { fontSize: 14, color: theme.colors.placeholder }),
                   paddingLeft: (parseInt(item.level) - 2) * 10
                 }}
-              >{(parseInt(item.level) > 2 ? '- ' : '') + item.line}</Text>
+              >{(parseInt(item.level) > 2 ? '- ' : '') + item.line.replace(/<.+?>/g, '')}</Text>
             </Button>
           )
         }</ScrollView>     

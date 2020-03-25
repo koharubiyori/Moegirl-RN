@@ -43,7 +43,7 @@ export namespace ArticleApiData {
       categories: { sortkey: string, hidden?: '', '*': string }[]
       templates: ArticleTemplateData[]
       images: string[]
-      sections: ArticleTemplateData[]
+      sections: ArticleSectionData[]
     }
   }
 
