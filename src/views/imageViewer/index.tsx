@@ -28,7 +28,7 @@ function MyImageViewer(props: PropsWithChildren<FinalProps>) {
   async function saveImg() {
     const checkedResult = await checkPermission()
     if (checkedResult === undefined) {
-      ToastAndroid.show('未知错误', 3000)
+      ToastAndroid.show('未知错误', ToastAndroid.SHORT)
       return 
     }
 
@@ -43,8 +43,9 @@ function MyImageViewer(props: PropsWithChildren<FinalProps>) {
     
     const url = imgs[refs.currentIndex.current].url
     const fileName = decodeURIComponent(url.match(/\/([^\/]+)$/)![1])
-    const savePath = RNFetchBlob.fs.dirs.SDCardDir + '/moegirlViewer图片保存/' + fileName
-    ToastAndroid.show('开始下载图片', 3000)
+    const dirPath = '/moegirlViewer图片保存/'
+    const savePath = RNFetchBlob.fs.dirs.SDCardDir + dirPath + fileName
+    ToastAndroid.show('开始下载图片', ToastAndroid.SHORT)
     RNFetchBlob
       .config({ 
         path: savePath,
@@ -57,10 +58,10 @@ function MyImageViewer(props: PropsWithChildren<FinalProps>) {
         }
       })
       .fetch('get', url)
-      .then(res => ToastAndroid.show('图片已保存至：' + res.path(), 3000))
+      .then(res => ToastAndroid.show('图片已保存至：' + dirPath + fileName, ToastAndroid.LONG))
       .catch(e => {
         console.log(e)
-        ToastAndroid.show('发生错误，请重试', 3000)
+        ToastAndroid.show('发生错误，请重试', ToastAndroid.SHORT)
       })
   }
 
@@ -68,7 +69,7 @@ function MyImageViewer(props: PropsWithChildren<FinalProps>) {
     try {
       const writeStoragePermission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
       const checkedResult = await PermissionsAndroid.check(writeStoragePermission)
-      if (checkedResult) { return }
+      if (checkedResult) { return true }
 
       const granted = await PermissionsAndroid.request(writeStoragePermission, {
         title: '请求写入存储权限',
