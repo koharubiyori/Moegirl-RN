@@ -63,7 +63,7 @@ export default function appInit() {
   function checkLastVersion() {
     appApi.getGithubLastRelease()
       .then(data => {
-        if (data.version === version) {
+        if (data.version !== version) {
           $dialog.confirm.show({
             title: '发现新版本，是否下载？',
             content: data.info,
