@@ -20,7 +20,6 @@ export interface State {
   heimu: boolean
   immersionMode: boolean
   changeThemeColorByArticleMainColor: boolean
-  showSiteSelector: boolean
   source: keyof typeof siteMaps
   theme: ThemeColorType
   lastTheme: ThemeColorType // 用于在黑夜模式和其他theme间切换
@@ -30,7 +29,6 @@ export const initState = (): State => ({
   heimu: true,
   immersionMode: false,
   changeThemeColorByArticleMainColor: false,
-  showSiteSelector: false,
   source: isHmoe ? 'hmoe' : 'moegirl',
   theme: isHmoe ? 'pink' : 'green',
   lastTheme: isHmoe ? 'pink' : 'green',

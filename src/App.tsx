@@ -54,10 +54,9 @@ function App() {
     global.$dialog = dialog
 
     // 执行其他初始化操作
-    appInit().then(config => {
-      if (config) {
-        setThemeColor(config.theme)
-      }
+    appInit().then(() => {
+      const currentTheme = store.getState().config.theme
+      setThemeColor(currentTheme)
 
       setIsConfigLoaded(true)
       setTimeout(initGlobalNavigatorAndExitAppHandler)
