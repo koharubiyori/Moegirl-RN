@@ -23,6 +23,8 @@ include ':@koharubiyori_react-native-orientation', ':app'
 project(':@koharubiyori_react-native-orientation').projectDir = new File(rootProject.projectDir, '../node_modules/@koharubiyori/react-native-orientation/android')
 include ':react-native-restart'
 project(':react-native-restart').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-restart/android')
+include ':rn-fetch-blob'                                                                                                  
+project(':rn-fetch-blob').projectDir = new File(rootProject.projectDir, '../node_modules/rn-fetch-blob/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 

@@ -19,7 +19,7 @@ import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.soloader.SoLoader;
+import com.facebook.soloader.SoLoader;
 
 import java.util.List;
 
