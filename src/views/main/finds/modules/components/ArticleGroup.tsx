@@ -75,6 +75,7 @@ export default function ArticleGroup(props: PropsWithChildren<FinalProps>) {
 const styles = StyleSheet.create({
   container: {
     margin: 10,
+    marginTop: 0,
     elevation: 2,
     borderRadius: 3
   },

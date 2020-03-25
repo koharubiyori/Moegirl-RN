@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import qs from 'qs'
 
 const config = {
-  timeout: 7000,
+  timeout: 5000,
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
   },

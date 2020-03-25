@@ -4,7 +4,7 @@ export default function() {
   viewBox.find('.mw-editsection').each(function (e) {
     // 编辑按钮替换图片
     let link = $(this).find('a').eq(0).attr('href')
-    $(this).addClass('page-editBtn').html(`<a href="${link}" class="edit-btn page-editBtn">`)
+    $(this).html(`<a href="${link}" class="edit-btn page-editBtn">`)
   })
 
   // 拦截点击链接

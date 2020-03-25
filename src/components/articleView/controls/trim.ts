@@ -27,7 +27,7 @@ export default function() {
   // 宽表格适应
   viewBox.find('table').each(function () {
     if ($(this).closest('.navbox').length) { return }
-    if (isTemplateHide(this)) { return }
+    // if (isTemplateHide(this)) { return }     // 暂时注释，table的特性只要内部元素有比表格大的就会将表格撑开，max-width无效。且萌百各种奇怪的模板无法全部适配
     $(this).wrap('<div class="wide-table-wrapper"></div>')
       .on('touchend', function (e) { e.stopPropagation() })
   })

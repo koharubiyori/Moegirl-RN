@@ -199,7 +199,8 @@ export default jss.createStyleSheet({
 
     '.thumbinner': {
       outline: '1px #ccc solid',
-      margin: '0 auto'
+      margin: '0 auto',
+      overflow: 'hidden'
     },
 
     '.thumbcaption': {
@@ -286,7 +287,7 @@ export default jss.createStyleSheet({
       margin: '5px 0 !important',
 
       '&.mw-uncollapsed': {
-        maxWidth: '100%'
+        maxWidth: 'calc(100% - 10px)',
       },
 
       '&:not(.mw-uncollapsed) > tbody > tr:not(:first-child)': {
@@ -553,7 +554,6 @@ export default jss.createStyleSheet({
     'h2, h3, h4': {
       position: 'relative',
       boxSizing: 'border-box',
-      paddingRight: 60
     },
 
     // 编辑按钮容器

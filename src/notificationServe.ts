@@ -3,7 +3,10 @@ import PushNotification from 'react-native-push-notification'
 export type NotificationTag = 'awaitNotification'
 
 export function pushMessage(message: string, tag: NotificationTag) {
-  PushNotification.localNotification({ message, tag })
+  PushNotification.localNotification({ 
+    message, 
+    tag,
+  })
 }
 
 PushNotification.configure({
