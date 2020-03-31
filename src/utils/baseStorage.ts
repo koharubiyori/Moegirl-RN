@@ -2,11 +2,11 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { BrowsingHistory } from './saveHistory'
 import { State as Config } from '~/redux/config'
 import { ArticleApiData } from '~/api/article.d'
-import { siteMaps } from './moeRequest'
+import { sourceMaps } from './moeRequest'
 import { SiteStorages } from './storage'
 
 type LocalStorages = { config: Config } & {
-  [SiteName in keyof typeof siteMaps]: SiteStorages
+  [SiteName in keyof typeof sourceMaps]: SiteStorages
 }
 
 export interface MyStorageManager {

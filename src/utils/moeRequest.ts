@@ -3,14 +3,14 @@ import { AxiosRequestConfig } from 'axios'
 import CookieManager from '@koharubiyori/react-native-cookies'
 import store from '~/redux'
 
-export const siteMaps = {
+export const sourceMaps = {
   moegirl: 'https://zh.moegirl.org',
   hmoe: 'https://www.hmoegirl.com'
 }
 
 export default async function<ResponseData = any>(config: AxiosRequestConfig): Promise<ResponseData> {
   const userConfig = store.getState().config
-  const domain = siteMaps[userConfig.source]
+  const domain = sourceMaps[userConfig.source]
   config.baseURL = domain + '/api.php'
 
   // 为所有萌百请求默认添加format: 'json'

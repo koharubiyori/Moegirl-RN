@@ -1,5 +1,5 @@
 import { ThemeColorType } from '~/theme'
-import { siteMaps } from '~/utils/moeRequest'
+import { sourceMaps } from '~/utils/moeRequest'
 import setActionHandler from '~/utils/redux/setActionHandler'
 import { isHmoe } from '~/../app.json'
 
@@ -20,7 +20,7 @@ export interface State {
   heimu: boolean
   immersionMode: boolean
   changeThemeColorByArticleMainColor: boolean
-  source: keyof typeof siteMaps
+  source: keyof typeof sourceMaps
   theme: ThemeColorType
   lastTheme: ThemeColorType // 用于在黑夜模式和其他theme间切换
 }
