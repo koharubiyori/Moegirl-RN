@@ -3,10 +3,10 @@ import { BrowsingHistory } from './saveHistory'
 import { State as Config } from '~/redux/config'
 import { ArticleApiData } from '~/api/article.d'
 import { sourceMaps } from './moeRequest'
-import { SiteStorages } from './storage'
+import { SourceStorages } from './storage'
 
 type LocalStorages = { config: Config } & {
-  [SiteName in keyof typeof sourceMaps]: SiteStorages
+  [SiteName in keyof typeof sourceMaps]: SourceStorages
 }
 
 export interface MyStorageManager {

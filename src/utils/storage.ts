@@ -8,14 +8,14 @@ import { BrowsingHistory } from './saveHistory'
 /*
   storage: {
     config: {},
-    source1: SiteStorages,
-    source2: SiteStorages
+    source1: SourceStorages,
+    source2: SourceStorages
     ...
   }  
 */
 
 // 本地数据格式
-export interface SiteStorages {
+export interface SourceStorages {
   articleCache: { [articleName: string]: ArticleApiData.GetContent }
   articleRedirectMap: { [pageName: string]: string }
   userName: string
@@ -25,15 +25,15 @@ export interface SiteStorages {
 
 export interface MyStorageManager {
   load (): Promise<void>
-  set <Key extends keyof SiteStorages>(key: Key, val: SiteStorages[Key]): void
-  get <Key extends keyof SiteStorages>(key: Key): SiteStorages[Key] | null
-  remove (key: keyof SiteStorages): void
-  merge <Key extends keyof SiteStorages>(key: Key, val: SiteStorages[Key]): void
+  set <Key extends keyof SourceStorages>(key: Key, val: SourceStorages[Key]): void
+  get <Key extends keyof SourceStorages>(key: Key): SourceStorages[Key] | null
+  remove (key: keyof SourceStorages): void
+  merge <Key extends keyof SourceStorages>(key: Key, val: SourceStorages[Key]): void
 }
 
 // 利用一个数据实例，解决每次操作整份数据可能导致的响应缓慢。
 // 所有方法都会在实例上进行操作，同时再操作实际存储。不等待实际存储的Promise
-let sourceStorages: SiteStorages = {} as any
+let sourceStorages: SourceStorages = {} as any
 // 当前source，只在load中获取一次
 let source: keyof typeof sourceMaps
 
