@@ -95,12 +95,12 @@ function ArticleHeader(props: PropsWithChildren<FinalProps>) {
     }
 
     if (actionName === '分享') {
-      const siteMaps = {
+      const sourceMaps = {
         moegirl: 'https://mzh.moegirl.org',
         hmoe: 'https://www.hmoegirl.com'
       }
 
-      const shareUrl = `${props.state.config.source === 'moegirl' ? '萌娘百科' : 'H萌娘'} - ${props.title} ${siteMaps[props.state.config.source]}/${props.title}`
+      const shareUrl = `${props.state.config.source === 'moegirl' ? '萌娘百科' : 'H萌娘'} - ${props.title} ${sourceMaps[props.state.config.source]}/${props.title}`
       Clipboard.setString(shareUrl)
       toast.show('已将分享链接复制至剪切板', 'center')
     }
