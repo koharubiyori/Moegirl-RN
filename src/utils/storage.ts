@@ -5,12 +5,12 @@ import baseStorage from './baseStorage'
 import { siteMaps } from './moeRequest'
 import { BrowsingHistory } from './saveHistory'
 
-// 这一层封装主要是为了隔离各个domain的数据，便于萌百、h萌，或日后添加的更多domain时方便管理
+// 这一层封装主要是为了隔离各个domain的数据，便于萌百、h萌，或日后添加的更多source时方便管理
 /*
   storage: {
     config: {},
-    domain1: SiteStorages,
-    domain2: SiteStorages
+    source1: SiteStorages,
+    source2: SiteStorages
     ...
   }  
 */

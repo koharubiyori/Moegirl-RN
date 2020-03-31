@@ -1,7 +1,7 @@
 {
   "name": "MoegirlViewer",
   "displayName": "Moegirl Viewer",
-  "version": "1.5.0",
+  "version": "1.5.0H",
   "date": "2020.03.25",
-  "isHmoe": false
+  "isHmoe": true
 }
