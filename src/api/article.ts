@@ -12,13 +12,13 @@ function getContent(pageName = 'Mainpage') {
   })
 }
 
-function getMainImage(pageName: string) {
+function getMainImage(pageName: string, size = 500) {
   return request<ArticleApiData.GetImages>({
     params: {
       action: 'query',
       prop: 'pageimages',
       titles: pageName,
-      pithumbsize: 500
+      pithumbsize: size
     }
   }).then(data => {
     const { pages } = data.query

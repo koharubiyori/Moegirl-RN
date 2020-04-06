@@ -8,6 +8,7 @@ import * as commentApi from '~/api/comment'
 import { CommentConnectedProps, commentHOC } from '~/redux/comment/HOC'
 import toast from '~/utils/toast'
 import format from '../utils/format'
+import { AVATAR_URL } from '~/constants'
 
 export interface Props {
   data: any
@@ -106,7 +107,7 @@ function CommentItem(props: PropsWithChildren<FinalProps>) {
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => props.navigation.push('article', { link: 'User:' + data.username })}>
-              <Image source={{ uri: $avatarUrl + data.username }} style={{ ...styles.avatar, backgroundColor: theme.colors.lightBg }} />
+              <Image source={{ uri: AVATAR_URL + data.username }} style={{ ...styles.avatar, backgroundColor: theme.colors.lightBg }} />
             </TouchableOpacity>
             <View>
               <Text>{data.username}</Text>

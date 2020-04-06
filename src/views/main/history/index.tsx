@@ -65,6 +65,7 @@ function Finds(props: PropsWithChildren<FinalProps>) {
   function refresh () {
     setStatus(2)
     let list = storage.get('browsingHistory')
+    console.log(list)
     if (!list) return setStatus(0)
 
     let lists: HistoryRecordLists = {

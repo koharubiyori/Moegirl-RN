@@ -8,6 +8,7 @@ import { useTheme, Text } from 'react-native-paper'
 import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 import { setThemeColor } from '~/theme'
 import toast from '~/utils/toast'
+import { AVATAR_URL } from '~/constants'
 
 export interface Props {
   immersionMode: boolean
@@ -98,7 +99,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
         
         {props.state.user.name ? <>
           <TouchableOpacity onPress={tap(() => $appNavigator.push('article', { link: 'User:' + props.state.user.name }))}>
-            <Image source={{ uri: $avatarUrl + props.state.user.name }} style={{ ...styles.avatar, borderColor: 'white' }} />
+            <Image source={{ uri: AVATAR_URL + props.state.user.name }} style={{ ...styles.avatar, borderColor: 'white' }} />
             <Text style={{ ...styles.hintText, color: theme.colors.onSurface }}>欢迎你，{props.state.user.name}</Text>
           </TouchableOpacity>
         </> : <>

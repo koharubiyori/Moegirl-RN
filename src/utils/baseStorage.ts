@@ -1,7 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { BrowsingHistory } from './saveHistory'
 import { State as Config } from '~/redux/config'
-import { ArticleApiData } from '~/api/article.d'
 import { sourceMaps } from './moeRequest'
 import { SourceStorages } from './storage'
 
@@ -18,7 +16,7 @@ export interface MyStorageManager {
 
 const baseStorage: MyStorageManager = {
   set: (key, val) => AsyncStorage.setItem(key, JSON.stringify(val)),
-  get: key => new Promise((resolve, reject) => AsyncStorage.getItem(key).then(data => resolve(JSON.parse(data || 'null'))).catch(reject)),
+  get: key => AsyncStorage.getItem(key).then(data => JSON.parse(data || 'null')),
   remove: key => AsyncStorage.removeItem(key),
   merge: (key, val) => AsyncStorage.mergeItem(key, JSON.stringify(val))
 }

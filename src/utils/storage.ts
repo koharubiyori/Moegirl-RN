@@ -44,6 +44,7 @@ const sourceStorageManager: MyStorageManager = {
     source = currentConfig.source
 
     const data = await baseStorage.get(source)
+    console.log(data)
     if (data) {
       sourceStorages = data
     } else {
@@ -55,6 +56,8 @@ const sourceStorageManager: MyStorageManager = {
     sourceStorages[key] = val
     // 这里放弃使用merge，因为之前发生了丢数据的情况，怀疑是这个merge方法导致的(官网标注没有被所有原生实现支持)
     baseStorage.set(source, sourceStorages)
+      .then(() => console.log('success'))
+      .catch(e => console.log('error', e))
   },
 
   get: key => {

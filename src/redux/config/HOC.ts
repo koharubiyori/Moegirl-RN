@@ -7,7 +7,7 @@ const { dispatch, getState } = store
 
 export const set = (config: Partial<State>) => {
   dispatch({ type: SET, data: config })
-  return baseStorage.merge('config', config)
+  return baseStorage.set('config', { ...getState().config, ...config })
 }
 
 export const init = () => {

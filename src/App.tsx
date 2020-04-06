@@ -63,9 +63,6 @@ function App() {
 
       // 初始化完成一秒后隐藏启动图
       setTimeout(SplashScreen.hide, 500)
-
-      watchListApi.isWatched('User:東東君')
-        .then(data => console.log(data))
     })
   }, [])
 

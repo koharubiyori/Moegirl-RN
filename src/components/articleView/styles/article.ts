@@ -69,7 +69,7 @@ export default jss.createStyleSheet({
     },
 
     ol: {
-      paddingLeft: 20
+      paddingLeft: 20,
     },
 
     pre: {
@@ -111,6 +111,10 @@ export default jss.createStyleSheet({
       .mouse-ripple
     `]: {
       display: 'none'
+    },
+
+    'ol.references > li': {
+      padding: '3px 0'
     },
 
     // 优化提问求助区头部显示
