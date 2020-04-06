@@ -3,6 +3,7 @@ import { Image, StyleSheet, TouchableNativeFeedback, TouchableOpacity, View } fr
 import { Text, useTheme } from 'react-native-paper'
 import { NotificationData } from '~/api/notification.d'
 import toViewDate from '~/utils/toViewDate'
+import { AVATAR_URL } from '~/constants'
 
 export interface Props {
   notificationData: NotificationData
@@ -38,7 +39,7 @@ function NotificationItem(props: PropsWithChildren<FinalProps>) {
           {!props.notificationData.read ? <View style={styles.badge} /> : null} 
 
           <TouchableOpacity onPress={() => props.onPressAvatar && props.onPressAvatar(props.notificationData.agent.name)}>
-            <Image source={{ uri: $avatarUrl + props.notificationData.agent.name }} style={styles.avatar} />
+            <Image source={{ uri: AVATAR_URL + props.notificationData.agent.name }} style={styles.avatar} />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Text >{strongTagToRnBoldText(props.notificationData['*'].header)}</Text>

@@ -2,7 +2,6 @@
 
 declare namespace NodeJS { 
   interface Global extends __ReactNative.Global {
-    $avatarUrl: string
     $isVisibleLoading: boolean
     $drawer: {
       visible: { current: boolean }
@@ -15,7 +14,6 @@ declare namespace NodeJS {
   }
 }
 
-declare const $avatarUrl: NodeJS.Global['$avatarUrl']
 declare const $isVisibleLoading: NodeJS.Global['$isVisibleLoading']
 declare const $drawer: NodeJS.Global['$drawer']
 declare const $appNavigator: NodeJS.Global['$appNavigator']
