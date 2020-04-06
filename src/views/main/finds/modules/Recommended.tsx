@@ -7,6 +7,7 @@ import searchApi from '~/api/search'
 import storage from '~/utils/storage'
 import ArticleGroup from './components/ArticleGroup'
 import { useTheme } from 'react-native-paper'
+import articleCacheController from '~/utils/articleCacheController'
 
 const random = (max = 1, min = 0) => Math.floor((Math.random() * max - min) + min)
 
@@ -42,18 +43,18 @@ function FindsModuleRecommended(props: PropsWithChildren<FinalProps>) {
     setStatus(2)
     return new Promise(async (resolve, reject) => {
       try {
-        let cache = storage.get('articleCache')
+        let titles = await articleCacheController.getCacheTitleList()
+        console.log(titles)
   
-        if (cache) {
-          // 拿到缓存中所有标题
-          let data = Object.values(cache).map(item => item.parse.title)
-            // 排除分类页面
-            .filter(item => !(/^([Cc]ategory|分类):/.test(item)))
+        if (titles) {
+          // 排除分类页面
+          titles = titles.filter(item => !(/^([Cc]ategory|分类):/.test(item)))
+            
           if (data.length <= 5) {
-            var lastPages = data
+            var lastPages = titles
           } else {
             // 抽出最后五个
-            var lastPages = [data.pop()!, data.pop()!, data.pop()!, data.pop()!, data.pop()!]
+            var lastPages = [titles.pop()!, titles.pop()!, titles.pop()!, titles.pop()!, titles.pop()!]
           }
     
           // 随机抽出一个，执行搜索

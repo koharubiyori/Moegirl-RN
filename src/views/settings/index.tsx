@@ -12,6 +12,7 @@ import { colors, setThemeColor, themeColorType, ThemeColorType } from '~/theme'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SwitchItem from './components/SwitchItem'
+import articleCacheController from '~/utils/articleCacheController'
 
 export interface Props {
 
@@ -73,7 +74,7 @@ function Settings(props: PropsWithChildren<FinalProps>) {
     $dialog.confirm.show({
       content: '确定要清空条目缓存吗？',
       onPressCheck () {
-        storage.remove('articleCache')
+        articleCacheController.clearCache()
         storage.remove('articleRedirectMap')
         toast.show('已清除所有条目缓存')
       }

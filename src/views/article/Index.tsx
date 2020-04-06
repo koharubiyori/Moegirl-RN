@@ -1,6 +1,6 @@
 import Color from 'color'
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { DeviceEventEmitter, NativeModules, StyleSheet } from 'react-native'
+import { NativeModules, StyleSheet } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import { ArticleApiData } from '~/api/article.d'
 import ArticleView, { ArticleViewRef } from '~/components/articleView'
@@ -14,6 +14,7 @@ import toast from '~/utils/toast'
 import CatalogTriggerView, { CatalogTriggerViewRef } from './components/catalogTriggerView'
 import CommentButton, { CommentButtonRef } from './components/CommentButton'
 import Header, { ArticleHeaderRef } from './components/Header'
+import articleCacheController from '~/utils/articleCacheController'
 
 export interface Props {
 
@@ -153,7 +154,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
     let trueTitle = data.parse.title
 
     // 写入缓存
-    storage.merge('articleCache', { [trueTitle]: data })
+    articleCacheController.addCache(trueTitle, data)
 
     if (title !== trueTitle) {
       $dialog.snackBar.show(`“${loadedPageInfo.pageName}”被重定向至此页`)

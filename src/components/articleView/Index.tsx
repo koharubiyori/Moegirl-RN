@@ -20,6 +20,7 @@ import { DOMParser } from 'react-native-html-parser'
 import { useTheme } from 'react-native-paper'
 import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 import { colors } from '~/theme'
+import articleCacheController from '~/utils/articleCacheController'
 
 const styleSheets = {
   home: homeStyleSheet,
@@ -268,19 +269,17 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
         try {
           const redirectMap = storage.get('articleRedirectMap') || {}
-          let link = redirectMap[props.link!] || props.link
-          const articleCache = storage.get('articleCache') || {}
-          const data = articleCache[link!]
-          if (data) {
-            let html = data.parse.text['*']
-            setHtml(createDocument(html, data.parse.categories.map(item => item['*'])))
-            $dialog.snackBar.show('因读取失败，载入条目缓存')
-            setTimeout(() => setStatus(3), 1000)
-            loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
-            setArticleData(data)
-          } else {
-            throw new Error()
-          }
+          let trueTitle = redirectMap[props.link!] || props.link
+          
+          let articleData = await articleCacheController.getCacheData(trueTitle!)
+          if (!articleData) throw new Error('文章缓存不存在')
+          
+          let html = articleData.parse.text['*']
+          setHtml(createDocument(html, articleData.parse.categories.map(item => item['*'])))
+          $dialog.snackBar.show('因读取失败，载入条目缓存')
+          setTimeout(() => setStatus(3), 1000)
+          loadOriginalImgUrls(articleData.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
+          setArticleData(articleData)
         } catch (e) {
           console.log(e)
           toast.show('网络超时，读取失败')
