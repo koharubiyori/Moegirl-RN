@@ -16,7 +16,6 @@ import { BrowsingHistory } from './saveHistory'
 
 // 本地数据格式
 export interface SourceStorages {
-  articleCache: { [articleName: string]: ArticleApiData.GetContent }
   articleRedirectMap: { [pageName: string]: string }
   userName: string
   browsingHistory: BrowsingHistory[]

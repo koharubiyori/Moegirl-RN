@@ -75,6 +75,7 @@ import com.android.build.OutputFile
  * ]
  */
 
+// 这个项目用hermes会报错，考虑是依赖了function.toString()的机制导致的
 project.ext.react = [
     entryFile: "index.js",
     enableHermes: false,  // clean and rebuild if changing
@@ -90,7 +91,7 @@ apply from: "../../node_modules/react-native/react.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture = false
+def enableSeparateBuildPerCPUArchitecture = true
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
@@ -132,13 +133,13 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 28
-        versionName "1.5.0H"
+        versionName "1.5.1"
     }
     splits {
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
-            universalApk false  // If true, also generate a universal APK
+            universalApk true  // If true, also generate a universal APK
             include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
@@ -221,7 +222,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     if (enableHermes) {
-      def hermesPath = "../../node_modules/hermesvm/android/";
+      def hermesPath = "../../node_modules/hermes-engine/android/";
       debugImplementation files(hermesPath + "hermes-debug.aar")
       releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {

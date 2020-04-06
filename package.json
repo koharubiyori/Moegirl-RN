@@ -13,9 +13,9 @@
     "build:test": "yarn clear && react-native run-android --variant release",
     "adb:reverse": "adb reverse tcp:8081 tcp:8081",
     "adb:menu": "adb shell input keyevent 82",
-    "adb:push": "adb push android/app/build/outputs/apk/release/app-release.apk sdcard",
+    "adb:push": "adb push android/app/build/outputs/apk/release/app-armeabi-v7a-release.apk sdcard",
     "adb:restart": "adb kill-server && adb start-server",
-    "adb:install": "adb install -r android/app/build/outputs/apk/release/app-release.apk",
+    "adb:install": "adb install -r android/app/build/outputs/apk/release/app-armeabi-v7a-release.apk",
     "adb:uninstall": "adb uninstall com.moegirlviewer",
     "adb:reinstall": "yarn adb:uninstall && yarn adb:install"
   },

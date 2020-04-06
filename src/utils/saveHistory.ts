@@ -27,7 +27,7 @@ export default function(title: string) {
     if (img) {
       try {
         const imgSuffixName = img.source.replace(/^.+\.([^\.]+)$/, '$1')
-        const imgSavePath = `/${BROWSING_HISTORY_IMGS_DIRNAME}/${title}.${imgSuffixName}`
+        const imgSavePath = `/${BROWSING_HISTORY_IMGS_DIRNAME}/${encodeURIComponent(title)}.${imgSuffixName}`
         await RNFetchBlob
           .config({ 
             path: RNFetchBlob.fs.dirs.DocumentDir + imgSavePath,
