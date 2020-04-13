@@ -40,9 +40,9 @@ function Settings(props: PropsWithChildren<FinalProps>) {
           setConfig({ lastTheme: value as any })
         }
 
-        if (value === 'night' && props.state.config.changeThemeColorByArticleMainColor) {
-          toast.show('黑夜模式下动态主题不生效')
-        }
+        // if (value === 'night' && props.state.config.changeThemeColorByArticleMainColor) {
+        //   toast.show('黑夜模式下动态主题不生效')
+        // }
 
         setConfig({ theme: value as any })
         setThemeColor(value as any)
@@ -129,14 +129,14 @@ function Settings(props: PropsWithChildren<FinalProps>) {
           onChange={val => setConfig({ immersionMode: val })}
         />
 
-        <SwitchItem title="动态主题" 
+        {/* <SwitchItem title="动态主题" 
           subtext="条目界面的配色随条目本身的主题色切换" 
           value={config.changeThemeColorByArticleMainColor}
           onChange={val => {
             setConfig({ changeThemeColorByArticleMainColor: val })
             props.state.config.theme === 'night' && val && toast.show('黑夜模式下动态主题不生效')
           }}
-        />
+        /> */}
 
         <Title>界面</Title>
         <SwitchItem hideSwitch 
