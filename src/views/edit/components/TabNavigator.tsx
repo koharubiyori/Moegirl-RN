@@ -29,6 +29,7 @@ function MyBottomTabBar(props: any) {
     <View style={{ height: 50, flexDirection: 'row', elevation: 5, backgroundColor: theme.colors.onSurface }}>
       {routes.map((route: any, index: number) => <>
         <Button 
+          key={index}
           style={{ flex: 1 }} 
           contentContainerStyle={{ 
             flex: 1, 
@@ -42,7 +43,7 @@ function MyBottomTabBar(props: any) {
             <Text style={{ color: theme.colors.onSurface }}>{route.routeName}</Text>
           </View>  
         </Button>
-        {index !== routes.length - 1 ? <View key={index} style={{ width: 1 }} /> : null} 
+        {index !== routes.length - 1 ? <View key="divider" style={{ width: 1.5 }} /> : null} 
       </>)}
       <Animated.View 
         style={{ 

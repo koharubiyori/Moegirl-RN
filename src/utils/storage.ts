@@ -43,7 +43,6 @@ const sourceStorageManager: MyStorageManager = {
     source = currentConfig.source
 
     const data = await baseStorage.get(source)
-    console.log(data)
     if (data) {
       sourceStorages = data
     } else {

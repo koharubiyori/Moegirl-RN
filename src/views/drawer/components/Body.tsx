@@ -63,7 +63,7 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
   const isNightMode = props.state.config.theme === 'night'
   return (
     <View style={{ backgroundColor: theme.colors.background, height: Dimensions.get('window').height }}>
-      <Image source={require('~/assets/images/drawer_bg.png')} resizeMode="cover" 
+      <Image source={require('~/assets/images/drawer_bg.png')}
         style={{ ...styles.bgImage, width: Dimensions.get('window').width * 0.6, height: Dimensions.get('window').height - 160 }}
       />
       <View 
@@ -99,7 +99,11 @@ function DrawerBody(props: PropsWithChildren<FinalProps>) {
         
         {props.state.user.name ? <>
           <TouchableOpacity onPress={tap(() => $appNavigator.push('article', { link: 'User:' + props.state.user.name }))}>
-            <Image source={{ uri: AVATAR_URL + props.state.user.name }} style={{ ...styles.avatar, borderColor: 'white' }} />
+            <Image 
+              source={{ uri: AVATAR_URL + props.state.user.name }} 
+              defaultSource={require('~/assets/images/akari.jpg')} 
+              style={{ ...styles.avatar, borderColor: 'white' }} 
+            />
             <Text style={{ ...styles.hintText, color: theme.colors.onSurface }}>欢迎你，{props.state.user.name}</Text>
           </TouchableOpacity>
         </> : <>

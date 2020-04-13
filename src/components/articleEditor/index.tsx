@@ -182,12 +182,15 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
           <QuickInsertItem icon="fountain-pen-tip" subtitle="签名" onPress={() => insertCodes(' --~~~~')} />
           <QuickInsertItem title="[[ ]]" subtitle="链接" onPress={() => insertCodes('[[]]', 2)} />
           <QuickInsertItem title="{{ }}" subtitle="模板" onPress={() => insertCodes('{{}}', 2)} />
-          <QuickInsertItem title="''' '''" subtitle="粗体" onPress={() => insertCodes("''''''", 3)} />
           <QuickInsertItem title="|" subtitle="管道符" onPress={() => insertCodes('|')} />
+          <QuickInsertItem title="*" subtitle="无序列表" onPress={() => insertCodes('* ')} />
+          <QuickInsertItem title="#" subtitle="有序列表" onPress={() => insertCodes('# ')} />
+          <QuickInsertItem title="''' '''" subtitle="粗体" onPress={() => insertCodes("''''''", 3)} />
           <QuickInsertItem title="<del>" subtitle="删除线" onPress={() => insertCodes('<del></del>', 6)} />
-          <QuickInsertItem title="黑幕" onPress={() => insertCodes('{{黑幕|}}', 2)} />
           <QuickInsertItem title="==" subtitle="大标题" onPress={() => insertCodes('==  ==', 3)} />
           <QuickInsertItem title="===" subtitle="小标题" onPress={() => insertCodes('===  ===', 4)} />
+          <QuickInsertItem title="黑幕" onPress={() => insertCodes('{{黑幕|}}', 2)} />
+          <QuickInsertItem title="彩色字" onPress={() => insertCodes('{{color|red|text}}', 2)} />
         </ScrollView>
       </> : null}
     </>
