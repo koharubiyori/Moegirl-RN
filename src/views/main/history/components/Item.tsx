@@ -35,7 +35,7 @@ export default function HistoryItem(props: PropsWithChildren<FinalProps>) {
     >
       <Image 
         source={props.data.imgPath ? articleImg : require('~/assets/images/moemoji.png')} 
-        resizeMode="cover" 
+        resizeMode="contain" 
         style={{ width: 60, height: 70, position: 'absolute', top: 5, left: 5 }} 
       />
       {/* 每行最多15个字 */}

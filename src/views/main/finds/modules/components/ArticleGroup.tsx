@@ -54,7 +54,11 @@ export default function ArticleGroup(props: PropsWithChildren<FinalProps>) {
         <View style={{ marginTop: 10 }}>{props.articles.map(item =>
           <TouchableOpacity onPress={() => props.navigation.push('article', { link: item.title })} key={item.title}>
             <View style={styles.item}>
-              <Image source={item.image ? { uri: item.image } : require('~/assets/images/moemoji.png')} style={{ width: 60, height: 65, borderRadius: 3 }} />
+              <Image 
+                resizeMode="contain"
+                source={item.image ? { uri: item.image } : require('~/assets/images/moemoji.png')} 
+                style={{ width: 60, height: 65, borderRadius: 3 }} 
+              />
               <Text style={{ textAlign: 'center', flex: 1 }} numberOfLines={2}>{item.title}</Text>
             </View>
           </TouchableOpacity>

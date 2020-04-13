@@ -249,7 +249,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
           return setTimeout(() => {
             props.navigation.replace('category', { 
-              title: props.link!.split(':')[1], 
+              title: props.link!.replace(/^([Cc]ategory|分类):/, ''), 
               branch: categoryBranch,
               articleTitle 
             })
@@ -324,6 +324,11 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
     }
 
     const { type, data }: { type: keyof EventParamsMap, data: EventParamsMap[keyof EventParamsMap] } = JSON.parse(event.nativeEvent.data)
+
+    // 执行自定义webView事件
+    if (props.onMessages) {
+      ;(props.onMessages[type] || (() => {}))(data)
+    }
 
     // 拿这个函数做数据结构映射
     function setEventHandler<EventName extends keyof EventParamsMap>(eventName: EventName, handler: (data: EventParamsMap[EventName]) => void) {
@@ -406,10 +411,6 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
       }
     })
     setEventHandler('onPressBiliVideo', data => props.navigation.push('biliPlayer', data))
-
-    if (props.onMessages) {
-      ;(props.onMessages[type] || (() => {}))(data)
-    }
   }
 
   return (
