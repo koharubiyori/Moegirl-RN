@@ -123,14 +123,14 @@ function Article(props: PropsWithChildren<FinalProps>) {
     // 如果主题发生变化，则更新主题
     if (lastProps.current.state.config.theme !== props.state.config.theme) {
       setVisibleHeader(true)
-      // 注意这里和/src/theme.ts导出的方法重名了，这个是用于条目页动态主题的
-      setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
+      // 注意这里和/src/theme.ts导出的方法重名了，这个setThemeColor是用于条目页动态主题的
+      // setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
     }
 
     // 如果关闭了动态主题，则更新为当前已选主题
-    if (lastProps.current.state.config.changeThemeColorByArticleMainColor && !props.state.config.changeThemeColorByArticleMainColor) {
-      setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
-    }
+    // if (lastProps.current.state.config.changeThemeColorByArticleMainColor && !props.state.config.changeThemeColorByArticleMainColor) {
+    //   setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
+    // }
 
     lastProps.current = props
   })
@@ -204,14 +204,14 @@ function Article(props: PropsWithChildren<FinalProps>) {
     }
   }
   
-  interface ArticleMainColor {
-    backgroundColor: string
-    color: string
-  }
-  function setThemeByArticleMainColor(mainColor: ArticleMainColor) {
-    const blackText = Color(mainColor.backgroundColor).isLight()
-    setThemeColor({ backgroundColor: mainColor.backgroundColor, blackText })
-  }
+  // interface ArticleMainColor {
+  //   backgroundColor: string
+  //   color: string
+  // }
+  // function setThemeByArticleMainColor(mainColor: ArticleMainColor) {
+  //   const blackText = Color(mainColor.backgroundColor).isLight()
+  //   setThemeColor({ backgroundColor: mainColor.backgroundColor, blackText })
+  // }
 
   function isVisibleComment() {
     return !(/^([Tt]alk|讨论|[Tt]emplate( talk|)|模板(讨论|)|[Mm]odule( talk|)|模块(讨论|)|[Cc]ategory( talk|)|分类(讨论|)):/.test(loadedPageInfo.pageName))
@@ -255,7 +255,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
         injectJs={articleViewInjectJs}
         onMessages={{ 
           changeHeaderVisible: setVisibleHeader, 
-          getArticleMainColor: setThemeByArticleMainColor 
+          // getArticleMainColor: setThemeByArticleMainColor 
         }}
         onLoaded={contentLoaded}
         onMissing={missingGoBack}
