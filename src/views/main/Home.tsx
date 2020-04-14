@@ -22,14 +22,13 @@ function Home(props: PropsWithChildren<FinalProps>) {
     hmoe: 'hmoeHome'
   }[props.state.config.source]
 
-  const isNightMode = props.state.config.theme === 'night'
   return (
     <View style={{ flex: 1 }}>
       <Header title={siteNameMaps[props.state.config.source]} />
       <ArticleView 
         style={{ flex: 1 }} 
         link="Mainpage" 
-        injectStyle={['article', homeStyleName]}
+        injectStyle={['article', homeStyleName].concat(props.state.config.theme === 'night' ? ['nightMode'] : []) as any}
         navigation={props.navigation}
       />
     </View>

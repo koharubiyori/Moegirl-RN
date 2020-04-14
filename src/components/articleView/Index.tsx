@@ -146,15 +146,12 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
 
     injectRequestUtil = `(${injectRequestUtil})();`
 
-    // 不知道为什么在props上拿不到最新state，而且整个props都是旧的
-    const currentConfig = store.getState().config
+    const currentConfig = props.state.config
 
     const injectStyles = props.injectStyle
-      // 本来是根据props传入的injectStyle来动态加载样式表的，但不知道为什么无论如何在这里拿到的props1都是第一次传入的旧props
-      // 只好在这里判断是否加载黑夜模式的样式了
-      .concat(currentConfig.theme === 'night' ? ['nightMode'] : [])
       .map(name => styleSheets[name])
       .join('')
+
     const scriptTags = libScript.reduce((prev, next) => prev + `<script src="js/lib/${next}.js"></script>`, '')
 
     let injectJsCodes = `
@@ -196,7 +193,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           // 用户设置
           window._appConfig = ${JSON.stringify(currentConfig || {})}     
-          // 当前主题色（不止props，这里拿到的theme也是旧的，目前只好这样）
+          // 当前主题色
           window._themeColors = ${JSON.stringify(colors[currentConfig.theme])}
           // 所有主题色
           window._colors = ${JSON.stringify(colors)}
@@ -256,6 +253,7 @@ function ArticleView(props: PropsWithChildren<FinalProps>) {
           }, 250) // 延迟250毫秒，防止动画还没播完就跳转了
         }
         
+        console.log(props)
         setHtml(createDocument(html, data.parse.categories.filter(item => !('hidden' in item)).map(item => item['*'])))
         // 本身在webview里也会向外发送渲染完毕的消息，这里也写一个防止出现什么问题导致一直status:2
         setTimeout(() => setStatus(3), 1000)

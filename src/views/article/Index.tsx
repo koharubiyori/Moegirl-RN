@@ -124,7 +124,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
     if (lastProps.current.state.config.theme !== props.state.config.theme) {
       setVisibleHeader(true)
       // 注意这里和/src/theme.ts导出的方法重名了，这个setThemeColor是用于条目页动态主题的
-      // setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
+      setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
     }
 
     // 如果关闭了动态主题，则更新为当前已选主题
@@ -251,7 +251,7 @@ function Article(props: PropsWithChildren<FinalProps>) {
         style={{ flex: 1, backgroundColor: theme.colors.background }} 
         navigation={props.navigation}
         link={link} 
-        injectStyle={['article']}
+        injectStyle={['article'].concat(props.state.config.theme === 'night' ? ['nightMode'] : []) as any}
         injectJs={articleViewInjectJs}
         onMessages={{ 
           changeHeaderVisible: setVisibleHeader, 
