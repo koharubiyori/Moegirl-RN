@@ -1,10 +1,8 @@
 import React, { PropsWithChildren, useRef } from 'react'
-import { StyleSheet, View } from 'react-native'
-import { Button, Dialog, HelperText, TextInput, useTheme, Text, DefaultTheme } from 'react-native-paper'
-import { maxSummaryLength } from '../index'
-import MyButton from '~/components/Button'
+import { ScrollView, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { ScrollView } from 'react-native'
+import { Button, DefaultTheme, Dialog, HelperText, Text, TextInput, useTheme } from 'react-native-paper'
+import { maxSummaryLength } from '../index'
 
 export interface Props {
   visible: boolean
