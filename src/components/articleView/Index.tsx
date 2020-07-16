@@ -236,7 +236,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
           const articleData = articleCache.articleData
           let html = articleData.parse.text['*']
           setHtml(createDocument(html, articleData.parse.categories.map(item => item['*'])))
-          console.log('cache')
+          articleCacheController.getCacheTitleList().then(list => console.log('list', list))
           dialog.snackBar.show({ title: '因读取失败，载入条目缓存' })
           loadOriginalImgUrls(articleData.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
           setArticleData(articleData)
