@@ -3,7 +3,7 @@ import {
   View, Text, ScrollView,
   StyleSheet
 } from 'react-native'
-import Button from '~/components/Button'
+import MyButton from '~/components/MyButton'
 import { useTheme } from 'react-native-paper'
 
 export interface Props {
@@ -20,14 +20,16 @@ export default function SearchHint(props: PropsWithChildren<FinalProps>) {
     <View style={{ flex: 1 }}>
       {props.titles ? <>
         <ScrollView removeClippedSubviews keyboardShouldPersistTaps="always">{props.titles.map(title =>
-          <Button contentContainerStyle={{}} rippleColor={theme.colors.placeholder} noLimit={false} 
+          <MyButton 
+            contentContainerStyle={{}} 
+            rippleColor={theme.colors.placeholder}
             onPress={() => props.onPressTitle(title)}
             key={title}
           >
             <View style={{ ...styles.title, borderBottomColor: theme.colors.lightBg }}>
               <Text style={{ color: theme.colors.disabled }}>{title}</Text>
             </View>
-          </Button>
+          </MyButton>
         )}</ScrollView>
       </> : <>
         <View style={{ ...styles.title, borderBottomColor: theme.colors.lightBg }}>

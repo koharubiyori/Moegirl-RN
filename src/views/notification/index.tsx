@@ -1,14 +1,18 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View, LayoutAnimation, RefreshControl } from 'react-native'
 import notificationApi from '~/api/notification'
-import { NotificationData } from '~/api/notification.d'
-import Toolbar from '~/components/Toolbar'
-import Item from './components/Item'
-import { markReadAllNotifications } from '~/redux/user/HOC'
-import StatusBar from '~/components/StatusBar'
+import { NotificationData } from '~/api/notification/types'
 import { useTheme, Text } from 'react-native-paper'
 import ViewContainer from '~/components/ViewContainer'
 import useLayoutAnimation from '~/hooks/useLayoutAnimation'
+import MyStatusBar from '~/components/MyStatusBar'
+import MyToolbar from '~/components/MyToolbar'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import NotificationItem from './components/Item'
+import { useObserver } from 'mobx-react-lite'
+import store from '~/mobx'
+import toast from '~/utils/toast'
+import dialog from '~/utils/dialog'
 
 export interface Props {
 
@@ -18,16 +22,15 @@ export interface RouteParams {
 
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
-
 type NotificationList = {
   list: NotificationData[]
-  status: 0 | 1 | 2 | 3 | 4 | 5
+  status: 0 | 1 | 2 | 2.1 | 3 | 4 | 5
   continue: string | null
 }
 
-export default function Notifications(props: PropsWithChildren<FinalProps>) {
+function NotificationPage(props: PropsWithChildren<Props>) {
   const theme = useTheme()
+  const navigation = useTypedNavigation()
   const [notificationList, setNotificationList] = useState<NotificationList>({
     list: [],
     status: 1,
@@ -36,16 +39,14 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
 
   useEffect(() => {
     load(true)
-    markReadAllNotifications()
+    // markReadAllNotifications()
   }, [])
 
-  useLayoutAnimation(
-    LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
-  )
+  useLayoutAnimation()
 
   function load(force = false) {
-    if ([2, 4, 5].includes(notificationList.status) && !force) return Promise.resolve()
-    setNotificationList(prevVal => force ? { list: [], status: 2, continue: null } : { ...prevVal, status: 2 })
+    if ([2, 2.1, 4, 5].includes(notificationList.status) && !force) return Promise.resolve()
+    setNotificationList(prevVal => force ? { list: [], status: 2.1, continue: null } : { ...prevVal, status: 2 })
     
     return notificationApi.get(force ? null : notificationList.continue)
       .then(data => {
@@ -63,32 +64,54 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
         }
       })
   }
+
+  function markReadAllNotifications() {
+    dialog.loading.show()
+    store.user.markReadAllNotifications()
+      .finally(dialog.loading.hide)
+      .then(() => {
+        setNotificationList(prevVal => ({
+          ...prevVal,
+          list: prevVal.list.map(item => ({ ...item, read: '1' }))
+        }))
+        setTimeout(() => toast('标记所有为已读'), 50)
+      })
+      .catch(() => toast('网络错误'))
+  }
   
-  return (
+  console.log(notificationList)
+  return useObserver(() => 
     <ViewContainer grayBgColor>
-      <StatusBar />  
-      <Toolbar
+      <MyStatusBar />  
+      <MyToolbar
         title="通知"
         leftIcon="keyboard-backspace"
-        onPressLeftIcon={() => props.navigation.goBack()}
+        rightIcon="done-all"
+        onPressLeftIcon={() => navigation.goBack()}
+        onPressRightIcon={() => markReadAllNotifications()}
       />   
       
-      <FlatList data={notificationList.list} 
+      <FlatList 
+        data={notificationList.list} 
         onEndReachedThreshold={1}
         onEndReached={() => load()}
         style={{ flex: 1 }}
-        renderItem={item => <Item 
-          key={item.index}
-          notificationData={item.item}
-          onPress={() => item.item.title && props.navigation.push('article', { link: item.item.title.full })}
-          onPressAvatar={username => props.navigation.push('article', { link: 'User:' + username })}
-        />}
+        renderItem={item => 
+          <NotificationItem 
+            key={item.index}
+            notificationData={item.item}
+            onPress={() => item.item.title && navigation.push('article', { pageName: item.item.title.full })}
+            onPressAvatar={username => navigation.push('article', { pageName: 'User:' + username })}
+          />
+        }
 
-        refreshControl={<RefreshControl 
-          colors={[theme.colors.accent]} 
-          onRefresh={() => load(true)} 
-          refreshing={false} 
-        />}
+        refreshControl={
+          <RefreshControl 
+            colors={[theme.colors.accent]} 
+            onRefresh={() => load(true)} 
+            refreshing={notificationList.status === 2.1} 
+          />
+        }
 
         ListFooterComponent={{
           0: () => 
@@ -99,6 +122,7 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
             </TouchableOpacity>,
           1: () => null,
           2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
+          2.1: () => null,
           3: () => null,
           4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
           5: () => null
@@ -107,6 +131,8 @@ export default function Notifications(props: PropsWithChildren<FinalProps>) {
     </ViewContainer>
   )
 }
+
+export default NotificationPage
 
 const styles = StyleSheet.create({
   

@@ -28,8 +28,11 @@ build/
 .idea
 .gradle
 local.properties
-gradle.properties
 *.iml
+
+# Visual Studio Code
+#
+.vscode/
 
 # node.js
 #
@@ -40,7 +43,8 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
-# *.keystore
+*.keystore
+!debug.keystore
 
 # fastlane
 #
@@ -58,6 +62,3 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
-
-.update
-*.lnk

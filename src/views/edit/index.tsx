@@ -1,18 +1,21 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { BackHandler, DeviceEventEmitter, View } from 'react-native'
-import { NavigationState } from 'react-navigation'
-import editApi from '~/api/edit'
-import StatusBar from '~/components/StatusBar'
-import toast from '~/utils/toast'
-import Header from './components/Header'
-import TabNavigator from './components/TabNavigator'
+import { StyleSheet } from 'react-native'
 import { useTheme } from 'react-native-paper'
-import SubmitDialog from './components/SubmitDialog'
+import editApi from '~/api/edit'
+import { EditApiData } from '~/api/edit/types'
+import MyStatusBar from '~/components/MyStatusBar'
 import ViewContainer from '~/components/ViewContainer'
-import { checkUserIsAutoConfirmed } from '~/redux/user/HOC'
-import { EditApiData } from '~/api/edit.d'
 import useLockDrawer from '~/hooks/useLockDrawer'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import useMyRoute from '~/hooks/useTypedRoute'
+import store from '~/mobx'
+import dialog from '~/utils/dialog'
+import toast from '~/utils/toast'
 import CaptchaDialog from './components/CaptchaDialog'
+import Header from './components/Header'
+import SubmitDialog from './components/SubmitDialog'
+import EditTabs from './tabs'
+import tabDataCommunicator from './utils/tabDataCommunicator'
 
 export interface Props {
 
@@ -24,94 +27,45 @@ export interface RouteParams {
   isCreate?: boolean
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
-
 export const maxSummaryLength = 220
 const SummarySuffix = '  // 来自Moegirl Viewer的编辑'
 
-function Edit(props: PropsWithChildren<FinalProps>) {
+function EditPage(props: PropsWithChildren<Props>) {
   const theme = useTheme()
-  const [status, setStatus] = useState(1)
-  const [content, setContent] = useState('')
+  const navigation = useTypedNavigation()
+  const route = useMyRoute<RouteParams>()
   const [summary, setSummary] = useState('')
   const [visibleSubmitDialog, setVisibleSubmitDialog] = useState(false)
   const [visibleCaptchaDialog, setVisibleCaptchaDialog] = useState(false)
   const [captcha, setCaptcha] = useState<EditApiData.GetCaptcha | null>(null)
-  const essentialUpdate = useRef(false)
   const articleReloadFlag = useRef(false)
-  const refs = {
-    tabNavigator: useRef<any>()
-  }
 
-  const title = props.navigation.getParam('title')
-  const section = props.navigation.getParam('section')
-  const isCreate = props.navigation.getParam('isCreate')
+  const { title, section, isCreate } = route.params
 
   useLockDrawer()
 
-  // 监听stackNavigator的变化，如果离开时已编辑flag为true，且页面堆栈最后一个为article，则执行那个article页面实例上在params暴露的reload方法
-  useEffect(() => {
-    if (!isCreate) {
-      const listener = DeviceEventEmitter.addListener('navigationStateChange', (prevState, state) => {
-        let lastRoute = state.routes[state.routes.length - 1]
-        if (articleReloadFlag.current && lastRoute.routeName === 'article') {
-          articleReloadFlag.current = false
-          lastRoute.params!.reloadMethod()
-        }
-      })
-  
-      return () => listener.remove()
+  // 没找到比较优雅的给tab内部传参的方法，只好这么搞了
+  tabDataCommunicator.data.title = title
+  tabDataCommunicator.data.section = section
+  tabDataCommunicator.data.isCreate = isCreate
+
+  // 离开页面时重置通信器
+  useEffect(() => () => tabDataCommunicator.reset(), [])
+
+  // 编辑成功后离开页面时执行所有route.params.pageName为当前编辑页面的article组件上暴露的route.params.reload
+  useEffect(() => () => {
+    if (!articleReloadFlag.current) { return }
+    const routeState = navigation.dangerouslyGetState()
+    routeState.routes
+      .filter(item => item.name === 'article' && item.params && (item.params as any).pageName === route.params.title)
+      .forEach(item => (item.params as any).reload(true))
+  }, [])
+
+  async function checkAllowBack() {
+    if (tabDataCommunicator.data.isContentChanged) {
+      await dialog.confirm.show({ content: '编辑还未保存，确定要放弃编辑的内容？' }) 
     }
-  })
-
-  useEffect(() => {
-    const listener = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (global.$isVisibleLoading) {
-        return true
-      } else {
-        const { params } = refs.tabNavigator.current.state.nav.routes[0]
-        if (params && params.isContentChanged) {
-          $dialog.confirm.show({
-            content: '编辑还未保存，确定要放弃编辑的内容？',
-            onPressCheck: () => props.navigation.goBack()
-          })
-  
-          return true
-        }
-      }
-    })
-
-    return () => listener.remove()
-  })
-
-  function checkAllowBack() {
-    const { params } = refs.tabNavigator.current.state.nav.routes[0]
-    if (params && params.isContentChanged) {
-      $dialog.confirm.show({
-        content: '编辑还未保存，确定要放弃编辑的内容？',
-        onPressCheck: () => props.navigation.goBack()
-      })
-    } else {
-      props.navigation.goBack()
-    }
-  }
-
-  // 监听tab导航容器的状态变化，在编辑器内容变更且用户查看预览时refresh预览视图
-  function navigationStateChange(prevState: NavigationState, state: NavigationState) {
-    if (!state.routes[0].params) { return }
-    const { status, content } = state.routes[0].params
-    const { refresh } = state.routes[1].params! || {}
-
-    setStatus(status)
-    setContent(content)
-    if (!prevState.routes[0].params && content) return refresh && refresh(content)
-
-    // 如果内容不同，则标记为需要刷新
-    if ((!prevState.routes[0].params || prevState.routes[0].params.content !== content) && state.index === 0) { essentialUpdate.current = true }
-    if (essentialUpdate.current && state.index === 1) {
-      essentialUpdate.current = false
-      refresh && refresh(content)
-    }
+    navigation.goBack()
   }
 
   function loadCaptcha() {
@@ -119,23 +73,22 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   }
 
   function showSubmitDialog () {
-    const { isContentChanged } = refs.tabNavigator.current.state.nav.routes[0].params
-    if (isContentChanged) {
+    if (tabDataCommunicator.data.isContentChanged) {
       setVisibleSubmitDialog(true)
     } else {
-      toast.show('内容未发生变化')
+      toast('内容未发生变化')
     }
   }
 
   function executeEdit(captchaId?: string, captchaVal?: string) {
-    toast.showLoading('提交中')
-    const { content } = refs.tabNavigator.current.state.nav.routes[0].params
+    dialog.loading.show({ title: '提交中...' })
+    const content = tabDataCommunicator.data.content
     editApi.editArticle(title, section, content, summary!.trim() + SummarySuffix, captchaId, captchaVal)
-      .finally(toast.hide)
+      .finally(dialog.loading.hide)
       .then(() => {
-        setTimeout(() => toast.show('编辑成功'))
+        toast.success('编辑成功')
         articleReloadFlag.current = true
-        props.navigation.goBack()
+        navigation.goBack()
       })
       .catch(code => {
         if (code) {
@@ -145,24 +98,24 @@ function Edit(props: PropsWithChildren<FinalProps>) {
             readonly: '目前数据库处于锁定状态，无法编辑'
           } as { [code: string]: string })[code] || '未知错误')
 
-          $dialog.alert.show({ content: msg })
+          dialog.alert.show({ content: msg })
         } else {
-          $dialog.alert.show({ content: '网络错误，请稍候再试' })
+          dialog.alert.show({ content: '网络错误，请稍候再试' })
         }             
       })
   }
 
   function submit () {
-    toast.showLoading('提交中')
-    checkUserIsAutoConfirmed()
-      .finally(toast.hide)
+    dialog.loading.show({ title: '提交中...' })
+    store.user.isAutoConfirmed()
+      .finally(dialog.loading.hide)
       .then(isAutoConfirmed => {
         if (isAutoConfirmed) {
           executeEdit()
         } else {
-          toast.showLoading('提交中')
+          dialog.loading.show({ title: '提交中...' })
           loadCaptcha()
-            .finally(toast.hide)
+            .finally(dialog.loading.hide)
             .then(() => setVisibleCaptchaDialog(true))
             .catch(console.log)
         }
@@ -171,13 +124,10 @@ function Edit(props: PropsWithChildren<FinalProps>) {
 
   return (
     <ViewContainer>
-      <StatusBar />
+      <MyStatusBar />
       <Header title={title} onPressBack={checkAllowBack} onPressDoneBtn={showSubmitDialog} />
-      <TabNavigator 
-        screenProps={{ title, section, isCreate, content }}
-        onNavigationStateChange={navigationStateChange}
-        ref={refs.tabNavigator}
-      />
+      <EditTabs />
+
       <SubmitDialog
         visible={visibleSubmitDialog}
         value={summary}
@@ -196,4 +146,10 @@ function Edit(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default Edit
+export default EditPage
+
+const styles = StyleSheet.create({
+  tabStyle: {
+    color: 'white',
+  }
+})

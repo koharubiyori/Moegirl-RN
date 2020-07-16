@@ -1,7 +1,7 @@
 // 添加分类在条目底部
 
 export default function() {
-  if (window._articleTitle === 'Mainpage' || window._appConfig.source === 'hmoe') { return }
+  if (window._articleTitle.text === 'Mainpage' || window._settings.source === 'hmoe') { return }
   let viewBox = $('#articleContentContainer')
   
   const content = `

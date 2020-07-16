@@ -17,7 +17,7 @@ export const themeColorType = {
 export type ThemeColorType = keyof typeof themeColorType
 
 const commonColors = {
-  text: '#212121',
+  text: '#323232',
   disabled: '#757575',
   placeholder: '#BDBDBD',
   background: 'white',
@@ -116,7 +116,7 @@ export const colors: { [ThemeColorName in ThemeColorType]: MyTheme['colors'] } =
   }
 }
 
-export const initSetThemeStateMethod = (method: typeof setThemeState) => setThemeState = method
+export const initSetThemeMethod = (method: typeof setThemeState) => setThemeState = method
 
 export function setThemeColor(themeColor: ThemeColorType) {
   setThemeState({

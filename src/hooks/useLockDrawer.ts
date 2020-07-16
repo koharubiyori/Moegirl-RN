@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
+import { drawerController } from '~/views/drawer'
 
 export default function useLockDrawer() {
   useEffect(() => {
-    $drawer.setLock(true)
-    return () => $drawer.setLock(false)
+    drawerController.setLock()
+    return () => drawerController.setLock(false)
   }, [])
 }

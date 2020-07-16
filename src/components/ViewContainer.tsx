@@ -1,20 +1,20 @@
-import React, { PropsWithChildren, FC } from 'react'
-import { StyleProp, StyleSheet, View, ViewProps, ViewStyle } from 'react-native'
+import React, { FC, PropsWithChildren } from 'react'
+import { StyleSheet, View, ViewProps } from 'react-native'
 import { useTheme } from 'react-native-paper'
-import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
+import store from '~/mobx'
 
 export interface Props extends ViewProps {
   grayBgColor?: boolean
 }
 
-type FinalProps = Props & ConfigConnectedProps
-
-function ViewContainer(props: PropsWithChildren<FinalProps>) {
+function ViewContainer(props: PropsWithChildren<Props>) {
   const theme = useTheme()
   
-  const backgroundColor = props.state.config.theme !== 'night' ? 
-    (props.grayBgColor ? '#eee' : theme.colors.background) : 
-    theme.colors.background 
+  // 在使用灰背景时，如果是夜间模式则还是使用夜间的背景颜色
+  const backgroundColor = store.settings.theme !== 'night' && props.grayBgColor ? 
+    '#eee' :
+    theme.colors.background
+    
   return (
     <View {...props} 
       style={{ 
@@ -28,7 +28,7 @@ function ViewContainer(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default configHOC(ViewContainer) as FC<Props>
+export default ViewContainer
 
 const styles = StyleSheet.create({
   

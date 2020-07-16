@@ -1,102 +1,100 @@
-import React from 'react'
-import { createAppContainer } from 'react-navigation'
-import { createStackNavigator, TransitionPresets } from 'react-navigation-stack'
-import { createBottomTabNavigator } from 'react-navigation-tabs'
-import about, { RouteParams as AboutRP } from '~/views/About'
-import article, { RouteParams as ArticleRP } from '~/views/article'
-// 本来想在模态框中实现，因发现webView的全屏模式和模态框一起使用时发生了bug(全屏后白屏)，故这里用一个单独的路由来显示
-import biliPlayer, { RouteParams as BiliPlayerRP } from '~/views/biliPlayer'
-import category, { RouteParams as CategoryRP } from '~/views/category'
-import comment, { RouteParams as CommentRP } from '~/views/comment'
-import reply, { RouteParams as ReplyRP } from '~/views/comment/Reply'
-import edit, { RouteParams as EditRP } from '~/views/edit'
-import imageViewer, { RouteParams as ImageViewerRP } from '~/views/imageViewer'
-import login, { RouteParams as LoginRP } from '~/views/login'
-import BottomNavigation from '~/views/main/BottomNavigation'
-import finds from '~/views/main/finds'
-import history from '~/views/main/history'
-import home from '~/views/main/Home'
-import notifications, { RouteParams as NotificationsRP } from '~/views/notification'
-import search, { RouteParams as SearchRP } from '~/views/search'
-import searchResult, { RouteParams as SearchResultRP } from '~/views/searchResult'
-import settings, { RouteParams as SettingsRP } from '~/views/settings'
-import watchList, { RouteParams as WatchListRP } from '~/views/watchList'
-import transitionedScreens from './utils/transitionedScreens'
+import { NavigationContainer, NavigationContainerProps } from '@react-navigation/native'
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack'
+import React, { FC, MutableRefObject } from 'react'
+import AboutPage, { RouteParams as AboutRP } from '~/views/about'
+import ArticlePage, { RouteParams as ArticleRP } from '~/views/article'
+import CategoryPage, { RouteParams as CategoryRP } from '~/views/category'
+import CommentPage, { RouteParams as CommentRP } from '~/views/comment'
+import CommentReplyPage, { RouteParams as CommentReplyRP } from '~/views/comment/views/reply'
+import EditPage, { RouteParams as EditRP } from '~/views/edit'
+import HomePage, { RouteParams as HomeRP } from '~/views/home'
+import ImageViewerPage, { RouteParams as ImageViewerRP } from '~/views/imageViewer'
+import LoginPage, { RouteParams as LoginRP } from '~/views/login'
+import NotificationPage, { RouteParams as NotificationRP } from '~/views/notification'
+import SearchPage, { RouteParams as SearchRP } from '~/views/search'
+import SearchResultPage, { RouteParams as SearchResultRP } from '~/views/search/views/result'
+import SettingsPage, { RouteParams as SettingsRP } from '~/views/settings'
+import WatchListPage, { RouteParams as WatchListRP } from '~/views/watchList'
+import customRouteTransition from './utils/customTransition'
+import HistoryPage, { RouteParams as HistoryRP } from '~/views/history'
 
-const BottomTabNavigator = createBottomTabNavigator(
-  { home, finds, history },
-  
-  { 
-    tabBarComponent: props => <BottomNavigation {...props} />,
-    backBehavior: 'none'
-  }
-)
+export type RouteOptions = Parameters<(typeof Stack.Screen)>[0]['options']
+const route = (component: FC<any>, options?: RouteOptions) => ({ component, options })
 
-export type RoutesParams = {
+const routeMaps = {
+  home: route(HomePage),
+  article: route(ArticlePage),
+  login: route(LoginPage),
+  settings: route(SettingsPage),
+  about: route(AboutPage),
+  search: route(SearchPage, TransitionPresets.FadeFromBottomAndroid),
+  searchResult: route(SearchResultPage, TransitionPresets.FadeFromBottomAndroid),
+  comment: route(CommentPage),
+  commentReply: route(CommentReplyPage),
+  category: route(CategoryPage, {
+    transitionSpec: {
+      open: customRouteTransition.noTransition.transitionSpec!.open,
+      close: TransitionPresets.SlideFromRightIOS.transitionSpec.close
+    }
+  }),
+  imageViewer: route(ImageViewerPage, customRouteTransition.fade),
+  notification: route(NotificationPage),
+  edit: route(EditPage, TransitionPresets.FadeFromBottomAndroid),
+  watchList: route(WatchListPage),
+  history: route(HistoryPage)
+}
+
+// 对RouteParamMaps的字段做约束，必须声明T联合类型的所有字段
+type UnionStringTypeMaps<
+  T extends string, 
+  T2 extends { [Key in T]: { [key: string]: any } }
+> = Partial<T2>
+
+export type RouteName = keyof typeof routeMaps
+export type RouteParamMaps = UnionStringTypeMaps<RouteName, {
+  home: HomeRP
   article: ArticleRP
+  login: LoginRP
+  settings: SettingsRP
+  about: AboutRP
   search: SearchRP
   searchResult: SearchResultRP
-  login: LoginRP
-  about: AboutRP
-  imageViewer: ImageViewerRP
-  settings: SettingsRP
-  edit: EditRP
   comment: CommentRP
-  reply: ReplyRP
-  notifications: NotificationsRP
-  biliPlayer: BiliPlayerRP
+  commentReply: CommentReplyRP
   category: CategoryRP
+  imageViewer: ImageViewerRP
+  notification: NotificationRP
+  edit: EditRP
   watchList: WatchListRP
+  history: HistoryRP
+}>
+
+const Stack = createStackNavigator()
+
+export interface Props {
+  onStateChange?: NavigationContainerProps['onStateChange']
+  getRef: MutableRefObject<any>
 }
 
-const routes: { [RouteName in (keyof RoutesParams) | 'BottomTabNavigator']: any } = { 
-  BottomTabNavigator,
-  article,
-  search,
-  searchResult,
-  login,
-  about,
-
-  comment,
-  reply,
-  settings,
-  edit,
-  notifications,
-  watchList,
-
-  ...transitionedScreens('fade', {
-    imageViewer,
-    biliPlayer,
-  }),
-
-  ...transitionedScreens('onlyCloseTransition', {
-    category,
-  })
+function StackRoutes(props: Props) {
+  return (
+    <NavigationContainer ref={props.getRef} onStateChange={props.onStateChange}>
+      <Stack.Navigator 
+        initialRouteName="drawer" 
+        headerMode="none"
+        screenOptions={TransitionPresets.SlideFromRightIOS}
+      >
+        {Object.keys(routeMaps).map(routeName =>
+          <Stack.Screen 
+            key={routeName} 
+            name={routeName} 
+            component={routeMaps[routeName as any as RouteName].component} 
+            options={routeMaps[routeName as any as RouteName].options}
+          />  
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
 }
 
-const StackNavigator = createStackNavigator(routes, { 
-  initialRouteName: 'BottomTabNavigator',
-  headerMode: 'none',
-  
-  defaultNavigationOptions(props) {
-    const { ModalSlideFromBottomIOS } = TransitionPresets
-    
-    return {
-      ...ModalSlideFromBottomIOS,
-      transitionSpec: {
-        ...ModalSlideFromBottomIOS.transitionSpec,
-        close: {
-          ...ModalSlideFromBottomIOS.transitionSpec.close,
-          config: {
-            ...ModalSlideFromBottomIOS.transitionSpec.close.config,
-            mass: 1.5
-          }
-        }
-      }
-    }
-  }
-})
-
-const AppNavigator = createAppContainer(StackNavigator)
-
-export default AppNavigator
+export default StackRoutes

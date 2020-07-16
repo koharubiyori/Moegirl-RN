@@ -2,14 +2,14 @@
 
 export default function() {
   if (
-    window._articleTitle !== 'Mainpage' || 
-    window._appConfig.source !== 'moegirl' ||
-    window._appConfig.theme === 'night'
+    window._articleTitle.text !== 'Mainpage' || 
+    window._settings.source !== 'moegirl' ||
+    window._settings.theme === 'night'
   ) { return }
 
   $('head').append(`<style>
     .mainpage-title {
-      background: ${window._themeColors.primary} !important;
+      background: ${window._colors.primary} !important;
     }
   </style>`)
 }

@@ -1,7 +1,7 @@
-import React, { PropsWithChildren, FC } from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { useTheme, Text } from 'react-native-paper'
-import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
+import { Text, useTheme } from 'react-native-paper'
+import store from '~/mobx'
 
 export interface Props {
   title: string
@@ -9,14 +9,12 @@ export interface Props {
   onPress(): void
 }
 
-type FinalProps = Props & ConfigConnectedProps
-
-function CategoryItem(props: PropsWithChildren<FinalProps>) {
+function CategoryItem(props: PropsWithChildren<Props>) {
   const theme = useTheme()
   const boxWidth = Dimensions.get('window').width / 2 - 10 
   const imgSize = boxWidth - 10
 
-  const isNightTheme = props.state.config.theme === 'night'
+  const isNightTheme = store.settings.theme === 'night'
   return (
     <TouchableOpacity style={{ ...styles.wrapper, width: boxWidth }} onPress={props.onPress}>
       <View style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
@@ -41,7 +39,7 @@ function CategoryItem(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default configHOC(CategoryItem) as FC<Props>
+export default CategoryItem
 
 const styles = StyleSheet.create({
   container: {

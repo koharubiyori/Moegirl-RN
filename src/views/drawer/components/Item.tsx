@@ -2,8 +2,9 @@ import React, { PropsWithChildren } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import Material from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
-import Button from '~/components/Button'
+import MyButton from '~/components/MyButton'
 import { useTheme, Text } from 'react-native-paper'
+import { drawerController } from '..'
 
 const iconSize = 30
 
@@ -14,27 +15,19 @@ export interface Props {
   iconGroup?: keyof typeof Icon
   title: string
   isOuterLink?: boolean
-  rawPress?: boolean
   onPress(): void
 }
 
-(DrawerItem as DefaultProps<Props>).defaultProps = {
+;(DrawerItem as DefaultProps<Props>).defaultProps = {
   iconGroup: 'Material',
   isOuterLink: false
 }
 
-type FinalProps = Props
-
-function DrawerItem(props: PropsWithChildren<FinalProps>) {
+function DrawerItem(props: PropsWithChildren<Props>) {
   const theme = useTheme()
-  
-  function onPress () {
-    $drawer.close()
-    setTimeout(props.onPress)
-  }
 
   return (
-    <Button onPress={props.rawPress ? props.onPress : onPress} contentContainerStyle={null} rippleColor={theme.colors.accent} noLimit={false}>
+    <MyButton onPress={props.onPress} contentContainerStyle={null} rippleColor={theme.colors.accent}>
       <View style={{ height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
         <View style={{ flex: 1, flexDirection: 'row' }}>
           {typeof props.icon === 'string'
@@ -47,7 +40,7 @@ function DrawerItem(props: PropsWithChildren<FinalProps>) {
 
         {props.isOuterLink ? <Icon.Material name="launch" size={iconSize} color={theme.colors.primary} /> : null}
       </View>
-    </Button>
+    </MyButton>
   )
 }
 

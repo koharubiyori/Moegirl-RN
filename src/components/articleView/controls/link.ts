@@ -1,4 +1,6 @@
-export default function() {
+import createControls from '../utils/createControl'
+
+export default createControls('链接处理', () => {
   let viewBox = $('#articleContentContainer')
 
   viewBox.find('.mw-editsection').each(function (e) {
@@ -25,15 +27,15 @@ export default function() {
         section = parseInt(this.href.match(/&section=(.+?)(&|$)/)[1])
       }
 
-      return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressEdit', data: { page, section } }))
+      return window._postRnMessage('onPressEdit', { page, section })
     }
 
     // 一般链接导向
     let link = ($(e.target).attr('href') || $(e.target).parent('a').attr('href') || $(this).attr('href'))!
-    let type = 'inner'
+    let type: 'inner' | 'outer' | 'notExists' = 'inner'
     link = decodeURIComponent(link)
     if (/^\/([Ff]ile|文件):/.test(link)) {
-      return window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressImage', data: { name: link.replace(/^\/([Ff]ile|文件):/, '') } }))
+      return window._postRnMessage('onPressImage', { name: link.replace(/^\/([Ff]ile|文件):/, '') })
     } else if (/^#cite_note-/.test(link)) {
       document.querySelector(link)!.scrollIntoView()
       window.scrollTo(0, window.scrollY - 60)
@@ -53,22 +55,24 @@ export default function() {
 
     if (/^([Ss]pecial|特殊):/.test(link)) { return }
     
-    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onPressLink', data: { link, type } }))
+    return window._postRnMessage('onPressLink', { link, type })
   })
 
   $('head').append(`<style>
     @keyframes flash {
       from {
-        background-color: ${window._themeColors.accent};
+        background-color: ${window._colors.accent};
       }
 
       to {
         background-color: transparent;
       }
     }
-  
+
     .activeNote {
       animation: flash 2s;
     }
   </style>`)
-}
+}, {
+
+})

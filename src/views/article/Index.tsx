@@ -1,284 +1,224 @@
-import Color from 'color'
-import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { NativeModules, StyleSheet } from 'react-native'
-import { useTheme } from 'react-native-paper'
-import { ArticleApiData } from '~/api/article.d'
+import React, { PropsWithChildren, useRef, useState, useEffect, useCallback } from 'react'
+import { StatusBar, StyleSheet } from 'react-native'
+import { ArticleApiData, ArticleSectionData } from '~/api/article/types'
 import ArticleView, { ArticleViewRef } from '~/components/articleView'
-import StatusBar from '~/components/StatusBar'
-import store from '~/redux'
-import { CommentConnectedProps, commentHOC } from '~/redux/comment/HOC'
-import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
-import saveHistory from '~/utils/saveHistory'
-import storage from '~/utils/storage'
+import ViewContainer from '~/components/ViewContainer'
+import useMyRoute from '~/hooks/useTypedRoute'
+import ArticleContentsTriggerView, { ArticleContentTriggerViewRef } from './components/contentsTriggerView'
+import ArticleHeader, { ArticleHeaderRef } from './components/Header'
+import dialog from '~/utils/dialog'
+import MyStatusBar from '~/components/MyStatusBar'
+import CommentButton, { ArticleCommentButtonRef } from './components/CommentButton'
+import store from '~/mobx'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
 import toast from '~/utils/toast'
-import CatalogTriggerView, { CatalogTriggerViewRef } from './components/catalogTriggerView'
-import CommentButton, { CommentButtonRef } from './components/CommentButton'
-import Header, { ArticleHeaderRef } from './components/Header'
-import articleCacheController from '~/utils/articleCacheController'
+import watchListApi from '~/api/watchList'
+import saveHistory from '~/utils/saveHistory'
+import { useFocusEffect } from '@react-navigation/native'
+import { useObserver } from 'mobx-react-lite'
 
 export interface Props {
-
+  
 }
 
 export interface RouteParams {
-  link: string
+  pageName: string
   anchor?: string
-  reloadMethod? (): void // 这个参数是用来设置后供其他位置使用的，相当于暴露出去一个方法
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & ConfigConnectedProps & CommentConnectedProps
+function ArticlePage(props: PropsWithChildren<Props>) {
+  const navigation = useTypedNavigation()
+  const route = useMyRoute<RouteParams>()
+  const [trueTitle, setTrueTitle] = useState(route.params.pageName)
+  const [pageId, setPageId] = useState(0)
+  const [contentsData, setContentsData] = useState<ArticleSectionData[]>([])
+  const [isWatched, setIsWatched] = useState(false)
 
-function Article(props: PropsWithChildren<FinalProps>) {
-  const theme = useTheme()
-  const [loadedPageInfo, setLoadedPageInfo] = useState<{
-    pageName: string
-    catalogItems: ArticleApiData.GetContent['parse']['sections']
-    id: number
-  }>({
-    pageName: props.navigation.getParam('link'),
-    catalogItems: [],
-    id: 0
-  })
-  const [visibleHeader, setVisibleHeader] = useState(true)
-  const [disabledMoreBtn, setDisabledMoreBtn] = useState(true)
-  const [themeColor, setThemeColor] = useState({ backgroundColor: theme.colors.primary, blackText: false })
-  const lastProps = useRef(props)
+  const statusBarHeight = StatusBar.currentHeight!
+
   const refs = {
     header: useRef<ArticleHeaderRef>(),
+    contents: useRef<ArticleContentTriggerViewRef>(),
     articleView: useRef<ArticleViewRef>(),
-    commentButton: useRef<CommentButtonRef>(),
-    catalog: useRef<CatalogTriggerViewRef>()
+    commentButton: useRef<ArticleCommentButtonRef>()
   }
-  const link = props.navigation.getParam('link')
-  const anchor = props.navigation.getParam('anchor')
 
-  // 注入webview的js
-  const articleViewInjectJs = (function() {
-    let codeStr = function() {
-      // 监听滚动条变化用于响应头栏显隐
-      let lastPosition = 0
-      let activeDistance = 0 // 用于判断上划一定距离后再显示头栏和评论按钮
-      let postMessageFlag = false // 设置一个标记，防止和webview通信过频降低性能
+  // 进入页面时显示header
+  useFocusEffect(useCallback(() => {
+    if (!refs.header.current) { return }
+    refs.header.current.show()
+  }, []))
   
-      $(window).scroll(function() {
-        function changeHeaderVisible(status: boolean) {
-          if (postMessageFlag) { return }
-          postMessageFlag = true
-          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'changeHeaderVisible', data: status }))
-          setTimeout(() => postMessageFlag = false, 50)
-        }
-  
-        if (window.scrollY < 100) {
-          activeDistance = 0
-          changeHeaderVisible(true)
-          return true
-        }
-  
-        if (window.scrollY < lastPosition) {
-          activeDistance += 2
-          if (activeDistance >= 100) {
-            activeDistance = 0
-            changeHeaderVisible(true)
-          }
-        } else {
-          activeDistance = 0
-          changeHeaderVisible(false)
-        }
-        
-        lastPosition = window.scrollY
+  // 进出页面时，启用&禁用音乐播放器
+  useFocusEffect(useCallback(() => {
+    const disableAllIframeScriptStr = (() => {
+      const iframeList = document.querySelectorAll('iframe')
+      iframeList.forEach(item => {
+        // 通过清空src的方式停止播放
+        const src = item.src
+        item.src = ''
+        item.dataset.src = src
       })
+    }).toString()
 
-      // 注入一个主题色获取器
-      if (!window._appConfig.changeThemeColorByArticleMainColor || window._appConfig.theme === 'night') { return }
-      const firstInfobox = document.querySelector('table.infobox[align="right"] > tbody > tr > td') ||
-        document.querySelector('table.navbox > tbody > tr > td > table > tbody > tr > th')
-      if (firstInfobox) {
-        const { backgroundColor, color } = window.getComputedStyle(firstInfobox)
-        // 获取到默认颜色则不进行变色
-        if (['rgb(38, 202, 155)', 'rgb(165, 228, 165)', 'rgb(255, 255, 255)'].includes(backgroundColor)) { return }
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'getArticleMainColor', data: { backgroundColor, color } }))
-      }
-    }.toString()
+    const enableAllIframeScriptStr = (() => {
+      const iframeList = document.querySelectorAll('iframe')
+      iframeList.forEach(item => {
+        item.src = item.dataset.src!
+      })
+    }).toString()
 
-    return `(${codeStr})();`
-  }())
+    const pauseAllAudioScriptStr = (() => {
+      const audioList = document.querySelectorAll('audio')
+      audioList.forEach(item => item.pause())
+    }).toString() 
 
+    refs.articleView.current && refs.articleView.current!.injectScript(`(${enableAllIframeScriptStr})()`)
+    
+    return () => {
+      refs.articleView.current!.injectScript(`
+        (${pauseAllAudioScriptStr})();
+        (${disableAllIframeScriptStr})();
+      `)
+    }
+  }, []))
+
+  // 获取当前页监视状态
   useEffect(() => {
-    const listener = props.navigation.addListener('willFocus', () => setVisibleHeader(true))
-    return () => listener.remove()
+    watchListApi.isWatched(route.params.pageName).then(setIsWatched)
   }, [])
 
+  // 向外暴露reload方法
   useEffect(() => {
-    props.navigation.setParams({ reloadMethod: () => refs.articleView.current!.loadContent(true) })
+    navigation.setParams({ reload: refs.articleView.current!.reload })
   }, [])
-  
-  useEffect(() => {
-    // 如果退出沉浸模式，则立即显示头部
-    if (lastProps.current.state.config.immersionMode && !props.state.config.immersionMode) {
-      changeHeaderVisible(true)
+
+  function handlerFor_articleData_wasLoaded(articleData: ArticleApiData.GetContent) {
+    setPageId(articleData.parse.pageid)
+    setTrueTitle(articleData.parse.title)
+    navigation.setParams({ pageName: articleData.parse.title })
+    setContentsData(articleData.parse.sections)
+    saveHistory(articleData.parse.title)
+
+    if (route.params.pageName !== articleData.parse.title) {
+      dialog.snackBar.show({ title: `重定向自${route.params.pageName}` })
+    }
+
+    // 如果有anchor，则跳转至锚点
+    if (route.params.anchor) {
+      jumpToAnchor(route.params.anchor)
+      dialog.snackBar.show({ title: `该链接指向了“${route.params.anchor}”章节` })
+    }
+  }
+
+  // 注入webView的window.onscroll事件handler，并以滚动响应header顶部偏移
+  const lastTopOffset = useRef(0)
+  function changeHeaderTopOffset(topOffset: number) {
+    
+    if (topOffset < 200) {
+      refs.commentButton.current && refs.commentButton.current!.show()
     } else {
-      changeHeaderVisible(visibleHeader)
+      const diff = topOffset - lastTopOffset.current
+      if (refs.commentButton.current) {
+        diff < 0 ? refs.commentButton.current!.show() : refs.commentButton.current!.hide()
+      }
+      if (refs.header.current) {
+        diff < 0 ? refs.header.current!.show() : refs.header.current!.hide()
+      }
     }
 
-    // 如果主题发生变化，则更新主题
-    if (lastProps.current.state.config.theme !== props.state.config.theme) {
-      setVisibleHeader(true)
-      // 注意这里和/src/theme.ts导出的方法重名了，这个setThemeColor是用于条目页动态主题的
-      setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
-    }
+    lastTopOffset.current = topOffset
+  }
+  
+  // 注入webview的window.onscroll事件字符串
+  const injectedWindowScrollEventHandlerStr = `(${(() => {
+    window.onscroll = () => window._postRnMessage('onWindowScroll' as any, window.scrollY) 
+  }).toString()})()`
 
-    // 如果关闭了动态主题，则更新为当前已选主题
-    // if (lastProps.current.state.config.changeThemeColorByArticleMainColor && !props.state.config.changeThemeColorByArticleMainColor) {
-    //   setThemeColor({ backgroundColor: theme.colors.primary, blackText: false })
-    // }
-
-    lastProps.current = props
-  })
-
-  // 以一个值的变化映射头栏和评论按钮的显隐变化
-  function changeHeaderVisible(isVisible: boolean) {
-    if (refs.header.current) {
-      let { show, hide } = refs.header.current
-      isVisible ? show() : hide()
-    }
-
-    if (refs.commentButton.current) {
-      let { show, hide } = refs.commentButton.current
-      isVisible ? show() : hide()
-    }
+  function toggleWatchStatus() {
+    dialog.loading.show()
+    watchListApi.setWatchStatus(trueTitle, !isWatched)
+      .finally(dialog.loading.hide)
+      .then(() => {
+        toast(isWatched ? '已移出监视列表' : '已加入监视列表')
+        setIsWatched(prevVal => !prevVal)
+      })
+      .catch(() => toast('网络错误'))
   }
 
-  async function contentLoaded(data: ArticleApiData.GetContent) {
-    setDisabledMoreBtn(false)
-    let title = loadedPageInfo.pageName.replace(/_/g, ' ')
-    let trueTitle = data.parse.title
-
-    // 写入缓存
-    articleCacheController.addCache(trueTitle, data)
-
-    if (title !== trueTitle) {
-      $dialog.snackBar.show(`“${loadedPageInfo.pageName}”被重定向至此页`)
-
-      // 记录至文章重定向表
-      storage.merge('articleRedirectMap', { [title]: trueTitle })
-    }
-
-    saveHistory(trueTitle)
-
-    setLoadedPageInfo({
-      pageName: trueTitle,
-      catalogItems: data.parse.sections,
-      id: data.parse.pageid
-    })
-
-    if (anchor) {
-      articleViewIntoAnchor(anchor)
-      $dialog.snackBar.show(`该链接指向了“${decodeURIComponent(anchor.replace(/\./g, '%'))}”章节`)
-    }
-  }
-
-  function articleViewIntoAnchor(anchor: string) {
-    setVisibleHeader(false)
+  function jumpToAnchor(anchor: string) {
     refs.articleView.current!.injectScript(`
       document.getElementById('${anchor}').scrollIntoView()
-      window.scrollTo(0, window.scrollY - 56)
+      window.scrollTo(0, window.scrollY - ${56 + statusBarHeight})
     `)
   }
 
-  function toComment() {
-    if ([0, 1, 2].includes(props.$comment.getCommentDataByPageId(loadedPageInfo.id).status)) { return toast.show('加载评论中，请稍候') }
-    props.navigation.push('comment', { title: loadedPageInfo.pageName, pageId: loadedPageInfo.id })
-  }
-
   function missingGoBack(link: string) {
-    const userData = store.getState().user
+    const userData = store.user
     if (userData.name === link.split('User:')[1]) {
-      props.navigation.replace('edit', { title: link, isCreate: true })
-      toast.show('你的用户页不存在，请点击空白区域编辑并创建')
+      navigation.replace('edit', { title: link, isCreate: true })
+      toast('你的用户页不存在，请点击空白区域编辑并创建')
     } else {
-      $dialog.alert.show({
-        content: '该条目或用户页还未创建',
-        onPressCheck: () => props.navigation.goBack(),
-        onClose: () => props.navigation.goBack()
-      })
+      dialog.alert.show({ content: '该条目或用户页还未创建' }).finally(navigation.goBack)
     }
   }
   
-  // interface ArticleMainColor {
-  //   backgroundColor: string
-  //   color: string
-  // }
-  // function setThemeByArticleMainColor(mainColor: ArticleMainColor) {
-  //   const blackText = Color(mainColor.backgroundColor).isLight()
-  //   setThemeColor({ backgroundColor: mainColor.backgroundColor, blackText })
-  // }
+  const activityIndicatorTopOffset = (StatusBar.currentHeight! + 56) / 2
+  const isLoaded = pageId !== 0
+  const isVisibleCommentBtn = 
+    !(/^([Tt]alk|讨论|[Tt]emplate( talk|)|模板(讨论|)|[Mm]odule( talk|)|模块(讨论|)|[Cc]ategory( talk|)|分类(讨论|)|萌娘百科 talk):/.test(trueTitle || route.params.pageName))
+  return useObserver(() =>
+    <ViewContainer style={{ position: 'relative' }}>
+      <MyStatusBar />
+      <ArticleContentsTriggerView
+        getRef={refs.contents}
+        items={contentsData}
+        onPressTitle={jumpToAnchor}
+      >
+        <ArticleHeader
+          getRef={refs.header}
+          title={trueTitle}
+          isWatchedPage={isWatched}
+          // 页面没加载完禁止点击搜索和action菜单
+          rightBtnsDisabled={!isLoaded}
+          onPressOpenContents={() => refs.contents.current!.open()}
+          onPressRefreshBtn={() => refs.articleView.current!.reload(true)}
+          onPressToggleWatchList={toggleWatchStatus}
+        />
 
-  function isVisibleComment() {
-    return !(/^([Tt]alk|讨论|[Tt]emplate( talk|)|模板(讨论|)|[Mm]odule( talk|)|模块(讨论|)|[Cc]ategory( talk|)|分类(讨论|)):/.test(loadedPageInfo.pageName))
-  }
+        <ArticleView
+          getRef={refs.articleView}
+          style={{ flex: 1 }}
+          centerOffsetStyle={{ position: 'relative', top: activityIndicatorTopOffset }}
+          pageName={route.params.pageName}
+          styles={[
+            'article', 
+            ...(store.settings.theme === 'night' ? ['nightMode'] as any : []),
+            ...(store.settings.source === 'hmoe' ? ['hmoeArticle'] as any : [])
+          ]}
+          injectCss={`body { padding-top: ${56 + statusBarHeight}px; }`}
+          injectJs={injectedWindowScrollEventHandlerStr}
+          onLoaded={handlerFor_articleData_wasLoaded}
+          onMissing={missingGoBack}
+          onMessages={{
+            onWindowScroll: changeHeaderTopOffset
+          }}
+        />
 
-  const { config } = props.state
-  const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
-  const themeColorProps = {
-    backgroundColor: themeColor.backgroundColor,
-    textColor: themeColor.blackText ? 'black' : 'white'
-  }
-
-  return (
-    <CatalogTriggerView 
-      {...(props.state.config.theme === 'night' ? { backgroundColor: themeColor.backgroundColor, textColor: theme.colors.text } : themeColorProps)}
-      immersionMode={config.immersionMode}
-      items={loadedPageInfo.catalogItems} 
-      onPressTitle={articleViewIntoAnchor} 
-      getRef={refs.catalog}
-    >
-      <StatusBar hidden={config.immersionMode} color="transparent" blackText={visibleHeader ? themeColor.blackText : true} />
-      <Header 
-        style={{ 
-          ...styles.header, 
-          top: config.immersionMode ? -statusBarHeight : 0
-        }} 
-        {...(props.state.config.theme === 'night' ? { backgroundColor: themeColor.backgroundColor, textColor: theme.colors.text } : themeColorProps)}
-        navigation={props.navigation} 
-        title={loadedPageInfo.pageName} 
-        disabledMoreBtn={disabledMoreBtn}
-        onPressRefreshBtn={() => refs.articleView.current!.loadContent(true)}
-        onPressOpenCatalog={() => refs.catalog.current!.open()}
-        getRef={refs.header} 
-      />
-
-      <ArticleView autoPaddingTopForHeader
-        style={{ flex: 1, backgroundColor: theme.colors.background }} 
-        navigation={props.navigation}
-        link={link} 
-        injectStyle={['article'].concat(props.state.config.theme === 'night' ? ['nightMode'] : []) as any}
-        injectJs={articleViewInjectJs}
-        onMessages={{ 
-          changeHeaderVisible: setVisibleHeader, 
-          // getArticleMainColor: setThemeByArticleMainColor 
-        }}
-        onLoaded={contentLoaded}
-        onMissing={missingGoBack}
-        getRef={refs.articleView}
-      />       
-
-      {loadedPageInfo.id && isVisibleComment() ? <CommentButton 
-        id={loadedPageInfo.id}
-        {...(props.state.config.theme === 'night' ? { backgroundColor: theme.colors.primary, textColor: theme.colors.text } : themeColorProps)}
-        onPress={toComment}
-        getRef={refs.commentButton}
-      /> : null } 
-    </CatalogTriggerView>
+      {(!!pageId && isVisibleCommentBtn) &&
+        <CommentButton 
+          getRef={refs.commentButton} 
+          pageId={pageId} 
+          pageName={trueTitle}
+        />
+      }
+      </ArticleContentsTriggerView>
+    </ViewContainer>
   )
 }
 
-export default configHOC(commentHOC(Article))
+export default ArticlePage
 
 const styles = StyleSheet.create({
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-  }
+  
 })

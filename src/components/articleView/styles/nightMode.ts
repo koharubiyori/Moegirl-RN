@@ -3,12 +3,12 @@ import preset from 'jss-preset-default'
 import { colors } from '~/theme'
 import Color from 'color'
 
-jss.setup(preset())
+jss.setup(preset() as any)
 
 const { night } = colors
 const linkColor = Color(night.accent).darken(0.1).toString()
 
-export default jss.createStyleSheet({
+const nightModeStyleSheet = jss.createStyleSheet({
   '@global': {
     body: {
       backgroundColor: night.background,
@@ -26,6 +26,11 @@ export default jss.createStyleSheet({
       '&.new': {
         color: '#D96768',
       }
+    },
+
+    '.decoration-underlink a': {
+      color: `${linkColor} !important`,
+      borderBottomColor: `${linkColor} !important`
     },
 
     '.mainpage-title': {
@@ -82,7 +87,8 @@ export default jss.createStyleSheet({
         * > tr > td
       `]: {
         border: '1px #a2a9b1 solid',
-        padding: '0.2em 0.4em'
+        padding: '0.2em 0.4em',
+        backgroundColor: '#3A3A3B'
       },
     },
 
@@ -144,3 +150,5 @@ export default jss.createStyleSheet({
     }
   }
 }).toString()
+
+export default nightModeStyleSheet

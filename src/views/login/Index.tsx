@@ -1,149 +1,280 @@
-import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { BackHandler, Image, Linking, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { Text, TextInput, useTheme, DefaultTheme } from 'react-native-paper'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import Button from '~/components/Button'
-import StatusBar from '~/components/StatusBar'
-import ViewContainer from '~/components/ViewContainer'
-import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
-import toast from '~/utils/toast'
-import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 import Color from 'color'
+import React, { PropsWithChildren, useRef, useState } from 'react'
+import { Animated, Dimensions, Image, KeyboardAvoidingView, Linking, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { TextField, TextFieldProps, OutlinedTextField } from 'react-native-material-textfield'
+import { Text } from 'react-native-paper'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MyButton from '~/components/MyButton'
+import MyStatusBar from '~/components/MyStatusBar'
+import ViewContainer from '~/components/ViewContainer'
+import useLockDrawer from '~/hooks/useLockDrawer'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import store from '~/mobx'
+import { colors } from '~/theme'
+import dialog from '~/utils/dialog'
+import toast from '~/utils/toast'
 
 export interface Props {
-
+  
 }
 
 export interface RouteParams {
-
+  
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & UserConnectedProps & ConfigConnectedProps
+function LoginPage(props: PropsWithChildren<Props>) {
+  const navigation = useTypedNavigation()
+  const [userName, setUserName] = useState({
+    touched: false,
+    value: ''
+  })
+  const [password, setPassword] = useState({
+    touched: false,
+    value: '',
+  })
+  const [showingPsd, setShowingPsd] = useState(false)
+  const [kotoriTransition] = useState(new Animated.Value(0))
+  
+  useLockDrawer()
 
-function Login(props: PropsWithChildren<FinalProps>) {
-  const theme = useTheme()
-  const [userName, setUserName] = useState('')
-  const [password, setPassword] = useState('')
-
-  useEffect(() => {
-    const listener = BackHandler.addEventListener('hardwareBackPress', () => global.$isVisibleLoading)
-    return () => listener.remove()
-  }, [])
-
-  function submit() {
-    if (!userName) return toast.show('用户名不能为空')
-    if (!password) return toast.show('密码不能为空')
-
-    toast.showLoading('登录中')
-    props.$user.login(userName, password)
-      .finally(toast.hide)
-      .then(() => {
-        setTimeout(() => toast.show('登录成功'))
-        props.navigation.goBack()
+  // 小鸟抢镜脸动画
+  const focusedPsdInput = useRef(false)
+  function showKotori() {
+    if (focusedPsdInput.current) { return }
+    focusedPsdInput.current = true
+    const animation = (toValue: number, duration: number) => 
+      Animated.timing(kotoriTransition, {
+        toValue,
+        duration,
+        useNativeDriver: true
       })
-      .catch(status => toast.show(status === 'FAIL' ? '用户名或密码错误' : '网络错误，请重试'))
+
+    Animated.sequence([
+      Animated.delay(1000),
+      animation(0.4, 1000),
+      animation(0, 300),
+      animation(0.5, 1000),
+      Animated.delay(1000),
+      animation(0, 300),
+      Animated.delay(1000),
+      animation(1, 500)
+    ]).start()
   }
 
-  const isHmoeSource = props.state.config.source === 'hmoe'
+  function submit() {
+    // setUserName(prevVal => ({ ...prevVal, touched: true }))
+    // setPassword(prevVal => ({ ...prevVal, touched: true }))
+    // if (!userName.value || !password.value) { return }
+    if (userName.value === '') return toast('用户名不能为空', 'center')
+    if (password.value === '') return toast('密码不能为空', 'center')
+
+    dialog.loading.show({ title: '登录中...', allowUserClose: true })
+    store.user.login(userName.value, password.value)
+      .finally(dialog.loading.hide)
+      .then(() => {
+        setTimeout(() => toast.success('登录成功'))
+        navigation.goBack()
+      })
+      .catch(message => toast(message || '网络错误，请重试', 'center'))
+  }
+
+  const isHmoeSource = store.settings.source === 'hmoe'
+  const primaryColor = Color(colors.green.primary).lighten(0.75).toString()
+  const inputStyles: TextFieldProps = {
+    labelTextStyle: {
+      paddingTop: 5, 
+      position: 'relative', 
+      top: -3
+    },
+
+    lineWidth: 1,
+    baseColor: '#bbb',
+    textColor: 'white',
+    tintColor: primaryColor,
+    errorColor: Color('red').lighten(0.75).toString()
+  }
+  const kotoriTranslate = [
+    kotoriTransition.interpolate({
+      inputRange: [0, 1],
+      outputRange: [70, 0]
+    }),
+    kotoriTransition.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-70, 0]
+    })
+  ]
   return (
-    <ViewContainer style={{ alignItems: 'center' }}>
-      <StatusBar translucent={false} blackText />
+    <ViewContainer style={styles.container}>      
+      <MyStatusBar hidden />
       <Image 
-        source={isHmoeSource ? require('~/assets/images/hmoe.jpg') : require('~/assets/images/moemoji.png')} 
-        style={{ width: isHmoeSource ? 80 : 70, height: 80, marginTop: 20, marginLeft: -10, borderRadius: 5 }} 
+        style={{
+          ...styles.bgImg, 
+          width: Dimensions.get('window').width,
+          height: Dimensions.get('window').height
+        }}
+        source={require('~/assets/images/moe_2014_haru.png')}
         resizeMode="cover" 
       />
-      <Text style={{ color: theme.colors.accent, fontSize: 17, marginTop: 20 }}>
-        {isHmoeSource ? 'H萌娘，万物皆可H' : '萌娘百科，万物皆可萌的百科全书！'}
-      </Text>
-
-      <InputItem icon="account-circle" placeholder="用户名" value={userName} onChangeText={setUserName} />
-      <InputItem secureTextEntry icon="lock" placeholder="密码" value={password} onChangeText={setPassword} />
-
-      <Button contentContainerStyle={{ ...styles.submitBtn, backgroundColor: theme.colors.primary }} noLimit={false} onPress={submit}>
-        <Text style={{ color: 'white', fontSize: 18 }}>登录</Text>
-      </Button>
-
-      <View style={{ flex: 1 }}></View>
-      <TouchableOpacity 
-        style={{ marginBottom: 10 }} 
-        onPress={() => Linking.openURL(isHmoeSource ? 'https://www.hmoegirl.com/index.php?title=特殊:创建账户&returnto=H萌娘%3A关于' : 'https://mzh.moegirl.org/index.php?title=Special:创建账户')}
+      <View style={styles.mask} />
+      <Animated.View
+        style={{
+          ...styles.kotoriWrapper,
+          transform: [
+            // translate: [x, y] 不支持动画
+            { translateX: kotoriTranslate[0] },
+            { translateY: kotoriTranslate[1] }
+          ]
+        }}
       >
-        <Text style={{ color: theme.colors.accent, textDecorationLine: 'underline', fontSize: 16 }}>还没有{isHmoeSource ? 'H萌娘' : '萌百'}帐号？点击前往官网进行注册</Text>
-      </TouchableOpacity>
+        <Image
+          style={styles.kotori}
+          source={require('~/assets/images/moe_kotori.png')}   
+        />
+      </Animated.View>
+    
+      <KeyboardAvoidingView behavior="position">
+        <View style={{
+          ...styles.body,
+          width: Dimensions.get('window').width * 0.85
+        }}>
+          <View style={styles.logoWrapper}>
+            <Image 
+              source={require('~/assets/images/moemoji.png')} 
+              style={styles.logo} 
+              resizeMode="cover" 
+            />
+
+            <Text 
+              style={{ 
+                color: primaryColor,
+                fontSize: 18,
+                marginTop: 20,
+                marginBottom: 20
+              }}
+            >萌娘百科，万物皆可萌的百科全书！</Text>
+          </View>
+
+          <View style={{ width: 290 }}>
+            <OutlinedTextField
+              {...inputStyles}
+              label="用户名"
+              value={userName.value}
+              // error={(userName.value === '' && userName.touched) ? '用户名不能为空' : ''}
+              onChangeText={value => setUserName({ touched: true, value })}
+              onBlur={() => setUserName(prevVal => ({ ...prevVal, touched: true }))}
+            />
+            <View>
+              <OutlinedTextField
+                {...inputStyles}
+                containerStyle={{ marginTop: 10 }}
+                inputContainerStyle={{ paddingRight: 40 }}
+                textContentType="password"
+                secureTextEntry={!showingPsd}
+                label="密码"
+                value={password.value}
+                // error={(password.value === '' && password.touched) ? '密码不能为空' : ''}
+                onChangeText={value => setPassword({ touched: true, value })}
+                onBlur={() => setPassword(prevVal => ({ ...prevVal, touched: true }))}
+                onFocus={showKotori}
+              />
+
+              <MaterialCommunityIcon 
+                style={{
+                  ...styles.showingPsdBtn,
+                  bottom: 23,
+                }}
+                name={showingPsd ? 'eye' : 'eye-off'} 
+                color={showingPsd ? primaryColor : '#ccc'}
+                size={26}  
+                onPress={() => setShowingPsd(prevVal => !prevVal)}
+              />
+            </View>
+          </View>
+
+          <MyButton contentContainerStyle={{ ...styles.submitBtn, backgroundColor: colors.green.primary }} onPress={submit}>
+            <Text style={{ color: 'white', fontSize: 18 }}>登录</Text>
+          </MyButton>
+
+          <TouchableOpacity 
+            style={{ marginTop: 25 }} 
+            onPress={() => Linking.openURL(isHmoeSource ? 'https://www.hmoegirl.com/index.php?title=特殊:创建账户&returnto=H萌娘%3A关于' : 'https://mzh.moegirl.org/index.php?title=Special:创建账户')}
+          >
+            <Text style={{ color: 'white', textDecorationLine: 'underline', fontSize: 16 }}>还没有{isHmoeSource ? 'H萌娘' : '萌百'}帐号？点击前往官网进行注册</Text>
+          </TouchableOpacity>
+        </View>
+        
+      </KeyboardAvoidingView>
     </ViewContainer>
   )
 }
 
-export default configHOC(userHOC(Login))
+export default LoginPage
 
 const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  bgImg: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: -2
+  },
+
+  mask: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'black',
+    opacity: 0.5,
+    zIndex: -1
+  },
+
+  kotoriWrapper: {
+    position: 'absolute',
+    top: -3,
+    right: -5,
+  },
+
+  kotori: {
+    width: 85,
+    height: 85,
+    transform: [{ rotate: '260deg' }]
+  },
+
+  body: {
+    paddingVertical: 30,
+    alignItems: 'center',
+    borderRadius: 2,
+    position: 'relative',
+    top: -20
+  },
+
+  logoWrapper: {
+    alignItems: 'center',
+  },
+
+  logo: {
+    width: 65,
+    height: 70, 
+  },
+
+  showingPsdBtn: {
+    position: 'absolute',
+    right: 10,
+    bottom: 15
+  },
+
   submitBtn: {
-    width: 250,
-    height: 40, 
+    width: 290,
+    height: 50, 
     justifyContent: 'center', 
     alignItems: 'center', 
     borderRadius: 3,
     marginTop: 20,
   },
-
-  textInput: {
-    width: 250,
-    height: 50,
-    backgroundColor: 'transparent',
-    paddingLeft: 25,
-  }
 })
-
-interface InputItemProps {
-  placeholder: string
-  icon: string
-  value: string
-  secureTextEntry?: boolean
-  onChangeText (text: string): void
-}
-function InputItem(props: InputItemProps) {
-  const theme = useTheme()
-  const [isFocused, setIsFocused] = useState(false)
-  const textInputRef = useRef<any>()
-
-  useEffect(() => {
-    const intervalKey = setInterval(() => {
-      setIsFocused(textInputRef.current.isFocused())
-    }, 10)
-
-    return () => clearInterval(intervalKey)
-  }, [])
-
-  return (
-    <TouchableWithoutFeedback onPress={() => textInputRef.current.focus()}>
-      <View style={{ marginVertical: 10 }}>
-        <MaterialIcon 
-          style={{ position: 'absolute', zIndex: 1, top: 12 }} 
-          name={props.icon} 
-          color={theme.colors[isFocused ? 'accent' : 'disabled']} 
-          size={28} 
-        />
-        
-        <TextInput 
-          style={{ ...styles.textInput }}
-          theme={{ 
-            ...DefaultTheme, 
-            colors: { 
-              ...theme.colors, 
-              primary: theme.colors.accent, 
-              text: theme.colors[isFocused ? 'accent' : 'disabled'], 
-            } 
-          }}
-          selectionColor={Color(theme.colors.accent).lighten(0.25).toString()}
-          secureTextEntry={props.secureTextEntry} 
-          placeholder={props.placeholder} 
-          value={props.value} 
-          onChangeText={props.onChangeText}
-          ref={textInputRef}
-        />
-      </View>
-    </TouchableWithoutFeedback>
-  )
-}

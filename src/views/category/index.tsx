@@ -1,14 +1,17 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native'
+import { ActivityIndicator, Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
+import { useTheme } from 'react-native-paper'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import searchApi from '~/api/search'
-import { SearchByCategoryData } from '~/api/search.d'
-import Toolbar from '~/components/Toolbar'
-import Item from './components/Item'
-import StatusBar from '~/components/StatusBar'
-import { useTheme } from 'react-native-paper'
+import { SearchByCategoryData } from '~/api/search/types'
+import MyStatusBar from '~/components/MyStatusBar'
+import MyToolbar from '~/components/MyToolbar'
 import ViewContainer from '~/components/ViewContainer'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import useMyRoute from '~/hooks/useTypedRoute'
+import CategoryItem from './components/Item'
+import CategoryItem2 from './components/Item2'
 
 export interface Props {
   
@@ -20,8 +23,6 @@ export interface RouteParams {
   articleTitle?: string | null
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
-
 const initCategoryData = (): {
   list: SearchByCategoryData[]
   status: 0 | 1 | 2 | 3 | 4 | 5
@@ -32,11 +33,13 @@ const initCategoryData = (): {
   continue: ''
 })
 
-function Category(props: PropsWithChildren<FinalProps>) {
+function CategoryPage(props: PropsWithChildren<Props>) {
   const theme = useTheme()
-  const title = props.navigation.getParam('title')
-  const branch = props.navigation.getParam('branch')
-  const articleTitle = props.navigation.getParam('articleTitle')
+  const navigation = useTypedNavigation()
+  const route = useMyRoute<RouteParams>()
+  const title = route.params.title
+  const branch = route.params.branch
+  const articleTitle = route.params.articleTitle
   const [categoryData, setCategoryData] = useState(initCategoryData())
   const refs = {
     categoryBranch: useRef<any>(),
@@ -54,6 +57,7 @@ function Category(props: PropsWithChildren<FinalProps>) {
     setCategoryData(prevVal => ({ ...prevVal, status: 2 }))
     searchApi.searchByCategory(title, thumbSize, categoryData.continue)
       .then(data => {
+        console.log(data)
         let nextStatus = 3
         if (!data.query) return setCategoryData(prevVal => ({ ...prevVal, status: 5 }))
         if (categoryData.list.length === 0 && Object.keys(data.query.pages).length === 0) {
@@ -74,15 +78,16 @@ function Category(props: PropsWithChildren<FinalProps>) {
   }
 
   const currentBranch = branch ? branch.concat([title]) : null
+  console.log(categoryData.list)
   return (
     <ViewContainer style={{ flex: 1 }}>
-      <StatusBar blackText={false} />
-      <Toolbar
+      <MyStatusBar />
+      <MyToolbar
         title={'分类:' + title}
         leftIcon="home"
         rightIcon="search"
-        onPressLeftIcon={() => props.navigation.popToTop()}
-        onPressRightIcon={() => props.navigation.push('search')}
+        onPressLeftIcon={() => navigation.popToTop()}
+        onPressRightIcon={() => navigation.push('search')}
       />
 
       {branch ? <>
@@ -95,10 +100,8 @@ function Category(props: PropsWithChildren<FinalProps>) {
             <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
               <CategoryBtn 
                 isCurrent={index + 1 === currentBranch!.length}
-                onPress={() => index + 1 !== currentBranch!.length && props.navigation.push('article', { link: '分类:' + categoryName })}
-              >
-                {categoryName}
-              </CategoryBtn>
+                onPress={() => index + 1 !== currentBranch!.length && navigation.push('article', { pageName: '分类:' + categoryName })}
+              >{categoryName}</CategoryBtn>
               {index !== currentBranch!.length - 1 ? <MaterialIcon name="chevron-right" size={30} color={theme.colors.onSurface} style={{ marginTop: 2 }} /> : null}
             </View>
           )}
@@ -109,22 +112,25 @@ function Category(props: PropsWithChildren<FinalProps>) {
         horizontal={false}
         data={categoryData.list} 
         style={{ flex: 1 }}
-        numColumns={2}
-        columnWrapperStyle={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 5 }}
+        // numColumns={2}
+        // columnWrapperStyle={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 5 }}
         onEndReachedThreshold={0.5}
         onEndReached={search}
-        renderItem={item => <Item 
+        renderItem={item => <CategoryItem2
           key={item.item.title}
+          style={{ marginTop: 10 }}
           title={item.item.title}
           imgUrl={item.item.thumbnail ? item.item.thumbnail.source : null}
-          onPress={() => props.navigation.push('article', { link: item.item.title })}
+          categories={item.item.categories.map(item => item.title.replace('Category:', ''))}
+          onPress={() => navigation.push('article', { pageName: item.item.title })}
+          onPressCategory={categoryName => navigation.push('article', { pageName: '分类:' + categoryName })}
         />}
 
         ListHeaderComponent={
           articleTitle ? <>
             <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10, marginBottom: 5 }}>
               <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>这个分类对应的条目为：</Text>
-              <TouchableOpacity onPress={() => props.navigation.push('article', { link: articleTitle })}>
+              <TouchableOpacity onPress={() => navigation.push('article', { pageName: articleTitle })}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', color: theme.colors.accent }}>{articleTitle}</Text>
               </TouchableOpacity>
             </View>
@@ -149,7 +155,7 @@ function Category(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default Category
+export default CategoryPage
 
 const styles = StyleSheet.create({
   branchContainer: {
@@ -159,24 +165,10 @@ const styles = StyleSheet.create({
   },
   
   categoryBtn: {
-    // paddingVertical: 5, 
     paddingHorizontal: 10, 
     marginTop: 2,
-    // borderRadius: 20,
   },
 })
-
-// interface TitleProps {
-//   children: string
-// }
-// function Title(props: TitleProps) {
-//   return (
-//     <View style={{ margin: 10 }}>
-//       <Text style={{ fontSize: 18, color: theme.colors.primary }}>{props.children}</Text>
-//       <View style={{ height: 2, backgroundColor: theme.colors.primary }} />
-//     </View>
-//   )
-// }
 
 interface CategoryBtnProps {
   isCurrent: boolean

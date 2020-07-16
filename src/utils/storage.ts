@@ -1,8 +1,8 @@
-import { ArticleApiData } from '~/api/article.d'
-import store from '~/redux'
+import store from '~/mobx'
 import baseStorage from './baseStorage'
-import { sourceMaps } from './moeRequest'
 import { BrowsingHistory } from './saveHistory'
+import { sourceList } from '~/request/moegirl'
+import { SearchHistory } from '~/views/search'
 
 // 这一层封装主要是为了隔离各个source的数据，便于萌百、h萌，或日后添加的更多source时方便管理
 /*
@@ -19,7 +19,7 @@ export interface SourceStorages {
   articleRedirectMap: { [pageName: string]: string }
   userName: string
   browsingHistory: BrowsingHistory[]
-  searchHistory: string[]
+  searchHistory: SearchHistory[]
 }
 
 export interface MyStorageManager {
@@ -34,13 +34,13 @@ export interface MyStorageManager {
 // 所有方法都会在实例上进行操作，同时再操作实际存储。不等待实际存储的Promise
 let sourceStorages: SourceStorages = {} as any
 // 当前source，只在load中获取一次
-let source: keyof typeof sourceMaps
+let source: keyof typeof sourceList
 
-const sourceStorageManager: MyStorageManager = {
+const storage: MyStorageManager = {
   // 初始化数据实例和source
   load: async () => {
-    const currentConfig = store.getState().config
-    source = currentConfig.source
+    const currentSettings = store.settings
+    source = currentSettings.source
 
     const data = await baseStorage.get(source)
     if (data) {
@@ -54,8 +54,6 @@ const sourceStorageManager: MyStorageManager = {
     sourceStorages[key] = val
     // 这里放弃使用merge，因为之前发生了丢数据的情况，怀疑是这个merge方法导致的(官网标注没有被所有原生实现支持)
     baseStorage.set(source, sourceStorages)
-      .then(() => console.log('success'))
-      .catch(e => console.log('error', e))
   },
 
   get: key => {
@@ -82,4 +80,4 @@ const sourceStorageManager: MyStorageManager = {
   }
 }
 
-export default sourceStorageManager
+export default storage

@@ -1,14 +1,16 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View, LayoutAnimation, RefreshControl, Vibration } from 'react-native'
 import watchListApi from '~/api/watchList'
-import Toolbar from '~/components/Toolbar'
+import MyToolbar from '~/components/MyToolbar'
 import Item from './components/Item'
-import StatusBar from '~/components/StatusBar'
+import MyStatusBar from '~/components/MyStatusBar'
 import { useTheme, Text } from 'react-native-paper'
 import ViewContainer from '~/components/ViewContainer'
 import useLayoutAnimation from '~/hooks/useLayoutAnimation'
 import toast from '~/utils/toast'
-import toViewDate from '~/utils/toViewDate'
+import { diffDate } from '~/utils/diffDate'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import dialog from '~/utils/dialog'
 
 export interface Props {
 
@@ -17,8 +19,6 @@ export interface Props {
 export interface RouteParams {
 
 }
-
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
 
 type WatchListList = {
   list: {
@@ -32,12 +32,13 @@ type WatchListList = {
     redirect?: string
   }[]
 
-  status: 0 | 1 | 2 | 3 | 4 | 5
+  status: 0 | 1 | 2 | 2.1 | 3 | 4 | 5
   continue: string | undefined
 }
 
-export default function WatchList(props: PropsWithChildren<FinalProps>) {
+function WatchListPage(props: PropsWithChildren<Props>) {
   const theme = useTheme()
+  const navigation = useTypedNavigation()
   const [watchListList, setWatchListList] = useState<WatchListList>({
     list: [],
     status: 1,
@@ -48,13 +49,11 @@ export default function WatchList(props: PropsWithChildren<FinalProps>) {
     load(true)
   }, [])
 
-  useLayoutAnimation(
-    LayoutAnimation.create(200, LayoutAnimation.Types.easeIn, LayoutAnimation.Properties.opacity)
-  )
+  useLayoutAnimation()
 
   function load(force = false) {
-    if ([2, 4, 5].includes(watchListList.status) && !force) return Promise.resolve()
-    setWatchListList(prevVal => force ? { list: [], status: 2, continue: undefined } : { ...prevVal, status: 2 })
+    if ([2, 2.1, 4, 5].includes(watchListList.status) && !force) return Promise.resolve()
+    setWatchListList(prevVal => force ? { list: [], status: 2.1, continue: undefined } : { ...prevVal, status: 2 })
     
     return watchListApi.getListWithImage(force ? undefined : watchListList.continue)
       .then(data => {
@@ -62,7 +61,7 @@ export default function WatchList(props: PropsWithChildren<FinalProps>) {
         const pages = Object.values(data.query.pages).filter(item => !('missing' in item))
         let result: WatchListList['list'] = pages.map(item => ({
           title: item.title,
-          lastEditDate: toViewDate(new Date(item.revisions[0].timestamp)),
+          lastEditDate: diffDate(new Date(item.revisions[0].timestamp)),
           image: item.thumbnail
         }))
 
@@ -88,51 +87,51 @@ export default function WatchList(props: PropsWithChildren<FinalProps>) {
       })
   }
 
-  function unwatchTitle(title: string) {
+  async function unwatchTitle(title: string) {
     Vibration.vibrate(25)
-    $dialog.confirm.show({
-      content: `确定要将“${title}”从监视列表移除？`,
-      onPressCheck() {
-        toast.showLoading('操作中')
-        watchListApi.setWatchStatus(title, true)
-          .finally(toast.hide)
-          .then(() => {
-            setWatchListList(prevVal => ({ ...prevVal, list: prevVal.list.filter(item => item.title !== title) }))
-            toast.show('操作成功')
-          })
-          .catch(console.log)
-      }
-    })
+    await dialog.confirm.show({ content: `确定要将“${title}”从监视列表移除？` })
+    dialog.loading.show()
+    watchListApi.setWatchStatus(title, true)
+      .finally(dialog.loading.hide)
+      .then(() => {
+        setWatchListList(prevVal => ({ ...prevVal, list: prevVal.list.filter(item => item.title !== title) }))
+        toast('已移出监视列表')
+      })
+      .catch(console.log)
   }
   
   return (
     <ViewContainer grayBgColor>
-      <StatusBar />  
-      <Toolbar
+      <MyStatusBar />  
+      <MyToolbar
         title="监视列表"
         leftIcon="keyboard-backspace"
-        onPressLeftIcon={() => props.navigation.goBack()}
+        onPressLeftIcon={() => navigation.goBack()}
       />   
       
       <FlatList data={watchListList.list} 
         onEndReachedThreshold={1}
         onEndReached={() => load()}
         style={{ flex: 1 }}
-        renderItem={item => <Item 
-          key={item.index}
-          title={item.item.title}
-          imageUrl={item.item.image ? item.item.image.source : undefined}
-          lastEditDate={item.item.lastEditDate}
-          redirect={item.item.redirect}
-          onPress={() => props.navigation.push('article', { link: item.item.title })}
-          onLongPress={() => unwatchTitle(item.item.title)}
-        />}
+        renderItem={item => 
+          <Item 
+            key={item.index}
+            title={item.item.title}
+            imageUrl={item.item.image ? item.item.image.source : undefined}
+            lastEditDate={item.item.lastEditDate}
+            redirect={item.item.redirect}
+            onPress={() => navigation.push('article', { pageName: item.item.title })}
+            onLongPress={() => unwatchTitle(item.item.title)}
+          />
+        }
 
-        refreshControl={<RefreshControl 
-          colors={[theme.colors.accent]} 
-          onRefresh={() => load(true)} 
-          refreshing={false} 
-        />}
+        refreshControl={
+          <RefreshControl 
+            colors={[theme.colors.accent]} 
+            onRefresh={() => load(true)} 
+            refreshing={watchListList.status === 2.1} 
+          />
+        }
 
         ListFooterComponent={{
           0: () => 
@@ -143,6 +142,7 @@ export default function WatchList(props: PropsWithChildren<FinalProps>) {
             </TouchableOpacity>,
           1: () => null,
           2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
+          2.1: () => null,
           3: () => null,
           4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
           5: () => null
@@ -151,6 +151,8 @@ export default function WatchList(props: PropsWithChildren<FinalProps>) {
     </ViewContainer>
   )
 }
+
+export default WatchListPage
 
 const styles = StyleSheet.create({
   

@@ -4,7 +4,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import ImageViewer from 'react-native-image-zoom-viewer'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import RNFetchBlob from 'rn-fetch-blob'
-import StatusBar from '~/components/StatusBar'
+import MyStatusBar from '~/components/MyStatusBar'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import useMyRoute from '~/hooks/useTypedRoute'
+import dialog from '~/utils/dialog'
 
 export interface Props {
 
@@ -15,11 +18,11 @@ export interface RouteParams {
   index: number
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams>
-
-function MyImageViewer(props: PropsWithChildren<FinalProps>) {
-  const imgs = props.navigation.getParam('imgs')
-  const index = props.navigation.getParam('index')
+function ImageViewerPage(props: PropsWithChildren<Props>) {
+  const navigation = useTypedNavigation()
+  const route = useMyRoute<RouteParams>()
+  const imgs = route.params.imgs
+  const index = route.params.index
 
   const refs = {
     currentIndex: useRef(index)
@@ -33,11 +36,11 @@ function MyImageViewer(props: PropsWithChildren<FinalProps>) {
     }
 
     if (checkedResult === false) {
-      $dialog.confirm.show({
+      await dialog.confirm.show({
         content: '您没有授权访问手机存储，无法保存图片。是否要前往应用详情界面设置权限？',
-        onPressCheck: () => Linking.openSettings()
       })
 
+      Linking.openSettings()
       return
     }
     
@@ -88,7 +91,7 @@ function MyImageViewer(props: PropsWithChildren<FinalProps>) {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar hidden />
+      <MyStatusBar hidden />
       <ImageViewer 
         style={{ backgroundColor: 'black' }}
         imageUrls={imgs} 
@@ -114,7 +117,7 @@ function MyImageViewer(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default MyImageViewer
+export default ImageViewerPage
 
 const styles = StyleSheet.create({
   footerContainerStyle: {

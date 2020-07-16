@@ -2,10 +2,10 @@ import React, { PropsWithChildren, useEffect, useRef, useState, FC } from 'react
 import { Dimensions, Keyboard, ScrollView, StyleProp, StyleSheet, Text, ViewStyle, View } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { WebView } from 'react-native-webview'
-import Button from '~/components/Button'
+import MyButton from '~/components/MyButton'
 import { useTheme } from 'react-native-paper'
-import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
 import { colors } from '~/theme'
+import store from '~/mobx'
 
 export interface Props {
   style?: StyleProp<ViewStyle>
@@ -13,9 +13,7 @@ export interface Props {
   onChangeText? (content: string): void
 }
 
-type FinalProps = Props & ConfigConnectedProps
-
-function ArticleEditor(props: PropsWithChildren<FinalProps>) {
+function ArticleEditor(props: PropsWithChildren<Props>) {
   const theme = useTheme()
   const [html, setHtml] = useState('')
   // 用两个变量判断是否显示快速插入栏，防止页面上有其他输入栏被focus时显示快速插入栏或键盘没有展开时显示
@@ -61,16 +59,10 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
     }.toString()
 
     let injectJsCodes = `
-      ${global.__DEV__ ? 'try{' : ''}
-        ;(${injectedJs})();
-      ${global.__DEV__ ? `
-        }catch(e){
-          ReactNativeWebView.postMessage(JSON.stringify({ type: 'error', data: { name: e.name, message: e.message } }))
-        }
-      ` : ''}
+      ;(${injectedJs})();
     `
 
-    const isNightMode = props.state.config.theme === 'night'
+    const isNightMode = store.settings.theme === 'night'
     return `
       <!DOCTYPE html>
       <html lang="en">
@@ -78,7 +70,7 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Document</title>
+        <title>articleEditor</title>
         <style>
           @font-face{
             font-family: 'Consolas';
@@ -107,9 +99,8 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
         </style>
       </head>
       <body>
-        <textarea id="editArea">${content}</textarea>
+        <textarea id="editArea" placeholder="还没有任何文字...">${content}</textarea>
         <script>
-          console.log = val => ReactNativeWebView.postMessage(JSON.stringify({ type: 'print', data: val }))
           ${injectJsCodes};
         </script>
       </body>
@@ -179,12 +170,12 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
             backgroundColor: theme.colors.surface,
             borderTopColor: theme.colors.placeholder 
           }}>
-          <QuickInsertItem icon="fountain-pen-tip" subtitle="签名" onPress={() => insertCodes(' --~~~~')} />
           <QuickInsertItem title="[[ ]]" subtitle="链接" onPress={() => insertCodes('[[]]', 2)} />
           <QuickInsertItem title="{{ }}" subtitle="模板" onPress={() => insertCodes('{{}}', 2)} />
           <QuickInsertItem title="|" subtitle="管道符" onPress={() => insertCodes('|')} />
           <QuickInsertItem title="*" subtitle="无序列表" onPress={() => insertCodes('* ')} />
           <QuickInsertItem title="#" subtitle="有序列表" onPress={() => insertCodes('# ')} />
+          <QuickInsertItem icon="fountain-pen-tip" subtitle="签名" onPress={() => insertCodes(' --~~~~')} />
           <QuickInsertItem title="''' '''" subtitle="粗体" onPress={() => insertCodes("''''''", 3)} />
           <QuickInsertItem title="<del>" subtitle="删除线" onPress={() => insertCodes('<del></del>', 6)} />
           <QuickInsertItem title="==" subtitle="大标题" onPress={() => insertCodes('==  ==', 3)} />
@@ -197,7 +188,7 @@ function ArticleEditor(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default configHOC(ArticleEditor) as FC<Props>
+export default ArticleEditor
 
 const styles = StyleSheet.create({
   quickInsertBar: {
@@ -219,7 +210,7 @@ function QuickInsertItem (props: PropsWithChildren<QuickInsertItemProps>) {
   width = width - width / 2 / 5
 
   return (
-    <Button 
+    <MyButton noRippleLimit
       rippleColor={theme.colors.accent}
       style={{ width }} 
       contentContainerStyle={{ flex: 1, justifyContent: 'space-around', alignItems: 'center' }}
@@ -236,6 +227,6 @@ function QuickInsertItem (props: PropsWithChildren<QuickInsertItemProps>) {
       {props.subtitle ? <>
         <Text style={{ fontSize: 9, textAlign: 'center', color: theme.colors.disabled, }}>{props.subtitle}</Text>
       </> : null}
-    </Button>
+    </MyButton>
   )
 }

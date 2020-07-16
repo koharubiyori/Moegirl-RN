@@ -1,44 +1,52 @@
-import React, { FC, MutableRefObject, PropsWithChildren, useLayoutEffect, useRef, useState } from 'react'
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useObserver } from 'mobx-react-lite'
+import React, { MutableRefObject, PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Animated, DeviceEventEmitter, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { withNavigation } from 'react-navigation'
-import { CommentConnectedProps, commentHOC } from '~/redux/comment/HOC'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import store from '~/mobx'
+import toast from '~/utils/toast'
+import { biliPlayerController } from '~/views/biliPlayer'
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 const size = 60
 
 export interface Props {
-  id: number
+  pageId: number
+  pageName: string
   backgroundColor?: string
   textColor?: string
-  onPress (): void
   getRef: MutableRefObject<any>
 }
 
-export interface CommentButtonRef {
+export interface ArticleCommentButtonRef {
   show (): void
   hide (): void
 }
 
-type FinalProps = Props & CommentConnectedProps
-
-function CommentButton(props: PropsWithChildren<FinalProps>) {
+function CommentButton(props: PropsWithChildren<Props>) {
   const theme = useTheme()
+  const navigation = useTypedNavigation()
   const [visible, setVisible] = useState(false)
-  const [transitionBottom] = useState(new Animated.Value(-size))
+  const [bottomTransition] = useState(new Animated.Value(0))
+  const [isBiliPlayerVisible, setIsBiliPlayerVisible] = useState(biliPlayerController.visible)
   const showLock = useRef(true) // 为了保证延迟显示，声明一个变量用于判断前n秒不响应show方法
   const animateLock = useRef(false)
 
   if (props.getRef) props.getRef.current = { show, hide }
 
   useLayoutEffect(() => {
-    props.$comment.initPageData(props.id)
-    props.$comment.load(props.id)
+    store.comment.loadNext(props.pageId)
     setTimeout(() => {
       showLock.current = false
       show()
     }, 100)
+  }, [])
+
+  // 监听b站播放器的显示，如果显示按钮的位置就需要往上提
+  useEffect(() => {
+    const listener = DeviceEventEmitter.addListener('biliPlayerVisibleChange', setIsBiliPlayerVisible)
+    return () => listener.remove()
   }, [])
 
   function show() {
@@ -46,9 +54,10 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
 
     animateLock.current = true
     setVisible(true)
-    Animated.timing(transitionBottom, {
-      toValue: 30,
+    Animated.timing(bottomTransition, {
+      toValue: 1,
       duration: 150,
+      useNativeDriver: true
     })
       .start(() => animateLock.current = false)
   }
@@ -57,9 +66,10 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
     if (animateLock.current || !visible) { return }
 
     animateLock.current = true
-    Animated.timing(transitionBottom, {
-      toValue: -size,
+    Animated.timing(bottomTransition, {
+      toValue: 0,
       duration: 150,
+      useNativeDriver: true
     }).start(() => {
       setVisible(false)
       animateLock.current = false
@@ -67,34 +77,58 @@ function CommentButton(props: PropsWithChildren<FinalProps>) {
   }
 
   function tap() {
-    let state = props.$comment.getCommentDataByPageId(props.id)
-    if (state.status === 0) props.$comment.load(props.id)
-    props.onPress()
+    const loadingStatus = store.comment.data[props.pageId].status
+    if (loadingStatus === 0) return store.comment.loadNext(props.pageId)
+    if (loadingStatus === 2 || loadingStatus === 2.1) return toast('加载中，请稍候')
+    navigation.push('comment', { 
+      pageName: props.pageName,
+      pageId: props.pageId 
+    })
   }
 
-  const state = props.$comment.getCommentDataByPageId(props.id)
-  return (
-    visible ? <>
-      <AnimatedTouchableOpacity onPress={tap} style={{ ...styles.container, bottom: transitionBottom }}>
+  const bottomTranslateY = bottomTransition.interpolate({
+    inputRange: [0, 1],
+    outputRange: [size + 30, 0]
+  })
+  
+  // 这个的计算需要参考biliPlayer/index.tsx中的算法
+  const biliPlayerHeightWithOffset = Dimensions.get('window').width / 2 * 0.65 + 15
+  return useObserver(() => {
+    const buttonText = (() => {
+      const currentPageCommentData = store.comment.data[props.pageId] || {}
+      // 如果状态不在0、1、2，则使用count，也就是显示评论总数
+      const buttonText = ({   
+        0: '×', 
+        1: '...', 
+        2: '...',
+        2.1: '...'
+      } as { [status: number]: string })[currentPageCommentData.status || 1] || currentPageCommentData.count
+
+      return buttonText
+    })()
+  
+    return visible ?
+      <AnimatedTouchableOpacity onPress={tap} style={{ 
+        ...styles.container, 
+        bottom: isBiliPlayerVisible ? (biliPlayerHeightWithOffset + 10) : 30,
+        transform: [{ translateY: bottomTranslateY }] 
+      }}>
         <View style={{ ...styles.main, backgroundColor: props.backgroundColor || theme.colors.primary }}>
           <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
             <Icon name="comment" size={30} color={props.textColor || 'white'} style={{ position: 'relative', top: -4 }} />
-            <Text style={{ position: 'absolute', bottom: 6, color: props.textColor || 'white' }}>
-              {({ 0: '×', 1: '...', 2: '...' } as { [status: number]: string })[state ? state.status : 1] || state.data.count}
-            </Text>
+            <Text style={{ position: 'absolute', bottom: 6, color: props.textColor || 'white' }}>{buttonText}</Text>
           </View>
         </View>
       </AnimatedTouchableOpacity>
-    </> : null
-  )
+    : null
+  })
 }
 
-export default withNavigation(commentHOC(CommentButton)) as FC<Props>
+export default CommentButton
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 30,
     right: 30
   },
 

@@ -4,6 +4,8 @@ module.exports = {
     ['babel-plugin-root-import', {
       rootPathPrefix: '~',
       rootPathSuffix: 'src'
-    }]
+    }],
+
+    ['@babel/plugin-proposal-decorators', { legacy: true }]
   ]
 }
