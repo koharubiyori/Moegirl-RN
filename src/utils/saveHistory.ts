@@ -13,35 +13,36 @@ export interface BrowsingHistory {
 export default function(title: string) {
   const timestamp = new Date().getTime()
 
-  articleApi.getMainImage(title, 250).then(async img => {
-    let _history = storage.get('browsingHistory') || []
-    _history.some((item, index) => {
-      if (item.title === title) {
-        _history.splice(index, 1)
-        return true
+  articleApi.getMainImage(title, 250)
+    .then(async img => {
+      let _history = storage.get('browsingHistory') || []
+      _history.some((item, index) => {
+        if (item.title === title) {
+          _history.splice(index, 1)
+          return true
+        }
+      })
+
+      let result: BrowsingHistory = { title, timestamp, imgPath: null }
+
+      if (img) {
+        try {
+          const imgSuffixName = img.source.replace(/^.+\.([^\.]+)$/, '$1')
+          const imgSavePath = `/${BROWSING_HISTORY_IMGS_DIRNAME}/${encodeURIComponent(title)}.${imgSuffixName}`
+          await RNFetchBlob
+            .config({ 
+              path: RNFetchBlob.fs.dirs.DocumentDir + imgSavePath,
+              timeout: 6000,
+            })
+            .fetch('get', img.source)
+            .catch(console.log)
+
+          result.imgPath = imgSavePath
+        } catch (e) { console.log(e) }
       }
+
+      _history.unshift(result)
+      storage.set('browsingHistory', _history)
     })
-
-    let result: BrowsingHistory = { title, timestamp, imgPath: null }
-
-    if (img) {
-      try {
-        const imgSuffixName = img.source.replace(/^.+\.([^\.]+)$/, '$1')
-        const imgSavePath = `/${BROWSING_HISTORY_IMGS_DIRNAME}/${encodeURIComponent(title)}.${imgSuffixName}`
-        await RNFetchBlob
-          .config({ 
-            path: RNFetchBlob.fs.dirs.DocumentDir + imgSavePath,
-            timeout: 6000,
-          })
-          .fetch('get', img.source)
-          .catch(console.log)
-
-        result.imgPath = imgSavePath
-      } catch (e) { console.log(e) }
-    }
-
-    _history.unshift(result)
-    storage.set('browsingHistory', _history)
-    DeviceEventEmitter.emit('refreshHistory')
-  }).catch(e => console.log(e))
+    .catch(e => console.log(e))
 }

@@ -1,4 +1,6 @@
-export default function() {
+import createControls from '../utils/createControl'
+
+export default createControls('网易云音乐', () => {
   let viewBox = $('#articleContentContainer')
 
   viewBox.find('.music163').each(function(e) {
@@ -26,4 +28,8 @@ export default function() {
     let iframe = $(`<iframe src=${link} seamless frameborder="0" style="width:100%; height:${height + 20}px"></iframe>`)
     $(this).append(iframe)
   })
-}
+}, {
+  '.mw-parser-output .music163': {
+    maxWidth: 'unset'
+  },
+})

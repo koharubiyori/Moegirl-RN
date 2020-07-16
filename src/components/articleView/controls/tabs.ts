@@ -1,5 +1,7 @@
+import createControls from '../utils/createControl'
+
 // tabs实现
-export default function() {
+export default createControls('tabs', () => {
   let viewBox = $('#articleContentContainer')
 
   viewBox.find('.Tabs').each(function () {
@@ -15,15 +17,15 @@ export default function() {
       }
     }
 
-    if (window._appConfig.theme === 'night') {
+    if (window._settings.theme === 'night') {
       theme = {
         before: {
-          back: window._colors.night.primary,
-          text: window._colors.night.text
+          back: window._colors.background,
+          text: window._colors.text
         },
         after: {
-          back: window._colors.night.accent,
-          text: window._colors.night.onSurface
+          back: window._colors.placeholder,
+          text: window._colors.accent
         }
       }
     }
@@ -36,7 +38,7 @@ export default function() {
     
     let nav = $('<div class="tabNav" style="text-align:center; margin-bottom:5px;">')
     for (let i = 0; i < titles.length; i++) {
-      let btn = $(`<span class="tabBtn" style="display:inline-block; height:24px; line-height:24px; border-radius:10px; background:${theme.before.back}; color:${theme.before.text}; margin:5px 2.5px; padding:0 8px;">${titles[i]}</span>`)
+      let btn = $(`<span class="tabBtn" style="background:${theme.before.back}; color:${theme.before.text};">${titles[i]}</span>`)
         .click(function () {
           $(this).parent().find('.tabBtn').css({
             background: theme.before.back,
@@ -57,4 +59,18 @@ export default function() {
     })
     $(this).find('.TabContentText').eq(0).show()
   })
-}
+}, {
+  '.tabNav': {
+    textAlign: 'center', 
+    marginBottom: 5
+  },
+
+  '.tabBtn': {
+    display: 'inline-block', 
+    height: 24,
+    lineHeight: '24px',
+    borderRadius: 10,
+    margin: '5px 2.5px',
+    padding: '0 8px'
+  }
+})

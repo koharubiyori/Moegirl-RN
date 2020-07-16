@@ -1,13 +1,14 @@
 import React, { PropsWithChildren } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import Button from '~/components/Button'
+import MyButton from '~/components/MyButton'
 import { useTheme } from 'react-native-paper'
+import { SearchHistory } from '..'
 
 export interface Props {
-  onPressTitle (title: string): void
+  onPressTitle (title: SearchHistory): void
   onPressDelete (): void
-  titles: string[]
+  titles: SearchHistory[]
 }
 
 type FinalProps = Props
@@ -20,21 +21,25 @@ export default function RecentSearch(props: PropsWithChildren<FinalProps>) {
       {props.titles && props.titles.length ? <>
         <View style={styles.header}>
           <Text style={{ color: theme.colors.disabled }}>最近搜索</Text>
-          <Button onPress={props.onPressDelete} rippleColor={theme.colors.placeholder}>
+          <MyButton noRippleLimit onPress={props.onPressDelete} rippleColor={theme.colors.placeholder}>
             <Icon name="delete" size={20} color={theme.colors.placeholder } />
-          </Button>
+          </MyButton>
         </View>
 
-        <ScrollView keyboardShouldPersistTaps="always">{props.titles.map(title => 
-          <Button rippleColor={theme.colors.placeholder} noLimit={false} contentContainerStyle={{ paddingHorizontal: 5 }}
-            onPress={() => props.onPressTitle(title)}
-            key={title}
-          >
-            <View style={{ ...styles.title, borderBottomColor: theme.colors.lightBg }}>
-              <Text style={{ color: theme.colors.disabled }}>{title}</Text>
-            </View>
-          </Button>
-        )}</ScrollView>
+        <ScrollView keyboardShouldPersistTaps="always">
+          {props.titles.map(title => 
+            <MyButton 
+              key={title.keyword}
+              contentContainerStyle={{ paddingHorizontal: 5 }}
+              rippleColor={theme.colors.placeholder} 
+              onPress={() => props.onPressTitle(title)}
+            >
+              <View style={{ ...styles.title, borderBottomColor: theme.colors.lightBg }}>
+                <Text style={{ color: theme.colors.disabled }}>{title.keyword}</Text>
+              </View>
+            </MyButton>
+          )}
+        </ScrollView>
       </> : <>
         <View style={styles.noDataHintContainer}>
           <Text style={{ ...styles.noDataHint, color: theme.colors.placeholder }}>暂无搜索记录</Text>

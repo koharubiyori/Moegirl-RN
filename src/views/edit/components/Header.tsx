@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 import { StyleSheet } from 'react-native'
-import Toolbar from '~/components/Toolbar'
+import MyToolbar from '~/components/MyToolbar'
 import { useTheme } from 'react-native-paper'
 
 export interface Props {
@@ -15,7 +15,7 @@ export default function EditHeader(props: PropsWithChildren<FinalProps>) {
   const theme = useTheme()
   
   return (
-    <Toolbar
+    <MyToolbar
       style={{
         elevation: 0, 
         borderBottomColor: theme.colors.onSurface, 

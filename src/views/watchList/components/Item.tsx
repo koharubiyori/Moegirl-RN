@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, PropsWithChildren } from 'react'
-import { View, StyleSheet, Image, TouchableNativeFeedback } from 'react-native'
-import { useTheme, Text } from 'react-native-paper'
+import React, { PropsWithChildren } from 'react'
+import { Image, StyleSheet, TouchableNativeFeedback, View } from 'react-native'
+import { Text, useTheme } from 'react-native-paper'
 
 export interface Props {
   title: string

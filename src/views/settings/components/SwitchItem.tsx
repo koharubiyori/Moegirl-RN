@@ -11,14 +11,12 @@ export interface Props {
   onPress? (): void
 }
 
-(SettingItem as DefaultProps<Props>).defaultProps = {
+;(SettingsSwitchItem as DefaultProps<Props>).defaultProps = {
   onChange: () => {},
   onPress: () => {}
 }
 
-type FinalProps = Props
-
-export default function SettingItem(props: PropsWithChildren<FinalProps>) {
+export default function SettingsSwitchItem(props: PropsWithChildren<Props>) {
   const theme = useTheme()
   
   return (

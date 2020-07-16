@@ -1,10 +1,10 @@
-import React, { PropsWithChildren, FC } from 'react'
+import React, { PropsWithChildren } from 'react'
 import { NativeModules, StyleSheet, TextInput, View } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import { withNavigation } from 'react-navigation'
-import Button from '~/components/Button'
 import { useTheme } from 'react-native-paper'
-import { configHOC, ConfigConnectedProps } from '~/redux/config/HOC'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import MyButton from '~/components/MyButton'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import store from '~/mobx'
 
 export interface Props {
   value: string
@@ -12,23 +12,33 @@ export interface Props {
   onSubmit (): void
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation & ConfigConnectedProps
-
-function SearchHeader(props: PropsWithChildren<FinalProps>) {
+function SearchHeader(props: PropsWithChildren<Props>) {
+  const navigation = useTypedNavigation()
   const theme = useTheme()
   const statusBarHeight = NativeModules.StatusBarManager.HEIGHT
 
   return (
-    <View style={{ ...styles.body, backgroundColor: theme.colors.surface, height: 56 + statusBarHeight, paddingTop: statusBarHeight }}>
-      <Button onPress={() => props.navigation.goBack()} rippleColor={theme.colors.placeholder}>
+    <View 
+      style={{ 
+        ...styles.body, 
+        backgroundColor: theme.colors.surface, 
+        height: 56 + statusBarHeight, 
+        paddingTop: statusBarHeight 
+      }}
+    >
+      <MyButton noRippleLimit 
+        rippleColor={theme.colors.placeholder}
+        onPress={() => navigation.goBack()} 
+      >
         <Icon name="keyboard-backspace" size={26} color={theme.colors.disabled} />
-      </Button>
+      </MyButton>
 
-      <TextInput autoFocus value={props.value}
+      <TextInput autoFocus 
+        value={props.value}
         autoCapitalize="none"
         returnKeyType="search"
         autoCorrect={false}
-        placeholder={props.state.config.source === 'hmoe' ? '搜索H萌娘...' : '搜索萌娘百科...'}
+        placeholder={store.settings.source === 'hmoe' ? '搜索H萌娘...' : '搜索萌娘百科...'}
         placeholderTextColor={theme.colors.placeholder}
         onChangeText={props.onChangeText}
         onSubmitEditing={props.onSubmit}
@@ -38,7 +48,7 @@ function SearchHeader(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default configHOC(withNavigation(SearchHeader)) as FC<Props>
+export default SearchHeader
 
 const styles = StyleSheet.create({
   body: {

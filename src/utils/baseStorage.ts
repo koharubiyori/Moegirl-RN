@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { State as Config } from '~/redux/config'
-import { sourceMaps } from './moeRequest'
 import { SourceStorages } from './storage'
+import { sourceList } from '~/request/moegirl'
+import { SettingsStoreData } from '~/mobx/settings'
 
-type LocalStorages = { config: Config } & {
-  [SiteName in keyof typeof sourceMaps]: SourceStorages
+type LocalStorages = { settings: SettingsStoreData } & {
+  [SiteName in keyof typeof sourceList]: SourceStorages
 }
 
 export interface MyStorageManager {

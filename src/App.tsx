@@ -1,25 +1,17 @@
+import { NavigationContainerRef } from '@react-navigation/native'
 import React, { useEffect, useRef, useState } from 'react'
-import { BackHandler, DeviceEventEmitter, NativeModules } from 'react-native'
+import { BackHandler } from 'react-native'
+import { DefaultTheme, Provider as PaperProvider, Theme } from 'react-native-paper'
 import SplashScreen from 'react-native-splash-screen'
-import { Provider as ReduxProvider } from 'react-redux'
-import Alert, { AlertRef } from '~/components/dialog/Alert'
-import Confirm, { ConfirmRef } from '~/components/dialog/Confirm'
-import SnackBar, { SnackBarRef } from '~/components/dialog/SnackBar'
-import Drawer from '~/views/drawer'
-import store from './redux'
-import AppNavigator from './routes'
+import init from './init'
+import store from './mobx'
+import StackRoutes from './routes'
+import { colors, initSetThemeMethod, setThemeColor } from './theme'
+import { DialogBaseView } from './utils/dialog'
+import { initGlobalNavigation } from './utils/globalNavigation'
 import toast from './utils/toast'
-import { NavigationState } from 'react-navigation'
-import { getWaitNotificationsTotal } from './redux/user/HOC'
-import { Provider as PaperProvider, DefaultTheme, Theme } from 'react-native-paper'
-import { colors, initSetThemeStateMethod, setThemeColor } from './theme'
-import OptionsSheet, { OptionsSheetRef } from './components/dialog/OptionsSheet'
-import appInit from './init'
-import { pushMessage } from './notificationServe'
-import watchListApi from './api/watchList'
-// import AsyncStorage from '@react-native-community/async-storage'
-
-// AsyncStorage.clear()
+import BiliPlayerModal from './views/biliPlayer'
+import DrawerView, { drawerController } from './views/drawer'
 
 const initialTheme: Theme = {
   ...DefaultTheme,
@@ -31,101 +23,80 @@ const initialTheme: Theme = {
   }
 }
 
-function App() {
+export default function App() {
   const [theme, setTheme] = useState(initialTheme)
-  const [isConfigLoaded, setIsConfigLoaded] = useState(false)
+  const [isSettingsLoaded, setIsSettingsLoaded] = useState(false)
   const refs = {
-    alert: useRef<AlertRef>(),
-    confirm: useRef<ConfirmRef>(),
-    snackBar: useRef<SnackBarRef>(),
-    appNavigator: useRef<{ _navigation: __Navigation.Navigation }>(),
-    optionsSheet: useRef<OptionsSheetRef>()
+    stackRoutes: useRef<NavigationContainerRef>()
   }
+  
+  // 初始化主题方法
+  initSetThemeMethod(setTheme)
 
-  initSetThemeStateMethod(setTheme)
-
-  useEffect(() => {    
-    // 初始化dialog方法
-    let dialog: any = {}
-    for (let key in refs) {
-      dialog[key] = refs[key as keyof typeof refs].current
-    }
-    
-    global.$dialog = dialog
-
-    // 执行其他初始化操作
-    appInit().then(() => {
-      const currentTheme = store.getState().config.theme
-      setThemeColor(currentTheme)
-
-      setIsConfigLoaded(true)
-      setTimeout(initGlobalNavigatorAndExitAppHandler)
-
-      // 初始化完成一秒后隐藏启动图
-      setTimeout(SplashScreen.hide, 500)
-    })
-  }, [])
-
-  // 每隔30秒check一次未读通知
-  const lastCheckedNotiTotal = useRef(0)
+  // 初始化全局导航器
   useEffect(() => {
-    const intervalKey = setInterval(() => {
-      getWaitNotificationsTotal()
-        .then(awaitNotiTotal => {
-          if (awaitNotiTotal === null) { return }
-          if (awaitNotiTotal !== 0 && awaitNotiTotal !== lastCheckedNotiTotal.current) {
-            pushMessage(`你有${awaitNotiTotal}条未读通知。`, 'awaitNotification')
-          }
+    initGlobalNavigation(refs.stackRoutes.current!)
+  }, [isSettingsLoaded])
 
-          lastCheckedNotiTotal.current = awaitNotiTotal!
-        })
-    }, 1000 * 30)
-    return () => clearInterval(intervalKey)
+  // 其他初始化动作
+  useEffect(() => {
+    init()
+      .then(() => {
+        setIsSettingsLoaded(true)
+        const currentTheme = store.settings.theme
+        setThemeColor(currentTheme)
+        setTimeout(SplashScreen.hide, 500)
+      })
   }, [])
 
-  function initGlobalNavigatorAndExitAppHandler() {
-    global.$appNavigator = refs.appNavigator.current!._navigation
-        
-    let onPressBackBtnMark = false
-    return BackHandler.addEventListener('hardwareBackPress', () => {
-      // navigation需要不断更新赋值，否则状态都是旧的(像是routes字段等)
-      if (refs.appNavigator.current) global.$appNavigator = refs.appNavigator.current!._navigation
-
-      if (($appNavigator.state as any).routes.length !== 1) { return undefined }
-      if ($drawer.visible.current) return $drawer.close() as any
-      if (!onPressBackBtnMark) {
-        toast.show('再按一次返回键退出应用')
-        onPressBackBtnMark = true
-        setTimeout(() => onPressBackBtnMark = false, 3000)
-        return undefined
+  // 监听返回键
+  useEffect(() => {
+    let pressBackFlag = false
+    
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      // 如果抽屉处于开启状态，则先关闭抽屉
+      if (drawerController.visible) {
+        drawerController.close()
+        return true
+      }
+      
+      // 如果页面栈不为1，则这里什么都不做(页面栈pop)
+      const rootRoute = refs.stackRoutes.current!.getRootState()
+      if (rootRoute.routes.length > 1) { return }
+      
+      // 两次返回退出程序
+      if (!pressBackFlag) {
+        pressBackFlag = true
+        setTimeout(() => pressBackFlag = false, 3000)
+        toast('再按一次退出程序')
+        return true
       } else {
         BackHandler.exitApp()
-        return undefined
       }
     })
-  }
 
-  function navigationStateChange (prevState: NavigationState, state: NavigationState) {
-    DeviceEventEmitter.emit('navigationStateChange', prevState, state)
-  }
+    return () => subscription.remove()
+  }, [])
 
+  // 每30秒check一次等待的通知
+  useEffect(() => {
+    const intervalKey = setInterval(() => {
+      store.user.checkWaitNotificationTotal()
+    }, 30000)
+
+    return () => clearInterval(intervalKey)
+  }, [])
+  
   return (
-    <ReduxProvider store={store}>
-      <PaperProvider theme={theme}>
-        {/* 为了能拿到用户设置，这里要等待配置载入完成 */}
-        {isConfigLoaded ? <>
-          <Drawer>
-            <AppNavigator onNavigationStateChange={navigationStateChange} ref={refs.appNavigator as any} />
-          </Drawer>
-        </> : null}
-
-        <Alert getRef={refs.alert} />
-        <Confirm getRef={refs.confirm} />
-        <SnackBar getRef={refs.snackBar} />
-        <OptionsSheet getRef={refs.optionsSheet} />
-      </PaperProvider>
-    </ReduxProvider>
+    <PaperProvider theme={theme}>
+      {/* 等待用户设置载入完成 */}
+      {isSettingsLoaded &&
+        <DrawerView>
+          <StackRoutes getRef={refs.stackRoutes} />
+          <BiliPlayerModal />
+        </DrawerView>
+      }
+      <DialogBaseView />
+    </PaperProvider>
   )
 }
-
-export default App

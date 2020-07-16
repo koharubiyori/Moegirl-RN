@@ -1,9 +1,10 @@
 import React, { FC, PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { Animated, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { useTheme, Text } from 'react-native-paper'
-import { withNavigation } from 'react-navigation'
-import { postComment } from '~/api/comment'
 import toast from '~/utils/toast'
+import dialog from '~/utils/dialog'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import store from '~/mobx'
 
 export interface Props {
   visible: boolean
@@ -13,10 +14,9 @@ export interface Props {
   onDismiss(): void
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation
-
-function CommentEditor(props: PropsWithChildren<FinalProps>) {
+function CommentEditor(props: PropsWithChildren<Props>) {
   const theme = useTheme()
+  const navigation = useTypedNavigation()
   const [visible, setVisible] = useState(false) // 组件内拥有一个独立的visible
   const [inputText, setInputText] = useState('')
   const [transitionOpacity] = useState(new Animated.Value(0))
@@ -51,41 +51,41 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
 
   function close() {
     if (inputText) {
-      $dialog.confirm.show({
-        content: '关闭后当前编辑的评论内容将不会保存，是否关闭？',
-        onPressCheck: props.onDismiss
+      dialog.confirm.show({
+        content: '关闭后当前编辑的评论内容将不会保存，是否关闭？'
       })
+        .then(props.onDismiss)
     } else {
       props.onDismiss()
     }
   }
 
   function submit() {
-    if (inputText.length === 0) return toast.show('评论或回复内容不能为空')
-    if (inputText === '0') { return toast.show('因萌百评论系统的bug，不能以“0”作为评论内容') }
+    if (inputText.length === 0) return toast('评论或回复内容不能为空')
+    if (inputText === '0') { return toast('因萌百评论系统的bug，不能以“0”作为评论内容') }
 
-    toast.showLoading('提交中')
-    postComment(props.pageId, inputText, props.targetId)
-      .finally(toast.hide)
+    dialog.loading.show({ title: '提交中...' })
+    store.comment.addComment(props.pageId, inputText, props.targetId)
+      .finally(dialog.loading.hide)
       .then(() => {
-        setTimeout(() => toast.show('发表成功'))
         setInputText('')
         props.onPosted()
       })
       .catch(e => {
         console.log(e)
-        toast.show('网络错误，请重试', 'center')
+        toast('网络错误，请重试', 'center')
       })
   }
 
   function tapMaskToCloseSelf(e: any) {
+    // 这里需要用_component._nativeTag判断点击的是mask还是输入栏
     refs.mask.current._component._nativeTag === e.target && close()
   }
 
   return (
     visible ? <>
       <TouchableWithoutFeedback onPress={tapMaskToCloseSelf} style={{ ...styles.container }}>
-        {/* 这里的错误暂时没找到办法消掉 */}
+        {/* 这里的ref属性错误暂时没找到办法消掉 */}
         <Animated.View style={{ ...styles.container, opacity: transitionOpacity }} ref={refs.mask}>
           <Animated.View style={{ ...styles.body, backgroundColor: theme.colors.background, transform: [{ translateY: transitionTranslateY }] }}>
             <TextInput multiline disableFullscreenUI 
@@ -115,7 +115,7 @@ function CommentEditor(props: PropsWithChildren<FinalProps>) {
   )
 }
 
-export default withNavigation(CommentEditor) as FC<Props>
+export default CommentEditor
 
 const styles = StyleSheet.create({
   container: {
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 1
+    zIndex: 100
   },
 
   body: {

@@ -1,10 +1,7 @@
 import { EmitterSubscription } from 'react-native'
-import { NavigationState } from 'react-navigation'
 
 export type MyEventEmittersMap = {
-  navigationStateChange (prevState: NavigationState, state: NavigationState): void
-  refreshHistory (): void
-  clearHistory (): void
+  biliPlayerVisibleChange: (isSmallMode: boolean) => void
 }
 
 export interface MyDeviceEventEmitterStatic {

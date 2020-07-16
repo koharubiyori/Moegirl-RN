@@ -1,57 +1,52 @@
 import React, { PropsWithChildren } from 'react'
-import { DeviceEventEmitter, Linking, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { View, StyleSheet, ScrollView, Text } from 'react-native'
+import ViewContainer from '~/components/ViewContainer'
+import MyToolbar from '~/components/MyToolbar'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import SettingsSwitchItem from './components/SwitchItem'
+import { useObserver } from 'mobx-react-lite'
+import store from '~/mobx'
+import dialog from '~/utils/dialog'
+import articleCacheController from '~/utils/articleCacheController'
+import storage from '~/utils/storage'
+import toast from '~/utils/toast'
+import { colors } from '~/theme'
 import { useTheme } from 'react-native-paper'
 import RNRestart from 'react-native-restart'
 import { isHmoe } from '~/../app.json'
-import StatusBar from '~/components/StatusBar'
-import Toolbar from '~/components/Toolbar'
-import ViewContainer from '~/components/ViewContainer'
-import { ConfigConnectedProps, configHOC } from '~/redux/config/HOC'
-import { UserConnectedProps, userHOC } from '~/redux/user/HOC'
-import { colors, setThemeColor, themeColorType, ThemeColorType } from '~/theme'
-import storage from '~/utils/storage'
-import toast from '~/utils/toast'
-import SwitchItem from './components/SwitchItem'
-import articleCacheController from '~/utils/articleCacheController'
 
 export interface Props {
-
+  
 }
 
 export interface RouteParams {
-
+  
 }
 
-type FinalProps = Props & __Navigation.InjectedNavigation<RouteParams> & UserConnectedProps & ConfigConnectedProps
-
-function Settings(props: PropsWithChildren<FinalProps>) {
-  function showThemeOptions() {    
-    const themeOptions = Object.keys(themeColorType).map(themeValue => ({
-      label: themeColorType[themeValue as ThemeColorType],
-      value: themeValue
-    }))
-    
-    $dialog.optionsSheet.show({
-      title: '选择皮肤',
-      options: themeOptions,
-      defaultSelected: props.state.config.theme,
-      onChange(value) {
-        if (value !== 'night') {
-          setConfig({ lastTheme: value as any })
-        }
-
-        // if (value === 'night' && props.state.config.changeThemeColorByArticleMainColor) {
-        //   toast.show('黑夜模式下动态主题不生效')
-        // }
-
-        setConfig({ theme: value as any })
-        setThemeColor(value as any)
-      }
-    })
+function SettingsPage(props: PropsWithChildren<Props>) {
+  const navigation = useTypedNavigation()
+  
+  async function clearArticleCache() {
+    await dialog.confirm.show({ content: '确定要清空条目缓存吗？' })
+    articleCacheController.clearCache()
+    storage.remove('articleRedirectMap')
+    toast('已清除所有条目缓存')
   }
 
-  function showSiteSelector () {
-    $dialog.optionsSheet.show({
+  async function clearHistory () {
+    await dialog.confirm.show({ content: '确定要清空浏览历史吗？' })
+    storage.remove('browsingHistory')
+    toast('已清除所有浏览历史')
+  }
+
+  async function logout() {
+    await dialog.confirm.show({ content: '确定要登出吗？' })
+    store.user.logout()
+    toast('已登出')
+  }
+
+  function showSourceSelection() {
+    dialog.optionSheet.show({
       title: '选择数据源',
       options: [
         {
@@ -62,74 +57,40 @@ function Settings(props: PropsWithChildren<FinalProps>) {
           value: 'hmoe'
         }
       ],
-      defaultSelected: props.state.config.source,
-      onPressCheck (value) {
-        // 为了初始化全部数据，这里直接热重启
-        setConfig({ source: value as any }).then(() => RNRestart.Restart())
-      }
+
+      defaultSelected: store.settings.source,
     })
+      .then(val => {
+        store.settings.set('source', val as any)
+          .then(() => RNRestart.Restart())
+      })
   }
 
-  function clearArticleCache() {
-    $dialog.confirm.show({
-      content: '确定要清空条目缓存吗？',
-      onPressCheck () {
-        articleCacheController.clearCache()
-        storage.remove('articleRedirectMap')
-        toast.show('已清除所有条目缓存')
-      }
-    })
-  }
-
-  function clearHistory () {
-    $dialog.confirm.show({
-      content: '确定要清空浏览历史吗？',
-      onPressCheck () {
-        storage.remove('browsingHistory')
-        DeviceEventEmitter.emit('clearHistory')
-        toast.show('已清除所有浏览历史')
-      }
-    })
-  }
-
-  function logout() {
-    $dialog.confirm.show({
-      content: '确定要登出吗？',
-      onPressCheck () {
-        props.$user.logout()
-        toast.show('已登出')
-      }
-    })
-  }
-
-  const { config } = props.state
-  const setConfig = (config: Parameters<typeof props.$config.set>[0]) => props.$config.set(config)
-  return (
+  return useObserver(() =>
     <ViewContainer>
-      <StatusBar />  
-
-      <Toolbar
+      <MyToolbar
         title="设置"
         leftIcon="keyboard-backspace"
-        onPressLeftIcon={props.navigation.goBack}
+        onPressLeftIcon={navigation.goBack}
       />
-      
+
       <ScrollView style={{ flex: 1 }}>
         <Title>条目</Title>
 
-        <SwitchItem title="黑幕开关" 
+        <SettingsSwitchItem 
+          title="黑幕开关" 
           subtext="关闭后黑幕将默认为刮开状态" 
-          value={config.heimu}
-          onChange={val => setConfig({ heimu: val })}
+          value={store.settings.heimu}
+          onChange={val => store.settings.set('heimu', val)}
         />
 
-        <SwitchItem title="沉浸模式" 
+        {/* <SettingsSwitchItem title="沉浸模式" 
           subtext="浏览条目时将隐藏状态栏" 
-          value={config.immersionMode}
+          value={settings.immersionMode}
           onChange={val => setConfig({ immersionMode: val })}
-        />
+        /> */}
 
-        {/* <SwitchItem title="动态主题" 
+        {/* <SettingsSwitchItem title="动态主题" 
           subtext="条目界面的配色随条目本身的主题色切换" 
           value={config.changeThemeColorByArticleMainColor}
           onChange={val => {
@@ -138,53 +99,60 @@ function Settings(props: PropsWithChildren<FinalProps>) {
           }}
         /> */}
 
-        <Title>界面</Title>
-        <SwitchItem hideSwitch 
+        {/* <Title>界面</Title>
+        <SettingsSwitchItem hideSwitch 
           title="更换皮肤"
           onPress={showThemeOptions}
-        />
+        /> */}
 
         <Title>缓存</Title>
 
-        <SwitchItem hideSwitch 
+        <SettingsSwitchItem 
+          title="缓存优先模式"
+          subtext="开启后如果条目有缓存将优先使用"
+          value={store.settings.cachePriority}
+          onChange={val => store.settings.set('cachePriority', val)}
+        />
+
+        <SettingsSwitchItem hideSwitch 
           title="清除条目缓存"
           onPress={() => clearArticleCache()}
         />
 
-        <SwitchItem hideSwitch 
+        <SettingsSwitchItem hideSwitch 
           title="清除浏览历史"
           onPress={() => clearHistory()}
         />
 
         <Title>账户</Title>
-        <SwitchItem hideSwitch
-          title={props.state.user.name ? '登出' : '登录'}
-          onPress={() => props.state.user.name ? logout() : props.navigation.push('login')}
+        <SettingsSwitchItem hideSwitch
+          title={store.user.isLoggedIn ? '登出' : '登录'}
+          onPress={() => store.user.isLoggedIn ? logout() : navigation.push('login')}
         />
 
         <Title>其他</Title>
         {isHmoe ? <>
-          <SwitchItem hideSwitch 
+          <SettingsSwitchItem hideSwitch 
             title="更换数据源"
-            onPress={showSiteSelector}
+            onPress={showSourceSelection}
           />
         </> : null}
 
-        <SwitchItem hideSwitch
+        <SettingsSwitchItem hideSwitch
           title="关于"
-          onPress={() => props.navigation.push('about')}
+          onPress={() => navigation.push('about')}
         />
 
-        <SwitchItem hideSwitch
+        {/* <SettingsSwitchItem hideSwitch
           title={isHmoe ? '在Github上查看新版本' : '前往Github下载支持H萌娘的版本'}
           onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
-        />
-      </ScrollView>
+        /> */}
+      </ScrollView>      
     </ViewContainer>
   )
 }
 
-export default configHOC(userHOC(Settings))
+export default SettingsPage
 
 const styles = StyleSheet.create({
   title: {

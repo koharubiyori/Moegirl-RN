@@ -2,9 +2,9 @@ import jss from 'jss'
 import preset from 'jss-preset-default'
 import { colors } from '~/theme'
 
-jss.setup(preset())
+jss.setup(preset() as any)
 
-export default jss.createStyleSheet({
+const homeStyleSheet = jss.createStyleSheet({
   '@global': {
     '.mainpage-newsbox > .mainpage-title:first-child': {
       display: 'none'
@@ -75,6 +75,12 @@ export default jss.createStyleSheet({
 
     '.mainpage-1stcontent .gallery.mw-gallery-packed-hover img': {
       objectFit: 'cover'
+    },
+
+    '.gallerytextwrapper': {
+      wordBreak: 'break-word'
     }
   }
 }).toString()
+
+export default homeStyleSheet

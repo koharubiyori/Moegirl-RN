@@ -1,9 +1,9 @@
 import jss from 'jss'
 import preset from 'jss-preset-default'
 
-jss.setup(preset())
+jss.setup(preset() as any)
 
-export default jss.createStyleSheet({
+const hmoeHomeStyleSheet = jss.createStyleSheet({
   '@global': {
     [`.mainpage-newpage,
       .mainpage-donate-and-ads,
@@ -15,7 +15,8 @@ export default jss.createStyleSheet({
 
     '.mainpage-headtitle:hover, .mainpage-column > *:hover': {
       margin: '0.5em !important',
-      boxShadow: '1px 1px 1px 1px #ededde !important'
+      boxShadow: '1px 1px 1px 1px #ededde !important',
+      backgroundColor: 'transparent !important'
     },
 
     '.mainpage-counter-container': {
@@ -31,18 +32,24 @@ export default jss.createStyleSheet({
     },
 
     '.mainpage-DYK': {
-      '& .mainpage-flex:first-of-type': {
-        display: 'block'
-      },
+      display: 'none'
+    },
+
+    '.mainpage-page': {
+      height: 85
     },
 
     '.mainpage-page-img': {
-      width: '100% !important'
+      width: '100% !important',
+      height: 85,
+      objectFit: 'cover'
     },
     
     '.mainpage-page-intro': {
       textAlign: 'center',
       margin: '0 10px'
-    }
+    },
   }
 }).toString()
+
+export default hmoeHomeStyleSheet

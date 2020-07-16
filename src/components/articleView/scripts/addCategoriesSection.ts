@@ -22,9 +22,9 @@ export default function() {
       line-height: 30px;
       padding: 0 10px;
       margin: 2px 2.5px;
-      background-color: ${window._appConfig.theme === 'night' ? window._colors.night.primary : window._themeColors.primary};
+      background-color: ${window._colors.primary};
       border-radius: 20px;
-      color: ${window._appConfig.theme === 'night' ? window._colors.night.text : 'white'};
+      color: ${window._settings.theme === 'night' ? window._colors.text : 'white'};
     }
   </style>`)
 }

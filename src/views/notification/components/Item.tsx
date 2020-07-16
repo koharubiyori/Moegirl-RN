@@ -1,9 +1,9 @@
 import React, { PropsWithChildren } from 'react'
 import { Image, StyleSheet, TouchableNativeFeedback, TouchableOpacity, View } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
-import { NotificationData } from '~/api/notification.d'
-import toViewDate from '~/utils/toViewDate'
+import { NotificationData } from '~/api/notification/types'
 import { AVATAR_URL } from '~/constants'
+import { diffDate } from '~/utils/diffDate'
 
 export interface Props {
   notificationData: NotificationData
@@ -11,9 +11,7 @@ export interface Props {
   onPressAvatar?(username: string): void
 }
 
-type FinalProps = Props
-
-function NotificationItem(props: PropsWithChildren<FinalProps>) {
+function NotificationItem(props: PropsWithChildren<Props>) {
   const theme = useTheme()
   
   // 拿到的通知文本为html，其中加粗使用的是b和strong标签，这里将其转换为rn标签
@@ -35,21 +33,28 @@ function NotificationItem(props: PropsWithChildren<FinalProps>) {
   return (
     <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(theme.colors.primary)} onPress={props.onPress}>
       <View style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-          {!props.notificationData.read ? <View style={styles.badge} /> : null} 
-
+        <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity onPress={() => props.onPressAvatar && props.onPressAvatar(props.notificationData.agent.name)}>
-            <Image source={{ uri: AVATAR_URL + props.notificationData.agent.name }} style={styles.avatar} />
+            <View style={styles.avatarWrapper}>
+              {!props.notificationData.read ? <View style={styles.badge} /> : null} 
+              <Image 
+                style={{
+                  ...styles.avatar,
+                  backgroundColor: theme.colors.placeholder
+                }} 
+                source={{ uri: AVATAR_URL + props.notificationData.agent.name }} 
+              />
+            </View>
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text >{strongTagToRnBoldText(props.notificationData['*'].header)}</Text>
+            <Text>{strongTagToRnBoldText(props.notificationData['*'].header)}</Text>
             <Text style={{ fontSize: 13, marginTop: 5, color: theme.colors.disabled }}>
               {props.notificationData['*'].body || props.notificationData['*'].compactHeader}
             </Text>
           </View>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <Text style={{ color: theme.colors.placeholder }}>{toViewDate(new Date((props.notificationData.timestamp.unix as any as number) * 1000))}</Text>
+          <Text style={{ color: theme.colors.placeholder }}>{diffDate(new Date((props.notificationData.timestamp.unix as any as number) * 1000))}</Text>
         </View>
       </View>
     </TouchableNativeFeedback>
@@ -65,10 +70,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
 
+  avatarWrapper: {
+    marginTop: 3,
+    marginRight: 10,
+  },
+
   avatar: {
     width: 50, 
     height: 50, 
-    marginRight: 10,
     borderRadius: 25,
   },
 
@@ -78,7 +87,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     borderRadius: 3.5,
     position: 'absolute',
-    top: 5,
-    right: 0
+    top: 3,
+    right: 3,
+    zIndex: 1
   }
 })
