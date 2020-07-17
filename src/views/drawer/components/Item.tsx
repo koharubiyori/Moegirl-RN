@@ -1,10 +1,9 @@
 import React, { PropsWithChildren } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import Material from 'react-native-vector-icons/MaterialIcons'
+import { Text, useTheme } from 'react-native-paper'
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
+import Material from 'react-native-vector-icons/MaterialIcons'
 import MyButton from '~/components/MyButton'
-import { useTheme, Text } from 'react-native-paper'
-import { drawerController } from '..'
 
 const iconSize = 30
 

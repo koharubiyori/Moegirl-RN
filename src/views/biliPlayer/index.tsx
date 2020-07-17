@@ -22,7 +22,6 @@ export interface BiliPlayerController {
 export let biliPlayerController: BiliPlayerController = null as any
 
 const AnimatedWebView = Animated.createAnimatedComponent(WebView)
-const AnimatedMaterialIcon = Animated.createAnimatedComponent(MaterialIcon)
 
 function BiliPlayerModal(props: PropsWithChildren<Props>) {
   const [html, setHtml] = useState('')

@@ -56,6 +56,10 @@ function ArticleView(props: PropsWithChildren<Props>) {
   const [articleData, setArticleData] = useState<ArticleApiData.GetContent>()
   const [originalImgUrls, setOriginalImgUrls] = useState<{ name: string, url: string }[]>()
   const [status, setStatus, statusRef] = useStateWithRef<0 | 1 | 2 | 3>(1)
+
+  const isWebViewLoaded = useRef(false)
+  const needWebViewReload = useRef(false) // 如果webView已经load过，再次加载就需要执行webview.load()
+
   const refs = {
     webView: useRef<any>()
   }
@@ -95,6 +99,13 @@ function ArticleView(props: PropsWithChildren<Props>) {
 
     lastStyles.current = props.styles
   }, [props])
+
+  useEffect(() => {
+    if (isWebViewLoaded.current && needWebViewReload.current) {
+      refs.webView.current.reload()
+      needWebViewReload.current = false
+    }
+  })
 
   // 创建HTML文档
   function createDocument(content: string, categories: string[] = []) {
@@ -161,27 +172,31 @@ function ArticleView(props: PropsWithChildren<Props>) {
       const redirectMap = storage.get('articleRedirectMap') || {}
       let trueTitle = redirectMap[props.pageName!] || props.pageName
       
-      let articleCache = await articleCacheController.getCacheData(trueTitle!)
-      if (articleCache) {
-        const { articleData, lastModified } = articleCache
-        setHtml(createDocument(articleData.parse.text['*'], articleData.parse.categories.map(item => item['*'])))
-        loadOriginalImgUrls(articleData.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
-        setArticleData(articleData)
-        // setTimeout(() => {
-        //   dialog.snackBar.show({ title: `正在显示${diffDate(new Date(lastModified))}加载的版本`, actionText: '加载最新' })
-        //     .then(() => loadContent(true))
-        // }, 3000)
-
-        // 后台请求一次文章数据，更新缓存
-        getArticleContent(props.pageName!, true)
-          .then(data => {
-            const trueTitle = data.parse.title
-            articleCacheController.addCache(trueTitle, data)
-            // 如果请求title和真实title不同，则存入文章名重定向映射表
-            if (props.pageName !== trueTitle) storage.merge('articleRedirectMap', { [trueTitle]: props.pageName! })
-          })
-
-        return
+      try {
+        let articleCache = await articleCacheController.getCacheData(trueTitle!)
+        if (articleCache) {
+          const { articleData, lastModified } = articleCache
+          setHtml(createDocument(articleData.parse.text['*'], articleData.parse.categories.map(item => item['*'])))
+          loadOriginalImgUrls(articleData.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
+          setArticleData(articleData)
+          // setTimeout(() => {
+          //   dialog.snackBar.show({ title: `正在显示${diffDate(new Date(lastModified))}加载的版本`, actionText: '加载最新' })
+          //     .then(() => loadContent(true))
+          // }, 3000)
+  
+          // 后台请求一次文章数据，更新缓存
+          getArticleContent(props.pageName!, true)
+            .then(data => {
+              const trueTitle = data.parse.title
+              articleCacheController.addCache(trueTitle, data)
+              // 如果请求title和真实title不同，则存入文章名重定向映射表
+              if (props.pageName !== trueTitle) storage.merge('articleRedirectMap', { [trueTitle]: props.pageName! })
+            })
+  
+          return
+        }
+      } catch (e) {
+        console.log('读取文章持久化缓存流程失败', e)
       }
     }
 
@@ -215,15 +230,22 @@ function ArticleView(props: PropsWithChildren<Props>) {
         setHtml(createDocument(html, data.parse.categories.filter(item => !('hidden' in item)).map(item => item['*'])))
         // 无法显示svg，这里过滤掉
         loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
+          .catch(e => console.log('文章图片链接获取失败', e))
+
         setArticleData(data)
 
         const trueTitle = data.parse.title
         articleCacheController.addCache(trueTitle, data)
+          .catch(e => console.log('添加文章缓存失败', e))
+
         // 如果请求title和真实title不同，则存入文章名重定向映射表
         if (props.pageName !== trueTitle) storage.merge('articleRedirectMap', { [trueTitle]: props.pageName! })
+
+        needWebViewReload.current = true
+        // setTimeout(() => isWebViewLoaded && refs.webView.current.reload(), 500)
       })
       .catch(async e => {
-        console.log(e)
+        console.log('文章接口数据加载流程出现错误', e)
         if (e && e.code === 'missingtitle') return props.onMissing && props.onMissing(props.pageName!)
 
         try {
@@ -236,10 +258,12 @@ function ArticleView(props: PropsWithChildren<Props>) {
           const articleData = articleCache.articleData
           let html = articleData.parse.text['*']
           setHtml(createDocument(html, articleData.parse.categories.map(item => item['*'])))
-          articleCacheController.getCacheTitleList().then(list => console.log('list', list))
           dialog.snackBar.show({ title: '因读取失败，载入条目缓存' })
           loadOriginalImgUrls(articleData.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
           setArticleData(articleData)
+
+          needWebViewReload.current = true
+          // setTimeout(() => refs.webView.current && refs.webView.current.reload(), 500)
         } catch (e) {
           console.log(e)
           toast('网络超时，读取失败')
@@ -275,7 +299,8 @@ function ArticleView(props: PropsWithChildren<Props>) {
     // 页面js加载完毕
     setEventHandler('onReady', () => {
       props.onLoaded && props.onLoaded(articleData!)
-      console.log('ready')
+      isWebViewLoaded.current = true
+      console.log('webview loaded')
       setStatus(3)
     })
     // 点击注释
@@ -314,7 +339,11 @@ function ArticleView(props: PropsWithChildren<Props>) {
       ;({
         inner: () => {
           let [pageName, anchor] = data.link.split('#')
-          navigation.push('article', { pageName, anchor }) 
+          navigation.push('article', { 
+            pageName, 
+            anchor,
+            displayPageName: data.displayTitle 
+          }) 
         },
 
         outer () {

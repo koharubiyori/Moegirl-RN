@@ -94,7 +94,7 @@ function CommentPage(props: PropsWithChildren<Props>) {
                   visibleReplyBtn={false} 
                 />  
               )}
-              <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginTop: 10 }}>{`共${commentData.commentTree.length}条评论`}</Text>
+              <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginTop: 10 }}>{`共${commentData.count}条评论`}</Text>
             </View>
           </> : null}
 

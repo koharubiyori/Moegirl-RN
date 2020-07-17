@@ -39,6 +39,7 @@ declare namespace ArticleWebView {
     onPressLink: {
       type: 'inner' | 'outer' | 'notExists'
       link: string
+      displayTitle: string
     }
     openApp: { url: string }
     onPressEdit: {

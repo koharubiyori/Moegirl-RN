@@ -1,3 +1,4 @@
+import { DrawerContentComponentProps, DrawerContentOptions } from '@react-navigation/drawer'
 import { useObserver } from 'mobx-react-lite'
 import React, { PropsWithChildren } from 'react'
 import { BackHandler, Dimensions, Image, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native'
@@ -6,14 +7,17 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import MyButton from '~/components/MyButton'
 import { AVATAR_URL } from '~/constants'
 import store from '~/mobx'
+import { setThemeColor } from '~/theme'
 import dialog from '~/utils/dialog'
 import globalNavigation from '~/utils/globalNavigation'
-import { drawerController } from '..'
 import DrawerItem from './Item'
-import { setThemeColor } from '~/theme'
+import i from '../lang'
 
-export interface Props {
-
+export interface Props extends DrawerContentComponentProps<DrawerContentOptions> {
+  navigation: DrawerContentComponentProps<DrawerContentOptions>['navigation'] & {
+    openDrawer(): void
+    closeDrawer(): void
+  }
 }
 
 function DrawerContent(props: PropsWithChildren<Props>) {
@@ -21,20 +25,15 @@ function DrawerContent(props: PropsWithChildren<Props>) {
 
   function tapCloseAfter(handler: () => void) {
     return () => {
-      drawerController.close()
+      props.navigation.closeDrawer()
       setTimeout(handler)
     }
   }
 
   function showActionHelps() {
     dialog.alert.show({
-      title: '操作提示',
-      content: [
-        '1. 左滑开启抽屉',
-        '2. 条目页右滑开启目录',
-        '3. 条目内容中长按b站播放器按钮跳转至b站对应视频页(当然前提是手机里有b站app)',
-        '4. 左右滑动视频播放器小窗可以关闭视频'
-      ].join('\n')
+      title: i('actionHintTitle'),
+      content: i('actionHint').join('\n')
     })
   }
 
@@ -85,7 +84,7 @@ function DrawerContent(props: PropsWithChildren<Props>) {
                 ...styles.headerIcon, 
                 top: statusBarHeight
               }}
-              onPress={() => { navigation.navigate('notification'); drawerController.close() }}
+              onPress={() => { navigation.navigate('notification'); props.navigation.closeDrawer() }}
             >
               <View>
                 <MaterialIcon name="notifications" size={25} color={theme.colors.onSurface} />

@@ -68,7 +68,7 @@ class UserStore {
   @action.bound
   checkWaitNotificationTotal(): Promise<number | null> {
     return new Promise((resolve, reject) => {
-      if (this.name === 'null') return resolve(null)
+      if (!this.isLoggedIn) return resolve(null)
       notificationApi.get('', 1)
         .then(data => {
           runInAction(() => {

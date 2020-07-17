@@ -4,7 +4,7 @@ import { ArticleApiData } from '~/api/article/types'
 import store from '~/mobx'
 
 const basePath = RNFetchBlob.fs.dirs.CacheDir + `/${ARTICLE_DATA_CACHES_DIRNAME}/`
-const articleDataCachePath = (title: string) => basePath + `${store.settings.source}-${title}.json`
+const articleDataCachePath = (title: string) => basePath + `${store.settings.source}_${store.settings.lang}_${title}.json`
 
 export default {
   addCache(title: string, data: ArticleApiData.GetContent) {

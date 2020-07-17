@@ -32,6 +32,13 @@ export default createControls('链接处理', () => {
 
     // 一般链接导向
     let link = ($(e.target).attr('href') || $(e.target).parent('a').attr('href') || $(this).attr('href'))!
+    let displayTitle = (
+      $(e.target).attr('title') || 
+      $(e.target).find('> img').eq(0).attr('alt') ||
+      $(e.target).parent('a').attr('title') || 
+      $(this).attr('title') ||
+      $(this).find('> img').eq(0).attr('alt')
+    )!
     let type: 'inner' | 'outer' | 'notExists' = 'inner'
     link = decodeURIComponent(link)
     if (/^\/([Ff]ile|文件):/.test(link)) {
@@ -55,7 +62,7 @@ export default createControls('链接处理', () => {
 
     if (/^([Ss]pecial|特殊):/.test(link)) { return }
     
-    return window._postRnMessage('onPressLink', { link, type })
+    return window._postRnMessage('onPressLink', { link, type, displayTitle })
   })
 
   $('head').append(`<style>

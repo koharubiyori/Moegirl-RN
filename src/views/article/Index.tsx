@@ -23,6 +23,7 @@ export interface Props {
 
 export interface RouteParams {
   pageName: string
+  displayPageName?: string
   anchor?: string
 }
 
@@ -30,6 +31,7 @@ function ArticlePage(props: PropsWithChildren<Props>) {
   const navigation = useTypedNavigation()
   const route = useMyRoute<RouteParams>()
   const [trueTitle, setTrueTitle] = useState(route.params.pageName)
+  const [displayTitle, setDisplayTitle] = useState(route.params.displayPageName || route.params.pageName)
   const [pageId, setPageId] = useState(0)
   const [contentsData, setContentsData] = useState<ArticleSectionData[]>([])
   const [isWatched, setIsWatched] = useState(false)
@@ -94,6 +96,8 @@ function ArticlePage(props: PropsWithChildren<Props>) {
   }, [])
 
   function handlerFor_articleData_wasLoaded(articleData: ArticleApiData.GetContent) {
+    console.log(articleData)
+    setDisplayTitle(articleData.parse.displaytitle)
     setPageId(articleData.parse.pageid)
     setTrueTitle(articleData.parse.title)
     navigation.setParams({ pageName: articleData.parse.title })
@@ -166,7 +170,8 @@ function ArticlePage(props: PropsWithChildren<Props>) {
   const activityIndicatorTopOffset = (StatusBar.currentHeight! + 56) / 2
   const isLoaded = pageId !== 0
   const isVisibleCommentBtn = 
-    !(/^([Tt]alk|讨论|[Tt]emplate( talk|)|模板(讨论|)|[Mm]odule( talk|)|模块(讨论|)|[Cc]ategory( talk|)|分类(讨论|)|萌娘百科 talk):/.test(trueTitle || route.params.pageName))
+    !(/^([Tt]alk|讨论|[Tt]emplate( talk|)|模板(讨论|)|[Mm]odule( talk|)|模块(讨论|)|[Cc]ategory( talk|)|分类(讨论|)|[Uu]ser talk|用户讨论|萌娘百科 talk):/.test(trueTitle || route.params.pageName))
+  const disabledEditFullText = /( talk|讨论):/.test(trueTitle || route.params.pageName)
   return useObserver(() =>
     <ViewContainer style={{ position: 'relative' }}>
       <MyStatusBar />
@@ -177,8 +182,9 @@ function ArticlePage(props: PropsWithChildren<Props>) {
       >
         <ArticleHeader
           getRef={refs.header}
-          title={trueTitle}
+          title={displayTitle}
           isWatchedPage={isWatched}
+          disabledEditFullText={disabledEditFullText}
           // 页面没加载完禁止点击搜索和action菜单
           rightBtnsDisabled={!isLoaded}
           onPressOpenContents={() => refs.contents.current!.open()}

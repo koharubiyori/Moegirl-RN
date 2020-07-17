@@ -3,7 +3,8 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { RouteParamMaps } from '~/routes'
 
 interface AdditionalProperty {
-  
+  openDrawer(): void
+  closeDrawer(): void
 }
 
 // 给useNavigation添加类型

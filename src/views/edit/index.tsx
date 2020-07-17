@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { StyleSheet } from 'react-native'
+import { BackHandler, StyleSheet } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import editApi from '~/api/edit'
 import { EditApiData } from '~/api/edit/types'
@@ -24,6 +24,7 @@ export interface Props {
 export interface RouteParams {
   title: string
   section?: number
+  newSection?: boolean
   isCreate?: boolean
 }
 
@@ -40,7 +41,7 @@ function EditPage(props: PropsWithChildren<Props>) {
   const [captcha, setCaptcha] = useState<EditApiData.GetCaptcha | null>(null)
   const articleReloadFlag = useRef(false)
 
-  const { title, section, isCreate } = route.params
+  const { title, section, isCreate, newSection } = route.params
 
   useLockDrawer()
 
@@ -48,6 +49,16 @@ function EditPage(props: PropsWithChildren<Props>) {
   tabDataCommunicator.data.title = title
   tabDataCommunicator.data.section = section
   tabDataCommunicator.data.isCreate = isCreate
+  tabDataCommunicator.data.newSection = newSection || false
+
+  useEffect(() => {
+    const listener = BackHandler.addEventListener('hardwareBackPress', () => {
+      checkAllowBack()
+      return true
+    })
+
+    return () => listener.remove()
+  }, [])
 
   // 离开页面时重置通信器
   useEffect(() => () => tabDataCommunicator.reset(), [])
@@ -83,7 +94,14 @@ function EditPage(props: PropsWithChildren<Props>) {
   function executeEdit(captchaId?: string, captchaVal?: string) {
     dialog.loading.show({ title: '提交中...' })
     const content = tabDataCommunicator.data.content
-    editApi.editArticle(title, section, content, summary!.trim() + SummarySuffix, captchaId, captchaVal)
+    editApi.editArticle({
+      title, 
+      section: newSection ? 'new' : section, 
+      content,
+      summary: newSection ? '' : summary!.trim() + SummarySuffix,
+      captchaid: captchaId,
+      captchaword: captchaVal
+    })
       .finally(dialog.loading.hide)
       .then(() => {
         toast.success('编辑成功')

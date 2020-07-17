@@ -35,7 +35,6 @@ function EditPreviewTab(props: PropsWithChildren<Props>) {
       .then(data => {
         setHtml(data.parse.text['*'])
         setStatus(3)
-        console.log('3333')
       }).catch(e => {
         console.log(e)
         setStatus(0)

@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import editApi from '~/api/edit'
-import ArticleEditor from '~/components/articleEditor'
+import ArticleEditor, { ArticleEditorRef } from '~/components/articleEditor'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import tabDataCommunicator from '../utils/tabDataCommunicator'
 
@@ -21,16 +21,36 @@ function EditCodeTab(props: PropsWithChildren<Props>) {
   const navigation = useTypedNavigation()
   const [status, setStatus] = useState(1)
   const [content, setContent] = useState<string | null>(null)
+  const [visibleSectionTitleInput, setVisibleSectionTitleInput] = useState(false)
   const originalContentSample = useRef('')
+  const refs = {
+    articleEditor: useRef<ArticleEditorRef>()
+  }
 
   useEffect(() => {
-    const { isCreate } = tabDataCommunicator.data
+    const { isCreate, newSection } = tabDataCommunicator.data
 
-    if (isCreate) {
+    if (isCreate || newSection) {
       setStatus(3)
       setContent('')
-      tabDataCommunicator.data.content = ''
       originalContentSample.current = ''
+
+      if (newSection) {
+        setVisibleSectionTitleInput(true)
+        setContent('== 请输入标题 ==')
+        changeText('== 请输入标题 ==')
+
+        const injectedScriptStr = (() => {
+          const editArea: any = document.querySelector('#editArea')
+          editArea.focus()
+          editArea.selectionStart = 3
+          editArea.selectionEnd = 8
+        }).toString()
+
+        setTimeout(() => {
+          refs.articleEditor.current!.injectScript(`(${injectedScriptStr})()`)
+        }, 300)
+      }
     } else {
       loadCode() 
     }
@@ -74,7 +94,7 @@ function EditCodeTab(props: PropsWithChildren<Props>) {
           </TouchableOpacity>,
         1: () => null, 
         2: () => <ActivityIndicator color={theme.colors.accent} size={50} />,
-        3: () => <ArticleEditor content={content} onChangeText={changeText} />
+        3: () => <ArticleEditor getRef={refs.articleEditor} content={content} onChangeText={changeText} />
       } as { [status: number]: () => JSX.Element | null })[status]()}
     </View>
   )

@@ -10,9 +10,9 @@ export const sourceList = {
 async function moeRequest<ResponseData = any>(config: AxiosRequestConfig): Promise<ResponseData> {
   config.baseURL = `${sourceList[store.settings.source]}/api.php`
 
-  // 为所有萌百请求默认添加format: 'json'
   if (!config.params) config.params = {}
-  config.params.format = 'json'
+  config.params.format = 'json' // 为所有萌百请求默认添加format: 'json'
+  config.params.variant = store.settings.lang // 语言参数
   
   return Promise.race([
     new Promise<any>((resolve, reject) => {

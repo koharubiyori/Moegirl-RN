@@ -10,6 +10,7 @@ export interface Props {
   title: string
   isWatchedPage: boolean
   rightBtnsDisabled?: boolean
+  disabledEditFullText?: boolean
   onPressRefreshBtn(): void
   onPressOpenContents(): void
   onPressToggleWatchList(): void
@@ -51,7 +52,7 @@ function ArticleHeader(props: PropsWithChildren<Props>) {
     }).start()
   }
 
-  type ActionName = '刷新' | '登录' | '编辑此页' | '分享' | '打开目录' | '加入监视列表' | '移出监视列表'
+  type ActionName = '刷新' | '登录' | '编辑此页' | '添加话题' | '分享' | '打开目录' | '加入监视列表' | '移出监视列表'
   function actionHandlers(actionName: ActionName, index: number) {
     if (actionName === '刷新') {
       props.onPressRefreshBtn()
@@ -63,6 +64,10 @@ function ArticleHeader(props: PropsWithChildren<Props>) {
 
     if (actionName === '编辑此页') {
       navigation.push('edit', { title: props.title })
+    }
+
+    if (actionName === '添加话题') {
+      navigation.push('edit', { title: props.title, newSection: true })
     }
 
     if (actionName === '分享') {
@@ -93,9 +98,10 @@ function ArticleHeader(props: PropsWithChildren<Props>) {
   return useObserver(() => {
     const actions = (() => {
       const watchListActionBtnName: ActionName = props.isWatchedPage ? '移出监视列表' : '加入监视列表'
+      const editBtnText = props.disabledEditFullText ? '添加话题' : '编辑此页'
       const actionList: ActionName[] = [
         '刷新',
-        ...([store.user.isLoggedIn ? '编辑此页' : '登录'] as ActionName[]),
+        ...([store.user.isLoggedIn ? editBtnText : '登录'] as ActionName[]),
         ...(store.user.isLoggedIn ? [watchListActionBtnName] : []),
         '分享',
         '打开目录'

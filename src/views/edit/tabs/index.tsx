@@ -1,11 +1,10 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import React, { useEffect, useRef, useState, MutableRefObject, Fragment } from 'react'
+import React, { Fragment, MutableRefObject, useEffect, useRef, useState } from 'react'
 import { Animated, Dimensions, View } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 import MyButton from '~/components/MyButton'
 import EditCodeTab from './CodeEdit'
 import EditPreviewTab from './Preview'
-import { NavigationContainer } from '@react-navigation/native'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -70,7 +69,11 @@ export interface Props {
 
 function EditTabs(props: Props) {
   return (
-    <Tab.Navigator swipeEnabled={false} tabBar={props => <MyTabBar {...props} />}>
+    <Tab.Navigator 
+      swipeEnabled={false} 
+      backBehavior="order"
+      tabBar={props => <MyTabBar {...props} />}
+    >
       <Tab.Screen name="维基文本" component={EditCodeTab} />
       <Tab.Screen name="预览视图" component={EditPreviewTab} />
     </Tab.Navigator>

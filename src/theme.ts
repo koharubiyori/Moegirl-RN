@@ -128,6 +128,6 @@ export function setThemeColor(themeColor: ThemeColorType) {
   })  
 
   setTimeout(() => {
-    changeNavigationBarColor(themeColor === 'night' ? colors.night.background : 'white', false, true)
+    changeNavigationBarColor(themeColor === 'night' ? colors.night.background : 'white', themeColor !== 'night', true)
   })
 }

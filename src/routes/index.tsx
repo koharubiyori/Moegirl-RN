@@ -17,6 +17,8 @@ import SettingsPage, { RouteParams as SettingsRP } from '~/views/settings'
 import WatchListPage, { RouteParams as WatchListRP } from '~/views/watchList'
 import customRouteTransition from './utils/customTransition'
 import HistoryPage, { RouteParams as HistoryRP } from '~/views/history'
+import DrawerView from '~/views/drawer'
+import BiliPlayerModal from '~/views/biliPlayer'
 
 export type RouteOptions = Parameters<(typeof Stack.Screen)>[0]['options']
 const route = (component: FC<any>, options?: RouteOptions) => ({ component, options })
@@ -79,20 +81,25 @@ export interface Props {
 function StackRoutes(props: Props) {
   return (
     <NavigationContainer ref={props.getRef} onStateChange={props.onStateChange}>
-      <Stack.Navigator 
-        initialRouteName="drawer" 
-        headerMode="none"
-        screenOptions={TransitionPresets.SlideFromRightIOS}
-      >
-        {Object.keys(routeMaps).map(routeName =>
-          <Stack.Screen 
-            key={routeName} 
-            name={routeName} 
-            component={routeMaps[routeName as any as RouteName].component} 
-            options={routeMaps[routeName as any as RouteName].options}
-          />  
-        )}
-      </Stack.Navigator>
+      <DrawerView>
+        <>
+          <Stack.Navigator 
+            initialRouteName="drawer" 
+            headerMode="none"
+            screenOptions={TransitionPresets.SlideFromRightIOS}
+          >
+            {Object.keys(routeMaps).map(routeName =>
+              <Stack.Screen 
+                key={routeName} 
+                name={routeName} 
+                component={routeMaps[routeName as any as RouteName].component} 
+                options={routeMaps[routeName as any as RouteName].options}
+                />  
+              )}
+          </Stack.Navigator>
+          <BiliPlayerModal />
+        </>
+      </DrawerView>
     </NavigationContainer>
   )
 }

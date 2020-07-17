@@ -50,16 +50,18 @@ function getToken() {
   })
 }
 
-function executeEditArticle(
+function executeEditArticle({
+  token, title, section, content, summary, timestamp, captchaword, captchaid
+}: {
   token: string,
   title: string, 
-  section: number | undefined, 
+  section: number | string | undefined, 
   content: string, 
   summary: string, 
   timestamp: string | undefined, 
   captchaid?: string,
   captchaword?: string
-) {
+}) {
   return moeRequest<EditApiData.EditArticle>({
     method: 'post',
     params: {
@@ -79,14 +81,16 @@ function executeEditArticle(
 }
 
 let retryMark = false // 对所有请求执行一次失败后重试，以跳过所有警告
-async function editArticle(
-  title: string, 
-  section: number | undefined, 
-  content: string, 
-  summary: string,
-  captchaid?: string,
+async function editArticle({
+  title, section, content, summary, captchaid, captchaword
+}: {
+  title: string
+  section: number | string | undefined
+  content: string
+  summary: string
+  captchaid?: string
   captchaword?: string
-): Promise<void> {
+}): Promise<void> {
   try {
     const timestampData = await getLastTimestamp(title)
     let timestamp: string | undefined
@@ -99,19 +103,19 @@ async function editArticle(
     const tokenData = await getToken()
     const token = tokenData.query.tokens.csrftoken
 
-    const result = await executeEditArticle(token, title, section, content, summary, timestamp, captchaid, captchaword)
+    const result = await executeEditArticle({ token, title, section, content, summary, timestamp, captchaid, captchaword })
 
     if ('error' in result) {
-      retryMark = false
-      return Promise.reject(result.error!.code)
-    } else {
       if (!retryMark) {
         retryMark = true
-        return editArticle(title, section, content, summary)
+        return editArticle({ title, section, content, summary, captchaid, captchaword })
       } else {
         retryMark = false
-        return Promise.resolve()
+        return Promise.reject(result.error!.code)
       }
+    } else {
+      retryMark = false
+      return Promise.resolve()
     }
   } catch (e) {
     

@@ -8,6 +8,7 @@ import ViewContainer from '~/components/ViewContainer'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
 import { drawerController } from '../drawer'
+import i from './lang'
 
 export interface Props {
   
@@ -17,13 +18,13 @@ export interface RouteParams {
   id: string
 }
 
-const siteNameMaps = {
-  moegirl: '萌娘百科',
-  hmoe: 'H萌娘'
-}
-
 function HomePage(props: PropsWithChildren<Props>) {
   const navigation = useTypedNavigation()
+
+  const siteNameMaps = {
+    moegirl: i('moegirl'),
+    hmoe: i('hmoe')
+  }
 
   const siteName = siteNameMaps[store.settings.source]
   return useObserver(() => 
@@ -34,7 +35,7 @@ function HomePage(props: PropsWithChildren<Props>) {
         title={siteName}
         leftIcon="menu"
         rightIcon="search"
-        onPressLeftIcon={() => drawerController.open()}
+        onPressLeftIcon={() => navigation.openDrawer()}
         onPressRightIcon={() => navigation.push('search')}
       />
 

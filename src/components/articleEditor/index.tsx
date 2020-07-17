@@ -1,16 +1,21 @@
-import React, { PropsWithChildren, useEffect, useRef, useState, FC } from 'react'
-import { Dimensions, Keyboard, ScrollView, StyleProp, StyleSheet, Text, ViewStyle, View } from 'react-native'
+import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState } from 'react'
+import { Dimensions, Keyboard, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
+import { useTheme } from 'react-native-paper'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { WebView } from 'react-native-webview'
 import MyButton from '~/components/MyButton'
-import { useTheme } from 'react-native-paper'
-import { colors } from '~/theme'
 import store from '~/mobx'
+import { colors } from '~/theme'
 
 export interface Props {
   style?: StyleProp<ViewStyle>
   content: string | null
   onChangeText? (content: string): void
+  getRef?: MutableRefObject<any>
+}
+
+export interface ArticleEditorRef {
+  injectScript(script: string): void
 }
 
 function ArticleEditor(props: PropsWithChildren<Props>) {
@@ -22,6 +27,12 @@ function ArticleEditor(props: PropsWithChildren<Props>) {
   const [visibleQuickInsertBar, setVisibleQuickInertBar] = useState(false)
   const refs = {
     webView: useRef<any>()
+  }
+
+  if (props.getRef) {
+    props.getRef.current = {
+      injectScript: (script: string) => refs.webView.current.injectJavaScript(script)
+    }
   }
 
   useEffect(() => {

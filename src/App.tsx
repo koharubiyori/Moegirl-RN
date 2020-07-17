@@ -12,6 +12,7 @@ import { initGlobalNavigation } from './utils/globalNavigation'
 import toast from './utils/toast'
 import BiliPlayerModal from './views/biliPlayer'
 import DrawerView, { drawerController } from './views/drawer'
+import { getLanguages } from 'react-native-i18n'
 
 const initialTheme: Theme = {
   ...DefaultTheme,
@@ -23,6 +24,7 @@ const initialTheme: Theme = {
   }
 }
 
+getLanguages().then(console.log)
 export default function App() {
   const [theme, setTheme] = useState(initialTheme)
   const [isSettingsLoaded, setIsSettingsLoaded] = useState(false)
@@ -55,10 +57,10 @@ export default function App() {
     
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
       // 如果抽屉处于开启状态，则先关闭抽屉
-      if (drawerController.visible) {
-        drawerController.close()
-        return true
-      }
+      // if (drawerController.visible) {
+      //   drawerController.close()
+      //   return true
+      // }
       
       // 如果页面栈不为1，则这里什么都不做(页面栈pop)
       const rootRoute = refs.stackRoutes.current!.getRootState()
@@ -91,10 +93,7 @@ export default function App() {
     <PaperProvider theme={theme}>
       {/* 等待用户设置载入完成 */}
       {isSettingsLoaded &&
-        <DrawerView>
-          <StackRoutes getRef={refs.stackRoutes} />
-          <BiliPlayerModal />
-        </DrawerView>
+        <StackRoutes getRef={refs.stackRoutes} />
       }
       <DialogBaseView />
     </PaperProvider>

@@ -7,15 +7,20 @@ import baseStorage from './utils/baseStorage'
 import dialog from './utils/dialog'
 import globalNavigation from './utils/globalNavigation'
 import storage from './utils/storage'
+import { getLanguages } from 'react-native-i18n'
 
 export default async function init() {
   try {
     const settings = await baseStorage.get('settings')
     if (settings) {
-      store.settings.set('heimu', settings!.heimu)
-      store.settings.set('cachePriority', settings!.cachePriority)
-      store.settings.set('source', settings!.source)
-      store.settings.set('theme', settings!.theme)
+      settings.heimu && store.settings.set('heimu', settings.heimu)
+      settings.cachePriority && store.settings.set('cachePriority', settings.cachePriority)
+      settings.source && store.settings.set('source', settings.source)
+      settings.theme && store.settings.set('theme', settings.theme)
+      settings.lang && store.settings.set('lang', settings.lang)
+    } else {
+      const localLangList = await getLanguages()
+      if (localLangList[0] === 'zh-TW') store.settings.set('lang', 'zh-hant')
     }
 
     // 初始化当前source的数据

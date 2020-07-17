@@ -22,7 +22,7 @@ export default function EditHeader(props: PropsWithChildren<FinalProps>) {
         borderBottomWidth: 1
       }}
 
-      title={`编辑：${props.title}`}
+      title={props.title}
       leftIcon="keyboard-backspace"
       rightIcon="done"
       onPressLeftIcon={props.onPressBack}

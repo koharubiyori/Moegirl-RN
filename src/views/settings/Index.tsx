@@ -1,19 +1,19 @@
-import React, { PropsWithChildren } from 'react'
-import { View, StyleSheet, ScrollView, Text } from 'react-native'
-import ViewContainer from '~/components/ViewContainer'
-import MyToolbar from '~/components/MyToolbar'
-import useTypedNavigation from '~/hooks/useTypedNavigation'
-import SettingsSwitchItem from './components/SwitchItem'
 import { useObserver } from 'mobx-react-lite'
-import store from '~/mobx'
-import dialog from '~/utils/dialog'
-import articleCacheController from '~/utils/articleCacheController'
-import storage from '~/utils/storage'
-import toast from '~/utils/toast'
-import { colors } from '~/theme'
+import React, { PropsWithChildren } from 'react'
+import { Linking, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import RNRestart from 'react-native-restart'
 import { isHmoe } from '~/../app.json'
+import MyToolbar from '~/components/MyToolbar'
+import ViewContainer from '~/components/ViewContainer'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
+import store from '~/mobx'
+import { colors } from '~/theme'
+import articleCacheController from '~/utils/articleCacheController'
+import dialog from '~/utils/dialog'
+import storage from '~/utils/storage'
+import toast from '~/utils/toast'
+import SettingsSwitchItem from './components/SwitchItem'
 
 export interface Props {
   
@@ -64,6 +64,25 @@ function SettingsPage(props: PropsWithChildren<Props>) {
         store.settings.set('source', val as any)
           .then(() => RNRestart.Restart())
       })
+  }
+
+  async function showLangSelection() {
+    const val = await dialog.optionSheet.show({
+      title: '选择语言',
+      defaultSelected: store.settings.lang,
+      options: [
+        {
+          label: '简体中文',
+          value: 'zh-hans'
+        }, {
+          label: '繁體中文',
+          value: 'zh-hant'
+        }
+      ]
+    })
+
+    await store.settings.set('lang', val as any)
+    RNRestart.Restart()
   }
 
   return useObserver(() =>
@@ -139,14 +158,19 @@ function SettingsPage(props: PropsWithChildren<Props>) {
         </> : null}
 
         <SettingsSwitchItem hideSwitch
+          title="选择语言"
+          onPress={showLangSelection}
+        />
+
+        <SettingsSwitchItem hideSwitch
           title="关于"
           onPress={() => navigation.push('about')}
         />
 
-        {/* <SettingsSwitchItem hideSwitch
+        <SettingsSwitchItem hideSwitch
           title={isHmoe ? '在Github上查看新版本' : '前往Github下载支持H萌娘的版本'}
           onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
-        /> */}
+        />
       </ScrollView>      
     </ViewContainer>
   )
