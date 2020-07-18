@@ -1,16 +1,17 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View, LayoutAnimation, RefreshControl, Vibration } from 'react-native'
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, TouchableOpacity, Vibration, View } from 'react-native'
+import { Text, useTheme } from 'react-native-paper'
 import watchListApi from '~/api/watchList'
-import MyToolbar from '~/components/MyToolbar'
-import Item from './components/Item'
 import MyStatusBar from '~/components/MyStatusBar'
-import { useTheme, Text } from 'react-native-paper'
+import MyToolbar from '~/components/MyToolbar'
 import ViewContainer from '~/components/ViewContainer'
 import useLayoutAnimation from '~/hooks/useLayoutAnimation'
-import toast from '~/utils/toast'
-import { diffDate } from '~/utils/diffDate'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import dialog from '~/utils/dialog'
+import { diffDate } from '~/utils/diffDate'
+import toast from '~/utils/toast'
+import Item from './components/Item'
+import i from './lang'
 
 export interface Props {
 
@@ -89,13 +90,13 @@ function WatchListPage(props: PropsWithChildren<Props>) {
 
   async function unwatchTitle(title: string) {
     Vibration.vibrate(25)
-    await dialog.confirm.show({ content: `确定要将“${title}”从监视列表移除？` })
+    await dialog.confirm.show({ content: i.index.unwatchTitle.check(title) })
     dialog.loading.show()
     watchListApi.setWatchStatus(title, true)
       .finally(dialog.loading.hide)
       .then(() => {
         setWatchListList(prevVal => ({ ...prevVal, list: prevVal.list.filter(item => item.title !== title) }))
-        toast('已移出监视列表')
+        toast(i.index.unwatchTitle.success)
       })
       .catch(console.log)
   }
@@ -104,7 +105,7 @@ function WatchListPage(props: PropsWithChildren<Props>) {
     <ViewContainer grayBgColor>
       <MyStatusBar />  
       <MyToolbar
-        title="监视列表"
+        title={i.index.title}
         leftIcon="keyboard-backspace"
         onPressLeftIcon={() => navigation.goBack()}
       />   
@@ -137,14 +138,14 @@ function WatchListPage(props: PropsWithChildren<Props>) {
           0: () => 
             <TouchableOpacity onPress={() => load()}>
               <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>加载失败，点击重试</Text>
+                <Text>{i.index.netErr}</Text>
               </View>
             </TouchableOpacity>,
           1: () => null,
           2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
           2.1: () => null,
           3: () => null,
-          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
+          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.allLoaded}</Text>,
           5: () => null
         }[watchListList.status]()}
       />

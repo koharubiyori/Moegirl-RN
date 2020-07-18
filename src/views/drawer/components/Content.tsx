@@ -32,8 +32,8 @@ function DrawerContent(props: PropsWithChildren<Props>) {
 
   function showActionHelps() {
     dialog.alert.show({
-      title: i('actionHintTitle'),
-      content: i('actionHint').join('\n')
+      title: i.index.actionHintTitle,
+      content: i.index.actionHints.join('\n')
     })
   }
 
@@ -42,12 +42,6 @@ function DrawerContent(props: PropsWithChildren<Props>) {
     setThemeColor(willSetTheme)
     store.settings.set('theme', willSetTheme)
   }
-
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     console.log(globalNavigation.current)
-  //   }, 1000)
-  // }, [])
 
   return useObserver(() => {
     const navigation = globalNavigation.current
@@ -110,7 +104,7 @@ function DrawerContent(props: PropsWithChildren<Props>) {
                 defaultSource={require('~/assets/images/akari.jpg')} 
                 style={{ ...styles.avatar, borderColor: 'white' }} 
               />
-              <Text style={{ ...styles.hintText, color: theme.colors.onSurface }}>欢迎你，{store.user.name}</Text>
+              <Text style={{ ...styles.hintText, color: theme.colors.onSurface }}>{i.index.welcome + store.user.name}</Text>
             </TouchableOpacity>
           </> : <>
             <View>
@@ -119,7 +113,7 @@ function DrawerContent(props: PropsWithChildren<Props>) {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={tapCloseAfter(() => navigation.navigate('login'))}>
-                <Text style={{ ...styles.hintText, color: theme.colors.onSurface }}>登录/加入{isHmoeSource ? 'H萌娘' : '萌娘百科'}</Text>
+                <Text style={{ ...styles.hintText, color: theme.colors.onSurface }}>{i.index.loginHint + (isHmoeSource ? i.index.hmoe : i.index.moegirl)}</Text>
               </TouchableOpacity>
             </View>
           </>}
@@ -127,13 +121,17 @@ function DrawerContent(props: PropsWithChildren<Props>) {
 
         <ScrollView style={{ flex: 1 }}>
           <View>
-            <DrawerItem icon="forum" title="讨论版" onPress={tapCloseAfter(() => navigation.push('article', { pageName: '萌娘百科 talk:讨论版' }))} />
+            <DrawerItem 
+              icon="forum" 
+              title={i.index.items.talk} 
+              onPress={tapCloseAfter(() => navigation.push('article', { pageName: '萌娘百科 talk:讨论版', displayPageName: `萌娘百科 talk:${i.index.items.talk}` }))} 
+            />
             {store.user.isLoggedIn ? <>
-              <DrawerItem icon="eye" iconGroup="MaterialCommunity" title="监视列表" onPress={tapCloseAfter(() => navigation.navigate('watchList'))} />
+              <DrawerItem icon="eye" iconGroup="MaterialCommunity" title={i.index.items.watchList} onPress={tapCloseAfter(() => navigation.navigate('watchList'))} />
             </> : null}
-            <DrawerItem icon="history" title="浏览历史" onPress={tapCloseAfter(() => navigation.push('history'))} />
-            <DrawerItem icon="touch-app" title="操作提示" onPress={showActionHelps} />
-            <DrawerItem icon="brightness-4" title={(isNightMode ? '关闭' : '开启') + '黑夜模式'} onPress={toggleNight} />
+            <DrawerItem icon="history" title={i.index.items.watchList} onPress={tapCloseAfter(() => navigation.push('history'))} />
+            <DrawerItem icon="touch-app" title={i.index.items.actionHint} onPress={showActionHelps} />
+            <DrawerItem icon="brightness-4" title={i.index.items.nightMode(!isNightMode)} onPress={toggleNight} />
           </View>
         </ScrollView>
 
@@ -145,7 +143,7 @@ function DrawerContent(props: PropsWithChildren<Props>) {
             onPress={tapCloseAfter(() => navigation.navigate('settings'))}
           >
             <MaterialIcon name="settings" size={22} color="#666" />
-            <Text style={{ color: theme.colors.disabled, marginLeft: 10 }}>设置</Text>
+            <Text style={{ color: theme.colors.disabled, marginLeft: 10 }}>{i.index.settings}</Text>
           </MyButton>
 
           <View style={{ width: 1, height: '60%', backgroundColor: '#ccc' }} />
@@ -157,7 +155,7 @@ function DrawerContent(props: PropsWithChildren<Props>) {
             onPress={() => BackHandler.exitApp()}
           >
             <MaterialIcon name="subdirectory-arrow-left" size={22} color="#666" />
-            <Text style={{ color: theme.colors.disabled, marginLeft: 10 }}>退出应用</Text>
+            <Text style={{ color: theme.colors.disabled, marginLeft: 10 }}>{i.index.exit}</Text>
           </MyButton>
         </View>
       </View>

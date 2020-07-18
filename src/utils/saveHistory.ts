@@ -1,16 +1,21 @@
-import { DeviceEventEmitter } from 'react-native'
 import RNFetchBlob from 'rn-fetch-blob'
 import articleApi from '~/api/article'
 import { BROWSING_HISTORY_IMGS_DIRNAME } from '~/constants'
 import storage from '~/utils/storage'
+import md5 from 'md5'
+import store from '~/mobx'
 
 export interface BrowsingHistory {
   title: string
+  displayTitle?: string
   timestamp: number
   imgPath: string | null
 }
 
-export default function(title: string) {
+export const historyImgPath = (title: string, imgSuffixName: string) => 
+  `/${BROWSING_HISTORY_IMGS_DIRNAME}/${md5(store.settings.source + title)}.${imgSuffixName}`
+
+export default function saveHistory(title: string, displayTitle?: string) {
   const timestamp = new Date().getTime()
 
   articleApi.getMainImage(title, 250)
@@ -23,12 +28,12 @@ export default function(title: string) {
         }
       })
 
-      let result: BrowsingHistory = { title, timestamp, imgPath: null }
+      let result: BrowsingHistory = { title, timestamp, imgPath: null, displayTitle }
 
       if (img) {
         try {
           const imgSuffixName = img.source.replace(/^.+\.([^\.]+)$/, '$1')
-          const imgSavePath = `/${BROWSING_HISTORY_IMGS_DIRNAME}/${encodeURIComponent(title)}.${imgSuffixName}`
+          const imgSavePath = historyImgPath(title, imgSuffixName)
           await RNFetchBlob
             .config({ 
               path: RNFetchBlob.fs.dirs.DocumentDir + imgSavePath,
@@ -45,4 +50,13 @@ export default function(title: string) {
       storage.set('browsingHistory', _history)
     })
     .catch(e => console.log(e))
+}
+
+export function getHistoryImgBase64(path: string): Promise<string> {
+  const imgPath = RNFetchBlob.fs.dirs.DocumentDir + path
+  const imgSuffixName = path.match(/\.([^\.]+)$/)![1]
+
+  return RNFetchBlob.fs.readFile(imgPath, 'base64')
+    .then(data => `data:image/${imgSuffixName};base64,${data}`)
+    .catch(e => console.log(e)) as any
 }

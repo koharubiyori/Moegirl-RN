@@ -2,15 +2,18 @@ import createControls from '../utils/createControl'
 
 export default createControls('折叠面板', () => {
   let viewBox = $('#articleContentContainer')
-
+  const i = window._i.controls.collapsible
+  const collapse = `[${i.collapse}]`
+  const unfold = `[${i.unfold}]`
+  
   viewBox.find('.mw-collapsible').each(function () {
-    let btnText = this.classList.contains('mw-uncollapsed') ? '[折叠]' : '[展开]'
+    let btnText = this.classList.contains('mw-uncollapsed') ? collapse : unfold
     let collapseBtn = $(`<div class="collapseBtn">${btnText}</div>`).click(function (e) {
       let body = $(e.target).closest('.mw-collapsible')
       if (body[0].classList.contains('mw-uncollapsed')) {
-        collapseBtn.text('[展开]')
+        collapseBtn.text(unfold)
       } else {
-        collapseBtn.text('[折叠]')
+        collapseBtn.text(collapse)
       }
       body.toggleClass('mw-uncollapsed')
     })

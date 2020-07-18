@@ -81,7 +81,7 @@ export interface Props {
 function StackRoutes(props: Props) {
   return (
     <NavigationContainer ref={props.getRef} onStateChange={props.onStateChange}>
-      <DrawerView>
+      <DrawerView>{() => 
         <>
           <Stack.Navigator 
             initialRouteName="drawer" 
@@ -94,12 +94,12 @@ function StackRoutes(props: Props) {
                 name={routeName} 
                 component={routeMaps[routeName as any as RouteName].component} 
                 options={routeMaps[routeName as any as RouteName].options}
-                />  
-              )}
+              />  
+            )}
           </Stack.Navigator>
           <BiliPlayerModal />
         </>
-      </DrawerView>
+      }</DrawerView>
     </NavigationContainer>
   )
 }

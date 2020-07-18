@@ -2,9 +2,10 @@ import RNFetchBlob from 'rn-fetch-blob'
 import { ARTICLE_DATA_CACHES_DIRNAME } from '~/constants'
 import { ArticleApiData } from '~/api/article/types'
 import store from '~/mobx'
+import md5 from 'md5'
 
 const basePath = RNFetchBlob.fs.dirs.CacheDir + `/${ARTICLE_DATA_CACHES_DIRNAME}/`
-const articleDataCachePath = (title: string) => basePath + `${store.settings.source}_${store.settings.lang}_${title}.json`
+const articleDataCachePath = (title: string) => basePath + `${md5(`${store.settings.source}_${store.settings.lang}_${title}`)}.json`
 
 export default {
   addCache(title: string, data: ArticleApiData.GetContent) {

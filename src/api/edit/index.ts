@@ -1,12 +1,15 @@
 import moeRequest from '~/request/moegirl'
 import request from '~/request/base'
 import { EditApiData } from './types'
+import articleApi from '../article'
 
-function getCode(pageName: string, section?: number) {
+async function getCode(pageName: string, section?: number) {
+  const translatedTitle = await articleApi.translateTitle(pageName)
+  
   return moeRequest<EditApiData.GetCode>({
     params: {
       action: 'parse',
-      page: pageName,
+      page: translatedTitle,
       prop: 'wikitext',
       ...(section ? { section } : {}),
     }
@@ -28,12 +31,13 @@ function getPreview(codes: string, title: string) {
   })
 }
 
-function getLastTimestamp(title: string) {
+async function getLastTimestamp(title: string) {
+  const translatedTitle = await articleApi.translateTitle(title)
   return moeRequest<EditApiData.GetLastTimestamp>({
     params: {
       action: 'query',
       prop: 'revisions',
-      titles: title,
+      titles: translatedTitle,
       rvprop: 'timestamp',
       rvlimit: 1
     }
@@ -50,7 +54,7 @@ function getToken() {
   })
 }
 
-function executeEditArticle({
+async function executeEditArticle({
   token, title, section, content, summary, timestamp, captchaword, captchaid
 }: {
   token: string,
@@ -62,13 +66,14 @@ function executeEditArticle({
   captchaid?: string,
   captchaword?: string
 }) {
+  const translatedTitle = await articleApi.translateTitle(title)
   return moeRequest<EditApiData.EditArticle>({
     method: 'post',
     params: {
       action: 'edit',
       tags: 'Android App Edit',
       minor: 1,
-      title,
+      title: translatedTitle,
       text: content,
       summary,
       ...(section ? { section } : {}),

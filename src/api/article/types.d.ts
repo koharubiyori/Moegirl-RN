@@ -37,6 +37,7 @@ export namespace ArticleApiData {
     
     parse: {
       title: string
+      displaytitle: string
       pageid: number
       redirects: any[]
       text: { '*': string }
@@ -76,6 +77,23 @@ export namespace ArticleApiData {
           title: string
           imagerepository: string
           imageinfo: ArticleImageInfoData[]
+        }
+      }
+    }
+  }
+
+  interface translateTitle {
+    query: {
+      converted?: {
+        from: string
+        to: string
+      }[],
+
+      pages: {
+        [pageId: number]: {
+          pageid: number
+          ns: number
+          title: string
         }
       }
     }

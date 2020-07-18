@@ -4,15 +4,13 @@ import { BackHandler } from 'react-native'
 import { DefaultTheme, Provider as PaperProvider, Theme } from 'react-native-paper'
 import SplashScreen from 'react-native-splash-screen'
 import init from './init'
+import i from './lang'
 import store from './mobx'
 import StackRoutes from './routes'
 import { colors, initSetThemeMethod, setThemeColor } from './theme'
 import { DialogBaseView } from './utils/dialog'
 import { initGlobalNavigation } from './utils/globalNavigation'
 import toast from './utils/toast'
-import BiliPlayerModal from './views/biliPlayer'
-import DrawerView, { drawerController } from './views/drawer'
-import { getLanguages } from 'react-native-i18n'
 
 const initialTheme: Theme = {
   ...DefaultTheme,
@@ -24,7 +22,6 @@ const initialTheme: Theme = {
   }
 }
 
-getLanguages().then(console.log)
 export default function App() {
   const [theme, setTheme] = useState(initialTheme)
   const [isSettingsLoaded, setIsSettingsLoaded] = useState(false)
@@ -55,13 +52,7 @@ export default function App() {
   useEffect(() => {
     let pressBackFlag = false
     
-    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-      // 如果抽屉处于开启状态，则先关闭抽屉
-      // if (drawerController.visible) {
-      //   drawerController.close()
-      //   return true
-      // }
-      
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {      
       // 如果页面栈不为1，则这里什么都不做(页面栈pop)
       const rootRoute = refs.stackRoutes.current!.getRootState()
       if (rootRoute.routes.length > 1) { return }
@@ -70,7 +61,7 @@ export default function App() {
       if (!pressBackFlag) {
         pressBackFlag = true
         setTimeout(() => pressBackFlag = false, 3000)
-        toast('再按一次退出程序')
+        toast(i.againPressToExit)
         return true
       } else {
         BackHandler.exitApp()

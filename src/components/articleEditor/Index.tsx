@@ -6,6 +6,7 @@ import { WebView } from 'react-native-webview'
 import MyButton from '~/components/MyButton'
 import store from '~/mobx'
 import { colors } from '~/theme'
+import i from './lang'
 
 export interface Props {
   style?: StyleProp<ViewStyle>
@@ -110,7 +111,7 @@ function ArticleEditor(props: PropsWithChildren<Props>) {
         </style>
       </head>
       <body>
-        <textarea id="editArea" placeholder="还没有任何文字...">${content}</textarea>
+        <textarea id="editArea" placeholder="${i.index.placeholder}">${content}</textarea>
         <script>
           ${injectJsCodes};
         </script>
@@ -181,18 +182,18 @@ function ArticleEditor(props: PropsWithChildren<Props>) {
             backgroundColor: theme.colors.surface,
             borderTopColor: theme.colors.placeholder 
           }}>
-          <QuickInsertItem title="[[ ]]" subtitle="链接" onPress={() => insertCodes('[[]]', 2)} />
-          <QuickInsertItem title="{{ }}" subtitle="模板" onPress={() => insertCodes('{{}}', 2)} />
-          <QuickInsertItem title="|" subtitle="管道符" onPress={() => insertCodes('|')} />
-          <QuickInsertItem title="*" subtitle="无序列表" onPress={() => insertCodes('* ')} />
-          <QuickInsertItem title="#" subtitle="有序列表" onPress={() => insertCodes('# ')} />
-          <QuickInsertItem icon="fountain-pen-tip" subtitle="签名" onPress={() => insertCodes(' --~~~~')} />
-          <QuickInsertItem title="''' '''" subtitle="粗体" onPress={() => insertCodes("''''''", 3)} />
-          <QuickInsertItem title="<del>" subtitle="删除线" onPress={() => insertCodes('<del></del>', 6)} />
-          <QuickInsertItem title="==" subtitle="大标题" onPress={() => insertCodes('==  ==', 3)} />
-          <QuickInsertItem title="===" subtitle="小标题" onPress={() => insertCodes('===  ===', 4)} />
-          <QuickInsertItem title="黑幕" onPress={() => insertCodes('{{黑幕|}}', 2)} />
-          <QuickInsertItem title="彩色字" onPress={() => insertCodes('{{color|red|text}}', 2)} />
+          <QuickInsertItem title="[[ ]]" subtitle={i.index.quickInsert.link} onPress={() => insertCodes('[[]]', 2)} />
+          <QuickInsertItem title="{{ }}" subtitle={i.index.quickInsert.template} onPress={() => insertCodes('{{}}', 2)} />
+          <QuickInsertItem title="|" subtitle={i.index.quickInsert.pipe} onPress={() => insertCodes('|')} />
+          <QuickInsertItem title="*" subtitle={i.index.quickInsert.unorderedList} onPress={() => insertCodes('* ')} />
+          <QuickInsertItem title="#" subtitle={i.index.quickInsert.orderedList} onPress={() => insertCodes('# ')} />
+          <QuickInsertItem icon="fountain-pen-tip" subtitle={i.index.quickInsert.sign} onPress={() => insertCodes(' --~~~~')} />
+          <QuickInsertItem title="''' '''" subtitle={i.index.quickInsert.strong} onPress={() => insertCodes("''''''", 3)} />
+          <QuickInsertItem title="<del>" subtitle={i.index.quickInsert.del} onPress={() => insertCodes('<del></del>', 6)} />
+          <QuickInsertItem title="==" subtitle={i.index.quickInsert.title} onPress={() => insertCodes('==  ==', 3)} />
+          <QuickInsertItem title="===" subtitle={i.index.quickInsert.subtitle} onPress={() => insertCodes('===  ===', 4)} />
+          <QuickInsertItem title={i.index.quickInsert.heimu} onPress={() => insertCodes('{{黑幕|}}', 2)} />
+          <QuickInsertItem title={i.index.quickInsert.coloredText} onPress={() => insertCodes('{{color|red|text}}', 2)} />
         </ScrollView>
       </> : null}
     </>

@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Image, StyleProp, ViewStyle } from 
 import { useTheme, Text } from 'react-native-paper'
 import store from '~/mobx'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
+import i from '../lang'
 
 export interface Props {
   title: string
@@ -54,7 +55,7 @@ function CategoryItem2(props: PropsWithChildren<Props>) {
         </> : <>
           {/* 这里无论用哪个颜色都不是特别满意，所以就使用单独的颜色了 */}
           <View style={{ width: 120, minHeight: 150, backgroundColor: isNightTheme ? '#5B5B5B' : '#E2E2E2', justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ color: theme.colors.disabled, fontSize: 18, borderRadius: 1 }}>暂无图片</Text>
+          <Text style={{ color: theme.colors.disabled, fontSize: 18, borderRadius: 1 }}>{i.item.noImg}</Text>
           </View>
         </>}
       </View>

@@ -13,6 +13,7 @@ import { useObserver } from 'mobx-react-lite'
 import { useLayoutAnimationInMobx } from '~/hooks/useLayoutAnimation'
 import { CommentTreeData, CommentTreeDataWithTarget } from '~/utils/commentTree'
 import { MobxCommentTree } from '~/mobx/comment'
+import i from './lang'
 
 export interface Props {
   
@@ -50,7 +51,7 @@ function CommentReplyPage(props: PropsWithChildren<Props>) {
       <ViewContainer grayBgColor>
         <MyStatusBar />
         <MyToolbar
-          title={`回复：${commentData.username}`}
+          title={i.index.title(commentData.username)}
           leftIcon="keyboard-backspace"
           rightIcon="add"
           onPressLeftIcon={navigation.goBack}
@@ -96,14 +97,14 @@ function CommentReplyPage(props: PropsWithChildren<Props>) {
                 visibleDelBtn={false} 
               />
               {commentData.children!.length !== 0 && 
-                <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginVertical: 10 }}>{`共${commentData.children!.length}条回复`}</Text>
+                <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginVertical: 10 }}>{i.index.count(commentData.children!.length)}</Text>
               }
             </>
           }
 
           ListFooterComponent={
             <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>
-              {commentData.children!.length === 0 ? '暂无回复' : '已经没有啦'}
+              {commentData.children!.length === 0 ? i.index.allLoaded : i.index.noData}
             </Text>
           }
         />

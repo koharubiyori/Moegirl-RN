@@ -5,9 +5,11 @@ import { useTheme } from 'react-native-paper'
 import MyToolbar from '~/components/MyToolbar'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
+import i from '../lang'
 
 export interface Props {
   title: string
+  trueTitle: string
   isWatchedPage: boolean
   rightBtnsDisabled?: boolean
   disabledEditFullText?: boolean
@@ -52,41 +54,40 @@ function ArticleHeader(props: PropsWithChildren<Props>) {
     }).start()
   }
 
-  type ActionName = '刷新' | '登录' | '编辑此页' | '添加话题' | '分享' | '打开目录' | '加入监视列表' | '移出监视列表'
-  function actionHandlers(actionName: ActionName, index: number) {
-    if (actionName === '刷新') {
+  function actionHandlers(value: string, index: number) {
+    if (value === 'refresh') {
       props.onPressRefreshBtn()
     }
     
-    if (actionName === '登录') {
+    if (value === 'login') {
       navigation.push('login')
     }
 
-    if (actionName === '编辑此页') {
-      navigation.push('edit', { title: props.title })
+    if (value === 'editPage') {
+      navigation.push('edit', { title: props.trueTitle })
     }
 
-    if (actionName === '添加话题') {
+    if (value === 'addSection') {
       navigation.push('edit', { title: props.title, newSection: true })
     }
 
-    if (actionName === '分享') {
+    if (value === 'share') {
       const sourceMaps = {
         moegirl: 'https://mzh.moegirl.org',
         hmoe: 'https://www.hmoegirl.com'
       }
 
       Share.share({
-        title: '萌娘百科分享',
-        message: `${store.settings.source === 'moegirl' ? '萌娘百科' : 'H萌娘'} - ${props.title} ${sourceMaps[store.settings.source]}/${encodeURIComponent(props.title)}`
+        title: i.header.actions.share.title,
+        message: `${store.settings.source === 'moegirl' ? i.header.actions.share.moegirl : i.header.actions.share.hmoe} - ${props.title} ${sourceMaps[store.settings.source]}/${encodeURIComponent(props.title)}`
       })
     }
 
-    if (actionName === '打开目录') {
+    if (value === 'showContents') {
       props.onPressOpenContents()
     }
 
-    if (actionName === '加入监视列表' || actionName === '移出监视列表') {
+    if (value === 'addToWatchList' || value === 'removeFromWatchList') {
       props.onPressToggleWatchList()
     }
   }
@@ -97,14 +98,23 @@ function ArticleHeader(props: PropsWithChildren<Props>) {
   })
   return useObserver(() => {
     const actions = (() => {
-      const watchListActionBtnName: ActionName = props.isWatchedPage ? '移出监视列表' : '加入监视列表'
-      const editBtnText = props.disabledEditFullText ? '添加话题' : '编辑此页'
-      const actionList: ActionName[] = [
-        '刷新',
-        ...([store.user.isLoggedIn ? editBtnText : '登录'] as ActionName[]),
-        ...(store.user.isLoggedIn ? [watchListActionBtnName] : []),
-        '分享',
-        '打开目录'
+      const iText = i.header.actions
+      
+      const watchListActionBtnAction = props.isWatchedPage ? 
+        { label: iText.removeFromWatchList, value: 'removeFromWatchList' } :
+        { label: iText.addedToWatchList, value: 'addToWatchList' }
+
+      const editBtnAction = props.disabledEditFullText ? 
+        { label: iText.addSection, value: 'addSection' } :
+        { label: iText.editPage, value: 'editPage' }
+
+      const actionList = [
+        { label: iText.refresh, value: 'refresh' },
+        
+        ...([store.user.isLoggedIn ? editBtnAction : { label: iText.login, value: 'login' }]),
+        ...(store.user.isLoggedIn ? [watchListActionBtnAction] : []),
+        { label: iText.shareText, value: 'share' },
+        { label: iText.showContents, value: 'showContents' }
       ]
   
       return actionList

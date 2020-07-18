@@ -5,6 +5,7 @@ import {
 } from 'react-native'
 import MyButton from '~/components/MyButton'
 import { useTheme } from 'react-native-paper'
+import i from '../lang'
 
 export interface Props {
   titles: string[] | null
@@ -33,7 +34,7 @@ export default function SearchHint(props: PropsWithChildren<FinalProps>) {
         )}</ScrollView>
       </> : <>
         <View style={{ ...styles.title, borderBottomColor: theme.colors.lightBg }}>
-          <Text style={{ color: theme.colors.disabled }}>搜索中...</Text>
+          <Text style={{ color: theme.colors.disabled }}>{i.searchHint.searching}</Text>
         </View>
       </>}
     </View>

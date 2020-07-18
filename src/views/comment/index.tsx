@@ -12,6 +12,7 @@ import useMyRoute from '~/hooks/useTypedRoute'
 import store from '~/mobx'
 import CommentEditor from './components/Editor'
 import CommentItem from './components/Item'
+import i from './lang'
 
 export interface Props {
   
@@ -84,7 +85,7 @@ function CommentPage(props: PropsWithChildren<Props>) {
 
           ListHeaderComponent={commentData.popular.length !== 0 ? <>
             <View style={{ marginVertical: 10 }}>
-              <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginBottom: 10 }}>热门评论</Text>
+              <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginBottom: 10 }}>{i.index.popular}</Text>
               {commentData.popular.map(item =>
                 <CommentItem 
                   key={item.id} 
@@ -94,7 +95,7 @@ function CommentPage(props: PropsWithChildren<Props>) {
                   visibleReplyBtn={false} 
                 />  
               )}
-              <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginTop: 10 }}>{`共${commentData.count}条评论`}</Text>
+              <Text style={{ fontSize: 18, marginLeft: 20, color: theme.colors.disabled, marginTop: 10 }}>{i.index.count(commentData.count)}</Text>
             </View>
           </> : null}
 
@@ -102,13 +103,13 @@ function CommentPage(props: PropsWithChildren<Props>) {
             0: () => 
               <TouchableOpacity onPress={() => store.comment.loadNext(route.params.pageId)}>
                 <View style={{ height: 50, justifyContent: 'center', alignItems: 'center', elevation: 2 }}>
-                  <Text>加载失败，点击重试</Text>
+                  <Text>{i.index.netErr}</Text>
                 </View>
               </TouchableOpacity>,
 
             2: () => <MyActivityIndicator style={{ marginVertical: 10 }} />,
-            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
-            5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>暂无评论</Text>
+            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.allLoaded}</Text>,
+            5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.noData}</Text>
           } as { [status: number]: () => JSX.Element | null })[commentData.status] || (() => {}))()}
         />
       </ViewContainer>

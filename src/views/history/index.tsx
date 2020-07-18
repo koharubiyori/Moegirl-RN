@@ -12,6 +12,7 @@ import dialog from '~/utils/dialog'
 import toast from '~/utils/toast'
 import { useFocusEffect } from '@react-navigation/native'
 import useLayoutAnimation from '~/hooks/useLayoutAnimation'
+import i from './lang'
 
 export interface Props {
 
@@ -89,15 +90,14 @@ function HistoryPage(props: PropsWithChildren<Props>) {
       }
     })
 
-    console.log(lists)
     setLists(lists)
     setStatus(3)
   }
 
   async function clearHistory () {
-    await dialog.confirm.show({ content: '确定要清空浏览历史吗？' })
+    await dialog.confirm.show({ content: i.index.clearHistoryCheck })
     storage.remove('browsingHistory')
-    toast('已清除所有浏览历史')
+    toast(i.index.historyCleared)
     setLists(initLists())
     setStatus(0)
   }
@@ -105,7 +105,7 @@ function HistoryPage(props: PropsWithChildren<Props>) {
   return (
     <ViewContainer>
       <MyToolbar 
-        title="浏览历史"
+        title={i.index.title}
         leftIcon="keyboard-backspace"
         rightIcon={lists.all.length === 0 ? undefined : 'delete'}
         onPressLeftIcon={navigation.goBack}
@@ -114,7 +114,7 @@ function HistoryPage(props: PropsWithChildren<Props>) {
       {{
         0: () => 
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ color: theme.colors.placeholder, fontSize: 18 }}>暂无记录</Text>
+            <Text style={{ color: theme.colors.placeholder, fontSize: 18 }}>{i.index.noData}</Text>
           </View>,
         1: () => null,
         2: () => 
@@ -123,17 +123,17 @@ function HistoryPage(props: PropsWithChildren<Props>) {
           </View>,
         3: () =>
           <ScrollView style={{ paddingVertical: 5 }}>
-            {lists.today.length ? <Title text="今天" style={{ marginTop: 10 }} /> : null }
+            {lists.today.length ? <Title text={i.index.today} style={{ marginTop: 10 }} /> : null }
             {lists.today.map(item =>
               <Item data={item} key={item.title} onPress={pageName => navigation.push('article', { pageName })} />  
             )}
 
-            {lists.yesterday.length ? <Title text="昨天" style={{ marginTop: 10 }} /> : null }
+            {lists.yesterday.length ? <Title text={i.index.yesterday} style={{ marginTop: 10 }} /> : null }
             {lists.yesterday.map(item =>
               <Item data={item} key={item.title} onPress={pageName => navigation.push('article', { pageName })} />  
             )}
 
-            {lists.ago.length ? <Title text="更早" style={{ marginTop: 10 }} /> : null }
+            {lists.ago.length ? <Title text={i.index.ago} style={{ marginTop: 10 }} /> : null }
             {lists.ago.map(item =>
               <Item data={item} key={item.title} onPress={pageName => navigation.push('article', { pageName })} />  
             )}

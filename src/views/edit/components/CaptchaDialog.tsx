@@ -3,6 +3,7 @@ import { ActivityIndicator, Dimensions, Image, StyleSheet, View } from 'react-na
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Button, DefaultTheme, Dialog, HelperText, Text, TextInput, useTheme } from 'react-native-paper'
 import { maxSummaryLength } from '../index'
+import i from '../lang'
 
 export interface Props {
   visible: boolean
@@ -29,13 +30,13 @@ function EditCaptchaDialog(props: PropsWithChildren<FinalProps>) {
       onDismiss={props.onDismiss}
       style={{ paddingHorizontal: 10 }}
     >
-      <Dialog.Title>用户验证</Dialog.Title>
+      <Dialog.Title>{i.captcha.title}</Dialog.Title>
       <Dialog.Content>
         <TouchableOpacity onPress={props.onPressImg}>
           {status !== 3 ? <>
             <View style={{ ...imgSize, ...styles.imgMask, backgroundColor: theme.colors.lightBg }}>
               {{
-                0: () => <Text style={{ color: theme.colors.placeholder }}>图片加载失败，点此重试</Text>,
+                0: () => <Text style={{ color: theme.colors.placeholder }}>{i.captcha.loadingErr}</Text>,
                 1: () => null,
                 2: () => <ActivityIndicator color={theme.colors.accent} size={50} />,
               }[status]()}
@@ -55,22 +56,22 @@ function EditCaptchaDialog(props: PropsWithChildren<FinalProps>) {
           theme={{ ...DefaultTheme, colors: { ...theme.colors, primary: theme.colors.accent } }}
           maxLength={maxSummaryLength}
           value={inputValue} 
-          placeholder="请输入图片中的字幕" 
+          placeholder={i.captcha.inputHint} 
           onChangeText={setInputValue}
           selectionColor={theme.colors.accent}
           style={{
             backgroundColor: 'transparent'
           }}
         />
-        <HelperText>空格和标点符号无需输入，若看不清可以点击图片更换。</HelperText>
+        <HelperText>{i.captcha.inputHelp}</HelperText>
       </Dialog.Content>
       <Dialog.Actions>
         <Button onPress={props.onDismiss} style={{ marginRight: 10 }} color={theme.colors.placeholder}>
-          <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>取消</Text>
+          <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>{i.captcha.cancel}</Text>
         </Button>
         
         <Button onPress={() => props.onSubmit(inputValue)}>
-          <Text style={{ fontSize: 16, color: theme.colors.accent }}>提交</Text>
+          <Text style={{ fontSize: 16, color: theme.colors.accent }}>{i.captcha.submit}</Text>
         </Button>
       </Dialog.Actions>
     </Dialog>

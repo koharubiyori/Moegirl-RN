@@ -189,6 +189,13 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
+    // 如果你需要支持GIF动图
+    implementation 'com.facebook.fresco:animated-gif:2.0.0'
+
+    // 如果你需要支持WebP格式，包括WebP动图
+    implementation 'com.facebook.fresco:animated-webp:2.1.0'
+    implementation 'com.facebook.fresco:webpsupport:2.0.0'
+
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")

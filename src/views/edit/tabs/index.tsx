@@ -5,6 +5,7 @@ import { Text, useTheme } from 'react-native-paper'
 import MyButton from '~/components/MyButton'
 import EditCodeTab from './CodeEdit'
 import EditPreviewTab from './Preview'
+import i from '../lang'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -74,8 +75,8 @@ function EditTabs(props: Props) {
       backBehavior="order"
       tabBar={props => <MyTabBar {...props} />}
     >
-      <Tab.Screen name="维基文本" component={EditCodeTab} />
-      <Tab.Screen name="预览视图" component={EditPreviewTab} />
+      <Tab.Screen name={i.codeEdit.title} component={EditCodeTab} />
+      <Tab.Screen name={i.preview.title} component={EditPreviewTab} />
     </Tab.Navigator>
   )
 }

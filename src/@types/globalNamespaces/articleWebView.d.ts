@@ -1,5 +1,6 @@
 import { colors } from '~/theme'
 import { SettingsStoreData } from '~/mobx/settings'
+import articleWebViewWords from '~/components/articleView/lang/zh-hans'
 
 export = ArticleWebView
 
@@ -15,6 +16,10 @@ declare namespace ArticleWebView {
     _colors: typeof colors.green // 当前主题色集
     _categories: string[] // 分类
     _articleTitle: { text: string } // 文章标题
+    _i: {
+      controls: typeof articleWebViewWords.controls,
+      scripts: typeof articleWebViewWords.scripts
+    }
   }
 
   interface WebViewRequestOptions {

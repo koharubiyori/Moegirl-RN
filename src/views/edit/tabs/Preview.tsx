@@ -6,6 +6,7 @@ import editApi from '~/api/edit'
 import ArticleView from '~/components/articleView'
 import store from '~/mobx'
 import tabDataCommunicator from '../utils/tabDataCommunicator'
+import i from '../lang'
 
 export interface Props {
   title: string
@@ -51,7 +52,7 @@ function EditPreviewTab(props: PropsWithChildren<Props>) {
       {({
         0: () => 
           <TouchableOpacity onPress={() => parseCodes()}>
-            <Text style={{ fontSize: 16, color: theme.colors.accent }}>重新加载</Text>
+            <Text style={{ fontSize: 16, color: theme.colors.accent }}>{i.preview.reload}</Text>
           </TouchableOpacity>,
         1: () => null,
         2: () => <ActivityIndicator color={theme.colors.accent} size={50} />,

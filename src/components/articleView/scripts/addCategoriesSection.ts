@@ -3,11 +3,12 @@
 export default function() {
   if (!window._categories || window._categories.length === 0) { return }
   let viewBox = $('#articleContentContainer')
+  const i = window._i.scripts.addCategoriesSection
 
-  let title = $('<h2>分类</h2>')
+  let title = $(`<h2>${i.category}</h2>`)
   let categories = $('<p>').html(
     window._categories.map(categoryName => `
-      <a href="/分类:${categoryName}">
+      <a href="/${i.category}:${categoryName}">
         <div class="categoryBox">${categoryName}</div>
       </a>
     `).join('')

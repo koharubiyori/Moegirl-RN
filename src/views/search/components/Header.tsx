@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import MyButton from '~/components/MyButton'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
+import i from '../lang'
 
 export interface Props {
   value: string
@@ -38,7 +39,7 @@ function SearchHeader(props: PropsWithChildren<Props>) {
         autoCapitalize="none"
         returnKeyType="search"
         autoCorrect={false}
-        placeholder={store.settings.source === 'hmoe' ? '搜索H萌娘...' : '搜索萌娘百科...'}
+        placeholder={i.header.searchInputPlaceholder(store.settings.source === 'hmoe' ? i.header.hmoe : i.header.moegirl)}
         placeholderTextColor={theme.colors.placeholder}
         onChangeText={props.onChangeText}
         onSubmitEditing={props.onSubmit}

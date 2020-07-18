@@ -8,6 +8,7 @@ import MyStatusBar from '~/components/MyStatusBar'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import useMyRoute from '~/hooks/useTypedRoute'
 import dialog from '~/utils/dialog'
+import i from './lang'
 
 export interface Props {
 
@@ -31,13 +32,13 @@ function ImageViewerPage(props: PropsWithChildren<Props>) {
   async function saveImg() {
     const checkedResult = await checkPermission()
     if (checkedResult === undefined) {
-      ToastAndroid.show('未知错误', ToastAndroid.SHORT)
+      ToastAndroid.show(i.index.saveImg.unknownErr, ToastAndroid.SHORT)
       return 
     }
 
     if (checkedResult === false) {
       await dialog.confirm.show({
-        content: '您没有授权访问手机存储，无法保存图片。是否要前往应用详情界面设置权限？',
+        content: i.index.saveImg.noPermissionMsg,
       })
 
       Linking.openSettings()
@@ -48,7 +49,7 @@ function ImageViewerPage(props: PropsWithChildren<Props>) {
     const fileName = decodeURIComponent(url.match(/\/([^\/]+)$/)![1])
     const dirPath = '/moegirlViewer图片保存/'
     const savePath = RNFetchBlob.fs.dirs.SDCardDir + dirPath + fileName
-    ToastAndroid.show('开始下载图片', ToastAndroid.SHORT)
+    ToastAndroid.show(i.index.saveImg.downloadStart, ToastAndroid.SHORT)
     RNFetchBlob
       .config({ 
         path: savePath,
@@ -56,15 +57,15 @@ function ImageViewerPage(props: PropsWithChildren<Props>) {
         addAndroidDownloads: {
           notification: true,
           title: fileName,
-          description: '正在下载图片...',
+          description: i.index.saveImg.downloading,
           mime: 'image/' + fileName.split('.')[1]
         }
       })
       .fetch('get', url)
-      .then(res => ToastAndroid.show('图片已保存至：' + dirPath + fileName, ToastAndroid.LONG))
+      .then(res => ToastAndroid.show(i.index.saveImg.saved + dirPath + fileName, ToastAndroid.LONG))
       .catch(e => {
         console.log(e)
-        ToastAndroid.show('发生错误，请重试', ToastAndroid.SHORT)
+        ToastAndroid.show(i.index.saveImg.netErr, ToastAndroid.SHORT)
       })
   }
 
@@ -74,13 +75,7 @@ function ImageViewerPage(props: PropsWithChildren<Props>) {
       const checkedResult = await PermissionsAndroid.check(writeStoragePermission)
       if (checkedResult) { return true }
 
-      const granted = await PermissionsAndroid.request(writeStoragePermission, {
-        title: '请求写入存储权限',
-        message: '保存图片需要使用你的手机存储',
-        buttonNeutral: '暂不授予',
-        buttonNegative: '禁止',
-        buttonPositive: '允许',
-      })
+      const granted = await PermissionsAndroid.request(writeStoragePermission, i.index.checkPermission)
 
       return granted === PermissionsAndroid.RESULTS.GRANTED
     } catch (e) {

@@ -1,10 +1,11 @@
-import React, { FC, PropsWithChildren, useEffect, useRef, useState } from 'react'
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { Animated, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-import { useTheme, Text } from 'react-native-paper'
-import toast from '~/utils/toast'
-import dialog from '~/utils/dialog'
+import { Text, useTheme } from 'react-native-paper'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
+import dialog from '~/utils/dialog'
+import toast from '~/utils/toast'
+import i from '../lang'
 
 export interface Props {
   visible: boolean
@@ -52,7 +53,7 @@ function CommentEditor(props: PropsWithChildren<Props>) {
   function close() {
     if (inputText) {
       dialog.confirm.show({
-        content: '关闭后当前编辑的评论内容将不会保存，是否关闭？'
+        content: i.editor.closeHint
       })
         .then(props.onDismiss)
     } else {
@@ -61,10 +62,10 @@ function CommentEditor(props: PropsWithChildren<Props>) {
   }
 
   function submit() {
-    if (inputText.length === 0) return toast('评论或回复内容不能为空')
-    if (inputText === '0') { return toast('因萌百评论系统的bug，不能以“0”作为评论内容') }
+    if (inputText.length === 0) return toast(i.editor.submit.emptyMsg)
+    if (inputText === '0') { return toast(i.editor.submit.zeroMsg) }
 
-    dialog.loading.show({ title: '提交中...' })
+    dialog.loading.show({ title: i.editor.submit.submitting })
     store.comment.addComment(props.pageId, inputText, props.targetId)
       .finally(dialog.loading.hide)
       .then(() => {
@@ -73,7 +74,7 @@ function CommentEditor(props: PropsWithChildren<Props>) {
       })
       .catch(e => {
         console.log(e)
-        toast('网络错误，请重试', 'center')
+        toast(i.editor.submit.netErr, 'center')
       })
   }
 
@@ -95,7 +96,7 @@ function CommentEditor(props: PropsWithChildren<Props>) {
                 color: theme.colors.text 
               }} 
               autoCorrect={false}
-              placeholder="说点什么吧..."
+              placeholder={i.editor.placeholder}
               placeholderTextColor={theme.colors.placeholder}
               textAlignVertical="top" 
               onChangeText={setInputText}
@@ -105,7 +106,7 @@ function CommentEditor(props: PropsWithChildren<Props>) {
             <View style={{ marginTop: 10 }}>
               <TouchableOpacity onPress={submit}>
                 {/* 这里颜色是正确的，但不符合语义 */}
-                <Text style={{ color: theme.colors[inputText.length ? 'disabled' : 'placeholder'], fontSize: 17, marginBottom: 10 }}>提交</Text>
+                <Text style={{ color: theme.colors[inputText.length ? 'disabled' : 'placeholder'], fontSize: 17, marginBottom: 10 }}>{i.editor.submitBtn}</Text>
               </TouchableOpacity>
             </View>
           </Animated.View>

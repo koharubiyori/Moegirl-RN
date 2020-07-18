@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native'
 import MyButton from '~/components/MyButton'
 import { useTheme, Text } from 'react-native-paper'
 import moment from 'moment'
+import i from '../lang'
 
 export interface Props {
   data: any
@@ -32,11 +33,11 @@ export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
   function subInfo() {
     var text = ''
     if (props.data.redirecttitle) {
-      text = `「${props.data.redirecttitle}」指向该页面`
+      text = i.item.subInfo.redirect(props.data.redirecttitle)
     } else if (props.data.sectiontitle) {
-      text = `该页面有名为“${props.searchWord}”的章节`
+      text = i.item.subInfo.sectionTitle(props.searchWord)
     } else if (props.data.categoriesnippet) {
-      text = `匹配自页面分类：${props.data.categoriesnippet}`
+      text = i.item.subInfo.category(props.data.categoriesnippet)
     }
 
     return <Text style={{ fontStyle: 'italic', color: theme.colors.accent }}>{text}</Text>
@@ -57,11 +58,11 @@ export default function SearchResultItem(props: PropsWithChildren<FinalProps>) {
       </View>
 
       <View style={{ ...styles.content, borderColor: theme.colors.accent }}>
-        <Text style={{ color: content ? 'black' : theme.colors.disabled }}>{content || '页面内貌似没有内容呢...'}</Text>
+        <Text style={{ color: content ? 'black' : theme.colors.disabled }}>{content || i.item.noData}</Text>
       </View>
 
       <View style={styles.footer}>
-        <Text style={{ textAlign: 'right', color: theme.colors.disabled }}>最后更新于：{moment(props.data.timestamp).format('YYYY年MM月DD日')}</Text>
+        <Text style={{ textAlign: 'right', color: theme.colors.disabled }}>{i.item.updateDate(moment(props.data.timestamp))}</Text>
       </View>
     </MyButton>
   )

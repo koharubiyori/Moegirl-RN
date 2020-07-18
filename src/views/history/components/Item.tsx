@@ -4,6 +4,7 @@ import { Text, useTheme } from 'react-native-paper'
 import RNFetchBlob from 'rn-fetch-blob'
 import MyButton from '~/components/MyButton'
 import { BrowsingHistoryWithDiffDate } from '../index'
+import { getHistoryImgBase64 } from '~/utils/saveHistory'
 
 export interface Props {
   data: BrowsingHistoryWithDiffDate
@@ -19,13 +20,8 @@ export default function HistoryItem(props: PropsWithChildren<FinalProps>) {
   // 异步读取配图
   useEffect(() => {
     if (!props.data.imgPath) { return }
-    const imgPath = RNFetchBlob.fs.dirs.DocumentDir + props.data.imgPath
-    const imgSuffixName = props.data.imgPath!.match(/\.([^\.]+)$/)![1]
-    RNFetchBlob.fs.readFile(imgPath, 'base64')
-      .then(data => {
-        setArticleImg({ uri: `data:image/${imgSuffixName};base64,` + data })
-      })
-      .catch(e => console.log(e))
+    getHistoryImgBase64(props.data.imgPath)
+      .then(base64 => setArticleImg({ uri: base64 }))
   }, [])
 
   return (
@@ -40,7 +36,7 @@ export default function HistoryItem(props: PropsWithChildren<FinalProps>) {
         style={{ width: 60, height: 70, position: 'absolute', top: 5, left: 5 }} 
       />
       {/* 每行最多15个字 */}
-      <Text style={{ maxWidth: 14 * 15, textAlign: 'center' }} numberOfLines={2}>{props.data.title}</Text>
+      <Text style={{ maxWidth: 14 * 15, textAlign: 'center' }} numberOfLines={2}>{props.data.displayTitle || props.data.title}</Text>
       <Text style={{ position: 'absolute', right: 5, bottom: 5 }}>{props.data.date}</Text>
     </MyButton>
   )

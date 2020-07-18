@@ -9,6 +9,7 @@ import RecentSearch from './components/RecentSearch'
 import SearchHint from './components/SearchHint'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import dialog from '~/utils/dialog'
+import i from './lang'
 
 export interface Props {
 
@@ -56,7 +57,7 @@ function SearchPage(props: PropsWithChildren<Props>) {
   function toSearchResultPage(keyword: string) {
     let trimmedKeyword = keyword.trim()
     if (!trimmedKeyword) {
-      toast('搜索关键词不能为空', 'center')
+      toast(i.index.keywordEmptyMsg, 'center')
       return
     }
 
@@ -71,12 +72,12 @@ function SearchPage(props: PropsWithChildren<Props>) {
 
   async function clearSearchHistory () {
     await dialog.confirm.show({
-      content: '确定要删除所有搜索记录吗？',
+      content: i.index.clearSearchHistory.check,
     })
 
     storage.remove('searchHistory')
     setSearchHistory([])
-    toast('操作成功')
+    toast(i.index.clearSearchHistory.success)
   }
 
   return (

@@ -16,13 +16,13 @@ export interface Props {
   badge?: boolean
   leftIconProps?: IconProps
   rightIconProps?: IconProps
-  actions?: string[]
+  actions?: { label: string, value: string }[]
   moreIconProps?: IconProps
   disabledMoreBtn?: boolean
 
   onPressLeftIcon? (): void
   onPressRightIcon? (): void
-  onPressAction? (actionName: string, index: number): void
+  onPressAction? (value: string, index: number): void
 }
 
 ;(MyToolbar as DefaultProps<Props>).defaultProps = {
@@ -33,9 +33,9 @@ function MyToolbar(props: PropsWithChildren<Props>) {
   const theme = useTheme()
   const [visibleMenu, setVisibleMenu] = useState(false)
 
-  function pressAction(actionName: string, index: number) {
+  function pressAction(value: string, index: number) {
     setVisibleMenu(false)
-    props.onPressAction && props.onPressAction(actionName, index)
+    props.onPressAction && props.onPressAction(value, index)
   }
 
   const statusBarHeight = StatusBar.currentHeight!
@@ -75,11 +75,11 @@ function MyToolbar(props: PropsWithChildren<Props>) {
                 </MyButton>
               }
             >
-              {props.actions.map((actionName, index) => <Menu.Item 
+              {props.actions.map((action, index) => <Menu.Item 
                 key={index}
                 style={{ paddingVertical: 5 }}
-                title={actionName}
-                onPress={() => pressAction(actionName, index)}
+                title={action.label}
+                onPress={() => pressAction(action.value, index)}
               />)}
             </Menu>
           </>}

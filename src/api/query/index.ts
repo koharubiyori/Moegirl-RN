@@ -1,4 +1,4 @@
-// query和search区分的规则为：query不依赖用户的输入，search根据用户输入进行请求
+// query和search都是获取条目列表，query和search区分的规则为：query不依赖用户的输入，search根据用户输入进行请求
 import moeRequest from '~/request/moegirl'
 import { QueryApiData } from './types'
 

@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, useImperativeHandle, useState, forwardRef } from 'react'
 import { StyleSheet } from 'react-native'
 import { Button, Dialog, Text, TextInput, useTheme } from 'react-native-paper'
+import i from './lang'
 
 export interface Props {
 
@@ -39,10 +40,10 @@ function ConfirmDialog(props: PropsWithChildren<Props>, ref: any) {
   useImperativeHandle<any, ConfirmDialogRef>(ref, () => ({ show, hide }))
 
   function show ({
-    title = '提示',
+    title = i.title,
     content = '',
-    checkText = '确定',
-    closeText = '取消',
+    checkText = i.check,
+    closeText = i.close,
     hasInput = false,
     inputPlaceholder = '',
     autoClose = true

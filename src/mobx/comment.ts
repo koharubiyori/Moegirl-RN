@@ -59,7 +59,6 @@ class CommentStore {
         const newCommentTree = toMobxCommentTree(new CommentTree(data.posts).flatten().data, this.data[pageId].offset)
 
         runInAction(() => {
-          console.log('action')
           this.data[pageId] = {
             popular: data.popular,
             commentTree: this.data[pageId].commentTree.concat(newCommentTree),

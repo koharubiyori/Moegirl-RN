@@ -3,6 +3,7 @@ import { BackHandler, Dimensions, StyleSheet } from 'react-native'
 import { Dialog, Text, useTheme } from 'react-native-paper'
 import MyActivityIndicator from '~/components/MyActivityIndicator'
 import useStateWithRef from '~/hooks/useStateWithRef'
+import i from './lang'
 
 export interface Props {
 
@@ -40,7 +41,7 @@ function LoadingDialog(props: PropsWithChildren<Props>, ref: any) {
   }, [])
 
   function show(options: LoadingOptions = {}): Promise<void> {
-    const title = options.title || '请稍候...'
+    const title = options.title || i.loading
     const allowUserClose = options.allowUserClose || false
     
     setVisible(true)

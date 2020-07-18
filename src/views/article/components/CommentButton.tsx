@@ -7,6 +7,7 @@ import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
 import toast from '~/utils/toast'
 import { biliPlayerController } from '~/views/biliPlayer'
+import i from '../lang'
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 const size = 60
@@ -79,7 +80,7 @@ function CommentButton(props: PropsWithChildren<Props>) {
   function tap() {
     const loadingStatus = store.comment.data[props.pageId].status
     if (loadingStatus === 0) return store.comment.loadNext(props.pageId)
-    if (loadingStatus === 2 || loadingStatus === 2.1) return toast('加载中，请稍候')
+    if (loadingStatus === 2 || loadingStatus === 2.1) return toast(i.commentButton.loadingMsg)
     navigation.push('comment', { 
       pageName: props.pageName,
       pageId: props.pageId 

@@ -5,6 +5,7 @@ import editApi from '~/api/edit'
 import ArticleEditor, { ArticleEditorRef } from '~/components/articleEditor'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import tabDataCommunicator from '../utils/tabDataCommunicator'
+import i from '../lang'
 
 export interface RouteParams {
   title: string
@@ -37,8 +38,8 @@ function EditCodeTab(props: PropsWithChildren<Props>) {
 
       if (newSection) {
         setVisibleSectionTitleInput(true)
-        setContent('== 请输入标题 ==')
-        changeText('== 请输入标题 ==')
+        setContent(`== ${i.codeEdit.newSectionDefaultTitle} ==`)
+        changeText(`== ${i.codeEdit.newSectionDefaultTitle} ==`)
 
         const injectedScriptStr = (() => {
           const editArea: any = document.querySelector('#editArea')
@@ -90,7 +91,7 @@ function EditCodeTab(props: PropsWithChildren<Props>) {
       {({
         0: () => 
           <TouchableOpacity onPress={loadCode}>
-            <Text style={{ fontSize: 16, color: theme.colors.accent }}>重新加载</Text>
+            <Text style={{ fontSize: 16, color: theme.colors.accent }}>{i.codeEdit.reload}</Text>
           </TouchableOpacity>,
         1: () => null, 
         2: () => <ActivityIndicator color={theme.colors.accent} size={50} />,

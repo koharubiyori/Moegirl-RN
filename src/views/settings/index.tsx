@@ -14,6 +14,7 @@ import dialog from '~/utils/dialog'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SettingsSwitchItem from './components/SwitchItem'
+import i from './lang'
 
 export interface Props {
   
@@ -27,33 +28,33 @@ function SettingsPage(props: PropsWithChildren<Props>) {
   const navigation = useTypedNavigation()
   
   async function clearArticleCache() {
-    await dialog.confirm.show({ content: '确定要清空条目缓存吗？' })
+    await dialog.confirm.show({ content: i.index.clearArticleCache.check })
     articleCacheController.clearCache()
     storage.remove('articleRedirectMap')
-    toast('已清除所有条目缓存')
+    toast(i.index.clearArticleCache.success)
   }
 
   async function clearHistory () {
-    await dialog.confirm.show({ content: '确定要清空浏览历史吗？' })
+    await dialog.confirm.show({ content: i.index.clearHistory.check })
     storage.remove('browsingHistory')
-    toast('已清除所有浏览历史')
+    toast(i.index.clearHistory.success)
   }
 
   async function logout() {
-    await dialog.confirm.show({ content: '确定要登出吗？' })
+    await dialog.confirm.show({ content: i.index.logout.check })
     store.user.logout()
-    toast('已登出')
+    toast(i.index.logout.success)
   }
 
   function showSourceSelection() {
     dialog.optionSheet.show({
-      title: '选择数据源',
+      title: i.index.sourceSelection.title,
       options: [
         {
-          label: '萌娘百科',
+          label: i.index.sourceSelection.options.moegirl,
           value: 'moegirl'
         }, {
-          label: 'H萌娘',
+          label: i.index.sourceSelection.options.hmoe,
           value: 'hmoe'
         }
       ],
@@ -68,7 +69,7 @@ function SettingsPage(props: PropsWithChildren<Props>) {
 
   async function showLangSelection() {
     const val = await dialog.optionSheet.show({
-      title: '选择语言',
+      title: i.index.langSelection.title,
       defaultSelected: store.settings.lang,
       options: [
         {
@@ -88,17 +89,17 @@ function SettingsPage(props: PropsWithChildren<Props>) {
   return useObserver(() =>
     <ViewContainer>
       <MyToolbar
-        title="设置"
+        title={i.index.title}
         leftIcon="keyboard-backspace"
         onPressLeftIcon={navigation.goBack}
       />
 
       <ScrollView style={{ flex: 1 }}>
-        <Title>条目</Title>
+        <Title>{i.index.article.title}</Title>
 
         <SettingsSwitchItem 
-          title="黑幕开关" 
-          subtext="关闭后黑幕将默认为刮开状态" 
+          title={i.index.article.heimu.title} 
+          subtext={i.index.article.heimu.subtext} 
           value={store.settings.heimu}
           onChange={val => store.settings.set('heimu', val)}
         />
@@ -124,51 +125,50 @@ function SettingsPage(props: PropsWithChildren<Props>) {
           onPress={showThemeOptions}
         /> */}
 
-        <Title>缓存</Title>
-
+        <Title>{i.index.cache.title}</Title>
         <SettingsSwitchItem 
-          title="缓存优先模式"
-          subtext="开启后如果条目有缓存将优先使用"
+          title={i.index.cache.cachePriority.title}
+          subtext={i.index.cache.cachePriority.subtext}
           value={store.settings.cachePriority}
           onChange={val => store.settings.set('cachePriority', val)}
         />
 
         <SettingsSwitchItem hideSwitch 
-          title="清除条目缓存"
+          title={i.index.cache.clearCache}
           onPress={() => clearArticleCache()}
         />
 
         <SettingsSwitchItem hideSwitch 
-          title="清除浏览历史"
+          title={i.index.cache.clearHistory}
           onPress={() => clearHistory()}
         />
 
-        <Title>账户</Title>
+        <Title>{i.index.account.title}</Title>
         <SettingsSwitchItem hideSwitch
-          title={store.user.isLoggedIn ? '登出' : '登录'}
+          title={store.user.isLoggedIn ? i.index.account.logout : i.index.account.login}
           onPress={() => store.user.isLoggedIn ? logout() : navigation.push('login')}
         />
 
-        <Title>其他</Title>
+        <Title>{i.index.other.title}</Title>
         {isHmoe ? <>
           <SettingsSwitchItem hideSwitch 
-            title="更换数据源"
+            title={i.index.other.changeSource}
             onPress={showSourceSelection}
           />
         </> : null}
 
         <SettingsSwitchItem hideSwitch
-          title="选择语言"
+          title={i.index.other.selectLang}
           onPress={showLangSelection}
         />
 
         <SettingsSwitchItem hideSwitch
-          title="关于"
+          title={i.index.other.about}
           onPress={() => navigation.push('about')}
         />
 
         <SettingsSwitchItem hideSwitch
-          title={isHmoe ? '在Github上查看新版本' : '前往Github下载支持H萌娘的版本'}
+          title={isHmoe ? i.index.other.checkNewVersionOnGithub : i.index.other.gotoGithub}
           onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
         />
       </ScrollView>      

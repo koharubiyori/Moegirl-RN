@@ -1,6 +1,7 @@
 import React, { forwardRef, PropsWithChildren, useImperativeHandle, useState, useEffect } from 'react'
 import { Dimensions, ScrollView } from 'react-native'
 import { Button, Dialog, Text, useTheme } from 'react-native-paper'
+import i from './lang'
 
 export interface Props {
 
@@ -32,9 +33,9 @@ function AlertDialog(props: PropsWithChildren<Props>, ref: any) {
   useImperativeHandle<any, AlertDialogRef>(ref, () => ({ show, hide }))
 
   function show({
-    title = '提示',
+    title = i.title,
     content = '',
-    checkText = '确定',
+    checkText = i.check,
     autoClose = true
   }: AlertOptions): Promise<void> {
     setVisible(true)

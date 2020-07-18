@@ -11,6 +11,7 @@ import useLayoutAnimation from '~/hooks/useLayoutAnimation'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import useMyRoute from '~/hooks/useTypedRoute'
 import Item from './components/Item'
+import i from './lang'
 
 export interface Props {
   
@@ -74,7 +75,7 @@ function SearchResultPage(props: PropsWithChildren<Props>) {
         <MyButton onPress={() => navigation.goBack()} rippleColor={theme.colors.placeholder}>
           <Icon name="keyboard-backspace" size={25} color={theme.colors.disabled} />
         </MyButton>
-        <Text numberOfLines={1} style={styles.title}>搜索：{keyword}</Text>
+        <Text numberOfLines={1} style={styles.title}>{i.index.title(keyword)}</Text>
       </View>
 
       {status !== 5 ? <>
@@ -93,7 +94,7 @@ function SearchResultPage(props: PropsWithChildren<Props>) {
           ListHeaderComponent={ 
             (status === 3 || status === 4) ?
               <View style={styles.totalHint}>
-                <Text style={{ color: theme.colors.disabled }}>共搜索到{total}条结果。</Text>
+                <Text style={{ color: theme.colors.disabled }}>{i.index.resultCount(total)}</Text>
               </View>
             : null
           }
@@ -102,19 +103,19 @@ function SearchResultPage(props: PropsWithChildren<Props>) {
             0: () => 
               <TouchableOpacity onPress={loadList}>
                 <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text>加载失败，点击重试</Text>
+                  <Text>{i.index.netErr}</Text>
                 </View>
               </TouchableOpacity>,
             1: () => null,
             2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
             3: () => null,
-            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
+            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.allLoaded}</Text>,
           }[status])()}
         />
       </> : <>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', position: 'relative', top: -40 }}>
           <Image source={require('~/assets/images/sushimoe.png')} style={{ width: 170, height: 170 }} />
-          <Text style={{ color: theme.colors.disabled }}>什么也没找到...</Text>
+          <Text style={{ color: theme.colors.disabled }}>{i.index.noData}</Text>
         </View>
       </>}
     </ViewContainer>

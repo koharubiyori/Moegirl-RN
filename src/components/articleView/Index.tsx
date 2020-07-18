@@ -21,6 +21,7 @@ import scriptCodeString from './scripts'
 import { getArticleContent } from './utils/articleRamCache'
 import createHTMLDocument, { ArticleViewStyleSheetName } from './utils/createHTMLDocument'
 import { biliPlayerController } from '~/views/biliPlayer'
+import i from './lang'
 
 export interface Props {
   style?: StyleProp<ViewStyle>
@@ -119,7 +120,11 @@ function ArticleView(props: PropsWithChildren<Props>) {
       settings: store.settings,
       colors: theme.colors,
       categories,
-      articleTitle: { text: props.pageName }
+      articleTitle: { text: props.pageName },
+      i: {
+        controls: i.controls,
+        scripts: i.scripts
+      }
     })
     
     return createHTMLDocument({ 
@@ -167,10 +172,11 @@ function ArticleView(props: PropsWithChildren<Props>) {
     
     setStatus(2)
     // 如果启用了缓存优先模式且当前不是分类或讨论页
-    const isCanUseCache = !/^([Cc]ategory|分类|[Tt]alk|.+ talk):/.test(props.pageName!)
+    const isCanUseCache = !/^([Cc]ategory|分类|分類|[Tt]alk|.+ talk):/.test(props.pageName!)
     if (!forceLoad && store.settings.cachePriority && isCanUseCache) {
       const redirectMap = storage.get('articleRedirectMap') || {}
       let trueTitle = redirectMap[props.pageName!] || props.pageName
+      console.log(redirectMap)
       
       try {
         let articleCache = await articleCacheController.getCacheData(trueTitle!)
@@ -190,7 +196,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
               const trueTitle = data.parse.title
               articleCacheController.addCache(trueTitle, data)
               // 如果请求title和真实title不同，则存入文章名重定向映射表
-              if (props.pageName !== trueTitle) storage.merge('articleRedirectMap', { [trueTitle]: props.pageName! })
+              if (props.pageName !== trueTitle) storage.merge('articleRedirectMap', { [props.pageName!]: trueTitle })
             })
   
           return
@@ -202,9 +208,10 @@ function ArticleView(props: PropsWithChildren<Props>) {
 
     getArticleContent(props.pageName!, forceLoad) // 这个函数封装了运行时缓存
       .then(data => {
+        console.log(data)
         let html = data.parse.text['*']
         // 如果为分类页，则从html字符串中抽取数据，然后交给category界面处理
-        if (/^([Cc]ategory|分类):/.test(props.pageName!)) {
+        if (/^([Cc]ategory|分类|分類):/.test(props.pageName!)) {
           const htmlDoc = new DOMParser().parseFromString(html, 'text/html')
           let categoryBranchContainer = htmlDoc.getElementById('topicpath')
           let descContainer = htmlDoc.getElementById('catmore')
@@ -220,7 +227,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
 
           return setTimeout(() => {
             navigation.replace('category', { 
-              title: props.pageName!.replace(/^([Cc]ategory|分类):/, ''), 
+              title: props.pageName!.replace(/^([Cc]ategory|分类|分類):/, ''), 
               branch: categoryBranch,
               articleTitle 
             })
@@ -239,10 +246,9 @@ function ArticleView(props: PropsWithChildren<Props>) {
           .catch(e => console.log('添加文章缓存失败', e))
 
         // 如果请求title和真实title不同，则存入文章名重定向映射表
-        if (props.pageName !== trueTitle) storage.merge('articleRedirectMap', { [trueTitle]: props.pageName! })
+        if (props.pageName !== trueTitle) storage.merge('articleRedirectMap', { [props.pageName!]: trueTitle })
 
-        needWebViewReload.current = true
-        // setTimeout(() => isWebViewLoaded && refs.webView.current.reload(), 500)
+        if (isWebViewLoaded.current) needWebViewReload.current = true
       })
       .catch(async e => {
         console.log('文章接口数据加载流程出现错误', e)
@@ -258,15 +264,14 @@ function ArticleView(props: PropsWithChildren<Props>) {
           const articleData = articleCache.articleData
           let html = articleData.parse.text['*']
           setHtml(createDocument(html, articleData.parse.categories.map(item => item['*'])))
-          dialog.snackBar.show({ title: '因读取失败，载入条目缓存' })
+          dialog.snackBar.show({ title: i.index.netErrExistsCache })
           loadOriginalImgUrls(articleData.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
           setArticleData(articleData)
 
-          needWebViewReload.current = true
-          // setTimeout(() => refs.webView.current && refs.webView.current.reload(), 500)
+          if (isWebViewLoaded.current) needWebViewReload.current = true
         } catch (e) {
           console.log(e)
-          toast('网络超时，读取失败')
+          toast(i.index.netErr)
           setStatus(0)
         }
       })
@@ -303,14 +308,14 @@ function ArticleView(props: PropsWithChildren<Props>) {
       console.log('webview loaded')
       setStatus(3)
     })
-    // 点击注释
-    setEventHandler('onPressNote', data => {
-      dialog.alert.show({
-        title: '注释',
-        content: data.content,
-        checkText: '关闭'
-      })
-    })
+    // // 点击注释
+    // setEventHandler('onPressNote', data => {
+    //   dialog.alert.show({
+    //     title: '注释',
+    //     content: data.content,
+    //     checkText: '关闭'
+    //   })
+    // })
     // 发送请求
     setEventHandler('request', data => {
       console.log(data)
@@ -339,6 +344,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
       ;({
         inner: () => {
           let [pageName, anchor] = data.link.split('#')
+
           navigation.push('article', { 
             pageName, 
             anchor,
@@ -351,7 +357,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
         },
 
         notExists () {
-          dialog.alert.show({ content: '该条目还未创建' })
+          dialog.alert.show({ content: i.index.events.noExists })
         }
       })[data.type]()
     })
@@ -362,7 +368,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
       if (store.user.isLoggedIn) {
         navigation.push('edit', { title: data.page, section: data.section })
       } else {
-        dialog.confirm.show({ content: '登录后才可以进行编辑，要前往登录界面吗？' })
+        dialog.confirm.show({ content: i.index.events.loginMsg })
           .then(() => navigation.push('login'))
       }
     })
@@ -374,7 +380,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
           index: originalImgUrls.findIndex(img => img.name === data.name)
         })
       } else {
-        dialog.loading.show({ title: '获取链接中...', allowUserClose: true })
+        dialog.loading.show({ title: i.index.events.pressImage.loading, allowUserClose: true })
         articleApi.getImageUrl(data.name)
           .finally(dialog.loading.hide)
           .then(url => {
@@ -404,7 +410,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
           {{
             0: () => 
               <TouchableOpacity onPress={() => loadContent(true)} style={props.centerOffsetStyle}>
-                <Text style={{ fontSize: 18, color: theme.colors.accent, }}>重新加载</Text>
+                <Text style={{ fontSize: 18, color: theme.colors.accent, }}>{i.index.reload}</Text>
               </TouchableOpacity>,
             1: () => null,
             2: () => <MyActivityIndicator size={50} style={props.centerOffsetStyle} />,

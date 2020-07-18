@@ -16,6 +16,7 @@ import watchListApi from '~/api/watchList'
 import saveHistory from '~/utils/saveHistory'
 import { useFocusEffect } from '@react-navigation/native'
 import { useObserver } from 'mobx-react-lite'
+import i from './lang'
 
 export interface Props {
   
@@ -96,22 +97,22 @@ function ArticlePage(props: PropsWithChildren<Props>) {
   }, [])
 
   function handlerFor_articleData_wasLoaded(articleData: ArticleApiData.GetContent) {
-    console.log(articleData)
     setDisplayTitle(articleData.parse.displaytitle)
     setPageId(articleData.parse.pageid)
     setTrueTitle(articleData.parse.title)
     navigation.setParams({ pageName: articleData.parse.title })
     setContentsData(articleData.parse.sections)
-    saveHistory(articleData.parse.title)
+    saveHistory(articleData.parse.title, articleData.parse.displaytitle)
 
-    if (route.params.pageName !== articleData.parse.title) {
-      dialog.snackBar.show({ title: `重定向自${route.params.pageName}` })
+    // pageId === 0 用于判断是否为第一次加载
+    if (pageId === 0 && route.params.pageName.replace(/_/g, '') !== articleData.parse.displaytitle) {
+      dialog.snackBar.show({ title: i.index.redirectFrom(route.params.pageName) })
     }
 
     // 如果有anchor，则跳转至锚点
-    if (route.params.anchor) {
+    if (pageId === 0 && route.params.anchor) {
       jumpToAnchor(route.params.anchor)
-      dialog.snackBar.show({ title: `该链接指向了“${route.params.anchor}”章节` })
+      dialog.snackBar.show({ title: i.index.anchorGoto(route.params.anchor) })
     }
   }
 
@@ -144,10 +145,10 @@ function ArticlePage(props: PropsWithChildren<Props>) {
     watchListApi.setWatchStatus(trueTitle, !isWatched)
       .finally(dialog.loading.hide)
       .then(() => {
-        toast(isWatched ? '已移出监视列表' : '已加入监视列表')
+        toast(isWatched ? i.index.removedFromWatchList : i.index.addedToWatchList)
         setIsWatched(prevVal => !prevVal)
       })
-      .catch(() => toast('网络错误'))
+      .catch(() => toast(i.index.netErr))
   }
 
   function jumpToAnchor(anchor: string) {
@@ -161,17 +162,17 @@ function ArticlePage(props: PropsWithChildren<Props>) {
     const userData = store.user
     if (userData.name === link.split('User:')[1]) {
       navigation.replace('edit', { title: link, isCreate: true })
-      toast('你的用户页不存在，请点击空白区域编辑并创建')
+      toast(i.index.userPageNoExistMsg)
     } else {
-      dialog.alert.show({ content: '该条目或用户页还未创建' }).finally(navigation.goBack)
+      dialog.alert.show({ content: i.index.noExistMsg }).finally(navigation.goBack)
     }
   }
   
   const activityIndicatorTopOffset = (StatusBar.currentHeight! + 56) / 2
   const isLoaded = pageId !== 0
   const isVisibleCommentBtn = 
-    !(/^([Tt]alk|讨论|[Tt]emplate( talk|)|模板(讨论|)|[Mm]odule( talk|)|模块(讨论|)|[Cc]ategory( talk|)|分类(讨论|)|[Uu]ser talk|用户讨论|萌娘百科 talk):/.test(trueTitle || route.params.pageName))
-  const disabledEditFullText = /( talk|讨论):/.test(trueTitle || route.params.pageName)
+    !(/^([Tt]alk|讨论|討論|[Tt]emplate( talk|)|模板(讨论|討論|)|[Mm]odule( talk|)|模块(讨论|討論|)|[Cc]ategory( talk|)|分[类類](讨论|討論|)|[Uu]ser talk|用户讨论|用戶討論|萌娘百科 talk):/.test(trueTitle || route.params.pageName))
+  const disabledEditFullText = /( talk|讨论|討論):/.test(trueTitle || route.params.pageName)
   return useObserver(() =>
     <ViewContainer style={{ position: 'relative' }}>
       <MyStatusBar />
@@ -183,6 +184,7 @@ function ArticlePage(props: PropsWithChildren<Props>) {
         <ArticleHeader
           getRef={refs.header}
           title={displayTitle}
+          trueTitle={trueTitle}
           isWatchedPage={isWatched}
           disabledEditFullText={disabledEditFullText}
           // 页面没加载完禁止点击搜索和action菜单

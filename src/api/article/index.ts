@@ -1,23 +1,26 @@
 import moeRequest from '~/request/moegirl'
 import { ArticleApiData } from './types'
 
-function getContent(pageName = 'Mainpage') {
+async function getContent(pageName = 'Mainpage') {
+  const translatedTitle = await translateTitle(pageName)
   return moeRequest<ArticleApiData.GetContent>({
     params: {
       action: 'parse',
-      page: pageName,
+      page: translatedTitle,
       redirects: 1,
       prop: 'text|categories|templates|sections|images|displaytitle'
     }
   })
 }
 
-function getMainImage(pageName: string, size = 500) {
+async function getMainImage(pageName: string, size = 500) {
+  const translatedTitle = await translateTitle(pageName)
+  
   return moeRequest<ArticleApiData.GetImages>({
     params: {
       action: 'query',
       prop: 'pageimages',
-      titles: pageName,
+      titles: translatedTitle,
       pithumbsize: size
     }
   }).then(data => {
@@ -41,5 +44,18 @@ function getImageUrl(imageName: string) {
   })
 }
 
-const articleApi = { getContent, getImageUrl, getMainImage }
+function translateTitle(title: string) {
+  return moeRequest<ArticleApiData.translateTitle>({
+    params: {
+      action: 'query',
+      format: 'json',
+      titles: title,
+      converttitles: 1,
+    }
+  })
+    .then(data => Object.values(data.query.pages)[0].title)
+    .catch(() => Promise.resolve(title))
+}
+
+const articleApi = { getContent, getImageUrl, getMainImage, translateTitle }
 export default articleApi

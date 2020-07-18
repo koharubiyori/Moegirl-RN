@@ -70,26 +70,11 @@ function MySnackBar(props: PropsWithChildren<Props>, ref: any) {
       textMessage={params.title}
       actionText={params.actionText}
       actionHandler={params.hideHandler}
+      // .d.ts有误，这个属性实际是存在的
+      messageStyle={{
+        marginRight: 15
+      }}
     />
-    // <Snackbar
-    //   style={styles.body}
-    //   wrapperStyle={{
-    //     ...styles.wrapper,
-    //   }}
-    //   visible={visible}
-    //   duration={3000}
-    //   theme={{ colors: { accent: colors.night.accent } }}
-    //   onDismiss={() => setVisible(false)}
-    //   action={params.actionText ? {
-    //     label: params.actionText,
-    //     onPress: params.actionHandler,
-    //   } : undefined}
-    // >
-    //   <Text style={styles.text}>{params.title}</Text>
-    //   {params.actionText && 
-    //     <Text style={styles.btn} onPress={params.actionHandler}>{params.actionText}</Text>
-    //   }
-    // </Snackbar>
   )
 }
 

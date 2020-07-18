@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import { Image, StyleSheet, TouchableNativeFeedback, View } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
+import i from '../lang'
 
 export interface Props {
   title: string
@@ -31,9 +32,9 @@ function WatchListItem(props: PropsWithChildren<FinalProps>) {
           <Text style={{ ...styles.title }}>{props.title}</Text>
           <Text style={{ ...styles.subInfo, color: theme.colors.disabled }}>
             {props.lastEditDate ? 
-              '最后编辑于：' + props.lastEditDate
-              :
-              '重定向至：' + props.redirect
+              i.item.lastUpdate(props.lastEditDate)  
+            :
+              i.item.redirect(props.redirect!)
             }
           </Text>
         </View>

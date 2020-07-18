@@ -8,6 +8,7 @@ import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
 import { colors } from '~/theme'
 import ViewContainer from '~/components/ViewContainer'
+import i from './lang'
 
 export interface Props {
 
@@ -26,7 +27,7 @@ function AboutPage(props: PropsWithChildren<Props>) {
     <ViewContainer>
       <MyStatusBar blackText />    
       <MyToolbar
-        title="关于"
+        title={i.index.title}
         style={{ 
           backgroundColor: isNightMode ? theme.colors.primary : 'white',
         }}
@@ -39,17 +40,17 @@ function AboutPage(props: PropsWithChildren<Props>) {
         <Image source={require('~/assets/images/moegirl.png')} style={{ width: 105, height: 130, marginTop: 50 }} />
 
         <View style={{ marginTop: 30, borderBottomColor: '#ccc', borderBottomWidth: 1, paddingHorizontal: 20 }}>
-          <Text style={{ fontSize: 18, color: colors.green.primary, marginVertical: 10 }}>万物皆可萌的百科全书</Text>
+        <Text style={{ fontSize: 18, color: colors.green.primary, marginVertical: 10 }}>{i.index.catchCopy}</Text>
         </View>
         
         <View style={{ marginTop: 20 }}>
-          <Item title="版本" value={version + (isHmoe ? 'H' : '')}></Item>
-          <Item title="更新日期" value={date}></Item>
+          <Item title={i.index.version} value={version + (isHmoe ? 'H' : '')}></Item>
+          <Item title={i.index.updateDate} value={date}></Item>
         
           <View style={styles.item}>
-            <Text style={{ ...styles.itemText }}>开发</Text>
+            <Text style={{ ...styles.itemText }}>{i.index.develop}</Text>
             <TouchableOpacity onPress={() => navigation.push('article', { pageName: 'User:東東君' })}>
-              <Text style={{ color: colors.green.accent, fontSize: 16, textDecorationLine: 'underline' }}>東東君</Text>
+              <Text style={{ color: colors.green.accent, fontSize: 16, textDecorationLine: 'underline' }}>{i.index.myName}</Text>
             </TouchableOpacity>
           </View>
         </View>

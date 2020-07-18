@@ -13,6 +13,7 @@ import { useObserver } from 'mobx-react-lite'
 import store from '~/mobx'
 import toast from '~/utils/toast'
 import dialog from '~/utils/dialog'
+import i from './lang'
 
 export interface Props {
 
@@ -39,7 +40,6 @@ function NotificationPage(props: PropsWithChildren<Props>) {
 
   useEffect(() => {
     load(true)
-    // markReadAllNotifications()
   }, [])
 
   useLayoutAnimation()
@@ -74,17 +74,16 @@ function NotificationPage(props: PropsWithChildren<Props>) {
           ...prevVal,
           list: prevVal.list.map(item => ({ ...item, read: '1' }))
         }))
-        setTimeout(() => toast('标记所有为已读'), 50)
+        setTimeout(() => toast(i.index.markReadAllNotifications.success), 50)
       })
-      .catch(() => toast('网络错误'))
+      .catch(() => toast(i.index.markReadAllNotifications.netErr))
   }
   
-  console.log(notificationList)
   return useObserver(() => 
     <ViewContainer grayBgColor>
       <MyStatusBar />  
       <MyToolbar
-        title="通知"
+        title={i.index.title}
         leftIcon="keyboard-backspace"
         rightIcon="done-all"
         onPressLeftIcon={() => navigation.goBack()}
@@ -117,14 +116,14 @@ function NotificationPage(props: PropsWithChildren<Props>) {
           0: () => 
             <TouchableOpacity onPress={() => load()}>
               <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>加载失败，点击重试</Text>
+                <Text>{i.index.netErr}</Text>
               </View>
             </TouchableOpacity>,
           1: () => null,
           2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
           2.1: () => null,
           3: () => null,
-          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
+          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.allLoaded}</Text>,
           5: () => null
         }[notificationList.status]()}
       />

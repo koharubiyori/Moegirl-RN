@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 import { drawerController } from '~/views/drawer'
 
 export default function useLockDrawer() {

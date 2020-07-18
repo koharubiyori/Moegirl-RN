@@ -8,6 +8,7 @@ import dialog from './utils/dialog'
 import globalNavigation from './utils/globalNavigation'
 import storage from './utils/storage'
 import { getLanguages } from 'react-native-i18n'
+import i from './lang'
 
 export default async function init() {
   try {
@@ -56,7 +57,7 @@ function checkLoginStatus() {
       .catch(() => {
         store.user.logout()
         dialog.confirm.show({
-          content: '登录状态貌似失效了，要前往登录吗？'
+          content: i.loginStatusInvalid
         })
           .then(() => globalNavigation.current.push('login'))
       })
@@ -64,7 +65,7 @@ function checkLoginStatus() {
 }
 
 function checkLastVersion() {
-  appApi.getGithubLastRelease()
+  return appApi.getGithubLastRelease()
     .then(data => {
       function version2float(version: string) {
         return parseFloat(
@@ -76,7 +77,7 @@ function checkLastVersion() {
       
       if (version2float(data.version) > version2float(version)) {
         dialog.confirm.show({
-          title: '发现新版本，是否下载？',
+          title: i.loginStatusInvalid,
           content: data.info,
         })
           .then(() => Linking.openURL(isHmoe ? data.downloadLink : 'https://www.coolapk.com/apk/247471'))

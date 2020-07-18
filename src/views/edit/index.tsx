@@ -16,6 +16,7 @@ import Header from './components/Header'
 import SubmitDialog from './components/SubmitDialog'
 import EditTabs from './tabs'
 import tabDataCommunicator from './utils/tabDataCommunicator'
+import i from './lang'
 
 export interface Props {
 
@@ -29,7 +30,6 @@ export interface RouteParams {
 }
 
 export const maxSummaryLength = 220
-const SummarySuffix = '  // 来自Moegirl Viewer的编辑'
 
 function EditPage(props: PropsWithChildren<Props>) {
   const theme = useTheme()
@@ -74,7 +74,7 @@ function EditPage(props: PropsWithChildren<Props>) {
 
   async function checkAllowBack() {
     if (tabDataCommunicator.data.isContentChanged) {
-      await dialog.confirm.show({ content: '编辑还未保存，确定要放弃编辑的内容？' }) 
+      await dialog.confirm.show({ content: i.index.leaveHint }) 
     }
     navigation.goBack()
   }
@@ -87,51 +87,51 @@ function EditPage(props: PropsWithChildren<Props>) {
     if (tabDataCommunicator.data.isContentChanged) {
       setVisibleSubmitDialog(true)
     } else {
-      toast('内容未发生变化')
+      toast(i.index.unchangedHint)
     }
   }
 
   function executeEdit(captchaId?: string, captchaVal?: string) {
-    dialog.loading.show({ title: '提交中...' })
+    dialog.loading.show({ title: i.index.edit.submitting })
     const content = tabDataCommunicator.data.content
     editApi.editArticle({
       title, 
       section: newSection ? 'new' : section, 
       content,
-      summary: newSection ? '' : summary!.trim() + SummarySuffix,
+      summary: newSection ? '' : summary!.trim() + i.index.summarySuffix,
       captchaid: captchaId,
       captchaword: captchaVal
     })
       .finally(dialog.loading.hide)
       .then(() => {
-        toast.success('编辑成功')
+        toast.success(i.index.edit.success)
         articleReloadFlag.current = true
         navigation.goBack()
       })
       .catch(code => {
         if (code) {
           const msg = (({
-            editconflict: '出现编辑冲突，请复制编辑的内容后再次进入编辑界面，并检查差异',
-            protectedpage: '没有权限编辑此页面！',
-            readonly: '目前数据库处于锁定状态，无法编辑'
-          } as { [code: string]: string })[code] || '未知错误')
+            editconflict: i.index.edit.editConflict,
+            protectedpage: i.index.edit.protectedPage,
+            readonly: i.index.edit.readonly
+          } as { [code: string]: string })[code] || i.index.edit.unknownErr)
 
           dialog.alert.show({ content: msg })
         } else {
-          dialog.alert.show({ content: '网络错误，请稍候再试' })
+          dialog.alert.show({ content: i.index.edit.netErr })
         }             
       })
   }
 
   function submit () {
-    dialog.loading.show({ title: '提交中...' })
+    dialog.loading.show({ title: i.index.edit.submitting })
     store.user.isAutoConfirmed()
       .finally(dialog.loading.hide)
       .then(isAutoConfirmed => {
         if (isAutoConfirmed) {
           executeEdit()
         } else {
-          dialog.loading.show({ title: '提交中...' })
+          dialog.loading.show({ title: i.index.edit.submitting })
           loadCaptcha()
             .finally(dialog.loading.hide)
             .then(() => setVisibleCaptchaDialog(true))

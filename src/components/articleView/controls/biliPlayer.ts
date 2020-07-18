@@ -3,14 +3,15 @@ import createControls from '../utils/createControl'
 // b站播放器
 export default createControls('b站播放器', () => {
   let viewBox = $('#articleContentContainer')
+  const i = window._i.controls.biliPlayer
 
   viewBox.find('.wikitable.bilibili-video-container').each(function () {
     let avId = parseInt($(this).data('id').toString().replace('av', ''))
     let page = $(this).data('page')
 
-    let title = $('<div class="bilibili-video-title">标题获取中...</div>')
+    let title = $(`<div class="bilibili-video-title">${i.loading}</div>`)
     title.click(function() {
-      window._postRnMessage('onPressBiliVideo', { avId, page })
+      window._postRnMessage('onPressBiliVideo', { avId: avId as any as string, page })
     })
 
     let titlePhoneEvent = new Hammer(title[0])
@@ -34,7 +35,7 @@ export default createControls('b站播放器', () => {
       }, function(data) {
         let { data: res } = data
         if (res.code !== 0) {
-          title.text(res.code === -404 ? '视频又挂了_(:з」∠)_' : '标题获取失败')
+          title.text(res.code === -404 ? i.removed : i.netErr)
         } else {
           title.text(res.data.title)
         }

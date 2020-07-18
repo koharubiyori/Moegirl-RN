@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import MyButton from '~/components/MyButton'
 import { useTheme } from 'react-native-paper'
 import { SearchHistory } from '..'
+import i from '../lang'
 
 export interface Props {
   onPressTitle (title: SearchHistory): void
@@ -20,7 +21,7 @@ export default function RecentSearch(props: PropsWithChildren<FinalProps>) {
     <View style={{ flex: 1 }}>
       {props.titles && props.titles.length ? <>
         <View style={styles.header}>
-          <Text style={{ color: theme.colors.disabled }}>最近搜索</Text>
+          <Text style={{ color: theme.colors.disabled }}>{i.recentSearch.title}</Text>
           <MyButton noRippleLimit onPress={props.onPressDelete} rippleColor={theme.colors.placeholder}>
             <Icon name="delete" size={20} color={theme.colors.placeholder } />
           </MyButton>
@@ -42,7 +43,7 @@ export default function RecentSearch(props: PropsWithChildren<FinalProps>) {
         </ScrollView>
       </> : <>
         <View style={styles.noDataHintContainer}>
-          <Text style={{ ...styles.noDataHint, color: theme.colors.placeholder }}>暂无搜索记录</Text>
+          <Text style={{ ...styles.noDataHint, color: theme.colors.placeholder }}>{i.recentSearch.noData}</Text>
         </View>
       </>}
     </View>

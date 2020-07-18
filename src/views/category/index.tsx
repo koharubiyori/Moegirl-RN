@@ -10,8 +10,8 @@ import MyToolbar from '~/components/MyToolbar'
 import ViewContainer from '~/components/ViewContainer'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import useMyRoute from '~/hooks/useTypedRoute'
-import CategoryItem from './components/Item'
 import CategoryItem2 from './components/Item2'
+import i from './lang'
 
 export interface Props {
   
@@ -83,7 +83,7 @@ function CategoryPage(props: PropsWithChildren<Props>) {
     <ViewContainer style={{ flex: 1 }}>
       <MyStatusBar />
       <MyToolbar
-        title={'分类:' + title}
+        title={i.index.title(title)}
         leftIcon="home"
         rightIcon="search"
         onPressLeftIcon={() => navigation.popToTop()}
@@ -100,7 +100,7 @@ function CategoryPage(props: PropsWithChildren<Props>) {
             <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
               <CategoryBtn 
                 isCurrent={index + 1 === currentBranch!.length}
-                onPress={() => index + 1 !== currentBranch!.length && navigation.push('article', { pageName: '分类:' + categoryName })}
+                onPress={() => index + 1 !== currentBranch!.length && navigation.push('article', { pageName: '分类:' + categoryName, displayPageName: i.index.title(categoryName) })}
               >{categoryName}</CategoryBtn>
               {index !== currentBranch!.length - 1 ? <MaterialIcon name="chevron-right" size={30} color={theme.colors.onSurface} style={{ marginTop: 2 }} /> : null}
             </View>
@@ -123,13 +123,13 @@ function CategoryPage(props: PropsWithChildren<Props>) {
           imgUrl={item.item.thumbnail ? item.item.thumbnail.source : null}
           categories={item.item.categories.map(item => item.title.replace('Category:', ''))}
           onPress={() => navigation.push('article', { pageName: item.item.title })}
-          onPressCategory={categoryName => navigation.push('article', { pageName: '分类:' + categoryName })}
+          onPressCategory={categoryName => navigation.push('article', { pageName: '分类:' + categoryName, displayPageName: i.index.title(categoryName) })}
         />}
 
         ListHeaderComponent={
           articleTitle ? <>
             <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10, marginBottom: 5 }}>
-              <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>这个分类对应的条目为：</Text>
+              <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>{i.index.categoryPageHint}：</Text>
               <TouchableOpacity onPress={() => navigation.push('article', { pageName: articleTitle })}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', color: theme.colors.accent }}>{articleTitle}</Text>
               </TouchableOpacity>
@@ -141,14 +141,14 @@ function CategoryPage(props: PropsWithChildren<Props>) {
           0: () => 
             <TouchableOpacity onPress={search}>
               <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>加载失败，点击重试</Text>
+                <Text>{i.index.netErr}</Text>
               </View>
             </TouchableOpacity>,
           1: () => null,
           2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
           3: () => null,
-          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>已经没有啦</Text>,
-          5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>该分类下没有条目</Text>
+          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.allLoaded}</Text>,
+          5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.noData}</Text>
         }[categoryData.status])()}
       />
     </ViewContainer>

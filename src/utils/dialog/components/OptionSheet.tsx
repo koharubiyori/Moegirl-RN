@@ -2,6 +2,7 @@ import React, { PropsWithChildren, useImperativeHandle, useState, forwardRef } f
 import { View } from 'react-native'
 import { Button, Dialog, RadioButton, Text, useTheme } from 'react-native-paper'
 import MyButton from '~/components/MyButton'
+import i from './lang'
 
 export interface Props {
 
@@ -39,8 +40,8 @@ function OptionSheetDialog(props: PropsWithChildren<Props>, ref: any) {
   function show({
     options,
     defaultSelected,
-    title = '提示',
-    checkText = '确定',
+    title = i.title,
+    checkText = i.check,
     autoClose = true,
     onChange = () => {}
   }: optionSheetOptions): Promise<string | number> {

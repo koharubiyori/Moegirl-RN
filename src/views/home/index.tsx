@@ -7,7 +7,6 @@ import MyToolbar from '~/components/MyToolbar'
 import ViewContainer from '~/components/ViewContainer'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
-import { drawerController } from '../drawer'
 import i from './lang'
 
 export interface Props {
@@ -22,8 +21,8 @@ function HomePage(props: PropsWithChildren<Props>) {
   const navigation = useTypedNavigation()
 
   const siteNameMaps = {
-    moegirl: i('moegirl'),
-    hmoe: i('hmoe')
+    moegirl: i.index.moegirl,
+    hmoe: i.index.hmoe
   }
 
   const siteName = siteNameMaps[store.settings.source]

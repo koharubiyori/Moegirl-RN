@@ -13,6 +13,7 @@ import store from '~/mobx'
 import { colors } from '~/theme'
 import dialog from '~/utils/dialog'
 import toast from '~/utils/toast'
+import i from './lang'
 
 export interface Props {
   
@@ -62,20 +63,17 @@ function LoginPage(props: PropsWithChildren<Props>) {
   }
 
   function submit() {
-    // setUserName(prevVal => ({ ...prevVal, touched: true }))
-    // setPassword(prevVal => ({ ...prevVal, touched: true }))
-    // if (!userName.value || !password.value) { return }
-    if (userName.value === '') return toast('用户名不能为空', 'center')
-    if (password.value === '') return toast('密码不能为空', 'center')
+    if (userName.value === '') return toast(i.index.submit.userNameEmptyMsg, 'center')
+    if (password.value === '') return toast(i.index.submit.passwordEmptyMsg, 'center')
 
-    dialog.loading.show({ title: '登录中...', allowUserClose: true })
+    dialog.loading.show({ title: i.index.submit.loggingIn, allowUserClose: true })
     store.user.login(userName.value, password.value)
       .finally(dialog.loading.hide)
       .then(() => {
-        setTimeout(() => toast.success('登录成功'))
+        setTimeout(() => toast.success(i.index.submit.loggedIn))
         navigation.goBack()
       })
-      .catch(message => toast(message || '网络错误，请重试', 'center'))
+      .catch(message => toast(message || i.index.submit.netErr, 'center'))
   }
 
   const isHmoeSource = store.settings.source === 'hmoe'
@@ -151,15 +149,14 @@ function LoginPage(props: PropsWithChildren<Props>) {
                 marginTop: 20,
                 marginBottom: 20
               }}
-            >萌娘百科，万物皆可萌的百科全书！</Text>
+            >{i.index.catchCopy}</Text>
           </View>
 
           <View style={{ width: 290 }}>
             <OutlinedTextField
               {...inputStyles}
-              label="用户名"
+              label={i.index.userName}
               value={userName.value}
-              // error={(userName.value === '' && userName.touched) ? '用户名不能为空' : ''}
               onChangeText={value => setUserName({ touched: true, value })}
               onBlur={() => setUserName(prevVal => ({ ...prevVal, touched: true }))}
             />
@@ -170,9 +167,8 @@ function LoginPage(props: PropsWithChildren<Props>) {
                 inputContainerStyle={{ paddingRight: 40 }}
                 textContentType="password"
                 secureTextEntry={!showingPsd}
-                label="密码"
+                label={i.index.password}
                 value={password.value}
-                // error={(password.value === '' && password.touched) ? '密码不能为空' : ''}
                 onChangeText={value => setPassword({ touched: true, value })}
                 onBlur={() => setPassword(prevVal => ({ ...prevVal, touched: true }))}
                 onFocus={showKotori}
@@ -192,14 +188,14 @@ function LoginPage(props: PropsWithChildren<Props>) {
           </View>
 
           <MyButton contentContainerStyle={{ ...styles.submitBtn, backgroundColor: colors.green.primary }} onPress={submit}>
-            <Text style={{ color: 'white', fontSize: 18 }}>登录</Text>
+            <Text style={{ color: 'white', fontSize: 18 }}>{i.index.login}</Text>
           </MyButton>
 
           <TouchableOpacity 
             style={{ marginTop: 25 }} 
             onPress={() => Linking.openURL(isHmoeSource ? 'https://www.hmoegirl.com/index.php?title=特殊:创建账户&returnto=H萌娘%3A关于' : 'https://mzh.moegirl.org/index.php?title=Special:创建账户')}
           >
-            <Text style={{ color: 'white', textDecorationLine: 'underline', fontSize: 16 }}>还没有{isHmoeSource ? 'H萌娘' : '萌百'}帐号？点击前往官网进行注册</Text>
+            <Text style={{ color: 'white', textDecorationLine: 'underline', fontSize: 16 }}>{i.index.noAccountHint(isHmoeSource ? i.index.hmoe : i.index.moegirl)}</Text>
           </TouchableOpacity>
         </View>
         
