@@ -12,6 +12,7 @@ import dialog from '~/utils/dialog'
 import globalNavigation from '~/utils/globalNavigation'
 import DrawerItem from './Item'
 import i from '../lang'
+import RNExitApp from 'react-native-exit-app'
 
 export interface Props extends DrawerContentComponentProps<DrawerContentOptions> {
   navigation: DrawerContentComponentProps<DrawerContentOptions>['navigation'] & {
@@ -22,12 +23,6 @@ export interface Props extends DrawerContentComponentProps<DrawerContentOptions>
 
 function DrawerContent(props: PropsWithChildren<Props>) {
   const theme = useTheme()
-  // const [visible, setVisible] = useState(false)
-
-  //  // 延迟1秒显示防止启动时闪烁
-  // useEffect(() => {
-  //   setTimeout(() => setVisible(true), 1000)
-  // }, [])
 
   function tapCloseAfter(handler: () => void) {
     return () => {
@@ -158,7 +153,7 @@ function DrawerContent(props: PropsWithChildren<Props>) {
             style={{ flex: 1 }} 
             contentContainerStyle={styles.footerMyButton} 
             rippleColor="#ccc"
-            onPress={() => BackHandler.exitApp()}
+            onPress={() => RNExitApp.exitApp()}
           >
             <MaterialIcon name="subdirectory-arrow-left" size={22} color="#666" />
             <Text style={{ color: theme.colors.disabled, marginLeft: 10 }}>{i.index.exit}</Text>

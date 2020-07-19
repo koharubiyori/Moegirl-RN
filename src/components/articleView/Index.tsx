@@ -303,7 +303,6 @@ function ArticleView(props: PropsWithChildren<Props>) {
     setEventHandler('onReady', () => {
       props.onLoaded && props.onLoaded(articleData!)
       isWebViewLoaded.current = true
-      console.log('webview loaded')
       setStatus(3)
     })
     // // 点击注释

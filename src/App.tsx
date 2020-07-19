@@ -8,7 +8,7 @@ import i from './lang'
 import store from './mobx'
 import StackRoutes from './routes'
 import { colors, initSetThemeMethod, setThemeColor } from './theme'
-import { DialogBaseView } from './utils/dialog'
+import dialog, { DialogBaseView } from './utils/dialog'
 import { initGlobalNavigation } from './utils/globalNavigation'
 import toast from './utils/toast'
 

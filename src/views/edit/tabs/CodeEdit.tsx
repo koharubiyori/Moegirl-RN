@@ -22,7 +22,6 @@ function EditCodeTab(props: PropsWithChildren<Props>) {
   const navigation = useTypedNavigation()
   const [status, setStatus] = useState(1)
   const [content, setContent] = useState<string | null>(null)
-  const [visibleSectionTitleInput, setVisibleSectionTitleInput] = useState(false)
   const originalContentSample = useRef('')
   const refs = {
     articleEditor: useRef<ArticleEditorRef>()
@@ -37,7 +36,6 @@ function EditCodeTab(props: PropsWithChildren<Props>) {
       originalContentSample.current = ''
 
       if (newSection) {
-        setVisibleSectionTitleInput(true)
         setContent(`== ${i.codeEdit.newSectionDefaultTitle} ==`)
         changeText(`== ${i.codeEdit.newSectionDefaultTitle} ==`)
 

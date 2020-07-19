@@ -1,6 +1,5 @@
 import React from 'react'
-import createPromiser from '../createPromiser'
-import DialogComponents, { DialogRefs } from './components'
+import DialogComponents from './components'
 import { AlertDialogRef } from './components/Alert'
 import { ConfirmDialogRef } from './components/Confirm'
 import { LoadingDialogRef } from './components/Loading'
@@ -15,33 +14,33 @@ export interface Dialog {
   snackBar: SnackBarRef
 }
 
-const dialogRefsPromiser = createPromiser<DialogRefs>()
-export const DialogBaseView = () => <DialogComponents onBindRefs={dialogRefsPromiser.resolve} />
+let dialogRefs: Dialog = null as any
+export const DialogBaseView = () => <DialogComponents onBindRefs={refs => dialogRefs = refs} />
 
 const dialog: Dialog = {
   alert: {
-    show: (...args) => dialogRefsPromiser.promise.then(refs => refs.alert.show(...args)),
-    hide: (...args) => dialogRefsPromiser.promise.then(refs => refs.alert.hide(...args))
+    show: (...args) => dialogRefs.alert.show(...args),
+    hide: (...args) => dialogRefs.alert.hide(...args)
   },
 
   confirm: {
-    show: (...args) => dialogRefsPromiser.promise.then(refs => refs.confirm.show(...args)),
-    hide: (...args) => dialogRefsPromiser.promise.then(refs => refs.confirm.hide(...args))
+    show: (...args) => dialogRefs.confirm.show(...args),
+    hide: (...args) => dialogRefs.confirm.hide(...args)
   },
   
   optionSheet: {
-    show: (...args) => dialogRefsPromiser.promise.then(refs => refs.optionSheet.show(...args)),
-    hide: (...args) => dialogRefsPromiser.promise.then(refs => refs.optionSheet.hide(...args))
+    show: (...args) => dialogRefs.optionSheet.show(...args),
+    hide: (...args) => dialogRefs.optionSheet.hide(...args)
   },
 
   loading: {
-    show: (...args) => dialogRefsPromiser.promise.then(refs => refs.loading.show(...args)),
-    hide: (...args) => dialogRefsPromiser.promise.then(refs => refs.loading.hide(...args))
+    show: (...args) => dialogRefs.loading.show(...args),
+    hide: (...args) => dialogRefs.loading.hide(...args)
   },
 
   snackBar: {
-    show: (...args) => dialogRefsPromiser.promise.then(refs => refs.snackBar.show(...args)),
-    hide: (...args) => dialogRefsPromiser.promise.then(refs => refs.snackBar.hide(...args))
+    show: (...args) => dialogRefs.snackBar.show(...args),
+    hide: (...args) => dialogRefs.snackBar.hide(...args)
   },
 }
 
