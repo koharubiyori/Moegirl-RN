@@ -25,6 +25,15 @@ const postRnMessageStr = function() {
   }
 }.toString()
 
+// 前置操作，这里用来执行屏蔽浏览器原生通知方法，以及执行和html数据一起获取来的脚本(window.RLQ: function[])
+const beforeStr = function() {
+  window.alert = () => {}
+  window.confirm = (() => {}) as any
+  window.prompt = (() => {}) as any
+
+  window.RLQ && window.RLQ.forEach(fn => fn())
+}.toString()
+
 const styleSheets = {
   home: homeStyleSheet,
   article: articleStyleSheet,
@@ -49,6 +58,7 @@ export default function createHTMLDocument(options: CreateDocumentOptions) {
   const scriptTags = (options.scripts || []).reduce((prev, item) => prev + `<script src="js/lib/${item}.js"></script>`, '')
 
   const scriptCodes = [
+    beforeStr,
     requestorStr, 
     postRnMessageStr
   ].reduce((prev, item) => prev + `(${item})();`, '')

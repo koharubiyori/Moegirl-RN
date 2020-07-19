@@ -1,6 +1,6 @@
-import React, { PropsWithChildren, useEffect, useRef, useState, createContext } from 'react'
-import { Dimensions, DrawerLayoutAndroid } from 'react-native'
 import { createDrawerNavigator } from '@react-navigation/drawer'
+import React, { useEffect, useState } from 'react'
+import { Dimensions } from 'react-native'
 import DrawerContent from './components/Content'
 
 export interface Props {

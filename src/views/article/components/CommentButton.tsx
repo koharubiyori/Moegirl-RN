@@ -6,10 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
 import toast from '~/utils/toast'
-import { biliPlayerController } from '~/views/biliPlayer'
 import i from '../lang'
 
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
 const size = 60
 
 export interface Props {
@@ -29,8 +27,8 @@ function CommentButton(props: PropsWithChildren<Props>) {
   const theme = useTheme()
   const navigation = useTypedNavigation()
   const [visible, setVisible] = useState(false)
-  const [bottomTransition] = useState(new Animated.Value(0))
-  const [isBiliPlayerVisible, setIsBiliPlayerVisible] = useState(biliPlayerController.visible)
+  const [buttonTransition] = useState(new Animated.Value(0))
+  const [bottomOffsetTransitionForBiliPlayer] = useState(new Animated.Value(0))
   const showLock = useRef(true) // 为了保证延迟显示，声明一个变量用于判断前n秒不响应show方法
   const animateLock = useRef(false)
 
@@ -46,7 +44,22 @@ function CommentButton(props: PropsWithChildren<Props>) {
 
   // 监听b站播放器的显示，如果显示按钮的位置就需要往上提
   useEffect(() => {
-    const listener = DeviceEventEmitter.addListener('biliPlayerVisibleChange', setIsBiliPlayerVisible)
+    const listener = DeviceEventEmitter.addListener('biliPlayerVisibleChange', visible => {
+      if (visible) {
+        Animated.timing(bottomOffsetTransitionForBiliPlayer, {
+          toValue: visible ? 1 : 0,
+          duration: 300
+        }).start()
+      } else {
+        Animated.sequence([
+          Animated.delay(500),
+          Animated.timing(bottomOffsetTransitionForBiliPlayer, {
+            toValue: 0,
+            duration: 300
+          })
+        ]).start()
+      }
+    })
     return () => listener.remove()
   }, [])
 
@@ -55,10 +68,9 @@ function CommentButton(props: PropsWithChildren<Props>) {
 
     animateLock.current = true
     setVisible(true)
-    Animated.timing(bottomTransition, {
+    Animated.timing(buttonTransition, {
       toValue: 1,
       duration: 150,
-      useNativeDriver: true
     })
       .start(() => animateLock.current = false)
   }
@@ -67,10 +79,9 @@ function CommentButton(props: PropsWithChildren<Props>) {
     if (animateLock.current || !visible) { return }
 
     animateLock.current = true
-    Animated.timing(bottomTransition, {
+    Animated.timing(buttonTransition, {
       toValue: 0,
       duration: 150,
-      useNativeDriver: true
     }).start(() => {
       setVisible(false)
       animateLock.current = false
@@ -87,13 +98,18 @@ function CommentButton(props: PropsWithChildren<Props>) {
     })
   }
 
-  const bottomTranslateY = bottomTransition.interpolate({
+  const buttonTranslateY = buttonTransition.interpolate({
     inputRange: [0, 1],
     outputRange: [size + 30, 0]
   })
   
-  // 这个的计算需要参考biliPlayer/index.tsx中的算法
-  const biliPlayerHeightWithOffset = Dimensions.get('window').width / 2 * 0.65 + 15
+  // 这个的计算需要参考biliPlayer/index.tsx中的算法，播放器高度为Dimensions.get('window').width / 2 * 0.65，偏移为15
+  const biliPlayerHeightWithSelfOffset = Dimensions.get('window').width / 2 * 0.65 + 15
+  const containerBottom = bottomOffsetTransitionForBiliPlayer.interpolate({
+    inputRange: [0, 1],
+    outputRange: [30, biliPlayerHeightWithSelfOffset + 10]
+  })
+
   return useObserver(() => {
     const buttonText = (() => {
       const currentPageCommentData = store.comment.data[props.pageId] || {}
@@ -109,18 +125,22 @@ function CommentButton(props: PropsWithChildren<Props>) {
     })()
   
     return visible ?
-      <AnimatedTouchableOpacity onPress={tap} style={{ 
-        ...styles.container, 
-        bottom: isBiliPlayerVisible ? (biliPlayerHeightWithOffset + 10) : 30,
-        transform: [{ translateY: bottomTranslateY }] 
-      }}>
-        <View style={{ ...styles.main, backgroundColor: props.backgroundColor || theme.colors.primary }}>
-          <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
-            <Icon name="comment" size={30} color={props.textColor || 'white'} style={{ position: 'relative', top: -4 }} />
-            <Text style={{ position: 'absolute', bottom: 6, color: props.textColor || 'white' }}>{buttonText}</Text>
+      <Animated.View
+        style={{ 
+          ...styles.container, 
+          bottom: containerBottom,
+          transform: [{ translateY: buttonTranslateY }] 
+        }}
+      >
+        <TouchableOpacity onPress={tap}>
+          <View style={{ ...styles.main, backgroundColor: props.backgroundColor || theme.colors.primary }}>
+            <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
+              <Icon name="comment" size={30} color={props.textColor || 'white'} style={{ position: 'relative', top: -4 }} />
+              <Text style={{ position: 'absolute', bottom: 6, color: props.textColor || 'white' }}>{buttonText}</Text>
+            </View>
           </View>
-        </View>
-      </AnimatedTouchableOpacity>
+        </TouchableOpacity>
+      </Animated.View>
     : null
   })
 }

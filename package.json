@@ -36,7 +36,6 @@
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "~0.61.5",
-    "react-native-exit-app": "^1.1.0",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-html-parser": "^0.1.0",
     "react-native-i18n": "^2.0.15",

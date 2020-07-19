@@ -1,6 +1,5 @@
 export default function() {
   let viewBox = $('#articleContentContainer')
-
   let clientWidth = document.body.clientWidth
   // 防止图片越界
   viewBox.find('img').each(function () {

@@ -119,8 +119,8 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
 
           horizontalSwipeTransitionValueRef.current += value
           
-          if (horizontalSwipeTransitionValueRef.current > 1) horizontalSwipeTransitionValueRef.current = 1
-          if (horizontalSwipeTransitionValueRef.current < 0) horizontalSwipeTransitionValueRef.current = 0
+          if (horizontalSwipeTransitionValueRef.current > 0.8) horizontalSwipeTransitionValueRef.current = 0.8
+          if (horizontalSwipeTransitionValueRef.current < 0.2) horizontalSwipeTransitionValueRef.current = 0.2
           
           horizontalSwipeTransitionValue.setValue(horizontalSwipeTransitionValueRef.current as any)
         }
@@ -129,9 +129,9 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
       },
 
       onPanResponderRelease: () => {
-        if (horizontalSwipeTransitionValueRef.current > 0.8) {
+        if (horizontalSwipeTransitionValueRef.current > 0.7) {
           hide('right')
-        } else if (horizontalSwipeTransitionValueRef.current < 0.1) {
+        } else if (horizontalSwipeTransitionValueRef.current < 0.3) {
           hide('left')
         } else {
           show()
@@ -295,7 +295,7 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
   // 给view添加opacity无法影响到内部的webview，必须给webview设置opacity
   const webViewOpacity = horizontalSwipeTransitionValue.interpolate({
     inputRange: [0, 0.5, 1],
-    outputRange: [0.1, 1, 0.1]
+    outputRange: [0, 1, 0]
   })
 
   if (!visible) return null

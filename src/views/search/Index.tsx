@@ -51,6 +51,7 @@ function SearchPage(props: PropsWithChildren<Props>) {
     let searchHistoryData = searchHistory.filter(item => item.keyword !== keyword)
     searchHistoryData.unshift({ keyword, byHint })
     storage.set('searchHistory', searchHistoryData)
+    setTimeout(() => setSearchHistory(searchHistoryData), 1000)
     return searchHistoryData
   }
 

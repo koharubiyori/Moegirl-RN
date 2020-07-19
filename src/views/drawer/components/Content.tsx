@@ -1,6 +1,6 @@
 import { DrawerContentComponentProps, DrawerContentOptions } from '@react-navigation/drawer'
 import { useObserver } from 'mobx-react-lite'
-import React, { PropsWithChildren, useState, useEffect } from 'react'
+import React, { PropsWithChildren } from 'react'
 import { BackHandler, Dimensions, Image, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -10,9 +10,8 @@ import store from '~/mobx'
 import { setThemeColor } from '~/theme'
 import dialog from '~/utils/dialog'
 import globalNavigation from '~/utils/globalNavigation'
-import DrawerItem from './Item'
 import i from '../lang'
-import RNExitApp from 'react-native-exit-app'
+import DrawerItem from './Item'
 
 export interface Props extends DrawerContentComponentProps<DrawerContentOptions> {
   navigation: DrawerContentComponentProps<DrawerContentOptions>['navigation'] & {
@@ -153,7 +152,7 @@ function DrawerContent(props: PropsWithChildren<Props>) {
             style={{ flex: 1 }} 
             contentContainerStyle={styles.footerMyButton} 
             rippleColor="#ccc"
-            onPress={() => RNExitApp.exitApp()}
+            onPress={() => BackHandler.exitApp()}
           >
             <MaterialIcon name="subdirectory-arrow-left" size={22} color="#666" />
             <Text style={{ color: theme.colors.disabled, marginLeft: 10 }}>{i.index.exit}</Text>

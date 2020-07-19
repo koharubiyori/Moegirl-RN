@@ -8,6 +8,8 @@ export as namespace __ArticleWebView
 
 declare namespace ArticleWebView {
   interface InjectedProperty {
+    RLQ?: ((...args: any[]) => void)[] // 拿到的条目数据中可能包含脚本，会将脚本push到window.RLQ中
+    
     ReactNativeWebView: { postMessage: (msg: string) => void }
     _postRnMessage<T extends keyof ArticleWebView.MessagePayloadMaps>(type: T, payload?: ArticleWebView.MessagePayloadMaps[T]): void
     _request (config: WebViewRequestOptions, callback: (data: any) => void): void // 注入一个请求器
