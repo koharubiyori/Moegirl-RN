@@ -1,6 +1,6 @@
 import { NavigationContainerRef } from '@react-navigation/native'
 import React, { useEffect, useRef, useState } from 'react'
-import { BackHandler } from 'react-native'
+import { BackHandler, StatusBar } from 'react-native'
 import { DefaultTheme, Provider as PaperProvider, Theme } from 'react-native-paper'
 import SplashScreen from 'react-native-splash-screen'
 import init from './init'

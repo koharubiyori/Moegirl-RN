@@ -176,7 +176,6 @@ function ArticleView(props: PropsWithChildren<Props>) {
     if (!forceLoad && store.settings.cachePriority && isCanUseCache) {
       const redirectMap = storage.get('articleRedirectMap') || {}
       let trueTitle = redirectMap[props.pageName!] || props.pageName
-      console.log(redirectMap)
       
       try {
         let articleCache = await articleCacheController.getCacheData(trueTitle!)
@@ -208,7 +207,6 @@ function ArticleView(props: PropsWithChildren<Props>) {
 
     getArticleContent(props.pageName!, forceLoad) // 这个函数封装了运行时缓存
       .then(data => {
-        console.log(data)
         let html = data.parse.text['*']
         // 如果为分类页，则从html字符串中抽取数据，然后交给category界面处理
         if (/^([Cc]ategory|分类|分類):/.test(props.pageName!)) {

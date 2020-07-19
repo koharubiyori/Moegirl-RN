@@ -1,5 +1,5 @@
-import React, { PropsWithChildren, useImperativeHandle, useState, forwardRef } from 'react'
-import { StyleSheet } from 'react-native'
+import React, { forwardRef, PropsWithChildren, useImperativeHandle, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { Button, Dialog, Text, TextInput, useTheme } from 'react-native-paper'
 import i from './lang'
 
@@ -17,9 +17,11 @@ export interface ConfirmOptions {
   content?: string
   checkText?: string
   closeText?: string
+  leftText?: string
   inputPlaceholder?: string
   hasInput?: boolean
   autoClose?: boolean
+  leftHandler?(): void
 }
 
 function ConfirmDialog(props: PropsWithChildren<Props>, ref: any) {
@@ -30,6 +32,8 @@ function ConfirmDialog(props: PropsWithChildren<Props>, ref: any) {
     content: '',
     checkText: '',
     closeText: '',
+    leftText: '',
+    leftHandler: () => {},
     checkHandler: (inputVal: string) => {},
     closeHandler: () => {},
     inputPlaceholder: '',
@@ -44,6 +48,8 @@ function ConfirmDialog(props: PropsWithChildren<Props>, ref: any) {
     content = '',
     checkText = i.check,
     closeText = i.close,
+    leftText = '',
+    leftHandler = () => {},
     hasInput = false,
     inputPlaceholder = '',
     autoClose = true
@@ -55,6 +61,7 @@ function ConfirmDialog(props: PropsWithChildren<Props>, ref: any) {
         content, 
         checkText, 
         closeText, 
+        leftText,
         hasInput, 
         inputPlaceholder,
         checkHandler: (inputVal: string) => {
@@ -62,6 +69,7 @@ function ConfirmDialog(props: PropsWithChildren<Props>, ref: any) {
           resolve(hasInput ? inputVal : undefined)
         }, 
         closeHandler: () => { autoClose && hide(); reject() },
+        leftHandler: () => { autoClose && hide(); leftHandler() }
       })
     })
   }
@@ -95,14 +103,21 @@ function ConfirmDialog(props: PropsWithChildren<Props>, ref: any) {
         </> : null}
       </Dialog.Content>
       <Dialog.Actions>
-        <Button onPress={params.closeHandler} style={{ marginRight: 10 }} color="#ccc">
-          <Text style={{ fontSize: 16 }}>{params.closeText}</Text>
-        </Button>
-        
-        <Button onPress={() => params.checkHandler(inputVal)}>
-          <Text style={{ fontSize: 16, color: theme.colors.accent }}>{params.checkText}</Text>
-        </Button>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Button onPress={params.closeHandler} color="#ccc">
+            <Text style={{ fontSize: 16 }}>{params.closeText}</Text>
+          </Button>
+          
+          <Button onPress={() => params.checkHandler(inputVal)}>
+            <Text style={{ fontSize: 16, color: theme.colors.accent }}>{params.checkText}</Text>
+          </Button>
+        </View>
       </Dialog.Actions>
+      {!!params.leftText &&
+        <Button style={styles.leftBtn} onPress={params.leftHandler}>
+          <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>{params.leftText}</Text>
+        </Button>
+      }
     </Dialog>
   )
 }
@@ -110,5 +125,9 @@ function ConfirmDialog(props: PropsWithChildren<Props>, ref: any) {
 export default forwardRef(ConfirmDialog)
 
 const styles = StyleSheet.create({
-
+  leftBtn: {
+    position: 'absolute', 
+    left: 16, 
+    bottom: 8.5,
+  }
 })

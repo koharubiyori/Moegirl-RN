@@ -104,7 +104,7 @@ function CommentReplyPage(props: PropsWithChildren<Props>) {
 
           ListFooterComponent={
             <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>
-              {commentData.children!.length === 0 ? i.index.allLoaded : i.index.noData}
+              {commentData.children!.length === 0 ? i.index.noData : i.index.allLoaded}
             </Text>
           }
         />

@@ -15,6 +15,7 @@ import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SettingsSwitchItem from './components/SwitchItem'
 import i from './lang'
+import { checkLastVersion } from '~/init'
 
 export interface Props {
   
@@ -62,6 +63,7 @@ function SettingsPage(props: PropsWithChildren<Props>) {
       defaultSelected: store.settings.source,
     })
       .then(val => {
+        if (val === store.settings.source) { return }
         store.settings.set('source', val as any)
           .then(() => RNRestart.Restart())
       })
@@ -82,8 +84,18 @@ function SettingsPage(props: PropsWithChildren<Props>) {
       ]
     })
 
-    await store.settings.set('lang', val as any)
-    RNRestart.Restart()
+    if (val !== store.settings.lang) {
+      await store.settings.set('lang', val as any)
+      RNRestart.Restart()
+    }
+  }
+
+  function checkNewVersion() {
+    dialog.loading.show({ title: i.index.checkNewVersion.loading })
+    checkLastVersion(true)
+      .finally(dialog.loading.hide)
+      .then(result => !result && toast(i.index.checkNewVersion.none))
+      .catch(() => toast(i.index.checkNewVersion.netErr))
   }
 
   return useObserver(() =>
@@ -165,6 +177,11 @@ function SettingsPage(props: PropsWithChildren<Props>) {
         <SettingsSwitchItem hideSwitch
           title={i.index.other.about}
           onPress={() => navigation.push('about')}
+        />
+
+        <SettingsSwitchItem hideSwitch
+          title={i.index.other.checkVersion}
+          onPress={checkNewVersion}
         />
 
         <SettingsSwitchItem hideSwitch

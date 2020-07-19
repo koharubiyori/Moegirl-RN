@@ -8,6 +8,11 @@ const zhHans = {
       check: '确定要清空浏览历史吗？',
       success: '已清除所有浏览历史'
     },
+    checkNewVersion: {
+      loading: '检查新版本...',
+      none: '当前为最新版本',
+      netErr: '网络错误',
+    },
     logout: {
       check: '确定要登出吗？',
       success: '已登出'
@@ -49,6 +54,7 @@ const zhHans = {
       changeSource: '更换数据源',
       selectLang: '选择语言',
       about: '关于',
+      checkVersion: '检查新版本',
       checkNewVersionOnGithub: '在Github上查看新版本',
       gotoGithub: '前往Github下载支持H萌娘的版本'
     }

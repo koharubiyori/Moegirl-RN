@@ -17,6 +17,12 @@ export let drawerController: DrawerController = null as any
 
 function DrawerView(props: Props) {
   const [lock, setLock] = useState(false)
+  const [visibleBgColor, setVisibleBgColor] = useState(false)
+
+  // 延迟1秒显示防止启动时闪烁
+  useEffect(() => {
+    setTimeout(() => setVisibleBgColor(true), 1000)
+  }, [])
 
   drawerController = {
     setLock: (lock = true) => setLock(lock)
@@ -28,12 +34,14 @@ function DrawerView(props: Props) {
       edgeWidth={50}
       drawerStyle={{
         width: Dimensions.get('window').width * 0.6,
-        elevation: 10
+        elevation: 10,
+        backgroundColor: visibleBgColor ? 'white' : 'transparent'
       }}
       screenOptions={{
         swipeEnabled: !lock
       }}
-      drawerContent={(props: any) => <DrawerContent {...props} />}
+      // 抽屉内容也要跟着一起隐藏1秒，防止闪烁
+      drawerContent={(props: any) => visibleBgColor && <DrawerContent {...props} />}
     >
       <Drawer.Screen name="main" component={props.children} />
     </Drawer.Navigator>

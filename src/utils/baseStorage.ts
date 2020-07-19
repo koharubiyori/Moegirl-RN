@@ -3,7 +3,10 @@ import { SourceStorages } from './storage'
 import { sourceList } from '~/request/moegirl'
 import { SettingsStoreData } from '~/mobx/settings'
 
-type LocalStorages = { settings: SettingsStoreData } & {
+type LocalStorages = { 
+  settings: SettingsStoreData
+  hideVersion: string // 保存展示更新提示时，用户点击了“不再提示”时检测到的新版本号
+} & {
   [SiteName in keyof typeof sourceList]: SourceStorages
 }
 

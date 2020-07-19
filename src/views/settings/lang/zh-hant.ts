@@ -14,6 +14,11 @@ const zhHant: typeof zhHans = {
       check: '確定要登出嗎？',
       success: '已登出'
     },
+    checkNewVersion: {
+      loading: '檢視新版本...',
+      none: '當前为最新版本',
+      netErr: '網路錯誤',
+    },
     sourceSelection: {
       title: '選擇資料來源',
       options: {
@@ -51,6 +56,7 @@ const zhHant: typeof zhHans = {
       changeSource: '更換資料來源',
       selectLang: '選擇語言',
       about: '關於',
+      checkVersion: '檢視新版本',
       checkNewVersionOnGithub: '在Github上檢視新版本',
       gotoGithub: '前往Github下載支援H萌娘的版本'
     }

@@ -1,6 +1,6 @@
 import { DrawerContentComponentProps, DrawerContentOptions } from '@react-navigation/drawer'
 import { useObserver } from 'mobx-react-lite'
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, useState, useEffect } from 'react'
 import { BackHandler, Dimensions, Image, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -22,6 +22,12 @@ export interface Props extends DrawerContentComponentProps<DrawerContentOptions>
 
 function DrawerContent(props: PropsWithChildren<Props>) {
   const theme = useTheme()
+  // const [visible, setVisible] = useState(false)
+
+  //  // 延迟1秒显示防止启动时闪烁
+  // useEffect(() => {
+  //   setTimeout(() => setVisible(true), 1000)
+  // }, [])
 
   function tapCloseAfter(handler: () => void) {
     return () => {
@@ -129,7 +135,7 @@ function DrawerContent(props: PropsWithChildren<Props>) {
             {store.user.isLoggedIn ? <>
               <DrawerItem icon="eye" iconGroup="MaterialCommunity" title={i.index.items.watchList} onPress={tapCloseAfter(() => navigation.navigate('watchList'))} />
             </> : null}
-            <DrawerItem icon="history" title={i.index.items.watchList} onPress={tapCloseAfter(() => navigation.push('history'))} />
+            <DrawerItem icon="history" title={i.index.items.browsingHistory} onPress={tapCloseAfter(() => navigation.push('history'))} />
             <DrawerItem icon="touch-app" title={i.index.items.actionHint} onPress={showActionHelps} />
             <DrawerItem icon="brightness-4" title={i.index.items.nightMode(!isNightMode)} onPress={toggleNight} />
           </View>

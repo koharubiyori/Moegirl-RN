@@ -105,7 +105,7 @@ function ArticlePage(props: PropsWithChildren<Props>) {
     saveHistory(articleData.parse.title, articleData.parse.displaytitle)
 
     // pageId === 0 用于判断是否为第一次加载
-    if (pageId === 0 && route.params.pageName.replace(/_/g, '') !== articleData.parse.displaytitle) {
+    if (pageId === 0 && route.params.pageName.replace(/_/g, '') !== articleData.parse.title) {
       dialog.snackBar.show({ title: i.index.redirectFrom(route.params.pageName) })
     }
 

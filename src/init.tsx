@@ -64,9 +64,9 @@ function checkLoginStatus() {
   }
 }
 
-function checkLastVersion() {
+export function checkLastVersion(forceShow = false) {
   return appApi.getGithubLastRelease()
-    .then(data => {
+    .then(async data => {
       function version2float(version: string) {
         return parseFloat(
           version
@@ -75,12 +75,19 @@ function checkLastVersion() {
         )
       }
       
-      if (version2float(data.version) > version2float(version)) {
+      if (version2float(data.version) <= version2float(version)) return false
+
+      const hideVersion = forceShow ? '' : (await baseStorage.get('hideVersion'))
+      if (hideVersion !== data.version) {
         dialog.confirm.show({
-          title: i.loginStatusInvalid,
+          title: i.newVersionFound,
           content: data.info,
+          leftText: '不再提示',
+          leftHandler: () => baseStorage.set('hideVersion', data.version)
         })
           .then(() => Linking.openURL(isHmoe ? data.downloadLink : 'https://www.coolapk.com/apk/247471'))
       }
+
+      return true
     })
 }
