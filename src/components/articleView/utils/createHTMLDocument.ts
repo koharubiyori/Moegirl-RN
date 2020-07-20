@@ -25,13 +25,11 @@ const postRnMessageStr = function() {
   }
 }.toString()
 
-// 前置操作，这里用来执行屏蔽浏览器原生通知方法，以及执行和html数据一起获取来的脚本(window.RLQ: function[])
+// 前置操作，这里用来执行屏蔽浏览器原生通知方法
 const beforeStr = function() {
   window.alert = () => {}
   window.confirm = (() => {}) as any
   window.prompt = (() => {}) as any
-
-  window.RLQ && window.RLQ.forEach(fn => fn())
 }.toString()
 
 const styleSheets = {

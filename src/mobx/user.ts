@@ -42,7 +42,6 @@ class UserStore {
 
   @action.bound
   logout() {
-    // 清除cookies
     this.name = ''
     this.waitNotificationTotal = 0
     this.info = null

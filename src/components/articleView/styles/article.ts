@@ -110,7 +110,8 @@ const articleStyleSheet = jss.createStyleSheet({
       .linkBox,
       .mw-inputbox-centered,
       .mouse-ripple,
-      .nomobile
+      .nomobile,
+      .template-ruby-hidden
     `]: {
       display: 'none'
     },
