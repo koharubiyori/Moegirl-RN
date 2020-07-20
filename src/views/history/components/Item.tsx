@@ -5,6 +5,7 @@ import RNFetchBlob from 'rn-fetch-blob'
 import MyButton from '~/components/MyButton'
 import { BrowsingHistoryWithDiffDate } from '../index'
 import { getHistoryImgBase64 } from '~/utils/saveHistory'
+import cutHtmlTag from '~/utils/cutHtmlTag'
 
 export interface Props {
   data: BrowsingHistoryWithDiffDate
@@ -36,7 +37,7 @@ export default function HistoryItem(props: PropsWithChildren<FinalProps>) {
         style={{ width: 60, height: 70, position: 'absolute', top: 5, left: 5 }} 
       />
       {/* 每行最多15个字 */}
-      <Text style={{ maxWidth: 14 * 15, textAlign: 'center' }} numberOfLines={2}>{props.data.displayTitle || props.data.title}</Text>
+      <Text style={{ maxWidth: 14 * 15, textAlign: 'center' }} numberOfLines={2}>{cutHtmlTag(props.data.displayTitle || props.data.title)}</Text>
       <Text style={{ position: 'absolute', right: 5, bottom: 5 }}>{props.data.date}</Text>
     </MyButton>
   )

@@ -15,41 +15,43 @@ export interface BrowsingHistory {
 export const historyImgPath = (title: string, imgSuffixName: string) => 
   `/${BROWSING_HISTORY_IMGS_DIRNAME}/${md5(store.settings.source + title)}.${imgSuffixName}`
 
-export default function saveHistory(title: string, displayTitle?: string) {
+export default async function saveHistory(title: string, displayTitle?: string) {
   const timestamp = new Date().getTime()
 
-  articleApi.getMainImage(title, 250)
-    .then(async img => {
-      let _history = storage.get('browsingHistory') || []
-      _history.some((item, index) => {
-        if (item.title === title) {
-          _history.splice(index, 1)
-          return true
-        }
-      })
+  const img = await articleApi.getMainImage(title, 250).catch(e => {
+    console.log('获取条目图片失败', e)
+    return Promise.resolve(null)
+  })
 
-      let result: BrowsingHistory = { title, timestamp, imgPath: null, displayTitle }
+  console.log('条目图片', img)
+  let _history = storage.get('browsingHistory') || []
+  _history.some((item, index) => {
+    if (item.title === title) {
+      _history.splice(index, 1)
+      return true
+    }
+  })
 
-      if (img) {
-        try {
-          const imgSuffixName = img.source.replace(/^.+\.([^\.]+)$/, '$1')
-          const imgSavePath = historyImgPath(title, imgSuffixName)
-          await RNFetchBlob
-            .config({ 
-              path: RNFetchBlob.fs.dirs.DocumentDir + imgSavePath,
-              timeout: 6000,
-            })
-            .fetch('get', img.source)
-            .catch(console.log)
+  let result: BrowsingHistory = { title, timestamp, imgPath: null, displayTitle }
 
-          result.imgPath = imgSavePath
-        } catch (e) { console.log(e) }
-      }
+  if (img) {
+    try {
+      const imgSuffixName = img.source.replace(/^.+\.([^\.]+)$/, '$1')
+      const imgSavePath = historyImgPath(title, imgSuffixName)
+      await RNFetchBlob
+        .config({ 
+          path: RNFetchBlob.fs.dirs.DocumentDir + imgSavePath,
+          timeout: 6000,
+        })
+        .fetch('get', img.source)
+        .catch(console.log)
 
-      _history.unshift(result)
-      storage.set('browsingHistory', _history)
-    })
-    .catch(e => console.log(e))
+      result.imgPath = imgSavePath
+    } catch (e) { console.log(e) }
+  }
+
+  _history.unshift(result)
+  storage.set('browsingHistory', _history)
 }
 
 export function getHistoryImgBase64(path: string): Promise<string> {

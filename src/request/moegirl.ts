@@ -28,7 +28,7 @@ async function moeRequest<ResponseData = any>(config: AxiosRequestConfig): Promi
     }),
 
     // 不知道为什么设定的请求超时无效，这里只好这么玩
-    new Promise<any>((resolve, reject) => setTimeout(reject, 7000))
+    new Promise<any>((resolve, reject) => setTimeout(reject, 9000))
   ])
 }
 

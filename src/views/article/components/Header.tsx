@@ -6,6 +6,7 @@ import MyToolbar from '~/components/MyToolbar'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
 import i from '../lang'
+import cutHtmlTag from '~/utils/cutHtmlTag'
 
 export interface Props {
   title: string
@@ -130,7 +131,7 @@ function ArticleHeader(props: PropsWithChildren<Props>) {
       >
         <MyToolbar 
           style={{ opacity: transitionValue as any }}
-          title={props.title}
+          title={cutHtmlTag(props.title)}
           leftIcon="home"
           rightIcon="search"
           onPressLeftIcon={() => navigation.popToTop()}
