@@ -3,7 +3,7 @@ import { AxiosRequestConfig } from 'axios'
 import store from '~/mobx'
 
 export const sourceList = {
-  moegirl: 'https://zh.moegirl.org',
+  moegirl: 'https://zh.moegirl.org.cn',
   hmoe: 'https://www.hmoegirl.com'
 }
 
