@@ -45,8 +45,6 @@ function DrawerContent(props: PropsWithChildren<Props>) {
 
   return useObserver(() => {
     const navigation = globalNavigation.current
-    const containerWidth = Dimensions.get('window').width * 0.6
-    const containerHeight = Dimensions.get('window').height
     const statusBarHeight = StatusBar.currentHeight!
     const isHmoeSource = store.settings.source === 'hmoe'
     const isNightMode = store.settings.theme === 'night'
@@ -54,16 +52,17 @@ function DrawerContent(props: PropsWithChildren<Props>) {
     return (
       <View 
         style={{ 
+          ...styles.container,
           backgroundColor: theme.colors.background, 
-          width: containerWidth, 
-          height: containerHeight,
-          position: 'relative',
-          zIndex: 100
         }}
       >
         <Image 
+          style={{
+            ...styles.bgImage,
+            width: Dimensions.get('screen').width * 0.6,
+            height: Dimensions.get('screen').height - 160
+          }}
           source={require('~/assets/images/drawer_bg.png')}
-          style={{ ...styles.bgImage, width: containerWidth, height: containerHeight - 160 }}
         />
         <View 
           style={{ 
@@ -166,6 +165,15 @@ function DrawerContent(props: PropsWithChildren<Props>) {
 export default DrawerContent
 
 const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 100
+  },
+  
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -180,8 +188,7 @@ const styles = StyleSheet.create({
   bgImage: {
     position: 'absolute', 
     top: 160, 
-    left: 0,
-    opacity: 0.1
+    opacity: 0.1,
   },
 
   avatar: {

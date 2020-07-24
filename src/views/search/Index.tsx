@@ -37,8 +37,8 @@ function SearchPage(props: PropsWithChildren<Props>) {
   }, [])
 
   function changeText(text: string) {
-    text = text.trim()
     setSearchWord(text)
+    text = text.trim()
     clearTimeout(setTimeoutKey.current)
     if (!text) return setSearchHint(null)
     setTimeoutKey.current = setTimeout(() => searchApi.getHint(text).then(data => 

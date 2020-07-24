@@ -31,7 +31,7 @@ async function getMainImage(pageName: string, size = 500) {
 
 function getImageUrl(imageName: string) {
   return moeRequest<ArticleApiData.getImgUrl>({
-    baseURL: 'https://commons.moegirl.org/api.php',
+    baseURL: 'https://commons.moegirl.org.cn/api.php',
     method: 'post',
     params: {
       action: 'query',

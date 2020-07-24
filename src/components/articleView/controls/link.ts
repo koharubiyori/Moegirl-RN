@@ -45,13 +45,16 @@ export default createControls('链接处理', () => {
       return window._postRnMessage('onPressImage', { name: link.replace(/^\/([Ff]ile|文件):/, '') })
     } else if (/^#cite_note-/.test(link)) {
       document.querySelector(link)!.scrollIntoView()
-      window.scrollTo(0, window.scrollY - 60)
+      window.scrollTo(0, window.scrollY - 120)
       $(link).addClass('activeNote')
       setTimeout(() => $(link).removeClass('activeNote'), 2000)
       return
     } else if (/^#/.test(link)) {
       document.querySelector(link)!.scrollIntoView()
-      return window.scrollTo(0, window.scrollY - 60)
+      window.scrollTo(0, window.scrollY - 120)
+      $(link).addClass('activeNote')
+      setTimeout(() => $(link).removeClass('activeNote'), 2000)
+      return
     } else if (link.indexOf('redlink=1') >= 0) {
       type = 'notExists'
     } else if (/^\//.test(link)) {

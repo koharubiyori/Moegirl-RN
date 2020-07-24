@@ -23,7 +23,6 @@ export default async function saveHistory(title: string, displayTitle?: string) 
     return Promise.resolve(null)
   })
 
-  console.log('条目图片', img)
   let _history = storage.get('browsingHistory') || []
   _history.some((item, index) => {
     if (item.title === title) {
