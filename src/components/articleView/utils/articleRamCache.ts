@@ -11,7 +11,6 @@ export function getArticleContent(pageName: string, forceLoad = false): Promise<
     if (articleCache[pageNameWithSource] && !forceLoad) resolve(articleCache[pageNameWithSource])
     articleApi.getContent(pageName)
       .then(data => {
-        console.log(data)
         articleCache[pageNameWithSource] = data
         resolve(data)
       })

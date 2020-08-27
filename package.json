@@ -45,6 +45,7 @@
     "react-native-paper": "^3.6.0",
     "react-native-reanimated": "^1.9.0",
     "react-native-restart": "^0.0.17",
+    "react-native-root-siblings": "^4.0.6",
     "react-native-safe-area-context": "^2.0.3",
     "react-native-screens": "^2.8.0",
     "react-native-snackbar-component": "^1.1.10",

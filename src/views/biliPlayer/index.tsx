@@ -177,7 +177,7 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
       horizontalSwipeTransitionValueRef.current = 0.5
       Animated.timing(horizontalSwipeTransitionValue, {
         toValue: 0.5,
-        duration: 200,
+        duration: 150,
       }).start(resolve)
     })
   }
@@ -189,7 +189,7 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
     shrink().then(() => {
       Animated.timing(horizontalSwipeTransitionValue, {
         toValue: orientation === 'left' ? 0 : 1,
-        duration: 200,
+        duration: 150,
       }).start(() => setVisible(false))
     })
   }

@@ -70,7 +70,7 @@ function LoginPage(props: PropsWithChildren<Props>) {
     store.user.login(userName.value, password.value)
       .finally(dialog.loading.hide)
       .then(() => {
-        setTimeout(() => toast.success(i.index.submit.loggedIn))
+        setTimeout(() => toast(i.index.submit.loggedIn, 'center'))
         navigation.goBack()
       })
       .catch(message => toast(message || i.index.submit.netErr, 'center'))

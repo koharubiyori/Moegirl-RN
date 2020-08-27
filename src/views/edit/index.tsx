@@ -104,7 +104,7 @@ function EditPage(props: PropsWithChildren<Props>) {
     })
       .finally(dialog.loading.hide)
       .then(() => {
-        toast.success(i.index.edit.success)
+        toast(i.index.edit.success, 'center')
         articleReloadFlag.current = true
         navigation.goBack()
       })

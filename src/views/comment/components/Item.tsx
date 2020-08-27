@@ -130,8 +130,6 @@ function CommentItem(props: PropsWithChildren<Props>) {
 
   const iconSize = 20
   return useObserver(() => {
-    useLayoutAnimationInMobx()
-    
     const commentData = props.commentData
     const likeNum = props.commentData.like
     const isLiked = !!props.commentData.myatt
