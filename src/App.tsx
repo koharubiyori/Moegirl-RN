@@ -3,13 +3,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { BackHandler, Linking } from 'react-native'
 import { DefaultTheme, Provider as PaperProvider, Theme } from 'react-native-paper'
 import SplashScreen from 'react-native-splash-screen'
+import { linkHandler } from './components/articleView/utils/linkHandler'
 import init from './init'
 import i from './lang'
 import store from './mobx'
 import StackRoutes from './routes'
 import { colors, initSetThemeMethod, setThemeColor } from './theme'
 import { DialogBaseView } from './utils/dialog'
-import globalNavigation, { initGlobalNavigation } from './utils/globalNavigation'
+import { initGlobalNavigation } from './utils/globalNavigation'
 import toast from './utils/toast'
 
 const initialTheme: Theme = {
@@ -49,8 +50,7 @@ export default function App() {
       // 响应深度链接
       const initialUrl = await Linking.getInitialURL()
       if (!initialUrl) { return undefined }
-      const pageName = initialUrl.replace(/^https:\/\/zh\.moegirl\.org\.cn\//, '') 
-      globalNavigation.current.push('article', { pageName }) 
+      linkHandler(initialUrl)
     })()
   }, [])
 

@@ -26,7 +26,7 @@ function MyToast(props: Props) {
 
   function show() {
     const defaultConfig = {
-      duration: 200,
+      duration: 150,
       useNativeDriver: true
     }
     return new Promise(resolve =>
@@ -40,7 +40,7 @@ function MyToast(props: Props) {
 
   function hide() {
     const defaultConfig = {
-      duration: 200,
+      duration: 150,
       useNativeDriver: true
     }
     return new Promise(resolve =>

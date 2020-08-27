@@ -7,7 +7,7 @@ const zhHans = {
       pipe: '管道符',
       orderedList: '有序列表',
       unorderedList: '无序列表',
-      sign: '前面',
+      sign: '签名',
       strong: '粗体',
       del: '删除线',
       title: '大标题',

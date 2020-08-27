@@ -51,7 +51,6 @@
     "react-native-snackbar-component": "^1.1.10",
     "react-native-splash-screen": "^3.2.0",
     "react-native-tab-view": "^2.14.4",
-    "react-native-tiny-toast": "^1.0.7",
     "react-native-vector-icons": "^6.6.0",
     "react-native-webview": "^10.2.3",
     "rn-fetch-blob": "^0.12.0"

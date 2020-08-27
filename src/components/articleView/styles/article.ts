@@ -367,7 +367,7 @@ const articleStyleSheet = jss.createStyleSheet({
     // 编辑按钮容器
     '.mw-editsection': {
       position: 'absolute',
-      right: 10,
+      right: 0,
       bottom: 0
     }
   }

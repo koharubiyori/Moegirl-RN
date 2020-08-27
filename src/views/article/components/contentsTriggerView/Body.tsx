@@ -16,6 +16,13 @@ export interface Props {
 
 function ArticleContentsBody(props: PropsWithChildren<Props>) {
   const theme = useTheme()
+
+  function unWiki(title: string) {
+    return title
+      .replace(/<.+?>/g, '')
+      .replace(/-\{(.+?)\}-/g, '$1')
+      .replace(/&#(\d+?);/g, (s, s1) => String.fromCharCode(parseInt(s1)))
+  }
   
   const statusBarHeight = StatusBar.currentHeight!
   const headerHeight = 56 + statusBarHeight
@@ -62,7 +69,7 @@ function ArticleContentsBody(props: PropsWithChildren<Props>) {
                     ...(parseInt(item.level) < 3 ? { fontSize: 16, color: theme.colors.disabled } : { fontSize: 14, color: theme.colors.placeholder }),
                     paddingLeft: (parseInt(item.level) - 2) * 10
                   }}
-                >{(parseInt(item.level) > 2 ? '- ' : '') + item.line.replace(/<.+?>/g, '')}</Text>
+                >{(parseInt(item.level) > 2 ? '- ' : '') + unWiki(item.line)}</Text>
               </MyButton>
             )
           }

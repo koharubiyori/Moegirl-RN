@@ -9,7 +9,7 @@ const zhHant: typeof zhHans = {
       pipe: '管道符',
       orderedList: '有序列表',
       unorderedList: '無序列表',
-      sign: '前面',
+      sign: '簽名',
       strong: '粗體',
       del: '刪除線',
       title: '大標題',

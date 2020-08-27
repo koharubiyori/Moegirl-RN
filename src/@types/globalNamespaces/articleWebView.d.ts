@@ -53,7 +53,11 @@ declare namespace ArticleWebView {
       page: string
       section: number
     }
-    onPressImage: { name: string }
+    onPressImage: {
+      type: 'url' | 'name' 
+      name?: string
+      url?: string
+    }
     onPressBiliVideo: {
       avId: string
       page: string

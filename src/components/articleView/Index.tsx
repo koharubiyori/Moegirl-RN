@@ -3,6 +3,7 @@ import { Dimensions, Linking, StyleProp, StyleSheet, Text, TouchableOpacity, Vib
 import { DOMParser } from 'react-native-html-parser'
 import { useTheme } from 'react-native-paper'
 import { WebView } from 'react-native-webview'
+import qs from 'qs'
 import articleApi from '~/api/article'
 import { ArticleApiData } from '~/api/article/types'
 import useStateWithRef from '~/hooks/useStateWithRef'
@@ -22,6 +23,8 @@ import { getArticleContent } from './utils/articleRamCache'
 import createHTMLDocument, { ArticleViewStyleSheetName } from './utils/createHTMLDocument'
 import { biliPlayerController } from '~/views/biliPlayer'
 import i from './lang'
+import { param } from 'jquery'
+import { linkHandler } from './utils/linkHandler'
 
 export interface Props {
   style?: StyleProp<ViewStyle>
@@ -356,14 +359,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
         },
 
         outer () {
-          // 判断是否为外链形式的内链
-          const regex = /^https:\/\/zh\.moegirl\.org\.cn\//
-          if (regex.test(data.link)) {
-            const [pageName, anchor] = data.link.replace(regex, '').split('#')
-            navigation.push('article', { pageName, anchor })
-          } else {
-            Linking.openURL(data.link)
-          }
+          linkHandler(data.link)
         },
 
         notExists () {
@@ -384,18 +380,24 @@ function ArticleView(props: PropsWithChildren<Props>) {
     })
     // 点击图片
     setEventHandler('onPressImage', data => {
-      if (originalImgUrls) {
-        navigation.push('imageViewer', { 
-          imgs: originalImgUrls.map(img => ({ url: img.url })),
-          index: originalImgUrls.findIndex(img => img.name === data.name)
-        })
-      } else {
-        dialog.loading.show({ title: i.index.events.pressImage.loading, allowUserClose: true })
-        articleApi.getImageUrl(data.name)
-          .finally(dialog.loading.hide)
-          .then(url => {
-            navigation.push('imageViewer', { imgs: [{ url }], index: 0 })
+      if (data.type === 'name') {
+        if (originalImgUrls) {
+          navigation.push('imageViewer', { 
+            imgs: originalImgUrls.map(img => ({ url: img.url })),
+            index: originalImgUrls.findIndex(img => img.name === data.name)
           })
+        } else {
+          dialog.loading.show({ title: i.index.events.pressImage.loading, allowUserClose: true })
+          articleApi.getImageUrl(data.name!)
+            .finally(dialog.loading.hide)
+            .then(url => {
+              navigation.push('imageViewer', { imgs: [{ url }], index: 0 })
+            })
+        }
+      }
+      
+      if (data.type === 'url') {
+        navigation.push('imageViewer', { imgs: [{ url: data.url! }], index: 0 })
       }
     })
     // 点击bili播放器

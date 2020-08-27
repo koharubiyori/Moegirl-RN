@@ -42,7 +42,7 @@ export default createControls('链接处理', () => {
     let type: 'inner' | 'outer' | 'notExists' = 'inner'
     link = decodeURIComponent(link)
     if (/^\/([Ff]ile|文件):/.test(link)) {
-      return window._postRnMessage('onPressImage', { name: link.replace(/^\/([Ff]ile|文件):/, '') })
+      return window._postRnMessage('onPressImage', { type: 'name', name: link.replace(/^\/([Ff]ile|文件):/, '') })
     } else if (/^#cite_note-/.test(link)) {
       document.querySelector(link)!.scrollIntoView()
       window.scrollTo(0, window.scrollY - 120)
@@ -83,6 +83,11 @@ export default createControls('链接处理', () => {
       animation: flash 2s;
     }
   </style>`)
+
+  // 给外链图片添加点击显示大图
+  $('img:not([data-file-width][data-file-height])').click(function() {
+    window._postRnMessage('onPressImage', { type: 'url', url: $(this).attr('src')! })
+  })
 }, {
 
 })

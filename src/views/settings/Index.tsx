@@ -16,6 +16,7 @@ import toast from '~/utils/toast'
 import SettingsSwitchItem from './components/SwitchItem'
 import i from './lang'
 import { checkLastVersion } from '~/init'
+import MyStatusBar from '~/components/MyStatusBar'
 
 export interface Props {
   
@@ -100,6 +101,7 @@ function SettingsPage(props: PropsWithChildren<Props>) {
 
   return useObserver(() =>
     <ViewContainer>
+      <MyStatusBar />
       <MyToolbar
         title={i.index.title}
         leftIcon="keyboard-backspace"
