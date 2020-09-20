@@ -1,5 +1,6 @@
 const zhHans = {
   index: {
+    title: (title: string) => `评论：${title}`,
     popular: '热门评论',
     count: (count: string | number) => `共${count}条评论`,
     netErr: '加载失败，点击重试',

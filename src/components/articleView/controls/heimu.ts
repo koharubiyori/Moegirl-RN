@@ -22,7 +22,7 @@ export default createControls('黑幕', () => {
   '.heimu': {
     backgroundColor: 'black',
     color: 'black',
-    transition: 'all 0.3s',
+    transition: 'all 0.2s',
 
     '& a': {
       color: 'black',

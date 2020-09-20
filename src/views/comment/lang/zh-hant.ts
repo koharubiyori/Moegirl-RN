@@ -2,6 +2,7 @@ import zhHans from './zh-hans'
 
 const zhHant: typeof zhHans = {
   index: {
+    title: (title: string) => `評論：${title}`,
     popular: '熱門評論',
     count: (count: string | number) => `共${count}條評論`,
     netErr: '載入失敗，點選重試',

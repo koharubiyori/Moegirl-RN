@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react'
 import { StyleSheet } from 'react-native'
 import MyToolbar from '~/components/MyToolbar'
 import { useTheme } from 'react-native-paper'
+import i from '../lang'
 
 export interface Props {
   title: string
@@ -22,7 +23,7 @@ export default function EditHeader(props: PropsWithChildren<FinalProps>) {
         borderBottomWidth: 1
       }}
 
-      title={props.title}
+      title={i.index.edit.title(props.title)}
       leftIcon="keyboard-backspace"
       rightIcon="done"
       onPressLeftIcon={props.onPressBack}

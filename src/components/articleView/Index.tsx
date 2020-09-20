@@ -405,10 +405,11 @@ function ArticleView(props: PropsWithChildren<Props>) {
   }
 
   return (
-    <View style={{ ...(props.style as any) }}>
+    <View renderToHardwareTextureAndroid style={{ ...(props.style as any) }}>
       {/* 这个webView是一直显示的，因为要监听发出的onReady事件 */}
       <WebView allowFileAccess domStorageEnabled
         scalesPageToFit={false}
+        androidLayoutType="hardware"
         source={{ html, baseUrl }}
         originWhitelist={['*']}
         style={{ width: Dimensions.get('window').width }}

@@ -6,6 +6,7 @@ const zhHant: typeof zhHans = {
     leaveHint: '編輯還未儲存，確定要放棄編輯的內容？',
     unchangedHint: '內容未發生變化',
     edit: {
+      title: (title: string) => `編輯：${title}`,
       submitting: '提交中...',
       success: '編輯成功',
       editConflict: '出現編輯衝突，請複製編輯的內容後再次進入編輯介面，並檢查差異',

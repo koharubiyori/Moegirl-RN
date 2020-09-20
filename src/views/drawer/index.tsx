@@ -19,9 +19,9 @@ function DrawerView(props: Props) {
   const [lock, setLock] = useState(false)
   const [visibleBgColor, setVisibleBgColor] = useState(false)
 
-  // 延迟1秒显示防止启动时闪烁
+  // 延迟显示防止启动时闪烁
   useEffect(() => {
-    setTimeout(() => setVisibleBgColor(true), 1000)
+    setTimeout(() => setVisibleBgColor(true), 500)
   }, [])
 
   drawerController = {
@@ -37,7 +37,6 @@ function DrawerView(props: Props) {
         elevation: 10,
         backgroundColor: visibleBgColor ? 'white' : 'transparent',
         zIndex: 1000
-        
       }}
       screenOptions={{
         swipeEnabled: !lock

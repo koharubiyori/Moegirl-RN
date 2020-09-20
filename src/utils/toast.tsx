@@ -13,6 +13,7 @@ function MyToast(props: Props) {
   const transitionValue = {
     transformY: useRef(new Animated.Value(20)).current,
     scaleX: useRef(new Animated.Value(0.3)).current,
+    scaleY: useRef(new Animated.Value(1)).current,
     opacity: useRef(new Animated.Value(0)).current
   }
 
@@ -32,8 +33,17 @@ function MyToast(props: Props) {
     return new Promise(resolve =>
       Animated.parallel([
         Animated.timing(transitionValue.transformY, { ...defaultConfig, toValue: 0 }),
-        Animated.timing(transitionValue.scaleX, { ...defaultConfig, toValue: 1 }),
-        Animated.timing(transitionValue.opacity, { ...defaultConfig, toValue: 1 })
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(transitionValue.scaleX, { ...defaultConfig, toValue: 1.1 }),
+            Animated.timing(transitionValue.scaleY, { ...defaultConfig, toValue: 1.1 }),
+          ]),
+          Animated.parallel([
+            Animated.timing(transitionValue.scaleX, { ...defaultConfig, duration: 100, toValue: 1 }),
+            Animated.timing(transitionValue.scaleY, { ...defaultConfig, duration: 100, toValue: 1 }),
+          ])
+        ]),
+        Animated.timing(transitionValue.opacity, { ...defaultConfig, toValue: 1.2 }),
       ]).start(resolve)
     )
   }
@@ -78,6 +88,7 @@ function MyToast(props: Props) {
           transform: [
             { translateY: transitionValue.transformY },
             { scaleX: transitionValue.scaleX },
+            { scaleY: transitionValue.scaleY },
           ],
           opacity: transitionValue.opacity
         }}

@@ -1,7 +1,7 @@
 import Color from 'color'
 import React, { PropsWithChildren, useRef, useState } from 'react'
 import { Animated, Dimensions, Image, KeyboardAvoidingView, Linking, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { TextField, TextFieldProps, OutlinedTextField } from 'react-native-material-textfield'
+import { TextField, TextFieldProps, OutlinedTextField } from '@ubaids/react-native-material-textfield'
 import { Text } from 'react-native-paper'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MyButton from '~/components/MyButton'

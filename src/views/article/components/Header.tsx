@@ -42,7 +42,8 @@ function ArticleHeader(props: PropsWithChildren<Props>) {
     visibleFlag.current = true
     Animated.timing(transitionValue, {
       toValue: 1,
-      duration: 300
+      duration: 300,
+      useNativeDriver: true
     }).start()
   }
 
@@ -51,7 +52,8 @@ function ArticleHeader(props: PropsWithChildren<Props>) {
     visibleFlag.current = false
     Animated.timing(transitionValue, {
       toValue: 0,
-      duration: 300
+      duration: 300,
+      useNativeDriver: true
     }).start()
   }
 

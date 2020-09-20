@@ -168,9 +168,10 @@ function ArticleEditor(props: PropsWithChildren<Props>) {
   }
 
   return (
-    <>
+    <View renderToHardwareTextureAndroid>
       <WebView
         scalesPageToFit={false}
+        androidLayoutType="hardware"
         source={{ html, baseUrl: 'file:///android_asset/assets' }}
         style={{ ...(props.style as any), width: Dimensions.get('window').width }}
         onMessage={receiveMessage}
@@ -197,7 +198,7 @@ function ArticleEditor(props: PropsWithChildren<Props>) {
           <QuickInsertItem title={i.index.quickInsert.coloredText} onPress={() => insertCodes('{{color|red|text}}', 2)} />
         </ScrollView>
       </> : null}
-    </>
+    </View>
   )
 }
 

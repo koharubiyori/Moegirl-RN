@@ -4,6 +4,7 @@ const zhHans = {
     leaveHint: '编辑还未保存，确定要放弃编辑的内容？',
     unchangedHint: '内容未发生变化',
     edit: {
+      title: (title: string) => `编辑：${title}`,
       submitting: '提交中...',
       success: '编辑成功',
       editConflict: '出现编辑冲突，请复制编辑的内容后再次进入编辑界面，并检查差异',

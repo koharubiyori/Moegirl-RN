@@ -41,7 +41,7 @@ function CommentPage(props: PropsWithChildren<Props>) {
       <ViewContainer grayBgColor>
         <MyStatusBar />
         <MyToolbar
-          title={route.params.pageName}
+          title={i.index.title(route.params.pageName)}
           leftIcon="keyboard-backspace"
           rightIcon="add"
           onPressLeftIcon={navigation.goBack}
