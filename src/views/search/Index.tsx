@@ -62,13 +62,13 @@ function SearchPage(props: PropsWithChildren<Props>) {
       return
     }
 
-    navigation.push('searchResult', { keyword })
+    navigation.replace('searchResult', { keyword })
     updateSearchHistory(keyword, false)
   }
 
   function toArticlePage(keyword: string) {
     updateSearchHistory(keyword, true)
-    navigation.push('article', { pageName: keyword })
+    navigation.replace('article', { pageName: keyword })
   }
 
   async function removeSearchHistory(title: SearchHistory) {
