@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { BackHandler, Linking } from 'react-native'
 import { DefaultTheme, Provider as PaperProvider, Theme } from 'react-native-paper'
 import SplashScreen from 'react-native-splash-screen'
-import { linkHandler } from './components/articleView/utils/linkHandler'
+import linkHandler from '~/utils/linkHandler'
 import init from './init'
 import i from './lang'
 import store from './mobx'
@@ -89,9 +89,7 @@ export default function App() {
   return (
     <PaperProvider theme={theme}>
       {/* 等待用户设置载入完成 */}
-      {isSettingsLoaded &&
-        <StackRoutes getRef={refs.stackRoutes} />
-      }
+      {isSettingsLoaded && <StackRoutes getRef={refs.stackRoutes} />}
       <DialogBaseView />
     </PaperProvider>
   )

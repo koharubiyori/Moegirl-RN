@@ -38,7 +38,7 @@ function HomePage(props: PropsWithChildren<Props>) {
         onPressRightIcon={() => navigation.push('search')}
       />
 
-      <ArticleView
+      {/* <ArticleView
         style={{ flex: 1 }}
         pageName="Mainpage"
         styles={[
@@ -46,6 +46,10 @@ function HomePage(props: PropsWithChildren<Props>) {
           ...(store.settings.theme === 'night' ? ['nightMode'] as any : []),
           ...(store.settings.source === 'hmoe' ? ['hmoeHome'] as any : [])
         ]}
+      /> */}
+      <ArticleView
+        style={{ flex: 1 }}
+        pageName="Mainpage"
       />
     </ViewContainer>
   )

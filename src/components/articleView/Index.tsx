@@ -1,43 +1,42 @@
 import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { Dimensions, Linking, StyleProp, StyleSheet, Text, TouchableOpacity, Vibration, View, ViewStyle } from 'react-native'
+import { Linking, StyleProp, StyleSheet, Text, Vibration, View, ViewStyle } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import { DOMParser } from 'react-native-html-parser'
 import { useTheme } from 'react-native-paper'
-import { WebView } from 'react-native-webview'
-import qs from 'qs'
 import articleApi from '~/api/article'
 import { ArticleApiData } from '~/api/article/types'
 import useStateWithRef from '~/hooks/useStateWithRef'
-import useMyNavigation from '~/hooks/useTypedNavigation'
+import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
-import baseRequest from '~/request/base'
+import request from '~/request/base'
+import { colors } from '~/theme'
 import articleCacheController from '~/utils/articleCacheController'
 import dialog from '~/utils/dialog'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
-import MyActivityIndicator from '../MyActivityIndicator'
-import hmoeControlsCodes from './controls/hmoe'
-import hmoeScriptCodeString from './scripts/hmoe'
-import controlsCodes from './controls/index'
-import scriptCodeString from './scripts'
-import { getArticleContent } from './utils/articleRamCache'
-import createHTMLDocument, { ArticleViewStyleSheetName } from './utils/createHTMLDocument'
 import { biliPlayerController } from '~/views/biliPlayer'
+import HtmlWebView from '../htmlWebView'
+import MyActivityIndicator from '../MyActivityIndicator'
 import i from './lang'
-import { param } from 'jquery'
-import { linkHandler } from './utils/linkHandler'
+import { getArticleContent } from './utils/articleRamCache'
+import createMoegirlRendererConfig from './utils/createMoegirlRendererConfig'
+import showNoteDialog from './utils/showNoteDialog'
 
 export interface Props {
   style?: StyleProp<ViewStyle>
   pageName?: string
   html?: string
   disabledLink?: boolean
-  styles: ArticleViewStyleSheetName[]
-  injectCss?: string
-  injectJs?: string
+  injectedStyles?: string[]
+  injectedScripts?: string[]
+  messageHandlers?: {
+    [messageName: string]: (data: any) => void
+  }
+  contentTopPadding?: number
   centerOffsetStyle?: StyleProp<ViewStyle>
-  onMessages?: { [msgName: string]: (data: any) => void }
-  onLoaded? (articleData: ArticleApiData.GetContent): void
-  onMissing? (pageName: string): void
+  inDialogMode?: boolean // 嵌入dialog模式下隐藏dialog组件，防止组件无限递归引入
+  onArticleLoaded?(articleData: ArticleApiData.GetContent): void
+  onArticleMissing?(pageName: string): void
   getRef?: MutableRefObject<any>
 }
 
@@ -47,126 +46,36 @@ export interface ArticleViewRef {
 }
 
 ;(ArticleView as DefaultProps<Props>).defaultProps = {
-  onLoaded: () => {},
-  onMissing: () => {}
+  contentTopPadding: 0
 }
 
-const baseUrl = 'file:///android_asset/assets'
+const nightModeJsExecutingWait = 1000
 
 function ArticleView(props: PropsWithChildren<Props>) {
   const theme = useTheme()
-  const navigation = useMyNavigation()
-  const [html, setHtml] = useState('')
+  const navigation = useTypedNavigation()
+  const [articleHtml, setArticleHtml] = useState('')
   const [articleData, setArticleData] = useState<ArticleApiData.GetContent>()
   const [originalImgUrls, setOriginalImgUrls] = useState<{ name: string, url: string }[]>()
   const [status, setStatus, statusRef] = useStateWithRef<0 | 1 | 2 | 3>(1)
-
-  const isWebViewLoaded = useRef(false) // 判断必须是在webView已经load过的情况下才可以执行webview.load()，否则会导致执行两次
-  const needWebViewReload = useRef(false) // 如果webView已经load过，再次加载就需要执行webview.load()
-
   const refs = {
-    webView: useRef<any>()
+    htmlWebView: useRef<any>()
   }
 
   if (props.getRef) props.getRef.current = { reload: loadContent, injectScript }
 
-  // useEffect(() => {
-  //   if (props.pageName) {
-  //     loadContent()
-  //   } else {
-  //     setHtml(createDocument(props.html!))
-  //     setStatus(3)
-  //   }
-  // }, [])
-
-  const lastStyles = useRef<typeof props.styles>()
   useEffect(() => {
-    let reloadFlag = !lastStyles.current // 没有上一个props，直接加载
-    if (lastStyles.current) reloadFlag = lastStyles.current.length !== props.styles.length // 数组长度不同，说明变了
-    if (lastStyles.current && lastStyles.current.length === props.styles.length) {
-      // 所有的值互相包含，说明在不考虑位置变动的情况下两个数组的值没变
-      reloadFlag = !(
-        lastStyles.current.every(item => props.styles.includes(item)) && 
-        props.styles.every(item => lastStyles.current!.includes(item))
-      )
+    if (props.pageName) {
+      loadContent()
+    } else {
+      setArticleHtml(props.html!)
+      setTimeout(() => setStatus(3), nightModeJsExecutingWait)
     }
-    if (!reloadFlag) { return }
-
-    if (reloadFlag) {
-      if (props.pageName) {
-        loadContent()
-      } else {
-        setHtml(createDocument(props.html!))
-        setStatus(3)
-      }
-    }
-
-    lastStyles.current = props.styles
-  }, [props])
+  }, [])
 
   useEffect(() => {
-    if (isWebViewLoaded.current && needWebViewReload.current) {
-      setTimeout(() => refs.webView.current.reload(), 1000)
-      needWebViewReload.current = false
-    }
-  })
-
-  // 创建HTML文档
-  function createDocument(content: string, categories: string[] = []) {
-    const createInjectData = (dataList: { [dataName: string]: any }) => {
-      return Object.keys(dataList)
-        .map(dataName => `window._${dataName} = ${JSON.stringify(dataList[dataName])}`)
-        .join(';')
-    }
-    
-    const injectedData = createInjectData({
-      settings: store.settings,
-      colors: theme.colors,
-      categories,
-      articleTitle: { text: props.pageName },
-      i: {
-        controls: i.controls,
-        scripts: i.scripts
-      }
-    })
-    
-    return createHTMLDocument({ 
-      title: props.pageName,
-      content,
-      scripts: ['hammer', 'jquery'],
-      styles: props.styles as any,
-      injectCss: [
-        controlsCodes.styleSheet,
-        ...(store.settings.source === 'hmoe' ? [
-          hmoeControlsCodes.styleSheet
-        ] : []),
-        props.injectCss
-      ].join(''),
-      
-      injectJs: [
-        injectedData, 
-        controlsCodes.script,
-        scriptCodeString,
-        ...(store.settings.source === 'hmoe' ? [
-          hmoeScriptCodeString,
-          hmoeControlsCodes.script
-        ] : []),
-        props.injectJs,
-      ].join(';\n')
-    })
-  }
-
-  // 加载原始图片列表
-  function loadOriginalImgUrls(imgs: string[]): Promise<{ url: string, name: string }[]> {
-    return Promise.all(
-      imgs.map(articleApi.getImageUrl)
-    )
-      .then((urls: string[]) => {
-        const imgUrls = urls.map((url, index) => ({ url, name: imgs[index] }))
-        setOriginalImgUrls(imgUrls)
-        return imgUrls
-      })
-  }
+    articleData && props.onArticleLoaded && props.onArticleLoaded(articleData)
+  }, [articleData])
 
   // 加载文章内容，有三层缓存机制，一层是运行时缓存，一层是每次加载完成后存的缓存文件(用到了缓存文件时，会发出提示)
   // 实际使用时发现还有接口缓存，缓存考虑可能是萌百的响应返回了max-age（已经禁用）
@@ -184,13 +93,9 @@ function ArticleView(props: PropsWithChildren<Props>) {
         let articleCache = await articleCacheController.getCacheData(trueTitle!)
         if (articleCache) {
           const { articleData, lastModified } = articleCache
-          setHtml(createDocument(articleData.parse.text['*'], articleData.parse.categories.map(item => item['*'])))
+          setArticleHtml(articleData.parse.text['*'])
           loadOriginalImgUrls(articleData.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
           setArticleData(articleData)
-          // setTimeout(() => {
-          //   dialog.snackBar.show({ title: `正在显示${diffDate(new Date(lastModified))}加载的版本`, actionText: '加载最新' })
-          //     .then(() => loadContent(true))
-          // }, 3000)
   
           // 后台请求一次文章数据，更新缓存
           getArticleContent(props.pageName!, true)
@@ -200,8 +105,6 @@ function ArticleView(props: PropsWithChildren<Props>) {
               // 如果请求title和真实title不同，则存入文章名重定向映射表
               if (props.pageName !== trueTitle) storage.merge('articleRedirectMap', { [props.pageName!]: trueTitle })
             })
-  
-          isWebViewLoaded.current = true
           return
         }
       } catch (e) {
@@ -215,6 +118,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
         // 如果为分类页，则从html字符串中抽取数据，然后交给category界面处理
         if (/^([Cc]ategory|分类|分類):/.test(props.pageName!)) {
           const htmlDoc = new DOMParser().parseFromString(html, 'text/html')
+          console.log(htmlDoc)
           let categoryBranchContainer = htmlDoc.getElementById('topicpath')
           let descContainer = htmlDoc.getElementById('catmore')
           let categoryBranch: string[] | null = null
@@ -236,7 +140,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
           }, 250) // 延迟250毫秒，防止动画还没播完就跳转了
         }
 
-        setHtml(createDocument(html, data.parse.categories.filter(item => !('hidden' in item)).map(item => item['*'])))
+        setArticleHtml(html)
         
         // 无法显示svg，这里过滤掉
         loadOriginalImgUrls(data.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
@@ -250,13 +154,10 @@ function ArticleView(props: PropsWithChildren<Props>) {
 
         // 如果请求title和真实title不同，则存入文章名重定向映射表
         if (props.pageName !== trueTitle) storage.merge('articleRedirectMap', { [props.pageName!]: trueTitle })
-
-        if (isWebViewLoaded.current) needWebViewReload.current = true
-        isWebViewLoaded.current = true
       })
       .catch(async e => {
         console.log('文章接口数据加载流程出现错误', e)
-        if (e && e.code === 'missingtitle') return props.onMissing && props.onMissing(props.pageName!)
+        if (e && e.code === 'missingtitle') return props.onArticleMissing && props.onArticleMissing(props.pageName!)
 
         try {
           const redirectMap = storage.get('articleRedirectMap') || {}
@@ -267,15 +168,12 @@ function ArticleView(props: PropsWithChildren<Props>) {
           
           const articleData = articleCache.articleData
           let html = articleData.parse.text['*']
-          setHtml(createDocument(html, articleData.parse.categories.map(item => item['*'])))
+          setArticleHtml(html)
           
-          // dialog.snackBar.show({ title: i.index.netErrExistsCache })
           toast(i.index.netErrExistsCache)
           loadOriginalImgUrls(articleData.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
           setArticleData(articleData)
           
-          if (isWebViewLoaded.current) needWebViewReload.current = true
-          isWebViewLoaded.current = true
         } catch (e) {
           console.log(e)
           toast(i.index.netErr)
@@ -284,140 +182,156 @@ function ArticleView(props: PropsWithChildren<Props>) {
       })
   }
 
-  // 注入脚本代码
-  function injectScript(script: string) {
-    refs.webView.current.injectJavaScript(script)
-  }
-
-  // 接收webView的消息
-  function receiveMessage(event: any) {
-    type MessagePayloadMaps = __ArticleWebView.MessagePayloadMaps
-    const { type, payload }: { type: keyof MessagePayloadMaps, payload: MessagePayloadMaps[keyof MessagePayloadMaps] } = JSON.parse(event.nativeEvent.data)
-
-    // 执行自定义webView事件
-    if (props.onMessages) {
-      ;(props.onMessages[type] || (() => {}))(payload)
-    }
-
-    // 拿这个函数做数据结构映射
-    function setEventHandler<EventName extends keyof MessagePayloadMaps>(eventName: EventName, handler: (payload: MessagePayloadMaps[EventName]) => void) {
-      eventName === type && handler(payload as any)
-    } 
-
-    // 发出log
-    setEventHandler('print', msg => console.log('=== print ===', msg))
-    // 抛出错误
-    setEventHandler('error', msg => console.log('--- WebViewError ---', msg))
-    // 页面js加载完毕
-    setEventHandler('onReady', () => {
-      props.onLoaded && props.onLoaded(articleData!)
-      isWebViewLoaded.current = true
-      setStatus(3)
-    })
-    // // 点击注释
-    // setEventHandler('onPressNote', data => {
-    //   dialog.alert.show({
-    //     title: '注释',
-    //     content: data.content,
-    //     checkText: '关闭'
-    //   })
-    // })
-    // 发送请求
-    setEventHandler('request', data => {
-      console.log(data)
-      let { config, callbackName } = data
-      
-      baseRequest({
-        baseURL: config.url,
-        method: config.method,
-        params: config.params
-      }).then(data => {
-        // 数据中的换行会导致解析json失败
-        injectScript(`window['${callbackName}'](${JSON.stringify(data).replace(/\\n/g, '')})`)
-      }).catch(e => {
-        console.log(e)
-        injectScript(`window['${callbackName}']('${JSON.stringify({ error: true })}')`)
+  // 加载原始图片列表
+  function loadOriginalImgUrls(imgs: string[]): Promise<{ url: string, name: string }[]> {
+    return Promise.all(
+      imgs.map(articleApi.getImageUrl)
+    )
+      .then((urls: string[]) => {
+        const imgUrls = urls.map((url, index) => ({ url, name: imgs[index] }))
+        setOriginalImgUrls(imgUrls)
+        return imgUrls
       })
-    })
-
-    // 发起振动
-    setEventHandler('vibrate', () => setTimeout(() => Vibration.vibrate(25)))
-
-    if (props.disabledLink) { return }
-    
-    // 点击链接
-    setEventHandler('onPressLink', data => {
-      ;({
-        inner: () => {
-          let [pageName, anchor] = data.link.split('#')
-
-          navigation.push('article', { 
-            pageName, 
-            anchor,
-            displayPageName: data.displayTitle 
-          }) 
-        },
-
-        outer () {
-          linkHandler(data.link)
-        },
-
-        notExists () {
-          dialog.alert.show({ content: i.index.events.noExists })
-        }
-      })[data.type]()
-    })
-    // 以url形式请求打开某个app
-    setEventHandler('openApp', data => Linking.openURL(data.url))
-    // 点击编辑按钮
-    setEventHandler('onPressEdit', data => {
-      if (store.user.isLoggedIn) {
-        navigation.push('edit', { title: data.page, section: data.section })
-      } else {
-        dialog.confirm.show({ content: i.index.events.loginMsg })
-          .then(() => navigation.push('login'))
-      }
-    })
-    // 点击图片
-    setEventHandler('onPressImage', data => {
-      if (data.type === 'name') {
-        if (originalImgUrls) {
-          navigation.push('imageViewer', { 
-            imgs: originalImgUrls.map(img => ({ url: img.url })),
-            index: originalImgUrls.findIndex(img => img.name === data.name)
-          })
-        } else {
-          dialog.loading.show({ title: i.index.events.pressImage.loading, allowUserClose: true })
-          articleApi.getImageUrl(data.name!)
-            .finally(dialog.loading.hide)
-            .then(url => {
-              navigation.push('imageViewer', { imgs: [{ url }], index: 0 })
-            })
-        }
-      }
-      
-      if (data.type === 'url') {
-        navigation.push('imageViewer', { imgs: [{ url: data.url! }], index: 0 })
-      }
-    })
-    // 点击bili播放器
-    setEventHandler('onPressBiliVideo', data => biliPlayerController.start(data.avId, data.page))
   }
+
+  function injectScript(script: string) {
+    if (!refs.htmlWebView.current) { return }
+    refs.htmlWebView.current!.injectJavaScript(script)
+  }
+  
+  const messageHandlers: { [messageName: string]: (data: any) => void } = {
+    link(_data) {
+      const { type, data } = _data
+      ;(({
+        article() {
+          if (props.disabledLink) { return }
+          navigation.push('article', {
+            pageName: data.pageName,
+            anchor: data.anchor,
+            displayPageName: data.displayName
+          })
+        },
+
+        img() {
+          if (originalImgUrls) {
+            navigation.push('imageViewer', { 
+              imgs: originalImgUrls.map(img => ({ url: img.url })),
+              index: originalImgUrls.findIndex(img => img.name === data.name)
+            })
+          }
+        },
+
+        note() {
+          showNoteDialog(data.html)
+        },
+
+        anchor() {
+          injectScript(`moegirl.method.link.gotoAnchor('${data.id}', -${props.contentTopPadding})`)
+        },
+
+        notExist() {
+          dialog.alert.show({ content: i.index.events.noExists })
+        },
+
+        edit() {
+          if (props.disabledLink) { return }
+          if (store.user.isLoggedIn) {
+            navigation.push('edit', { 
+              title: data.pageName, 
+              section: data.section,
+              newSection: data.section === 'new' 
+            })
+          } else {
+            dialog.confirm.show({ content: i.index.events.loginMsg })
+              .then(() => navigation.push('login'))
+          }
+        },
+
+        notExistEdit() {
+          dialog.alert.show({ content: i.index.events.noExists })
+        },
+
+        watch() {
+
+        },
+
+        external() {
+          Linking.openURL(data.url)
+        },
+
+        externalImg() {
+          navigation.push('imageViewer', { imgs: [{ url: data.url! }], index: 0 })
+        },
+
+        unparsed() {},
+      } as any)[type] || (() => {}))()
+    },
+
+    biliPlayer(data) {
+      biliPlayerController.start(data.videoId, data.page)
+    },
+
+    biliPlayerLongPress(data) {
+      Linking.openURL(`https://www.bilibili.com/video/${data.videoId}?p=${data.page}`)
+    },
+
+    request(data) {
+      request({
+        url: data.url,
+        method: data.method,
+        params: data.data
+      })
+        .then(res => injectScript(`moegirl.config.request.callbacks['${data.callbackId}'].resolve(${JSON.stringify(res.data)})`))
+        .catch(e => injectScript(`moegirl.config.request.callbacks['${data.callbackId}'].reject(${JSON.stringify(e)})`))
+    },
+
+    vibrate() {
+      setTimeout(() => Vibration.vibrate(25))
+    },
+
+    ...props.messageHandlers
+  }
+
+  const isNightTheme = store.settings.theme === 'night'
+
+  const injectedStyles = [
+    `body { 
+      user-select: none;
+      padding-top: ${props.contentTopPadding}px;
+      word-break: ${props.inDialogMode ? 'break-all' : 'initial'};
+      ${props.inDialogMode && isNightTheme ? 
+        `background-color: ${colors.night.primary} !important;`
+      : ''}
+    }`,
+  ].concat(props.injectedStyles || [])
+
+  const injectedScripts = [
+    `
+      moegirl.config.addCopyright.enabled = ${!props.inDialogMode}
+      moegirl.config.nightTheme.$enabled = ${isNightTheme}
+    `,
+    createMoegirlRendererConfig({
+      pageName: props.pageName || '',
+      categories: articleData ? articleData.parse.categories.map(item => item['*']) : []
+    }),
+  ].concat(props.injectedScripts || [])
 
   return (
-    <View renderToHardwareTextureAndroid style={{ ...(props.style as any) }}>
-      {/* 这个webView是一直显示的，因为要监听发出的onReady事件 */}
-      <WebView allowFileAccess domStorageEnabled
-        scalesPageToFit={false}
-        androidLayoutType="hardware"
-        source={{ html, baseUrl }}
-        originWhitelist={['*']}
-        style={{ width: Dimensions.get('window').width }}
-        onMessage={receiveMessage}
-        ref={refs.webView}
+    <View style={props.style}>
+      <HtmlWebView 
+        dataReady={!!(articleData || props.html)}
+        getRef={refs.htmlWebView}
+        title={props.pageName}
+        body={articleHtml}
+        css={['main.css']}
+        js={['main.js']}
+        injectedStyles={injectedStyles}
+        injectedScripts={injectedScripts}
+        messageHandlers={messageHandlers}
+        // 如果使用夜晚模式，则多留出一些时间用来加载js
+        onLoaded={() => setTimeout(() => setStatus(3), isNightTheme ? nightModeJsExecutingWait : 0)}
       />
-      
-      {/* 这个遮罩覆盖上面的webView */}
+
       {status !== 3 &&
         <View style={{ ...styles.mask, backgroundColor: theme.colors.background }}>
           {{

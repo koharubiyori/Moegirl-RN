@@ -2,7 +2,7 @@ import globalNavigation from '~/utils/globalNavigation'
 import { Linking } from 'react-native'
 import qs from 'qs'
 
-export function linkHandler(link: string) {
+export default function linkHandler(link: string) {
   const regex = /^https:\/\/zh\.moegirl\.org\.cn\//
   if (regex.test(link)) {
     const [pageName, anchor] = link.replace(regex, '').split('#')

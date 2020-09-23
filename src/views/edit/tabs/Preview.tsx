@@ -1,12 +1,11 @@
 import { useFocusEffect } from '@react-navigation/native'
-import React, { PropsWithChildren, useCallback, useState, useEffect } from 'react'
-import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native'
+import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react'
+import { ActivityIndicator, Dimensions, Text, TouchableOpacity, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import editApi from '~/api/edit'
 import ArticleView from '~/components/articleView'
-import store from '~/mobx'
-import tabDataCommunicator from '../utils/tabDataCommunicator'
 import i from '../lang'
+import tabDataCommunicator from '../utils/tabDataCommunicator'
 
 export interface Props {
   title: string
@@ -58,12 +57,12 @@ function EditPreviewTab(props: PropsWithChildren<Props>) {
         2: () => <ActivityIndicator color={theme.colors.accent} size={50} />,
         3: () => 
           <ArticleView disabledLink 
-            style={{ flex: 1 }} 
-            html={html} 
-            styles={[
-              'article',
-              ...(store.settings.theme === 'night' ? ['nightMode'] as any : [])
-            ]} 
+            style={{ 
+              flex: 1,
+              width: Dimensions.get('window').width 
+            }} 
+            html={html}
+            injectedStyles={['body { user-select: initial; }']}
           />
       } as { [status: number]: () => JSX.Element | null })[status]()}
     </View>

@@ -21,7 +21,7 @@ function DrawerView(props: Props) {
 
   // 延迟显示防止启动时闪烁
   useEffect(() => {
-    setTimeout(() => setVisibleBgColor(true), 500)
+    setTimeout(() => setVisibleBgColor(true), 700)
   }, [])
 
   drawerController = {

@@ -19,6 +19,7 @@ import customRouteTransition from './utils/customTransition'
 import HistoryPage, { RouteParams as HistoryRP } from '~/views/history'
 import DrawerView from '~/views/drawer'
 import BiliPlayerModal from '~/views/biliPlayer'
+import { RootSiblingParent } from 'react-native-root-siblings'
 
 export type RouteOptions = Parameters<(typeof Stack.Screen)>[0]['options']
 const route = (component: FC<any>, options?: RouteOptions) => ({ component, options })
@@ -82,7 +83,7 @@ function StackRoutes(props: Props) {
   return (
     <NavigationContainer ref={props.getRef} onStateChange={props.onStateChange}>
       <DrawerView>{() => 
-        <>
+        <RootSiblingParent>
           <Stack.Navigator 
             initialRouteName="drawer" 
             headerMode="none"
@@ -98,7 +99,7 @@ function StackRoutes(props: Props) {
             )}
           </Stack.Navigator>
           <BiliPlayerModal />
-        </>
+        </RootSiblingParent>
       }</DrawerView>
     </NavigationContainer>
   )

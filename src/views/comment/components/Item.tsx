@@ -1,7 +1,8 @@
 import { useObserver } from 'mobx-react-lite'
 import React, { PropsWithChildren, useRef, useState, MutableRefObject } from 'react'
-import { Image, StyleSheet, TouchableOpacity, View, StyleProp, ViewStyle, Animated, Easing } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, View, StyleProp, ViewStyle, Animated, Easing, TouchableNativeFeedback } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
+import { color } from 'react-native-reanimated'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -10,6 +11,7 @@ import { AVATAR_URL } from '~/constants'
 import { useLayoutAnimationInMobx } from '~/hooks/useLayoutAnimation'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
+import { colors } from '~/theme'
 import CommentTree, { CommentTreeDataWithTarget } from '~/utils/commentTree'
 import dialog from '~/utils/dialog'
 import { diffDate } from '~/utils/diffDate'
@@ -134,95 +136,98 @@ function CommentItem(props: PropsWithChildren<Props>) {
     const likeNum = props.commentData.like
     const isLiked = !!props.commentData.myatt
     const replyList = commentData.children ? CommentTree.withTargetData(commentData.children, commentData.parentid) : []
+    const isNight = store.settings.theme === 'night'
 
     return (
-      <View style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
-        <Animated.View style={{ ...styles.animateBgColor, backgroundColor: theme.colors.accent, opacity: bgColorOpacityTransition }} />
-        <View style={styles.header}>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-              <TouchableOpacity onPress={() => navigation.push('article', { pageName: 'User:' + commentData.username })}>
-                <Image source={{ uri: AVATAR_URL + commentData.username }} style={{ ...styles.avatar, backgroundColor: theme.colors.lightBg }} />
-              </TouchableOpacity>
-              <View>
-                <Text>{commentData.username}</Text>
-                <Text style={{ color: theme.colors.disabled, marginTop: 3 }}>{diffDate(new Date(commentData.timestamp * 1000))}</Text>
+      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(theme.colors.placeholder)}>
+        <View style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
+          <Animated.View style={{ ...styles.animateBgColor, backgroundColor: theme.colors.accent, opacity: bgColorOpacityTransition }} />
+          <View style={styles.header}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => navigation.push('article', { pageName: 'User:' + commentData.username })}>
+                  <Image source={{ uri: AVATAR_URL + commentData.username }} style={{ ...styles.avatar, backgroundColor: theme.colors.lightBg }} />
+                </TouchableOpacity>
+                <View>
+                  <Text>{commentData.username}</Text>
+                  <Text style={{ color: theme.colors.disabled, marginTop: 3 }}>{diffDate(new Date(commentData.timestamp * 1000))}</Text>
+                </View>
               </View>
+
+              {props.visibleDelBtn && commentData.username === store.user.name ? <>
+                <TouchableOpacity onPress={delComment}>
+                  <MaterialIcon name="clear" color={theme.colors.placeholder} size={iconSize} />
+                </TouchableOpacity>
+              </> : null}
             </View>
-
-            {props.visibleDelBtn && commentData.username === store.user.name ? <>
-              <TouchableOpacity onPress={delComment}>
-                <MaterialIcon name="clear" color={theme.colors.placeholder} size={iconSize} />
-              </TouchableOpacity>
-            </> : null}
           </View>
-        </View>
 
-        <View style={styles.main}>
-          <Text>
-            {commentData.target ? <>
-              <Text style={{ color: theme.colors.disabled }}>
-                <Text>回复 </Text>
-                <Text style={{ color: theme.colors.accent }} onPress={props.onPressTargetName}>{commentData.target.username}：</Text>
-              </Text>
-            </> : null}
-            
-            <Text>{trimContent(commentData.text)}</Text>
-          </Text>
-        </View>
-
-        {props.visibleReply && commentData.children && commentData.children.length !== 0 ? <>
-          <View style={{ ...styles.reply, backgroundColor: store.settings.theme === 'night' ? '#666' : theme.colors.lightBg }}>
-            {replyList.filter((_, index) => index < 3).map(item =>
-              <View key={item.id} style={{ marginVertical: 2 }}>
-                <Text>
-                  <Text style={{ color: theme.colors.accent }}>{item.username}</Text>
-                  {!!item.target && <Text> 回复 </Text>}
-                  {!!item.target && <Text style={{ color: theme.colors.accent }}>{item.target.username}</Text>}
-                  <Text style={{ color: theme.colors.accent }}>：</Text>
-                  <Text>{trimContent(item.text)}</Text>
+          <View style={styles.main}>
+            <Text>
+              {commentData.target ? <>
+                <Text style={{ color: theme.colors.disabled }}>
+                  <Text>回复 </Text>
+                  <Text style={{ color: theme.colors.accent }} onPress={props.onPressTargetName}>{commentData.target.username}：</Text>
                 </Text>
-              </View>
-            )}
-
-            {replyList.length > 3 && 
-              <TouchableOpacity onPress={gotoCommentReplyPage}>
-                <Text style={{ color: theme.colors.disabled, textAlign: 'center', marginTop: 10 }}>查看更多</Text>
-              </TouchableOpacity>
-            }
+              </> : null}
+              
+              <Text>{trimContent(commentData.text)}</Text>
+            </Text>
           </View>
-        </> : null}
 
-        <View style={styles.footer}>
-          <TouchableOpacity style={{ ...styles.footerItem, position: 'relative', top: 1 }} 
-            onPress={toggleLike}
-          >
-            {likeNum === 0 && <AntDesignIcon name="like2" color={theme.colors.placeholder} size={iconSize} />}
-            {(likeNum > 0 && !isLiked) && <AntDesignIcon name="like2" color={theme.colors.accent} size={iconSize} />}
-            {isLiked && <AntDesignIcon name="like1" color={theme.colors.accent} size={iconSize} />}
-            {likeNum > 0 && <Text style={{ color: theme.colors.accent, marginLeft: 5 }}>{likeNum}</Text>}
-          </TouchableOpacity>
+          {props.visibleReply && commentData.children && commentData.children.length !== 0 ? <>
+            <View style={{ ...styles.reply, backgroundColor: store.settings.theme === 'night' ? '#666' : theme.colors.lightBg }}>
+              {replyList.filter((_, index) => index < 3).map(item =>
+                <View key={item.id} style={{ marginVertical: 2 }}>
+                  <Text>
+                    <Text style={{ color: theme.colors.accent }}>{item.username}</Text>
+                    {!!item.target && <Text> 回复 </Text>}
+                    {!!item.target && <Text style={{ color: theme.colors.accent }}>{item.target.username}</Text>}
+                    <Text style={{ color: theme.colors.accent }}>：</Text>
+                    <Text>{trimContent(item.text)}</Text>
+                  </Text>
+                </View>
+              )}
 
-          {props.visibleReplyBtn ? <>
-            <TouchableOpacity 
-              style={styles.footerItem}
-              onPress={handlerFor_replyBtn_wasClicked}
-            >
-              {!props.visibleReplyNum || commentData.children!.length === 0 
-                ? <FontAwesomeIcon name="comment-o" color={theme.colors.placeholder} size={iconSize} />
-                : <>
-                  <FontAwesomeIcon name="comment" color={theme.colors.accent} size={iconSize} />
-                  <Text style={{ color: theme.colors.accent, marginLeft: 5 }}>{replyList.length}</Text>
-                </>
+              {replyList.length > 3 && 
+                <TouchableOpacity onPress={gotoCommentReplyPage}>
+                  <Text style={{ color: theme.colors.disabled, textAlign: 'center', marginTop: 10 }}>查看更多</Text>
+                </TouchableOpacity>
               }
-            </TouchableOpacity>
+            </View>
           </> : null}
 
-          <TouchableOpacity style={styles.footerItem} onPress={report}>
-            <AntDesignIcon name="flag" color={theme.colors.placeholder} size={iconSize} /> 
-          </TouchableOpacity>
+          <View style={styles.footer}>
+            <TouchableOpacity style={{ ...styles.footerItem, position: 'relative', top: 1 }} 
+              onPress={toggleLike}
+            >
+              {likeNum === 0 && <AntDesignIcon name="like2" color={theme.colors.placeholder} size={iconSize} />}
+              {(likeNum > 0 && !isLiked) && <AntDesignIcon name="like2" color={theme.colors.accent} size={iconSize} />}
+              {isLiked && <AntDesignIcon name="like1" color={theme.colors.accent} size={iconSize} />}
+              {likeNum > 0 && <Text style={{ color: theme.colors.accent, marginLeft: 5 }}>{likeNum}</Text>}
+            </TouchableOpacity>
+
+            {props.visibleReplyBtn ? <>
+              <TouchableOpacity 
+                style={styles.footerItem}
+                onPress={handlerFor_replyBtn_wasClicked}
+              >
+                {!props.visibleReplyNum || commentData.children!.length === 0 
+                  ? <FontAwesomeIcon name="comment-o" color={theme.colors.placeholder} size={iconSize} />
+                  : <>
+                    <FontAwesomeIcon name="comment" color={theme.colors.accent} size={iconSize} />
+                    <Text style={{ color: theme.colors.accent, marginLeft: 5 }}>{replyList.length}</Text>
+                  </>
+                }
+              </TouchableOpacity>
+            </> : null}
+
+            <TouchableOpacity style={styles.footerItem} onPress={report}>
+              <AntDesignIcon name="flag" color={theme.colors.placeholder} size={iconSize} /> 
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </TouchableNativeFeedback>
     )
   }) 
 }

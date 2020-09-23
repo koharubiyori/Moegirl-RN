@@ -186,10 +186,10 @@ function SettingsPage(props: PropsWithChildren<Props>) {
           onPress={checkNewVersion}
         />
 
-        <SettingsSwitchItem hideSwitch
+        {/* <SettingsSwitchItem hideSwitch
           title={isHmoe ? i.index.other.checkNewVersionOnGithub : i.index.other.gotoGithub}
           onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
-        />
+        /> */}
       </ScrollView>      
     </ViewContainer>
   )

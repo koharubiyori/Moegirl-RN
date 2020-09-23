@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     padding: 3,
     marginVertical: 5,
     marginHorizontal: 10,
-    elevation: 2,
+    elevation: 1,
     borderRadius: 1
   }
 })

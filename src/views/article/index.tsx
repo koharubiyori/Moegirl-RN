@@ -54,7 +54,7 @@ function ArticlePage(props: PropsWithChildren<Props>) {
   
   // 进出页面时，启用&禁用音乐播放器
   useFocusEffect(useCallback(() => {
-    const disableAllIframeScriptStr = (() => {
+    const disableAllIframeScriptStr = `(() => {
       const iframeList = document.querySelectorAll('iframe')
       iframeList.forEach(item => {
         // 通过清空src的方式停止播放
@@ -62,27 +62,24 @@ function ArticlePage(props: PropsWithChildren<Props>) {
         item.src = ''
         item.dataset.src = src
       })
-    }).toString()
+    })()`
 
-    const enableAllIframeScriptStr = (() => {
+    const enableAllIframeScriptStr = `(() => {
       const iframeList = document.querySelectorAll('iframe')
       iframeList.forEach(item => {
         item.src = item.dataset.src!
       })
-    }).toString()
+    })()`
 
-    const pauseAllAudioScriptStr = (() => {
+    const pauseAllAudioScriptStr = `(() => {
       const audioList = document.querySelectorAll('audio')
       audioList.forEach(item => item.pause())
-    }).toString() 
+    })()`
 
-    refs.articleView.current && refs.articleView.current!.injectScript(`(${enableAllIframeScriptStr})()`)
+    refs.articleView.current && refs.articleView.current!.injectScript(enableAllIframeScriptStr)
     
     return () => {
-      refs.articleView.current!.injectScript(`
-        (${pauseAllAudioScriptStr})();
-        (${disableAllIframeScriptStr})();
-      `)
+      refs.articleView.current!.injectScript([pauseAllAudioScriptStr, disableAllIframeScriptStr].join(';'))
     }
   }, []))
 
@@ -138,9 +135,9 @@ function ArticlePage(props: PropsWithChildren<Props>) {
   }
   
   // 注入webview的window.onscroll事件字符串
-  const injectedWindowScrollEventHandlerStr = `(${(() => {
-    window.onscroll = () => window._postRnMessage('onWindowScroll' as any, window.scrollY) 
-  }).toString()})()`
+  const injectedWindowScrollEventHandlerStr = `
+    window.onscroll = () => _postRnMessage('onWindowScroll', window.scrollY)
+  `
 
   function toggleWatchStatus() {
     dialog.loading.show()
@@ -154,10 +151,7 @@ function ArticlePage(props: PropsWithChildren<Props>) {
   }
 
   function jumpToAnchor(anchor: string) {
-    refs.articleView.current!.injectScript(`
-      document.getElementById('${anchor}').scrollIntoView()
-      window.scrollTo(0, window.scrollY - ${56 + statusBarHeight})
-    `)
+    refs.articleView.current!.injectScript(`moegirl.method.link.gotoAnchor('${anchor}', -${56 + statusBarHeight})`)
   }
 
   function missingGoBack(link: string) {
@@ -201,16 +195,11 @@ function ArticlePage(props: PropsWithChildren<Props>) {
           style={{ flex: 1 }}
           centerOffsetStyle={{ position: 'relative', top: activityIndicatorTopOffset }}
           pageName={route.params.pageName}
-          styles={[
-            'article', 
-            ...(store.settings.theme === 'night' ? ['nightMode'] as any : []),
-            ...(store.settings.source === 'hmoe' ? ['hmoeArticle'] as any : [])
-          ]}
-          injectCss={`body { padding-top: ${56 + statusBarHeight}px; }`}
-          injectJs={injectedWindowScrollEventHandlerStr}
-          onLoaded={handlerFor_articleData_wasLoaded}
-          onMissing={missingGoBack}
-          onMessages={{
+          contentTopPadding={56 + statusBarHeight}
+          injectedScripts={[injectedWindowScrollEventHandlerStr]}
+          onArticleLoaded={handlerFor_articleData_wasLoaded}
+          onArticleMissing={missingGoBack}
+          messageHandlers={{
             onWindowScroll: changeHeaderTopOffset
           }}
         />

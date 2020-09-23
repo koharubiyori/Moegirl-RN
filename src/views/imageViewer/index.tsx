@@ -5,6 +5,7 @@ import ImageViewer from 'react-native-image-zoom-viewer'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import RNFetchBlob from 'rn-fetch-blob'
 import MyStatusBar from '~/components/MyStatusBar'
+import useLockDrawer from '~/hooks/useLockDrawer'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import useMyRoute from '~/hooks/useTypedRoute'
 import dialog from '~/utils/dialog'
@@ -28,6 +29,8 @@ function ImageViewerPage(props: PropsWithChildren<Props>) {
   const refs = {
     currentIndex: useRef(index)
   }
+
+  useLockDrawer()
 
   async function saveImg() {
     const checkedResult = await checkPermission()
