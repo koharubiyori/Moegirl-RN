@@ -205,15 +205,11 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
   }
 
   function createDocument (videoId: string, page: number, isBvId: boolean, cid: string) {
-    let js = function() {
+    // 要传入的html代码
+    let injectJsCodes = `
       window.addEventListener('fullscreenchange', function() {
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onFullScreenChange', data: { isFullScreen: !!document.fullscreenElement } }))
       })
-    }.toString()
-
-    // 要传入的html代码
-    let injectJsCodes = `
-      ;(${js})();
     `
 
     return `

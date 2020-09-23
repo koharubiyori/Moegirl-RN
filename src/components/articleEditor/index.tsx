@@ -55,23 +55,21 @@ function ArticleEditor(props: PropsWithChildren<Props>) {
   }, [isShowKeyboard, isFocusedEditor])
 
   function createDocument(content: string) {
-    let injectedJs = function() {
-      let edit = document.querySelector('#editArea')
-      edit!.addEventListener('input', (e: any) => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: e.target.value } }))
-      })
-
-      edit!.addEventListener('focus', () => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onFocus' }))
-      })
-
-      edit!.addEventListener('blur', () => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onBlur' }))
-      })
-    }.toString()
-
     let injectJsCodes = `
-      ;(${injectedJs})();
+      (() => {
+        let edit = document.querySelector('#editArea')
+        edit.addEventListener('input', e => {
+          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: e.target.value } }))
+        })
+
+        edit.addEventListener('focus', () => {
+          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onFocus' }))
+        })
+
+        edit.addEventListener('blur', () => {
+          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onBlur' }))
+        })
+      })()
     `
 
     const isNightMode = store.settings.theme === 'night'
@@ -132,7 +130,6 @@ function ArticleEditor(props: PropsWithChildren<Props>) {
     }
 
     if (type === 'onInput') {
-      console.log(data.text)
       props.onChangeText && props.onChangeText(data.text)
     }
 
@@ -146,23 +143,23 @@ function ArticleEditor(props: PropsWithChildren<Props>) {
   }
 
   function insertCodes (codes: string, offset = 0) {
-    let js = function(codes: string, offset: number) {
-      let editor = document.querySelector('#editArea')! as HTMLTextAreaElement
-      let content = editor.value
-      let nowLocation = editor.selectionStart
-      let beforeContent = content.substring(0, nowLocation)
-      let afterContent = content.substring(nowLocation)
+    let js = `
+      (() => {
+        let editor = document.querySelector('#editArea')
+        let content = editor.value
+        let nowLocation = editor.selectionStart
+        let beforeContent = content.substring(0, nowLocation)
+        let afterContent = content.substring(nowLocation)
 
-      editor.value = beforeContent + codes + afterContent
-      let location = nowLocation + codes.length - offset
-      editor.selectionStart = location
-      editor.selectionEnd = location
-      editor.focus()
+        editor.value = beforeContent + '${codes}' + afterContent
+        let location = nowLocation + ${codes.length} - ${offset}
+        editor.selectionStart = location
+        editor.selectionEnd = location
+        editor.focus()
 
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: editor.value } }))
-    }.toString()
-
-    js = `(${js})("${codes}", ${offset})`
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onInput', data: { text: editor.value } }))
+      })()
+    `
 
     refs.webView.current.injectJavaScript(js)
   }
@@ -171,6 +168,7 @@ function ArticleEditor(props: PropsWithChildren<Props>) {
     <View renderToHardwareTextureAndroid>
       <WebView
         scalesPageToFit={false}
+        showsHorizontalScrollIndicator={false}
         androidLayoutType="hardware"
         source={{ html, baseUrl: 'file:///android_asset/assets' }}
         style={{ ...(props.style as any), width: Dimensions.get('window').width }}
@@ -187,9 +185,9 @@ function ArticleEditor(props: PropsWithChildren<Props>) {
           <QuickInsertItem title="[[ ]]" subtitle={i.index.quickInsert.link} onPress={() => insertCodes('[[]]', 2)} />
           <QuickInsertItem title="{{ }}" subtitle={i.index.quickInsert.template} onPress={() => insertCodes('{{}}', 2)} />
           <QuickInsertItem title="|" subtitle={i.index.quickInsert.pipe} onPress={() => insertCodes('|')} />
+          <QuickInsertItem icon="fountain-pen-tip" subtitle={i.index.quickInsert.sign} onPress={() => insertCodes(' --~~~~')} />
           <QuickInsertItem title="*" subtitle={i.index.quickInsert.unorderedList} onPress={() => insertCodes('* ')} />
           <QuickInsertItem title="#" subtitle={i.index.quickInsert.orderedList} onPress={() => insertCodes('# ')} />
-          <QuickInsertItem icon="fountain-pen-tip" subtitle={i.index.quickInsert.sign} onPress={() => insertCodes(' --~~~~')} />
           <QuickInsertItem title="''' '''" subtitle={i.index.quickInsert.strong} onPress={() => insertCodes("''''''", 3)} />
           <QuickInsertItem title="<del>" subtitle={i.index.quickInsert.del} onPress={() => insertCodes('<del></del>', 6)} />
           <QuickInsertItem title="==" subtitle={i.index.quickInsert.title} onPress={() => insertCodes('==  ==', 3)} />
