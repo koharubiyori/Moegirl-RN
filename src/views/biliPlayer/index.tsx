@@ -3,7 +3,9 @@ import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState
 import { Animated, BackHandler, DeviceEventEmitter, Dimensions, PanResponder, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import WebView from 'react-native-webview'
+import bilibiliApi from '~/api/bilibili'
 import useStateWithRef from '~/hooks/useStateWithRef'
+import toast from '~/utils/toast'
 
 export interface Props {
   getRef?: MutableRefObject<any>
@@ -12,7 +14,7 @@ export interface Props {
 export interface BiliPlayerController {
   visible: boolean
   smallMode: boolean
-  start(videoId: string, page: string): void
+  start(videoId: string, page: number, isBvId?: boolean): void
   show(): void
   hide(orientation: 'left' | 'right'): void
   grow(): void
@@ -142,9 +144,17 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
     })
   }
 
-  function start(videoId: string, page = '1') {
-    setHtml(createDocument(videoId, page))
-    show().then(grow)
+  function start(videoId: string, page = 1, isBvId = false) {
+    bilibiliApi.getVideoInfo(videoId, isBvId)
+      .then(data => {
+        console.log(data)
+        setHtml(createDocument(videoId, page, isBvId, data.pages[page - 1].cid))
+        show().then(grow)
+      })
+      .catch(e => {
+        toast('视频地址获取失败，请重试')
+        console.log(e)
+      })
   }
 
   // 全屏
@@ -194,7 +204,7 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
     })
   }
 
-  function createDocument (videoId: string, page: string) {
+  function createDocument (videoId: string, page: number, isBvId: boolean, cid: string) {
     let js = function() {
       window.addEventListener('fullscreenchange', function() {
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'onFullScreenChange', data: { isFullScreen: !!document.fullscreenElement } }))
@@ -241,7 +251,7 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
         </style>
       </head>
       <body>
-        <iframe src="https://player.bilibili.com/player.html?aid=${videoId}&page=${page}" scrolling="no" framespacing="0" border="0" frameborder="no"  allowfullscreen="true" class="bilibili-player"></iframe>
+        <iframe src="https://www.bilibili.com/blackboard/html5mobileplayer.html?${isBvId ? 'bvid' : 'aid'}=${videoId}&page=${page}&cid=${cid}" scrolling="no" framespacing="0" border="0" frameborder="no"  allowfullscreen="true" class="bilibili-player"></iframe>
         <script>
           ${injectJsCodes};
         </script>

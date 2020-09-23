@@ -29,19 +29,36 @@ async function getMainImage(pageName: string, size = 500) {
   })
 }
 
-function getImageUrl(imageName: string) {
-  return moeRequest<ArticleApiData.getImgUrl>({
-    baseURL: 'https://commons.moegirl.org.cn/api.php',
-    method: 'post',
-    params: {
-      action: 'query',
-      prop: 'imageinfo',
-      titles: 'File:' + imageName,
-      iiprop: 'url'
+// 请求图片原始链接每次最多50个，这里进行分段请求
+function getImagesUrl(imageNames: string[]): Promise<{ [fileName: string]: string }> {
+  const requestFragments: string[][] = [[]]
+  imageNames.forEach(item => {
+    const lastFragment = requestFragments[requestFragments.length - 1]
+    if (lastFragment.length === 50) {
+      requestFragments.push([item])
+    } else {
+      lastFragment.push(item)
     }
-  }).then(data => {
-    return Object.values(data.query.pages)[0].imageinfo[0].url
   })
+  
+  return Promise.all(
+    requestFragments.map(imageNamesFragment => moeRequest<ArticleApiData.getImgUrl>({
+      baseURL: 'https://commons.moegirl.org.cn/api.php',
+      method: 'post',
+      params: {
+        action: 'query',
+        prop: 'imageinfo',
+        titles: imageNamesFragment.map(item => 'File:' + item).join('|'),
+        iiprop: 'url'
+      }
+    }))
+  )
+    .then(res => {
+      return res.map(resItem => Object.values(resItem.query.pages)).flat().reduce((result, item) => {
+        result[item.title.replace('File:', '')] = item.imageinfo[0].url
+        return result
+      }, {} as { [fileName: string]: string })
+    }) as any
 }
 
 function translateTitle(title: string) {
@@ -57,5 +74,5 @@ function translateTitle(title: string) {
     .catch(() => Promise.resolve(title))
 }
 
-const articleApi = { getContent, getImageUrl, getMainImage, translateTitle }
+const articleApi = { getContent, getImagesUrl, getMainImage, translateTitle }
 export default articleApi

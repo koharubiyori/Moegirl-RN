@@ -109,7 +109,8 @@ function ArticlePage(props: PropsWithChildren<Props>) {
 
     // 如果有anchor，则跳转至锚点
     if (pageId === 0 && route.params.anchor) {
-      jumpToAnchor(route.params.anchor)
+      console.log(route.params.anchor)
+      setTimeout(() => jumpToAnchor(route.params.anchor!), 3000)
       toast(i.index.anchorGoto(route.params.anchor))
       // dialog.snackBar.show({ title: i.index.anchorGoto(route.params.anchor) })
     }

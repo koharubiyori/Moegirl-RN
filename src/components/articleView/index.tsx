@@ -118,7 +118,6 @@ function ArticleView(props: PropsWithChildren<Props>) {
         // 如果为分类页，则从html字符串中抽取数据，然后交给category界面处理
         if (/^([Cc]ategory|分类|分類):/.test(props.pageName!)) {
           const htmlDoc = new DOMParser().parseFromString(html, 'text/html')
-          console.log(htmlDoc)
           let categoryBranchContainer = htmlDoc.getElementById('topicpath')
           let descContainer = htmlDoc.getElementById('catmore')
           let categoryBranch: string[] | null = null
@@ -183,14 +182,11 @@ function ArticleView(props: PropsWithChildren<Props>) {
   }
 
   // 加载原始图片列表
-  function loadOriginalImgUrls(imgs: string[]): Promise<{ url: string, name: string }[]> {
-    return Promise.all(
-      imgs.map(articleApi.getImageUrl)
-    )
-      .then((urls: string[]) => {
-        const imgUrls = urls.map((url, index) => ({ url, name: imgs[index] }))
-        setOriginalImgUrls(imgUrls)
-        return imgUrls
+  function loadOriginalImgUrls(imgs: string[]) {
+    return articleApi.getImagesUrl(imgs)
+      .then(imageUrlMaps => {
+        console.log(imageUrlMaps)
+        setOriginalImgUrls(Object.entries(imageUrlMaps).map(([name, url]) => ({ name, url })))
       })
   }
 
@@ -216,8 +212,15 @@ function ArticleView(props: PropsWithChildren<Props>) {
           if (originalImgUrls) {
             navigation.push('imageViewer', { 
               imgs: originalImgUrls.map(img => ({ url: img.url })),
-              index: originalImgUrls.findIndex(img => img.name === data.name)
+              index: originalImgUrls.findIndex(img => img.name === data.name.replace(/_/g, ' '))
             })
+          } else {
+            dialog.loading.show({ title: i.index.events.pressImage.loading, allowUserClose: true })
+            articleApi.getImagesUrl([data.name!])
+              .finally(dialog.loading.hide)
+              .then(imageUrlMaps => {
+                navigation.push('imageViewer', { imgs: [{ url: Object.values(imageUrlMaps)[0] }], index: 0 })
+              })
           }
         },
 
@@ -268,7 +271,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
     },
 
     biliPlayer(data) {
-      biliPlayerController.start(data.videoId, data.page)
+      biliPlayerController.start(data.videoId, parseInt(data.page), data.type === 'bv')
     },
 
     biliPlayerLongPress(data) {
@@ -329,7 +332,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
         injectedScripts={injectedScripts}
         messageHandlers={messageHandlers}
         // 如果使用夜晚模式，则多留出一些时间用来加载js
-        onLoaded={() => setTimeout(() => setStatus(3), isNightTheme ? nightModeJsExecutingWait : 0)}
+        onLoaded={() => setTimeout(() => setStatus(3), isNightTheme ? nightModeJsExecutingWait : 300)}
       />
 
       {status !== 3 &&
