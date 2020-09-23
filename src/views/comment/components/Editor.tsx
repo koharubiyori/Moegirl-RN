@@ -79,8 +79,8 @@ function CommentEditor(props: PropsWithChildren<Props>) {
   }
 
   function tapMaskToCloseSelf(e: any) {
-    // 这里需要用_component._nativeTag判断点击的是mask还是输入栏
-    refs.mask.current._component._nativeTag === e.target && close()
+    // 这里需要_nativeTag判断点击的是mask还是输入栏
+    refs.mask.current._nativeTag === e.target._nativeTag && close()
   }
 
   return (

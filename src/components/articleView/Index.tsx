@@ -185,7 +185,6 @@ function ArticleView(props: PropsWithChildren<Props>) {
   function loadOriginalImgUrls(imgs: string[]) {
     return articleApi.getImagesUrl(imgs)
       .then(imageUrlMaps => {
-        console.log(imageUrlMaps)
         setOriginalImgUrls(Object.entries(imageUrlMaps).map(([name, url]) => ({ name, url })))
       })
   }

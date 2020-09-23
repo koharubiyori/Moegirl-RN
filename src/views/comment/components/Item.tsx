@@ -112,6 +112,13 @@ function CommentItem(props: PropsWithChildren<Props>) {
   }
 
   function handlerFor_replyBtn_wasClicked() {
+    if (!store.user.isLoggedIn) {
+      return dialog.confirm.show({
+        content: '未登录无法进行评论，是否要前往登录界面？'
+      })
+        .then(() => navigation.push('login'))
+    }
+    
     if (props.commentData.children!.length === 0 || props.isReply) {
       props.onPressReply && props.onPressReply(props.commentData.id)
     } else {
