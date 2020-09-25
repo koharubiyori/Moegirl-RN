@@ -34,7 +34,7 @@ function LoginPage(props: PropsWithChildren<Props>) {
     value: '',
   })
   const [showingPsd, setShowingPsd] = useState(false)
-  const [kotoriTransition] = useState(new Animated.Value(0))
+  const kotoriTransition = useRef(new Animated.Value(0)).current
   
   useLockDrawer()
 

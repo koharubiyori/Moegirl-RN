@@ -114,7 +114,7 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
       onPanResponderMove: (e, gestureState) => {
         let { moveX } = gestureState
         if (lastMoveX.current - moveX > 1 || lastMoveX.current - moveX < -1) {
-          const speed = 0.04
+          const speed = 0.02
 
           let value = speed
           if (lastMoveX.current > moveX) value = -speed
@@ -152,7 +152,7 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
         show().then(grow)
       })
       .catch(e => {
-        toast('视频地址获取失败，请重试')
+        toast('视频地址获取失败')
         console.log(e)
       })
   }
@@ -295,7 +295,7 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
 
   const container2TranslateX = horizontalSwipeTransitionValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [-minWidth / 2, minWidth / 2]
+    outputRange: [-minWidth * 0.7, minWidth * 0.7]
   })
 
   // 给view添加opacity无法影响到内部的webview，必须给webview设置opacity

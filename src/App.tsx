@@ -2,6 +2,7 @@ import { NavigationContainerRef } from '@react-navigation/native'
 import React, { useEffect, useRef, useState } from 'react'
 import { BackHandler, Linking } from 'react-native'
 import { DefaultTheme, Provider as PaperProvider, Theme } from 'react-native-paper'
+import { RootSiblingParent } from 'react-native-root-siblings'
 import SplashScreen from 'react-native-splash-screen'
 import linkHandler from '~/utils/linkHandler'
 import init from './init'
@@ -88,9 +89,11 @@ export default function App() {
   
   return (
     <PaperProvider theme={theme}>
-      {/* 等待用户设置载入完成 */}
-      {isSettingsLoaded && <StackRoutes getRef={refs.stackRoutes} />}
-      <DialogBaseView />
+      <RootSiblingParent>
+        {/* 等待用户设置载入完成 */}
+        {isSettingsLoaded && <StackRoutes getRef={refs.stackRoutes} />}
+        <DialogBaseView />
+      </RootSiblingParent>
     </PaperProvider>
   )
 }

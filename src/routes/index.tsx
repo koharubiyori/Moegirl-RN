@@ -3,10 +3,13 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import React, { FC, MutableRefObject } from 'react'
 import AboutPage, { RouteParams as AboutRP } from '~/views/about'
 import ArticlePage, { RouteParams as ArticleRP } from '~/views/article'
+import BiliPlayerModal from '~/views/biliPlayer'
 import CategoryPage, { RouteParams as CategoryRP } from '~/views/category'
 import CommentPage, { RouteParams as CommentRP } from '~/views/comment'
 import CommentReplyPage, { RouteParams as CommentReplyRP } from '~/views/comment/views/reply'
+import DrawerView from '~/views/drawer'
 import EditPage, { RouteParams as EditRP } from '~/views/edit'
+import HistoryPage, { RouteParams as HistoryRP } from '~/views/history'
 import HomePage, { RouteParams as HomeRP } from '~/views/home'
 import ImageViewerPage, { RouteParams as ImageViewerRP } from '~/views/imageViewer'
 import LoginPage, { RouteParams as LoginRP } from '~/views/login'
@@ -16,10 +19,6 @@ import SearchResultPage, { RouteParams as SearchResultRP } from '~/views/search/
 import SettingsPage, { RouteParams as SettingsRP } from '~/views/settings'
 import WatchListPage, { RouteParams as WatchListRP } from '~/views/watchList'
 import customRouteTransition from './utils/customTransition'
-import HistoryPage, { RouteParams as HistoryRP } from '~/views/history'
-import DrawerView from '~/views/drawer'
-import BiliPlayerModal from '~/views/biliPlayer'
-import { RootSiblingParent } from 'react-native-root-siblings'
 
 export type RouteOptions = Parameters<(typeof Stack.Screen)>[0]['options']
 const route = (component: FC<any>, options?: RouteOptions) => ({ component, options })
@@ -83,23 +82,23 @@ function StackRoutes(props: Props) {
   return (
     <NavigationContainer ref={props.getRef} onStateChange={props.onStateChange}>
       <DrawerView>{() => 
-        <RootSiblingParent>
+        <>
           <Stack.Navigator 
             initialRouteName="drawer" 
             headerMode="none"
             screenOptions={TransitionPresets.SlideFromRightIOS}
           >
-            {Object.keys(routeMaps).map(routeName =>
+            {Object.entries(routeMaps).map(([routeName, route]) =>
               <Stack.Screen 
                 key={routeName} 
                 name={routeName} 
-                component={routeMaps[routeName as any as RouteName].component} 
-                options={routeMaps[routeName as any as RouteName].options}
+                component={route.component} 
+                options={route.options}
               />  
             )}
           </Stack.Navigator>
           <BiliPlayerModal />
-        </RootSiblingParent>
+        </>
       }</DrawerView>
     </NavigationContainer>
   )

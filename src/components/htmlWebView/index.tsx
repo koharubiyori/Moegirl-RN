@@ -81,6 +81,7 @@ function HtmlWebView(props: PropsWithChildren<Props>) {
     <View renderToHardwareTextureAndroid style={{ flex: 1, ...(props.style as any) }}>
       {props.dataReady &&
         <WebView allowFileAccess domStorageEnabled
+          pointerEvents="box-none"
           style={{ flex: 1 }}
           scalesPageToFit={false}
           showsHorizontalScrollIndicator={false}

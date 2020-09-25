@@ -12,6 +12,7 @@ import request from '~/request/base'
 import { colors } from '~/theme'
 import articleCacheController from '~/utils/articleCacheController'
 import dialog from '~/utils/dialog'
+import globalNavigation from '~/utils/globalNavigation'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import { biliPlayerController } from '~/views/biliPlayer'
@@ -53,7 +54,7 @@ const nightModeJsExecutingWait = 1000
 
 function ArticleView(props: PropsWithChildren<Props>) {
   const theme = useTheme()
-  const navigation = useTypedNavigation()
+  const navigation = globalNavigation.current // 因为这个组件会被showNoteDialog挂载到根组件上，会导致拿不到导航器上下文，所以使用全局导航器
   const [articleHtml, setArticleHtml] = useState('')
   const [articleData, setArticleData] = useState<ArticleApiData.GetContent>()
   const [originalImgUrls, setOriginalImgUrls] = useState<{ name: string, url: string }[]>()
