@@ -1,7 +1,8 @@
 import { NavigationContainerRef } from '@react-navigation/native'
+import { autorun } from 'mobx'
 import React, { useEffect, useRef, useState } from 'react'
 import { BackHandler, Linking } from 'react-native'
-import { DefaultTheme, Provider as PaperProvider, Theme } from 'react-native-paper'
+import { Provider as PaperProvider } from 'react-native-paper'
 import { RootSiblingParent } from 'react-native-root-siblings'
 import SplashScreen from 'react-native-splash-screen'
 import linkHandler from '~/utils/linkHandler'
@@ -9,20 +10,10 @@ import init from './init'
 import i from './lang'
 import store from './mobx'
 import StackRoutes from './routes'
-import { colors, initSetThemeMethod, setThemeColor } from './theme'
+import { initGlobalSetThemeMethod, initialTheme, setGlobalThemeColor } from './theme'
 import { DialogBaseView } from './utils/dialog'
 import { initGlobalNavigation } from './utils/globalNavigation'
 import toast from './utils/toast'
-
-const initialTheme: Theme = {
-  ...DefaultTheme,
-  dark: true,
-  roundness: 2,
-  colors: {
-    ...DefaultTheme.colors,
-    ...colors.green
-  }
-}
 
 export default function App() {
   const [theme, setTheme] = useState(initialTheme)
@@ -31,22 +22,22 @@ export default function App() {
     stackRoutes: useRef<NavigationContainerRef>()
   }
   
-  // 初始化主题方法
-  initSetThemeMethod(setTheme)
-
   // 初始化全局导航器
   useEffect(() => {
     initGlobalNavigation(refs.stackRoutes.current!)
   }, [isSettingsLoaded])
 
-  // 其他初始化动作
+  // 其他需要等待init()的初始化动作
   useEffect(() => {
     ;(async () => {
       await init()
       setIsSettingsLoaded(true)
-      const currentTheme = store.settings.theme
-      setThemeColor(currentTheme)
       setTimeout(SplashScreen.hide, 500)
+
+      initGlobalSetThemeMethod(setTheme)
+      // 开始监听主题变化
+      setGlobalThemeColor(store.settings.theme)
+      // autorun(() => setGlobalThemeColor(store.settings.theme))
 
       // 响应深度链接
       const initialUrl = await Linking.getInitialURL()

@@ -14,11 +14,9 @@ export default async function init() {
   try {
     const settings = await baseStorage.get('settings')
     if (settings) {
-      settings.heimu && store.settings.set('heimu', settings.heimu)
-      settings.cachePriority && store.settings.set('cachePriority', settings.cachePriority)
-      settings.source && store.settings.set('source', settings.source)
-      settings.theme && store.settings.set('theme', settings.theme)
-      settings.lang && store.settings.set('lang', settings.lang)
+      Object.entries(settings).forEach(([name, value]) => {
+        ;(name in settings) && store.settings.set(name as any, value)
+      })
     } else {
       const localLangList = await getLanguages()
       if (localLangList[0] === 'zh-TW') store.settings.set('lang', 'zh-hant')

@@ -7,7 +7,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import MyButton from '~/components/MyButton'
 import { AVATAR_URL } from '~/constants'
 import store from '~/mobx'
-import { setThemeColor } from '~/theme'
+import { setGlobalThemeColor } from '~/theme'
 import dialog from '~/utils/dialog'
 import globalNavigation from '~/utils/globalNavigation'
 import i from '../lang'
@@ -39,7 +39,7 @@ function DrawerContent(props: PropsWithChildren<Props>) {
 
   function toggleNight() {
     const willSetTheme = store.settings.theme === 'night' ? 'green' : 'night'
-    setThemeColor(willSetTheme)
+    setGlobalThemeColor(willSetTheme)
     store.settings.set('theme', willSetTheme)
   }
 

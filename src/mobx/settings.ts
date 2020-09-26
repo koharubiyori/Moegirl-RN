@@ -6,6 +6,7 @@ import baseStorage from '~/utils/baseStorage'
 // 因为要给set方法提供类型支持，所以这里把属性单独声明出一个接口
 export interface SettingsStoreData {
   heimu: boolean
+  stopAudioOnLeave: boolean
   cachePriority: boolean
   source: 'hmoe' | 'moegirl'
   theme: ThemeColorType
@@ -14,6 +15,7 @@ export interface SettingsStoreData {
 
 class SettingsStore implements SettingsStoreData {
   @observable heimu = true
+  @observable stopAudioOnLeave = true
   @observable cachePriority = false
   @observable source: SettingsStoreData['source'] = 'moegirl'
   @observable theme: ThemeColorType = 'green'

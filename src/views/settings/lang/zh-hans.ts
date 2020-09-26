@@ -24,6 +24,9 @@ const zhHans = {
         hmoe: 'H萌娘'
       }
     },
+    themeSelection: {
+      title: '选择主题'
+    },
     langSelection: {
       title: '选择语言'
     },
@@ -33,7 +36,14 @@ const zhHans = {
       heimu: {
         title: '黑幕开关',
         subtext: '关闭后黑幕将默认为刮开状态'
+      },
+      stopAudio: {
+        title: '离开停止所有音频',
+        subtext: '离开条目时停止当前条目上所有正在播放的音频'
       }
+    },
+    view: {
+      theme: '更换主题'
     },
     cache: {
       title: '缓存',

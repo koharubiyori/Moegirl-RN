@@ -44,6 +44,8 @@ export interface CommentItemRef {
   isReply: false
 }
 
+const singleEmptyFn = () => {} // 这个函数用来作为最外层nativeFeedback触发onPress用
+
 function CommentItem(props: PropsWithChildren<Props>) {
   const theme = useTheme()
   const navigation = useTypedNavigation()
@@ -146,7 +148,7 @@ function CommentItem(props: PropsWithChildren<Props>) {
     const isNight = store.settings.theme === 'night'
 
     return (
-      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(theme.colors.placeholder)}>
+      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(theme.colors.placeholder)} onPress={singleEmptyFn}>
         <View style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
           <Animated.View style={{ ...styles.animateBgColor, backgroundColor: theme.colors.accent, opacity: bgColorOpacityTransition }} />
           <View style={styles.header}>

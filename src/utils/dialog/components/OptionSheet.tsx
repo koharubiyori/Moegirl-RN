@@ -2,6 +2,7 @@ import React, { PropsWithChildren, useImperativeHandle, useState, forwardRef } f
 import { View } from 'react-native'
 import { Button, Dialog, RadioButton, Text, useTheme } from 'react-native-paper'
 import MyButton from '~/components/MyButton'
+import useStateWithRef from '~/hooks/useStateWithRef'
 import i from './lang'
 
 export interface Props {
@@ -25,7 +26,7 @@ export interface OptionSheetDialogRef {
 function OptionSheetDialog(props: PropsWithChildren<Props>, ref: any) {
   const theme = useTheme()
   const [visible, setVisible] = useState(false)
-  const [selected, setSelected] = useState<string | number>(0)
+  const [selected, setSelected, selectedRef] = useStateWithRef<string | number>('')
   const [params, setParams] = useState({
     title: '',
     options: [] as optionSheetOptions['options'],
@@ -55,7 +56,7 @@ function OptionSheetDialog(props: PropsWithChildren<Props>, ref: any) {
           autoClose && hide()
           resolve(selectedVal)
         },
-        closeHandler: () => { autoClose && hide(); reject() },
+        closeHandler: () => { autoClose && hide(); reject(selectedRef.current) },
         onChange,
       })
       setVisible(true)

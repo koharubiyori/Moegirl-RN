@@ -1,22 +1,23 @@
 import { useObserver } from 'mobx-react-lite'
-import React, { PropsWithChildren } from 'react'
-import { Linking, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { useTheme } from 'react-native-paper'
+import React, { PropsWithChildren, useState } from 'react'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Provider as PaperProvider, useTheme } from 'react-native-paper'
 import RNRestart from 'react-native-restart'
 import { isHmoe } from '~/../app.json'
+import MyStatusBar from '~/components/MyStatusBar'
 import MyToolbar from '~/components/MyToolbar'
 import ViewContainer from '~/components/ViewContainer'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
+import { checkLastVersion } from '~/init'
 import store from '~/mobx'
-import { colors } from '~/theme'
+import { colors, createThemeColorSetter, globalTheme, setGlobalThemeColor, themeColorType } from '~/theme'
 import articleCacheController from '~/utils/articleCacheController'
 import dialog from '~/utils/dialog'
+import { setDialogThemeColor } from '~/utils/dialog/components'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SettingsSwitchItem from './components/SwitchItem'
 import i from './lang'
-import { checkLastVersion } from '~/init'
-import MyStatusBar from '~/components/MyStatusBar'
 
 export interface Props {
   
@@ -28,6 +29,7 @@ export interface RouteParams {
 
 function SettingsPage(props: PropsWithChildren<Props>) {
   const navigation = useTypedNavigation()
+  const [theme, setTheme] = useState(globalTheme.current)
   
   async function clearArticleCache() {
     await dialog.confirm.show({ content: i.index.clearArticleCache.check })
@@ -46,6 +48,24 @@ function SettingsPage(props: PropsWithChildren<Props>) {
     await dialog.confirm.show({ content: i.index.logout.check })
     store.user.logout()
     toast(i.index.logout.success)
+  }
+
+  function showThemeOptions() {
+    const setThemeColor = createThemeColorSetter(setTheme)
+    
+    dialog.optionSheet.show({
+      title: i.index.themeSelection.title,
+      options: Object.entries(themeColorType).map(([value, label]) => ({ value, label: label[store.settings.lang] })),
+      defaultSelected: store.settings.theme,
+      onChange(value: any) {
+        // 这里在切换主题时只是切换了设置页和全局dialog的主题，防止多个页面一同重渲染导致卡顿
+        setDialogThemeColor(value)
+        setThemeColor(value)
+        store.settings.set('theme', value)
+      }
+    })
+      .then(setGlobalThemeColor as any)
+      .catch(setGlobalThemeColor)
   }
 
   function showSourceSelection() {
@@ -99,99 +119,109 @@ function SettingsPage(props: PropsWithChildren<Props>) {
       .catch(() => toast(i.index.checkNewVersion.netErr))
   }
 
+  console.log(globalTheme.current)
   return useObserver(() =>
-    <ViewContainer>
-      <MyStatusBar />
-      <MyToolbar
-        title={i.index.title}
-        leftIcon="keyboard-backspace"
-        onPressLeftIcon={navigation.goBack}
-      />
-
-      <ScrollView style={{ flex: 1 }}>
-        <Title>{i.index.article.title}</Title>
-
-        <SettingsSwitchItem 
-          title={i.index.article.heimu.title} 
-          subtext={i.index.article.heimu.subtext} 
-          value={store.settings.heimu}
-          onChange={val => store.settings.set('heimu', val)}
+    <PaperProvider theme={theme}>
+      <ViewContainer>
+        <MyStatusBar />
+        <MyToolbar
+          title={i.index.title}
+          leftIcon="keyboard-backspace"
+          onPressLeftIcon={navigation.goBack}
         />
 
-        {/* <SettingsSwitchItem title="沉浸模式" 
-          subtext="浏览条目时将隐藏状态栏" 
-          value={settings.immersionMode}
-          onChange={val => setConfig({ immersionMode: val })}
-        /> */}
+        <ScrollView style={{ flex: 1 }}>
+          <Title>{i.index.article.title}</Title>
 
-        {/* <SettingsSwitchItem title="动态主题" 
-          subtext="条目界面的配色随条目本身的主题色切换" 
-          value={config.changeThemeColorByArticleMainColor}
-          onChange={val => {
-            setConfig({ changeThemeColorByArticleMainColor: val })
-            props.state.config.theme === 'night' && val && toast.show('黑夜模式下动态主题不生效')
-          }}
-        /> */}
-
-        {/* <Title>界面</Title>
-        <SettingsSwitchItem hideSwitch 
-          title="更换皮肤"
-          onPress={showThemeOptions}
-        /> */}
-
-        <Title>{i.index.cache.title}</Title>
-        <SettingsSwitchItem 
-          title={i.index.cache.cachePriority.title}
-          subtext={i.index.cache.cachePriority.subtext}
-          value={store.settings.cachePriority}
-          onChange={val => store.settings.set('cachePriority', val)}
-        />
-
-        <SettingsSwitchItem hideSwitch 
-          title={i.index.cache.clearCache}
-          onPress={() => clearArticleCache()}
-        />
-
-        <SettingsSwitchItem hideSwitch 
-          title={i.index.cache.clearHistory}
-          onPress={() => clearHistory()}
-        />
-
-        <Title>{i.index.account.title}</Title>
-        <SettingsSwitchItem hideSwitch
-          title={store.user.isLoggedIn ? i.index.account.logout : i.index.account.login}
-          onPress={() => store.user.isLoggedIn ? logout() : navigation.push('login')}
-        />
-
-        <Title>{i.index.other.title}</Title>
-        {isHmoe ? <>
-          <SettingsSwitchItem hideSwitch 
-            title={i.index.other.changeSource}
-            onPress={showSourceSelection}
+          <SettingsSwitchItem 
+            title={i.index.article.heimu.title} 
+            subtext={i.index.article.heimu.subtext} 
+            value={store.settings.heimu}
+            onChange={val => store.settings.set('heimu', val)}
           />
-        </> : null}
 
-        <SettingsSwitchItem hideSwitch
-          title={i.index.other.selectLang}
-          onPress={showLangSelection}
-        />
+          <SettingsSwitchItem 
+            title={i.index.article.stopAudio.title} 
+            subtext={i.index.article.stopAudio.subtext} 
+            value={store.settings.stopAudioOnLeave}
+            onChange={val => store.settings.set('stopAudioOnLeave', val)}
+          />
 
-        <SettingsSwitchItem hideSwitch
-          title={i.index.other.about}
-          onPress={() => navigation.push('about')}
-        />
+          {/* <SettingsSwitchItem title="沉浸模式" 
+            subtext="浏览条目时将隐藏状态栏" 
+            value={settings.immersionMode}
+            onChange={val => setConfig({ immersionMode: val })}
+          /> */}
 
-        <SettingsSwitchItem hideSwitch
-          title={i.index.other.checkVersion}
-          onPress={checkNewVersion}
-        />
+          {/* <SettingsSwitchItem title="动态主题" 
+            subtext="条目界面的配色随条目本身的主题色切换" 
+            value={config.changeThemeColorByArticleMainColor}
+            onChange={val => {
+              setConfig({ changeThemeColorByArticleMainColor: val })
+              props.state.config.theme === 'night' && val && toast.show('黑夜模式下动态主题不生效')
+            }}
+          /> */}
 
-        {/* <SettingsSwitchItem hideSwitch
-          title={isHmoe ? i.index.other.checkNewVersionOnGithub : i.index.other.gotoGithub}
-          onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
-        /> */}
-      </ScrollView>      
-    </ViewContainer>
+          <Title>界面</Title>
+          <SettingsSwitchItem hideSwitch 
+            title={i.index.view.theme}
+            onPress={showThemeOptions}
+          />
+
+          <Title>{i.index.cache.title}</Title>
+          <SettingsSwitchItem 
+            title={i.index.cache.cachePriority.title}
+            subtext={i.index.cache.cachePriority.subtext}
+            value={store.settings.cachePriority}
+            onChange={val => store.settings.set('cachePriority', val)}
+          />
+
+          <SettingsSwitchItem hideSwitch 
+            title={i.index.cache.clearCache}
+            onPress={() => clearArticleCache()}
+          />
+
+          <SettingsSwitchItem hideSwitch 
+            title={i.index.cache.clearHistory}
+            onPress={() => clearHistory()}
+          />
+
+          <Title>{i.index.account.title}</Title>
+          <SettingsSwitchItem hideSwitch
+            title={store.user.isLoggedIn ? i.index.account.logout : i.index.account.login}
+            onPress={() => store.user.isLoggedIn ? logout() : navigation.push('login')}
+          />
+
+          <Title>{i.index.other.title}</Title>
+          {isHmoe ? <PaperProvider>
+            <SettingsSwitchItem hideSwitch 
+              title={i.index.other.changeSource}
+              onPress={showSourceSelection}
+            />
+          </PaperProvider> : null}
+
+          <SettingsSwitchItem hideSwitch
+            title={i.index.other.selectLang}
+            onPress={showLangSelection}
+          />
+
+          <SettingsSwitchItem hideSwitch
+            title={i.index.other.about}
+            onPress={() => navigation.push('about')}
+          />
+
+          <SettingsSwitchItem hideSwitch
+            title={i.index.other.checkVersion}
+            onPress={checkNewVersion}
+          />
+
+          {/* <SettingsSwitchItem hideSwitch
+            title={isHmoe ? i.index.other.checkNewVersionOnGithub : i.index.other.gotoGithub}
+            onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
+          /> */}
+        </ScrollView>      
+      </ViewContainer>
+    </PaperProvider>
   )
 }
 

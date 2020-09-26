@@ -1,17 +1,17 @@
 import { Theme, DefaultTheme, MyTheme } from 'react-native-paper'
 import changeNavigationBarColor from 'react-native-navigation-bar-color'
+import { createRef } from 'react'
 
-let setThemeState: React.Dispatch<React.SetStateAction<Theme>> = null as any
-
+const themeName = (hans: string, hant: string) => ({ 'zh-hans': hans, 'zh-hant': hant })
 export const themeColorType = {
-  green: '萌百绿',
-  pink: 'H萌粉',
-  indigo: '夜空蓝',
-  orange: '奇迹橙',
-  blue: '天蓝',
-  deepPurple: '深紫',
-  teal: '水绿',
-  night: '黑夜',
+  green: themeName('萌百绿', '萌百綠'),
+  pink: themeName('H萌粉', 'H萌粉'),
+  indigo: themeName('夜空蓝', '夜空藍'),
+  orange: themeName('奇迹橙', '奇蹟橙'),
+  blue: themeName('天蓝', '天藍'),
+  deepPurple: themeName('深紫', '深紫'),
+  teal: themeName('水绿', '水綠'),
+  night: themeName('黑夜', '黑夜')
 }
 
 export type ThemeColorType = keyof typeof themeColorType
@@ -116,18 +116,39 @@ export const colors: { [ThemeColorName in ThemeColorType]: MyTheme['colors'] } =
   }
 }
 
-export const initSetThemeMethod = (method: typeof setThemeState) => setThemeState = method
+export const initialTheme: Theme = {
+  ...DefaultTheme,
+  dark: true,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    ...colors.green
+  }
+}
 
-export function setThemeColor(themeColor: ThemeColorType) {
-  setThemeState({
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      ...colors[themeColor]
+export const globalTheme = { current: initialTheme } // 向外部暴露一个全局主题对象，用来在settings切换主题时作为局部的provider使用，防止切换主题时从根树重渲染导致卡顿 
+export type SetThemeState = React.Dispatch<React.SetStateAction<Theme>>
+export type SetThemeColor = ReturnType<typeof createThemeColorSetter>
+
+const globalSetTheme = { current: null as any as SetThemeColor }
+export const initGlobalSetThemeMethod = (setThemeState: SetThemeState) => globalSetTheme.current = createThemeColorSetter(setThemeState)
+export const setGlobalThemeColor = (themeColor: ThemeColorType) => globalSetTheme.current(themeColor)
+
+export function createThemeColorSetter(setThemeState: SetThemeState) {
+  return function setThemeColor(themeColor: ThemeColorType) {
+    const willSetTheme = {
+      ...DefaultTheme,
+      colors: {
+        ...DefaultTheme.colors,
+        ...colors[themeColor]
+      }
     }
-  })  
-
-  setTimeout(() => {
-    changeNavigationBarColor(themeColor === 'night' ? colors.night.background : 'white', themeColor !== 'night', true)
-  })
+  
+    setThemeState(willSetTheme)  
+    globalTheme.current = willSetTheme
+  
+    setTimeout(() => {
+      changeNavigationBarColor(themeColor === 'night' ? colors.night.background : 'white', themeColor !== 'night', true)
+    })
+  }
 }

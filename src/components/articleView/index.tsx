@@ -1,3 +1,4 @@
+import { autorun } from 'mobx'
 import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { Linking, StyleProp, StyleSheet, Text, Vibration, View, ViewStyle } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -6,10 +7,9 @@ import { useTheme } from 'react-native-paper'
 import articleApi from '~/api/article'
 import { ArticleApiData } from '~/api/article/types'
 import useStateWithRef from '~/hooks/useStateWithRef'
-import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
 import request from '~/request/base'
-import { colors } from '~/theme'
+import { colors, themeColorType } from '~/theme'
 import articleCacheController from '~/utils/articleCacheController'
 import dialog from '~/utils/dialog'
 import globalNavigation from '~/utils/globalNavigation'
@@ -63,7 +63,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
     htmlWebView: useRef<any>()
   }
 
-  if (props.getRef) props.getRef.current = { reload: loadContent, injectScript }
+  if (props.getRef) props.getRef.current = { reload: loadContent, injectScript, injectStyle }
 
   useEffect(() => {
     if (props.pageName) {
@@ -77,6 +77,12 @@ function ArticleView(props: PropsWithChildren<Props>) {
   useEffect(() => {
     articleData && props.onArticleLoaded && props.onArticleLoaded(articleData)
   }, [articleData])
+
+  useEffect(() => autorun(() => {
+    const enabled = store.settings.heimu
+    if (statusRef.current === 1) { return } 
+    injectScript(`moegirl.config.heimu.$enabled = ${enabled}`)
+  }), [])
 
   // 加载文章内容，有三层缓存机制，一层是运行时缓存，一层是每次加载完成后存的缓存文件(用到了缓存文件时，会发出提示)
   // 实际使用时发现还有接口缓存，缓存考虑可能是萌百的响应返回了max-age（已经禁用）
@@ -97,6 +103,7 @@ function ArticleView(props: PropsWithChildren<Props>) {
           setArticleHtml(articleData.parse.text['*'])
           loadOriginalImgUrls(articleData.parse.images.filter(imgName => !/\.svg$/.test(imgName)))
           setArticleData(articleData)
+          // toast(`载入${diffDate(new Date(lastModified))}的缓存`)
   
           // 后台请求一次文章数据，更新缓存
           getArticleContent(props.pageName!, true)
@@ -193,6 +200,16 @@ function ArticleView(props: PropsWithChildren<Props>) {
   function injectScript(script: string) {
     if (!refs.htmlWebView.current) { return }
     refs.htmlWebView.current!.injectJavaScript(script)
+  }
+
+  function injectStyle(style: string) {    
+    injectScript(`
+      (() => {
+        const styleTag = document.createElement('style')
+        styleTag.innerHTML = \`${style}\`
+        document.body.appendChild(styleTag)
+      })()
+    `)
   }
   
   const messageHandlers: { [messageName: string]: (data: any) => void } = {
@@ -297,19 +314,31 @@ function ArticleView(props: PropsWithChildren<Props>) {
 
   const isNightTheme = store.settings.theme === 'night'
 
+  const themeColor = colors[store.settings.theme]
   const injectedStyles = [
-    `body { 
-      user-select: none;
-      padding-top: ${props.contentTopPadding}px;
-      word-break: ${props.inDialogMode ? 'break-all' : 'initial'};
-      ${props.inDialogMode && isNightTheme ? 
-        `background-color: ${colors.night.primary} !important;`
-      : ''}
-    }`,
+    `
+      body { 
+        user-select: none;
+        padding-top: ${props.contentTopPadding}px;
+        word-break: ${props.inDialogMode ? 'break-all' : 'initial'};
+        ${props.inDialogMode && isNightTheme ? 
+          `background-color: ${colors.night.primary} !important;`
+        : ''}
+      }
+
+      ${store.settings.theme !== 'night' ? `
+        :root {
+          --color-primary: ${themeColor.primary};
+          --color-dark: ${themeColor.dark};
+          --color-light: ${themeColor.light};
+        }
+      ` : ''}
+    `,
   ].concat(props.injectedStyles || [])
 
   const injectedScripts = [
     `
+      moegirl.config.heimu.$enabled = ${store.settings.heimu}
       moegirl.config.addCopyright.enabled = ${!props.inDialogMode}
       moegirl.config.nightTheme.$enabled = ${isNightTheme}
     `,

@@ -26,6 +26,9 @@ const zhHant: typeof zhHans = {
         hmoe: 'H萌娘'
       }
     },
+    themeSelection: {
+      title: '選擇主題'
+    },
     langSelection: {
       title: '選擇語言'
     },
@@ -35,7 +38,14 @@ const zhHant: typeof zhHans = {
       heimu: {
         title: '黑幕開關',
         subtext: '關閉後黑幕將預設為刮開狀態'
+      },
+      stopAudio: {
+        title: '離開停止所有音訊',
+        subtext: '離開條目時停止當前條目上所有正在播放的音訊'
       }
+    },
+    view: {
+      theme: '更换主題'
     },
     cache: {
       title: '快取',

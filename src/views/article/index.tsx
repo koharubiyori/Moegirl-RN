@@ -54,6 +54,8 @@ function ArticlePage(props: PropsWithChildren<Props>) {
   
   // 进出页面时，启用&禁用音乐播放器
   useFocusEffect(useCallback(() => {
+    if (!store.settings.stopAudioOnLeave) { return }
+    
     const disableAllIframeScriptStr = `(() => {
       const iframeList = document.querySelectorAll('iframe')
       iframeList.forEach(item => {
