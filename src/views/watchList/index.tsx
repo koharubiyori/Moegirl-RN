@@ -111,7 +111,7 @@ function WatchListPage(props: PropsWithChildren<Props>) {
       />   
       
       <FlatList data={watchListList.list} 
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={0.5}
         onEndReached={() => load()}
         style={{ flex: 1 }}
         renderItem={item => 

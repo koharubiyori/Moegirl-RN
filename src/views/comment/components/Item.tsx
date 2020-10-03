@@ -180,7 +180,7 @@ function CommentItem(props: PropsWithChildren<Props>) {
                 </Text>
               </> : null}
               
-              <Text>{trimContent(commentData.text)}</Text>
+              <Text selectable>{trimContent(commentData.text)}</Text>
             </Text>
           </View>
 

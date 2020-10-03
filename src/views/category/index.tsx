@@ -1,10 +1,11 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Dimensions, FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useTheme } from 'react-native-paper'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import searchApi from '~/api/search'
 import { SearchByCategoryData } from '~/api/search/types'
+import MovableHeaderWrapperForList from '~/components/MovableHeaderWrapperForList'
 import MyStatusBar from '~/components/MyStatusBar'
 import MyToolbar from '~/components/MyToolbar'
 import ViewContainer from '~/components/ViewContainer'
@@ -41,6 +42,8 @@ function CategoryPage(props: PropsWithChildren<Props>) {
   const branch = route.params.branch
   const articleTitle = route.params.articleTitle
   const [categoryData, setCategoryData] = useState(initCategoryData())
+  const [categoryBarHeight, setCategoryBarHeight] = useState(0)
+
   const refs = {
     categoryBranch: useRef<any>(),
   }
@@ -57,7 +60,6 @@ function CategoryPage(props: PropsWithChildren<Props>) {
     setCategoryData(prevVal => ({ ...prevVal, status: 2 }))
     searchApi.searchByCategory(title, thumbSize, categoryData.continue)
       .then(data => {
-        console.log(data)
         let nextStatus = 3
         if (!data.query) return setCategoryData(prevVal => ({ ...prevVal, status: 5 }))
         if (categoryData.list.length === 0 && Object.keys(data.query.pages).length === 0) {
@@ -78,79 +80,84 @@ function CategoryPage(props: PropsWithChildren<Props>) {
   }
 
   const currentBranch = branch ? branch.concat([title]) : null
-  console.log(categoryData.list)
   return (
     <ViewContainer style={{ flex: 1 }}>
-      <MyStatusBar />
-      <MyToolbar
-        title={i.index.title(title)}
-        leftIcon="home"
-        rightIcon="search"
-        onPressLeftIcon={() => navigation.popToTop()}
-        onPressRightIcon={() => navigation.push('search')}
-      />
+      <MyStatusBar color={theme.colors.primary} />
+      <MovableHeaderWrapperForList
+        maxDistance={56}
+        header={<>
+          <MyToolbar
+            title={i.index.title(title)}
+            leftIcon="home"
+            rightIcon="search"
+            onPressLeftIcon={() => navigation.popToTop()}
+            onPressRightIcon={() => navigation.push('search')}
+          />
 
-      {branch ? <>
-        <ScrollView horizontal 
-          style={{ ...styles.branchContainer, backgroundColor: theme.colors.primary }} 
-          contentContainerStyle={{ paddingHorizontal: 10 }}
-          ref={refs.categoryBranch}
-        >
-          {currentBranch!.map((categoryName, index) => 
-            <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <CategoryBtn 
-                isCurrent={index + 1 === currentBranch!.length}
-                onPress={() => index + 1 !== currentBranch!.length && navigation.push('article', { pageName: '分类:' + categoryName, displayPageName: i.index.title(categoryName) })}
-              >{categoryName}</CategoryBtn>
-              {index !== currentBranch!.length - 1 ? <MaterialIcon name="chevron-right" size={30} color={theme.colors.onSurface} style={{ marginTop: 2 }} /> : null}
-            </View>
-          )}
-        </ScrollView>
-      </> : null}
+          {branch ? <>
+            <ScrollView horizontal 
+              style={{ ...styles.branchContainer, backgroundColor: theme.colors.primary }} 
+              contentContainerStyle={{ paddingHorizontal: 10 }}
+              ref={refs.categoryBranch}
+              onLayout={e => setCategoryBarHeight(e.nativeEvent.layout.height)}
+            >
+              {currentBranch!.map((categoryName, index) => 
+                <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <CategoryBtn 
+                    isCurrent={index + 1 === currentBranch!.length}
+                    onPress={() => index + 1 !== currentBranch!.length && navigation.push('article', { pageName: '分类:' + categoryName, displayPageName: i.index.title(categoryName) })}
+                  >{categoryName}</CategoryBtn>
+                  {index !== currentBranch!.length - 1 ? <MaterialIcon name="chevron-right" size={30} color={theme.colors.onSurface} style={{ marginTop: 2 }} /> : null}
+                </View>
+              )}
+            </ScrollView>
+          </> : null}  
+        </>}
+      >{(scrollEventMapTo, maxDistance) =>
+        <FlatList 
+          horizontal={false}
+          data={categoryData.list} 
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingTop: MyToolbar.height + categoryBarHeight + StatusBar.currentHeight! }}
+          onEndReachedThreshold={0.5}
+          onEndReached={search}
+          onScroll={scrollEventMapTo}
+          renderItem={(item: any) => <CategoryItem2
+            key={item.item.title}
+            style={{ marginTop: 10 }}
+            title={item.item.title}
+            imgUrl={item.item.thumbnail ? item.item.thumbnail.source : null}
+            categories={item.item.categories.map((item: any) => item.title.replace('Category:', ''))}
+            onPress={() => navigation.push('article', { pageName: item.item.title })}
+            onPressCategory={categoryName => navigation.push('article', { pageName: '分类:' + categoryName, displayPageName: i.index.title(categoryName) })}
+          />}
 
-      <FlatList 
-        horizontal={false}
-        data={categoryData.list} 
-        style={{ flex: 1 }}
-        // numColumns={2}
-        // columnWrapperStyle={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 5 }}
-        onEndReachedThreshold={0.5}
-        onEndReached={search}
-        renderItem={item => <CategoryItem2
-          key={item.item.title}
-          style={{ marginTop: 10 }}
-          title={item.item.title}
-          imgUrl={item.item.thumbnail ? item.item.thumbnail.source : null}
-          categories={item.item.categories.map(item => item.title.replace('Category:', ''))}
-          onPress={() => navigation.push('article', { pageName: item.item.title })}
-          onPressCategory={categoryName => navigation.push('article', { pageName: '分类:' + categoryName, displayPageName: i.index.title(categoryName) })}
-        />}
-
-        ListHeaderComponent={
-          articleTitle ? <>
-            <View style={{ flexDirection: 'row', marginTop: 10, marginLeft: 10, marginBottom: 5 }}>
-              <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>{i.index.categoryPageHint}：</Text>
-              <TouchableOpacity onPress={() => navigation.push('article', { pageName: articleTitle })}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold', color: theme.colors.accent }}>{articleTitle}</Text>
-              </TouchableOpacity>
-            </View>
-          </> : null
-        }
-
-        ListFooterComponent={({
-          0: () => 
-            <TouchableOpacity onPress={search}>
-              <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>{i.index.netErr}</Text>
+          ListHeaderComponent={
+            articleTitle ? <>
+              <View style={{ flexDirection: 'row', marginTop: 10, marginHorizontal: 10, marginBottom: 5, flexWrap: 'wrap' }}>
+                <Text style={{ fontSize: 16, color: theme.colors.placeholder }}>{i.index.categoryPageHint}：</Text>
+                <TouchableOpacity onPress={() => navigation.push('article', { pageName: articleTitle })}>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: theme.colors.accent }}>{articleTitle}</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>,
-          1: () => null,
-          2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
-          3: () => null,
-          4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.allLoaded}</Text>,
-          5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.noData}</Text>
-        }[categoryData.status])()}
-      />
+            </> : null
+          }
+
+          ListFooterComponent={({
+            0: () => 
+              <TouchableOpacity onPress={search}>
+                <View style={{ height: 60, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text>{i.index.netErr}</Text>
+                </View>
+              </TouchableOpacity>,
+            1: () => null,
+            2: () => <ActivityIndicator color={theme.colors.accent} size={50} style={{ marginVertical: 10 }} />,
+            3: () => null,
+            4: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.allLoaded}</Text>,
+            5: () => <Text style={{ textAlign: 'center', fontSize: 16, marginVertical: 20, color: theme.colors.disabled }}>{i.index.noData}</Text>
+          }[categoryData.status])()}
+        />
+      }</MovableHeaderWrapperForList>    
     </ViewContainer>
   )
 }

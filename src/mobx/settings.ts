@@ -10,6 +10,7 @@ export interface SettingsStoreData {
   cachePriority: boolean
   source: 'hmoe' | 'moegirl'
   theme: ThemeColorType
+  lastTheme: ThemeColorType
   lang: 'zh-hans' | 'zh-hant'
 }
 
@@ -19,6 +20,7 @@ class SettingsStore implements SettingsStoreData {
   @observable cachePriority = false
   @observable source: SettingsStoreData['source'] = 'moegirl'
   @observable theme: ThemeColorType = 'green'
+  @observable lastTheme: ThemeColorType = 'green'
   @observable lang: SettingsStoreData['lang'] = 'zh-hans'
 
   @action.bound

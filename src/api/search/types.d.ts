@@ -32,6 +32,24 @@ export interface SearchByCategoryData {
   }[]
 }
 
+export interface RecentChangeData {
+  comment: string
+  newlen: number
+  ns: number
+  old_revid: number
+  oldlen: number
+  pageid: number
+  rcid: number
+  revid: number
+  tags: string[]
+  timestamp: string
+  title: string
+  type: string
+  user: string
+  bot?: ''
+  minor?: ''
+}
+
 export namespace SearchApiData {
   interface GetHint {
     continue: {
@@ -73,6 +91,12 @@ export namespace SearchApiData {
 
     query: {
       pages: { [pageId: number]: SearchByCategoryData }
+    }
+  }
+
+  interface getRecentChanges {
+    query: {
+      recentchanges: RecentChangeData[]
     }
   }
 }

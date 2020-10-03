@@ -34,10 +34,11 @@ export interface Props {
     [messageName: string]: (data: any) => void
   }
   contentTopPadding?: number
-  centerOffsetStyle?: StyleProp<ViewStyle>
+  centerOffset?: number
   inDialogMode?: boolean // 嵌入dialog模式下隐藏dialog组件，防止组件无限递归引入
   onArticleLoaded?(articleData: ArticleApiData.GetContent): void
   onArticleMissing?(pageName: string): void
+  onArticleError?(pageName: string): void
   getRef?: MutableRefObject<any>
 }
 
@@ -47,6 +48,7 @@ export interface ArticleViewRef {
 }
 
 ;(ArticleView as DefaultProps<Props>).defaultProps = {
+  centerOffset: 0,
   contentTopPadding: 0
 }
 
@@ -366,15 +368,17 @@ function ArticleView(props: PropsWithChildren<Props>) {
 
       {status !== 3 &&
         <View style={{ ...styles.mask, backgroundColor: theme.colors.background }}>
-          {{
-            0: () => 
-              <TouchableOpacity onPress={() => loadContent(true)} style={props.centerOffsetStyle}>
-                <Text style={{ fontSize: 18, color: theme.colors.accent, }}>{i.index.reload}</Text>
-              </TouchableOpacity>,
-            1: () => null,
-            2: () => <MyActivityIndicator size={50} style={props.centerOffsetStyle} />,
-            3: () => null
-          }[status]()}
+          <View style={{ position: 'relative', top: props.centerOffset }}>
+            {{
+              0: () => 
+                <TouchableOpacity onPress={() => loadContent(true)}>
+                  <Text style={{ fontSize: 18, color: theme.colors.accent }}>{i.index.reload}</Text>
+                </TouchableOpacity>,
+              1: () => null,
+              2: () => <MyActivityIndicator size={50} />,
+              3: () => null
+            }[status]()}
+          </View>
         </View>
       }
     </View>

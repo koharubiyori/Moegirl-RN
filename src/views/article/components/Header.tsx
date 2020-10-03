@@ -97,7 +97,7 @@ function ArticleHeader(props: PropsWithChildren<Props>) {
 
   const headerTranslateY = transitionValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [-56, 0]
+    outputRange: [-MyToolbar.height, 0]
   })
   return useObserver(() => {
     const actions = (() => {

@@ -52,5 +52,32 @@ function searchByCategory (category: string, thumbSize: number, nextKey?: string
   })
 }
 
-const searchApi = { getHint, search, searchByCategory }
+function getRecentChanges(options: {
+  startISO: string
+  namespace: string
+  excludeUser?: string
+  includeMinor: boolean
+  includeRobot: boolean
+  limit: number
+}) {
+  const rcshow: string[] = []
+  !options.includeMinor && rcshow.push('!minor')
+  !options.includeRobot && rcshow.push('!bot')
+
+  return moeRequest<SearchApiData.getRecentChanges>({
+    params: {
+      action: 'query',
+      list: 'recentchanges',
+      rcend: options.startISO,
+      rcnamespace: options.namespace,
+      ...(options.excludeUser ? { rcexcludeuser: options.excludeUser } : {}),
+      rcprop: 'tags|comment|flags|user|title|timestamp|ids|sizes|redirect',
+      rcshow: rcshow.join('|'),
+      rclimit: options.limit,
+    }
+  })
+    .then(data => data.query.recentchanges)
+}
+
+const searchApi = { getHint, search, searchByCategory, getRecentChanges }
 export default searchApi

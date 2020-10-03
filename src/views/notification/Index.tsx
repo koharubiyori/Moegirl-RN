@@ -92,7 +92,7 @@ function NotificationPage(props: PropsWithChildren<Props>) {
       
       <FlatList 
         data={notificationList.list} 
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={0.5}
         onEndReached={() => load()}
         style={{ flex: 1 }}
         renderItem={item => 

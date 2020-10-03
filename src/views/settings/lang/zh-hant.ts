@@ -27,7 +27,8 @@ const zhHant: typeof zhHans = {
       }
     },
     themeSelection: {
-      title: '選擇主題'
+      title: '選擇主題',
+      checkText: '確定'
     },
     langSelection: {
       title: '選擇語言'

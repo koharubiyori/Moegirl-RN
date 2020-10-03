@@ -8,6 +8,7 @@ import MyButton from '~/components/MyButton'
 import { AVATAR_URL } from '~/constants'
 import store from '~/mobx'
 import { setGlobalThemeColor } from '~/theme'
+import baseStorage from '~/utils/baseStorage'
 import dialog from '~/utils/dialog'
 import globalNavigation from '~/utils/globalNavigation'
 import i from '../lang'
@@ -38,9 +39,12 @@ function DrawerContent(props: PropsWithChildren<Props>) {
   }
 
   function toggleNight() {
-    const willSetTheme = store.settings.theme === 'night' ? 'green' : 'night'
-    setGlobalThemeColor(willSetTheme)
-    store.settings.set('theme', willSetTheme)
+    if (store.settings.theme === 'night') {
+      store.settings.set('theme', store.settings.lastTheme)
+    } else {
+      store.settings.set('lastTheme', store.settings.theme)
+      store.settings.set('theme', 'night')
+    }
   }
 
   return useObserver(() => {
@@ -124,6 +128,11 @@ function DrawerContent(props: PropsWithChildren<Props>) {
               icon="forum" 
               title={i.index.items.talk} 
               onPress={tapCloseAfter(() => navigation.push('article', { pageName: '萌娘百科 talk:讨论版', displayPageName: `萌娘百科 talk:${i.index.items.talk}` }))} 
+            />
+            <DrawerItem
+              icon="format-indent-increase"
+              title="最近更改"
+              onPress={tapCloseAfter(() => navigation.push('recentChanges'))}
             />
             {store.user.isLoggedIn ? <>
               <DrawerItem icon="eye" iconGroup="MaterialCommunity" title={i.index.items.watchList} onPress={tapCloseAfter(() => navigation.navigate('watchList'))} />

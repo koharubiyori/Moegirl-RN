@@ -6,6 +6,7 @@ import searchApi from '~/api/search'
 import { SearchData } from '~/api/search/types'
 import MyButton from '~/components/MyButton'
 import MyStatusBar from '~/components/MyStatusBar'
+import MyToolbar from '~/components/MyToolbar'
 import ViewContainer from '~/components/ViewContainer'
 import useLayoutAnimation from '~/hooks/useLayoutAnimation'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
@@ -69,7 +70,7 @@ function SearchResultPage(props: PropsWithChildren<Props>) {
         style={{ 
           ...styles.header, 
           backgroundColor: theme.colors.surface, 
-          height: 56 + statusBarHeight, paddingTop: statusBarHeight 
+          height: MyToolbar.height + statusBarHeight, paddingTop: statusBarHeight 
         }}
       >
         <MyButton onPress={() => navigation.goBack()} rippleColor={theme.colors.placeholder}>
@@ -80,7 +81,7 @@ function SearchResultPage(props: PropsWithChildren<Props>) {
 
       {status !== 5 ? <>
         <FlatList data={list} 
-          onEndReachedThreshold={1}
+          onEndReachedThreshold={0.5}
           onEndReached={loadList}
           style={{ flex: 1 }}
           // textBreakStrategy="balanced"

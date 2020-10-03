@@ -17,6 +17,7 @@ import saveHistory from '~/utils/saveHistory'
 import { useFocusEffect } from '@react-navigation/native'
 import { useObserver } from 'mobx-react-lite'
 import i from './lang'
+import MyToolbar from '~/components/MyToolbar'
 
 export interface Props {
   
@@ -154,7 +155,7 @@ function ArticlePage(props: PropsWithChildren<Props>) {
   }
 
   function jumpToAnchor(anchor: string) {
-    refs.articleView.current!.injectScript(`moegirl.method.link.gotoAnchor('${anchor}', -${56 + statusBarHeight})`)
+    refs.articleView.current!.injectScript(`moegirl.method.link.gotoAnchor('${anchor}', -${MyToolbar.height + statusBarHeight})`)
   }
 
   function missingGoBack(link: string) {
@@ -167,7 +168,7 @@ function ArticlePage(props: PropsWithChildren<Props>) {
     }
   }
   
-  const activityIndicatorTopOffset = (StatusBar.currentHeight! + 56) / 2
+  const activityIndicatorTopOffset = (StatusBar.currentHeight! + MyToolbar.height) / 2
   const isLoaded = pageId !== 0
   const isVisibleCommentBtn = 
     !(/^([Tt]alk|讨论|討論|[Tt]emplate( talk|)|模板(讨论|討論|)|[Mm]odule( talk|)|模块(讨论|討論|)|[Cc]ategory( talk|)|分[类類](讨论|討論|)|[Uu]ser talk|用户讨论|用戶討論|萌娘百科 talk):/.test(trueTitle || route.params.pageName))
@@ -196,9 +197,9 @@ function ArticlePage(props: PropsWithChildren<Props>) {
         <ArticleView
           getRef={refs.articleView}
           style={{ flex: 1 }}
-          centerOffsetStyle={{ position: 'relative', top: activityIndicatorTopOffset }}
+          centerOffset={activityIndicatorTopOffset}
           pageName={route.params.pageName}
-          contentTopPadding={56 + statusBarHeight}
+          contentTopPadding={MyToolbar.height + statusBarHeight}
           injectedScripts={[injectedWindowScrollEventHandlerStr]}
           onArticleLoaded={handlerFor_articleData_wasLoaded}
           onArticleMissing={missingGoBack}

@@ -25,7 +25,8 @@ const zhHans = {
       }
     },
     themeSelection: {
-      title: '选择主题'
+      title: '选择主题',
+      checkText: '确定',
     },
     langSelection: {
       title: '选择语言'

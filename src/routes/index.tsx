@@ -14,6 +14,7 @@ import HomePage, { RouteParams as HomeRP } from '~/views/home'
 import ImageViewerPage, { RouteParams as ImageViewerRP } from '~/views/imageViewer'
 import LoginPage, { RouteParams as LoginRP } from '~/views/login'
 import NotificationPage, { RouteParams as NotificationRP } from '~/views/notification'
+import RecentChangesPage, { RouteParams as RecentChangesRP } from '~/views/recentChanges'
 import SearchPage, { RouteParams as SearchRP } from '~/views/search'
 import SearchResultPage, { RouteParams as SearchResultRP } from '~/views/search/views/result'
 import SettingsPage, { RouteParams as SettingsRP } from '~/views/settings'
@@ -43,7 +44,8 @@ const routeMaps = {
   notification: route(NotificationPage),
   edit: route(EditPage, TransitionPresets.FadeFromBottomAndroid),
   watchList: route(WatchListPage),
-  history: route(HistoryPage)
+  history: route(HistoryPage),
+  // recentChanges: route(RecentChangesPage)
 }
 
 // 对RouteParamMaps的字段做约束，必须声明T联合类型的所有字段
@@ -69,6 +71,7 @@ export type RouteParamMaps = UnionStringTypeMaps<RouteName, {
   edit: EditRP
   watchList: WatchListRP
   history: HistoryRP
+  // recentChanges: RecentChangesRP
 }>
 
 const Stack = createStackNavigator()

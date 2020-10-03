@@ -3,6 +3,7 @@ import { NativeModules, StyleSheet, TextInput, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import MyButton from '~/components/MyButton'
+import MyToolbar from '~/components/MyToolbar'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import store from '~/mobx'
 import i from '../lang'
@@ -23,7 +24,7 @@ function SearchHeader(props: PropsWithChildren<Props>) {
       style={{ 
         ...styles.body, 
         backgroundColor: theme.colors.surface, 
-        height: 56 + statusBarHeight, 
+        height: MyToolbar.height + statusBarHeight, 
         paddingTop: statusBarHeight 
       }}
     >
@@ -63,7 +64,7 @@ export default SearchHeader
 
 const styles = StyleSheet.create({
   body: {
-    height: 56,
+    height: MyToolbar.height,
     elevation: 3,
     paddingHorizontal: 15,
     flexDirection: 'row',

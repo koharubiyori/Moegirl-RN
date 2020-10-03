@@ -69,7 +69,7 @@ function CommentReplyPage(props: PropsWithChildren<Props>) {
           ref={refs.list}
           style={{ flex: 1 }}
           data={commentData.children!.reverse()} 
-          onEndReachedThreshold={1}
+          onEndReachedThreshold={0.5}
           initialNumToRender={4}
           onEndReached={() => store.comment.loadNext(route.params.pageId)}
           renderItem={item => 

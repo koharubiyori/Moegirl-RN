@@ -59,7 +59,7 @@ function CommentPage(props: PropsWithChildren<Props>) {
         <FlatList removeClippedSubviews 
           style={{ flex: 1 }}
           data={commentData.commentTree} 
-          onEndReachedThreshold={1}
+          onEndReachedThreshold={0.5}
           initialNumToRender={4}
           onEndReached={() => store.comment.loadNext(route.params.pageId)}
           renderItem={item =>

@@ -1,7 +1,6 @@
 import Orientation from '@koharubiyori/react-native-orientation'
 import React, { MutableRefObject, PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { Animated, BackHandler, DeviceEventEmitter, Dimensions, PanResponder, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import WebView from 'react-native-webview'
 import bilibiliApi from '~/api/bilibili'
 import useStateWithRef from '~/hooks/useStateWithRef'
@@ -27,8 +26,8 @@ const AnimatedWebView = Animated.createAnimatedComponent(WebView)
 
 function BiliPlayerModal(props: PropsWithChildren<Props>) {
   const [html, setHtml] = useState('')
-  const [collapseTransitionValue] = useStateWithRef(new Animated.Value(0))
-  const collapseTransitionValueRef = useRef(0)
+  const [closeTransitionValue] = useStateWithRef(new Animated.Value(0))
+  const closeTransitionValueRef = useRef(0)
   const [horizontalSwipeTransitionValue] = useState(new Animated.Value(1)) // 为0.5时显示，为0时隐藏在左边，为1时隐藏在右边
   const horizontalSwipeTransitionValueRef = useRef(1)
 
@@ -61,88 +60,84 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
 
   // 创建收起动画事件组
   const lastMoveY = useRef(0)
-  function createCollapseEvents() {
-    return PanResponder.create({
-      onMoveShouldSetPanResponder: (e, gestureState) => {
-        if (animationLock.current) return false
+  const closeEvents = PanResponder.create({
+    onMoveShouldSetPanResponder: (e, gestureState) => {
+      if (animationLock.current) return false
 
-        const { dy } = gestureState
-        return dy > 50 || dy < -50
-      },
-      onPanResponderGrant: () => {
-        animationLock.current = true
-      },
-      onPanResponderMove: (e, gestureState) => {
-        let { moveY } = gestureState
-        if (lastMoveY.current - moveY > 0.5 || lastMoveY.current - moveY < -0.5) {
-          const speed = 0.05
-  
-          let value = speed
-          if (lastMoveY.current > moveY) value = -speed
-  
-          collapseTransitionValueRef.current -= value
-          
-          if (collapseTransitionValueRef.current > 1) collapseTransitionValueRef.current = 1
-          if (collapseTransitionValueRef.current < 0) collapseTransitionValueRef.current = 0
-          
-          collapseTransitionValue.setValue(collapseTransitionValueRef.current as any)
-        }
+      const { dy } = gestureState
+      return dy > 50 || dy < -50
+    },
+    onPanResponderGrant: () => {
+      animationLock.current = true
+    },
+    onPanResponderMove: (e, gestureState) => {
+      let { moveY } = gestureState
+      if (lastMoveY.current - moveY > 0.5 || lastMoveY.current - moveY < -0.5) {
+        const speed = 0.05
+
+        let value = speed
+        if (lastMoveY.current > moveY) value = -speed
+
+        closeTransitionValueRef.current -= value
         
-        lastMoveY.current = moveY
-      },
-
-      onPanResponderRelease: () => {
-        collapseTransitionValueRef.current > 0.5 ? grow() : shrink()
-        animationLock.current = false
+        if (closeTransitionValueRef.current > 1) closeTransitionValueRef.current = 1
+        if (closeTransitionValueRef.current < 0) closeTransitionValueRef.current = 0
+        
+        closeTransitionValue.setValue(closeTransitionValueRef.current as any)
       }
-    })
-  }
+      
+      lastMoveY.current = moveY
+    },
+
+    onPanResponderRelease: () => {
+      closeTransitionValueRef.current > 0.5 ? grow() : shrink()
+      animationLock.current = false
+    }
+  })
 
   // 创建关闭动画事件组
   const lastMoveX = useRef(0)
-  function createHorizontalSwipeEvents() {
-    return PanResponder.create({
-      onMoveShouldSetPanResponder: (e, gestureState) => {
-        if (animationLock.current || !smallMode) return false
+  const horizontalSwipeEvents = PanResponder.create({
+    onMoveShouldSetPanResponder: (e, gestureState) => {
+      if (animationLock.current || !smallMode) return false
+      
+      const { dx } = gestureState
+      return dx > 30 || dx < -30
+    },
+    onPanResponderGrant: () => {
+      animationLock.current = true
+    },
+    onPanResponderMove: (e, gestureState) => {
+      let { moveX } = gestureState
+      if (lastMoveX.current - moveX > 1 || lastMoveX.current - moveX < -1) {
+        const speed = 0.02
+
+        let value = speed
+        if (lastMoveX.current > moveX) value = -speed
+
+        horizontalSwipeTransitionValueRef.current += value
         
-        const { dx } = gestureState
-        return dx > 30 || dx < -30
-      },
-      onPanResponderGrant: () => {
-        animationLock.current = true
-      },
-      onPanResponderMove: (e, gestureState) => {
-        let { moveX } = gestureState
-        if (lastMoveX.current - moveX > 1 || lastMoveX.current - moveX < -1) {
-          const speed = 0.02
-
-          let value = speed
-          if (lastMoveX.current > moveX) value = -speed
-
-          horizontalSwipeTransitionValueRef.current += value
-          
-          if (horizontalSwipeTransitionValueRef.current > 0.8) horizontalSwipeTransitionValueRef.current = 0.8
-          if (horizontalSwipeTransitionValueRef.current < 0.2) horizontalSwipeTransitionValueRef.current = 0.2
-          
-          horizontalSwipeTransitionValue.setValue(horizontalSwipeTransitionValueRef.current as any)
-        }
+        if (horizontalSwipeTransitionValueRef.current > 0.8) horizontalSwipeTransitionValueRef.current = 0.8
+        if (horizontalSwipeTransitionValueRef.current < 0.2) horizontalSwipeTransitionValueRef.current = 0.2
         
-        lastMoveX.current = moveX
-      },
-
-      onPanResponderRelease: () => {
-        if (horizontalSwipeTransitionValueRef.current > 0.7) {
-          hide('right')
-        } else if (horizontalSwipeTransitionValueRef.current < 0.3) {
-          hide('left')
-        } else {
-          show()
-        }
-
-        animationLock.current = false
+        horizontalSwipeTransitionValue.setValue(horizontalSwipeTransitionValueRef.current as any)
       }
-    })
-  }
+      
+      lastMoveX.current = moveX
+    },
+
+    onPanResponderRelease: () => {
+      if (horizontalSwipeTransitionValueRef.current > 0.7) {
+        hide('right')
+      } else if (horizontalSwipeTransitionValueRef.current < 0.3) {
+        hide('left')
+      } else {
+        show()
+      }
+
+      animationLock.current = false
+    }
+  })
 
   function start(videoId: string, page = 1, isBvId = false) {
     bilibiliApi.getVideoInfo(videoId, isBvId)
@@ -160,8 +155,8 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
   // 全屏
   function grow() {    
     setSmallMode(false)
-    collapseTransitionValueRef.current = 1
-    Animated.timing(collapseTransitionValue, {
+    closeTransitionValueRef.current = 1
+    Animated.timing(closeTransitionValue, {
       toValue: 1,
       duration: 300,
     }).start()
@@ -171,8 +166,8 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
   function shrink() {
     return new Promise(resolve => {
       setSmallMode(true)
-      collapseTransitionValueRef.current = 0
-      Animated.timing(collapseTransitionValue, {
+      closeTransitionValueRef.current = 0
+      Animated.timing(closeTransitionValue, {
         toValue: 0,
         duration: 300
       }).start(resolve)
@@ -278,17 +273,17 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
   const positionOffset = 15
   const windowSize = Dimensions.get('window')
 
-  const containerWidth = collapseTransitionValue.interpolate({
+  const containerWidth = closeTransitionValue.interpolate({
     inputRange: [0, 1],
     outputRange: [minWidth, windowSize.width]
   })
 
-  const containerHeight = collapseTransitionValue.interpolate({
+  const containerHeight = closeTransitionValue.interpolate({
     inputRange: [0, 1],
     outputRange: [minHeight, windowSize.height]
   })
 
-  const containerTranslate = collapseTransitionValue.interpolate({
+  const containerTranslate = closeTransitionValue.interpolate({
     inputRange: [0, 1],
     outputRange: [-positionOffset, 0]
   })
@@ -308,7 +303,7 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
   return (
     // 这个view负责处理收起展开手势
     <Animated.View
-      {...createCollapseEvents().panHandlers}
+      {...closeEvents.panHandlers}
       style={{
         ...styles.container,
         width: containerWidth,
@@ -321,7 +316,7 @@ function BiliPlayerModal(props: PropsWithChildren<Props>) {
     >
       {/* 这个view负责处理开启关闭手势 */}
       <Animated.View
-        {...createHorizontalSwipeEvents().panHandlers}
+        {...horizontalSwipeEvents.panHandlers}
         style={{
           ...styles.webViewWrapper,
           transform: [{ translateX: container2TranslateX }],

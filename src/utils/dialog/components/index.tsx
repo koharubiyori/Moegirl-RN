@@ -24,11 +24,7 @@ export interface Props {
   
 }
 
-export let setDialogThemeColor: SetThemeColor = null as any
-
 function DialogComponents(props: PropsWithChildren<Props>) {
-  const [theme, setTheme] = useState(globalTheme.current)
-  
   const refs = {
     alert: useRef<AlertDialogRef>(),
     confirm: useRef<ConfirmDialogRef>(),
@@ -36,8 +32,6 @@ function DialogComponents(props: PropsWithChildren<Props>) {
     loading: useRef<LoadingDialogRef>(),
     snackBar: useRef<SnackBarRef>()
   }
-
-  setDialogThemeColor = createThemeColorSetter(setTheme)
 
   useEffect(() => {
     props.onBindRefs({
@@ -50,16 +44,13 @@ function DialogComponents(props: PropsWithChildren<Props>) {
   }, [])
   
   return (
-    // 测试发现不包一层绝对定位会导致出现在视图下方
-    <View style={styles.wrapper}>
-      <PaperProvider theme={theme}>
-        <AlertDialog ref={refs.alert} />
-        <ConfirmDialog ref={refs.confirm} />
-        <OptionSheetDialog ref={refs.optionSheet} />
-        <LoadingDialog ref={refs.loading} />
-        <SnackBar ref={refs.snackBar} />
-      </PaperProvider>
-    </View>
+    <>
+      <AlertDialog ref={refs.alert} />
+      <ConfirmDialog ref={refs.confirm} />
+      <OptionSheetDialog ref={refs.optionSheet} />
+      <LoadingDialog ref={refs.loading} />
+      <SnackBar ref={refs.snackBar} />
+    </>
   )
 }
 

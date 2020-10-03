@@ -35,10 +35,9 @@ export default function App() {
       setTimeout(SplashScreen.hide, 500)
 
       initGlobalSetThemeMethod(setTheme)
-      // 开始监听主题变化
-      setGlobalThemeColor(store.settings.theme)
-      // autorun(() => setGlobalThemeColor(store.settings.theme))
-
+      // 监听主题变化
+      autorun(() => setGlobalThemeColor(store.settings.theme))
+      
       // 响应深度链接
       const initialUrl = await Linking.getInitialURL()
       if (!initialUrl) { return undefined }

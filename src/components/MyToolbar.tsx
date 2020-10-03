@@ -1,10 +1,10 @@
+import { useObserver } from 'mobx-react-lite'
 import React, { PropsWithChildren, useState } from 'react'
-import { Animated, StatusBar, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
+import { Animated, LayoutChangeEvent, StatusBar, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { Menu, Text, useTheme } from 'react-native-paper'
+import { IconProps } from 'react-native-vector-icons/Icon'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import MyButton from '~/components/MyButton'
-import { IconProps } from 'react-native-vector-icons/Icon'
-import { useObserver } from 'mobx-react-lite'
 
 export interface Props {
   title: string
@@ -23,11 +23,14 @@ export interface Props {
   onPressLeftIcon? (): void
   onPressRightIcon? (): void
   onPressAction? (value: string, index: number): void
+  onLayout?(event: LayoutChangeEvent): void
 }
 
 ;(MyToolbar as DefaultProps<Props>).defaultProps = {
   leftIcon: 'keyboard-backspace',
 }
+
+MyToolbar.height = 56
 
 function MyToolbar(props: PropsWithChildren<Props>) {
   const theme = useTheme()
@@ -41,13 +44,16 @@ function MyToolbar(props: PropsWithChildren<Props>) {
   const statusBarHeight = StatusBar.currentHeight!
   const textColor = props.textColor || theme.colors.onSurface
   return useObserver(() => 
-    <Animated.View style={{
-      ...styles.body,
-      backgroundColor: theme.colors.primary,
-      ...(props.style as object),
-      height: 56 + statusBarHeight,
-      paddingTop: statusBarHeight
-    }}>
+    <Animated.View 
+      style={{
+        ...styles.body,
+        backgroundColor: theme.colors.primary,
+        ...(props.style as object),
+        height: MyToolbar.height + statusBarHeight,
+        paddingTop: statusBarHeight
+      }}
+      onLayout={props.onLayout}
+    >
       <Animated.View style={{ ...(props.contentContainerStyle as any), flexDirection: 'row' }}>
         <View style={{ flexDirection: 'row', flex: 1 }}>
           <MyButton noRippleLimit contentContainerStyle={{ padding: 3 }} onPress={() => props.onPressLeftIcon && props.onPressLeftIcon()}>
@@ -93,7 +99,7 @@ export default MyToolbar
 
 const styles = StyleSheet.create({
   body: {
-    height: 56,
+    height: MyToolbar.height,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

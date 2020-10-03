@@ -10,13 +10,13 @@ import ViewContainer from '~/components/ViewContainer'
 import useTypedNavigation from '~/hooks/useTypedNavigation'
 import { checkLastVersion } from '~/init'
 import store from '~/mobx'
-import { colors, createThemeColorSetter, globalTheme, setGlobalThemeColor, themeColorType } from '~/theme'
+import { colors, setGlobalThemeColor, themeColorType } from '~/theme'
 import articleCacheController from '~/utils/articleCacheController'
 import dialog from '~/utils/dialog'
-import { setDialogThemeColor } from '~/utils/dialog/components'
 import storage from '~/utils/storage'
 import toast from '~/utils/toast'
 import SettingsSwitchItem from './components/SwitchItem'
+import ThemeSelectionDialog from './components/themeSelectionDialog'
 import i from './lang'
 
 export interface Props {
@@ -29,7 +29,8 @@ export interface RouteParams {
 
 function SettingsPage(props: PropsWithChildren<Props>) {
   const navigation = useTypedNavigation()
-  const [theme, setTheme] = useState(globalTheme.current)
+  const [themeSelectionDialogVisible, setThemeSelectionDialogVisible] = useState(false)
+  const [themeSelected, setThemeSelected] = useState(store.settings.theme)
   
   async function clearArticleCache() {
     await dialog.confirm.show({ content: i.index.clearArticleCache.check })
@@ -50,23 +51,17 @@ function SettingsPage(props: PropsWithChildren<Props>) {
     toast(i.index.logout.success)
   }
 
-  function showThemeOptions() {
-    const setThemeColor = createThemeColorSetter(setTheme)
-    
-    dialog.optionSheet.show({
-      title: i.index.themeSelection.title,
-      options: Object.entries(themeColorType).map(([value, label]) => ({ value, label: label[store.settings.lang] })),
-      defaultSelected: store.settings.theme,
-      onChange(value: any) {
-        // 这里在切换主题时只是切换了设置页和全局dialog的主题，防止多个页面一同重渲染导致卡顿
-        setDialogThemeColor(value)
-        setThemeColor(value)
-        store.settings.set('theme', value)
-      }
-    })
-      .then(setGlobalThemeColor as any)
-      .catch(setGlobalThemeColor)
-  }
+  // function showThemeOptions() {
+  //   dialog.optionSheet.show({
+  //     title: i.index.themeSelection.title,
+  //     options: Object.entries(themeColorType).map(([value, label]) => ({ value, label: label[store.settings.lang] })),
+  //     defaultSelected: store.settings.theme,
+  //     onChange(value: any) {
+  //       store.settings.set('theme', value)
+  //       setGlobalThemeColor(value)
+  //     }
+  //   })
+  // }
 
   function showSourceSelection() {
     dialog.optionSheet.show({
@@ -119,109 +114,124 @@ function SettingsPage(props: PropsWithChildren<Props>) {
       .catch(() => toast(i.index.checkNewVersion.netErr))
   }
 
-  console.log(globalTheme.current)
+  const themesOptionData = Object.entries(colors).map(([name, color]) => ({ name, color: color.primary }))
   return useObserver(() =>
-    <PaperProvider theme={theme}>
-      <ViewContainer>
-        <MyStatusBar />
-        <MyToolbar
-          title={i.index.title}
-          leftIcon="keyboard-backspace"
-          onPressLeftIcon={navigation.goBack}
+    <ViewContainer>
+      <MyStatusBar />
+      <MyToolbar
+        title={i.index.title}
+        leftIcon="keyboard-backspace"
+        onPressLeftIcon={navigation.goBack}
+      />
+
+      <ScrollView style={{ flex: 1 }}>
+        <Title>{i.index.article.title}</Title>
+
+        <SettingsSwitchItem 
+          title={i.index.article.heimu.title} 
+          subtext={i.index.article.heimu.subtext} 
+          value={store.settings.heimu}
+          onChange={val => store.settings.set('heimu', val)}
         />
 
-        <ScrollView style={{ flex: 1 }}>
-          <Title>{i.index.article.title}</Title>
+        <SettingsSwitchItem 
+          title={i.index.article.stopAudio.title} 
+          subtext={i.index.article.stopAudio.subtext} 
+          value={store.settings.stopAudioOnLeave}
+          onChange={val => store.settings.set('stopAudioOnLeave', val)}
+        />
 
-          <SettingsSwitchItem 
-            title={i.index.article.heimu.title} 
-            subtext={i.index.article.heimu.subtext} 
-            value={store.settings.heimu}
-            onChange={val => store.settings.set('heimu', val)}
-          />
+        {/* <SettingsSwitchItem title="沉浸模式" 
+          subtext="浏览条目时将隐藏状态栏" 
+          value={settings.immersionMode}
+          onChange={val => setConfig({ immersionMode: val })}
+        /> */}
 
-          <SettingsSwitchItem 
-            title={i.index.article.stopAudio.title} 
-            subtext={i.index.article.stopAudio.subtext} 
-            value={store.settings.stopAudioOnLeave}
-            onChange={val => store.settings.set('stopAudioOnLeave', val)}
-          />
+        {/* <SettingsSwitchItem title="动态主题" 
+          subtext="条目界面的配色随条目本身的主题色切换" 
+          value={config.changeThemeColorByArticleMainColor}
+          onChange={val => {
+            setConfig({ changeThemeColorByArticleMainColor: val })
+            props.state.config.theme === 'night' && val && toast.show('黑夜模式下动态主题不生效')
+          }}
+        /> */}
 
-          {/* <SettingsSwitchItem title="沉浸模式" 
-            subtext="浏览条目时将隐藏状态栏" 
-            value={settings.immersionMode}
-            onChange={val => setConfig({ immersionMode: val })}
-          /> */}
+        <Title>界面</Title>
+        <SettingsSwitchItem hideSwitch 
+          title={i.index.view.theme}
+          onPress={() => setThemeSelectionDialogVisible(true)}
+        />
 
-          {/* <SettingsSwitchItem title="动态主题" 
-            subtext="条目界面的配色随条目本身的主题色切换" 
-            value={config.changeThemeColorByArticleMainColor}
-            onChange={val => {
-              setConfig({ changeThemeColorByArticleMainColor: val })
-              props.state.config.theme === 'night' && val && toast.show('黑夜模式下动态主题不生效')
-            }}
-          /> */}
+        <Title>{i.index.cache.title}</Title>
+        <SettingsSwitchItem 
+          title={i.index.cache.cachePriority.title}
+          subtext={i.index.cache.cachePriority.subtext}
+          value={store.settings.cachePriority}
+          onChange={val => store.settings.set('cachePriority', val)}
+        />
 
-          <Title>界面</Title>
+        <SettingsSwitchItem hideSwitch 
+          title={i.index.cache.clearCache}
+          onPress={() => clearArticleCache()}
+        />
+
+        <SettingsSwitchItem hideSwitch 
+          title={i.index.cache.clearHistory}
+          onPress={() => clearHistory()}
+        />
+
+        <Title>{i.index.account.title}</Title>
+        <SettingsSwitchItem hideSwitch
+          title={store.user.isLoggedIn ? i.index.account.logout : i.index.account.login}
+          onPress={() => store.user.isLoggedIn ? logout() : navigation.push('login')}
+        />
+
+        <Title>{i.index.other.title}</Title>
+        {isHmoe ? <PaperProvider>
           <SettingsSwitchItem hideSwitch 
-            title={i.index.view.theme}
-            onPress={showThemeOptions}
+            title={i.index.other.changeSource}
+            onPress={showSourceSelection}
           />
+        </PaperProvider> : null}
 
-          <Title>{i.index.cache.title}</Title>
-          <SettingsSwitchItem 
-            title={i.index.cache.cachePriority.title}
-            subtext={i.index.cache.cachePriority.subtext}
-            value={store.settings.cachePriority}
-            onChange={val => store.settings.set('cachePriority', val)}
-          />
+        <SettingsSwitchItem hideSwitch
+          title={i.index.other.selectLang}
+          onPress={showLangSelection}
+        />
 
-          <SettingsSwitchItem hideSwitch 
-            title={i.index.cache.clearCache}
-            onPress={() => clearArticleCache()}
-          />
+        <SettingsSwitchItem hideSwitch
+          title={i.index.other.about}
+          onPress={() => navigation.push('about')}
+        />
 
-          <SettingsSwitchItem hideSwitch 
-            title={i.index.cache.clearHistory}
-            onPress={() => clearHistory()}
-          />
+        <SettingsSwitchItem hideSwitch
+          title={i.index.other.checkVersion}
+          onPress={checkNewVersion}
+        />
 
-          <Title>{i.index.account.title}</Title>
-          <SettingsSwitchItem hideSwitch
-            title={store.user.isLoggedIn ? i.index.account.logout : i.index.account.login}
-            onPress={() => store.user.isLoggedIn ? logout() : navigation.push('login')}
-          />
+        {/* <SettingsSwitchItem hideSwitch
+          title={isHmoe ? i.index.other.checkNewVersionOnGithub : i.index.other.gotoGithub}
+          onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
+        /> */}
+      </ScrollView>      
 
-          <Title>{i.index.other.title}</Title>
-          {isHmoe ? <PaperProvider>
-            <SettingsSwitchItem hideSwitch 
-              title={i.index.other.changeSource}
-              onPress={showSourceSelection}
-            />
-          </PaperProvider> : null}
-
-          <SettingsSwitchItem hideSwitch
-            title={i.index.other.selectLang}
-            onPress={showLangSelection}
-          />
-
-          <SettingsSwitchItem hideSwitch
-            title={i.index.other.about}
-            onPress={() => navigation.push('about')}
-          />
-
-          <SettingsSwitchItem hideSwitch
-            title={i.index.other.checkVersion}
-            onPress={checkNewVersion}
-          />
-
-          {/* <SettingsSwitchItem hideSwitch
-            title={isHmoe ? i.index.other.checkNewVersionOnGithub : i.index.other.gotoGithub}
-            onPress={() => Linking.openURL('https://github.com/koharubiyori/Moegirl-RN/releases')}
-          /> */}
-        </ScrollView>      
-      </ViewContainer>
-    </PaperProvider>
+      <ThemeSelectionDialog 
+        visible={themeSelectionDialogVisible}
+        title={i.index.themeSelection.title}
+        selected={themeSelected}
+        checkText={i.index.themeSelection.checkText}
+        themes={themesOptionData}
+        onChange={themeName => setThemeSelected(themeName as any)}
+        onHide={() => {
+          setThemeSelectionDialogVisible(false)
+          setThemeSelected(store.settings.theme)
+        }}
+        onPressCheck={themeName => {
+          setThemeSelectionDialogVisible(false)
+          setTimeout(() => store.settings.set('theme', themeName as any), 50)
+        }}
+      />
+    </ViewContainer>
   )
 }
 

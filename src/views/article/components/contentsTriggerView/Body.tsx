@@ -7,6 +7,7 @@ import MyButton from '~/components/MyButton'
 import i from '../../lang'
 import store from '~/mobx'
 import { useObserver } from 'mobx-react-lite'
+import MyToolbar from '~/components/MyToolbar'
 
 export interface Props {
   items: ArticleSectionData[]
@@ -25,7 +26,7 @@ function ArticleContentsBody(props: PropsWithChildren<Props>) {
   }
   
   const statusBarHeight = StatusBar.currentHeight!
-  const headerHeight = 56 + statusBarHeight
+  const headerHeight = MyToolbar.height + statusBarHeight
   const nightMode = store.settings.theme === 'night'
   return useObserver(() => {
     return (
