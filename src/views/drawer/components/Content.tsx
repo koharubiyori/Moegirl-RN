@@ -129,11 +129,11 @@ function DrawerContent(props: PropsWithChildren<Props>) {
               title={i.index.items.talk} 
               onPress={tapCloseAfter(() => navigation.push('article', { pageName: '萌娘百科 talk:讨论版', displayPageName: `萌娘百科 talk:${i.index.items.talk}` }))} 
             />
-            <DrawerItem
+            {/* <DrawerItem
               icon="format-indent-increase"
               title="最近更改"
               onPress={tapCloseAfter(() => navigation.push('recentChanges'))}
-            />
+            /> */}
             {store.user.isLoggedIn ? <>
               <DrawerItem icon="eye" iconGroup="MaterialCommunity" title={i.index.items.watchList} onPress={tapCloseAfter(() => navigation.navigate('watchList'))} />
             </> : null}

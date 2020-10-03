@@ -70,7 +70,7 @@ function ArticlePage(props: PropsWithChildren<Props>) {
     const enableAllIframeScriptStr = `(() => {
       const iframeList = document.querySelectorAll('iframe')
       iframeList.forEach(item => {
-        item.src = item.dataset.src!
+        item.src = item.dataset.src
       })
     })()`
 
@@ -105,7 +105,7 @@ function ArticlePage(props: PropsWithChildren<Props>) {
     saveHistory(articleData.parse.title, articleData.parse.displaytitle)
 
     // pageId === 0 用于判断是否为第一次加载
-    if (pageId === 0 && route.params.pageName.replace(/_/g, '') !== articleData.parse.title) {
+    if (pageId === 0 && route.params.pageName.replace(/_/g, ' ') !== articleData.parse.title) {
       toast(i.index.redirectFrom(route.params.pageName))
       // dialog.snackBar.show({ title: i.index.redirectFrom(route.params.pageName) })
     }
