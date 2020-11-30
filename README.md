@@ -14,6 +14,6 @@
 
 ## 近况(2020.10.04)
 
-flutter_webview终于发布1.0了，准备转flutter进行重构。这个应该不会继续维护了。
+<del>flutter_webview终于发布1.0了，准备转flutter进行重构。这个应该不会继续维护了。</del>
 
-↑ 因flutter_webview开启Platform Views后会导致Android 10以下卡出翔，不开webview又会卡出翔，重构暂停_(:з」∠)_
+因flutter_webview开启Platform Views后会导致Android 10以下卡出翔，不开webview内又会出现迷之滑动bug，重构暂停，等官方把flutter的webview弄好点再继续吧_(:з」∠)_
